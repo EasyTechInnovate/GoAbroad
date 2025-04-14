@@ -2,7 +2,7 @@
 import  { Navbar } from '@/components/NavBar';
 import { useEffect, useState } from 'react';
 import Hero from '@/components/Hero';
-import { Spotlight } from '@/components/ui/Spotlight';
+import { Spotlight } from '@/components/ui/spotlight';
 import Loader from '@/components/ui/loader';
 import Features from '@/components/Features';
 import HowItWorks from '@/components/HowItWorks';
