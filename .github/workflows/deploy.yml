@@ -60,7 +60,7 @@ jobs:
 
             # SSL Certificate Setup with Certbot
             echo '🔒 Checking/Updating SSL certificates...'
-            certbot certonly --standalone -d GoAbroad --non-interactive --agree-tos -m GoAbroad@gmail.com || { echo '❌ Certbot failed'; exit 1; }
+            certbot certonly --standalone -d qa.goupbroad.com --non-interactive --agree-tos -m goupbroad0907@gmail.com || { echo '❌ Certbot failed'; exit 1; }
 
             # Stop existing containers
             echo '🛑 Stopping existing containers...'
