@@ -27,7 +27,7 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
 
               <div className="hidden md:flex items-center space-x-2 text-gray-700 cursor-pointer">
                 <img
-                  src="../../public/flag.png"
+                  src="../../public/flag.svg"
                   alt="US Flag"
                   className="h-5 w-5 rounded-full object-cover"
                 />

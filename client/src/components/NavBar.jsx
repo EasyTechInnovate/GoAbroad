@@ -70,7 +70,7 @@ export const Navbar = ({ status }) => {
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2">
-            <img src="../assets/logo.svg" alt="Logo" className="h-10 w-10" />
+            <img src="../../public/logo.svg" alt="Logo" className="h-10 w-10" />
             <span className="text-2xl font-bold">Goupbroad</span>
             </Link>
           </div>
