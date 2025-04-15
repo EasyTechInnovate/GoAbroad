@@ -10,7 +10,6 @@
 - 📊 Status Management: Stay updated with each application’s progress.
 - 🖥️ Full-stack Architecture: Built with performance and scalability in mind.
 
----
 
 ## ⚙️ Tech Stack
 
@@ -23,7 +22,6 @@
 | **Docker Compose**| Simplified orchestration of multi-container apps|
 | **ShadCN UI**     | Clean and customizable UI component library     |
 
----
 
 ## 🛠 Developer Experience Enhancements
 
