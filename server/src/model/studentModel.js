@@ -186,6 +186,11 @@ const studentSchema = new mongoose.Schema({
             default: null
         }
     },
+    status: {
+        type: String,
+        enum: ["PENDING", "ACTIVE", "COMPLETE", "REJECTED"],
+        default: "PENDING"
+    },
     isFeePaid: {
         type: Boolean,
         default: false

@@ -2,6 +2,7 @@ import os from 'os';
 import config from '../config/config.js';
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { razorpayInstance } from '../config/razorpayConfig.js';
 export default {
     getSystemHealth: () => {
         return {
@@ -33,5 +34,17 @@ export default {
     },
     verifyToken: (token, secret) => {
         return jwt.verify(token, secret)
+    },
+
+
+    // Payment 
+    createRazorpayOrder: async (amount, currency, receipt) => {
+        const options = {
+            amount: amount * 100, // Amount in paise
+            currency,
+            receipt
+        };
+        const order = await razorpayInstance.orders.create(options);
+        return order;
     },
 };

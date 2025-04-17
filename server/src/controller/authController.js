@@ -11,8 +11,8 @@ export default {
         try {
             const { body } = req;
 
-            const { value, error } = validateJoiSchema(ValidateLogin, body);
-            console.log("ERRR", error);
+            const { value, error } = validateJoiSchema(ValidateLogin, { ...body });
+
 
             if (error) {
                 return httpError(next, error, req, 422);
@@ -25,12 +25,12 @@ export default {
                 return httpResponse(req, res, 401, responseMessage.NOT_FOUND('User'));
             }
 
-            if (!student.isFeePaid) {
-                return httpResponse(req, res, 403, responseMessage.SOMETHING_WENT_WRONG + ' - Fee payment pending');
-            }
+            // if (!student.isFeePaid) {
+            //     return httpResponse(req, res, 403, responseMessage.SOMETHING_WENT_WRONG + ' - Fee payment pending');
+            // }
 
             const accessToken = quicker.generateToken(
-                { email: student.email, id: student._id },
+                { email: student.email, studentId: student._id },
                 config.ACCESS_TOKEN.SECRET,
                 config.ACCESS_TOKEN.EXPIRY
             );
@@ -47,8 +47,7 @@ export default {
             const { body } = req;
             console.log(body);
 
-            const { value, error } = validateJoiSchema(ValidateSignup, body);
-            console.log(value, error);
+            const { value, error } = validateJoiSchema(ValidateSignup, { ...body });
 
             if (error) {
                 return httpError(next, error, req, 422);
@@ -61,7 +60,6 @@ export default {
                 return httpResponse(req, res, 409, responseMessage.SOMETHING_WENT_WRONG + ' - Email already in use');
             }
 
-            console.log("hellow");
 
 
             const hashedPassword = await quicker.hashPassword(password);

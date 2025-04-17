@@ -16,6 +16,16 @@ const config = Object.freeze({
         SECRET: process.env.REFRESH_TOKEN_SECRET,
         EXPIRY: 3600 * 24 * 365
     },
+
+    // Razorpay
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+    DEFAULT_FEE: process.env.DEFAULT_FEE || 500,
+
+    //ImageKit
+    IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
+    IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
+    IMAGEKIT_URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
 })
 
 export default config;

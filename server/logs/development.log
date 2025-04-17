@@ -1615,3 +1615,2878 @@
         "SERVER_URL": "http://localhost:5000"
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-16T18:23:13.619Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-16T18:23:13.635Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-16T18:23:13.635Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-16T18:26:21.636Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "email": "hello@gmail.com",
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "phoneNumber": null,
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-16T18:26:21.624Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-16T18:26:29.814Z",
+    "meta": {
+        "success": true,
+        "statusCode": 403,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "Something went wrong! - Fee payment pending",
+        "data": null
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-16T18:26:55.672Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-16T18:26:55.684Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-16T18:26:55.685Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-16T18:26:56.772Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsImlkIjoiNjdmZmY2NGQ5YmEwYjc1OWNiNmRmYzFmIiwiaWF0IjoxNzQ0ODI4MDE2LCJleHAiOjE3NDU0MzI4MTZ9.w0NCzMdUDF7WSR5CcoEIt606IQHcvSg6jFAq0SZE-aY",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": null,
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-16T18:26:21.624Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-16T18:28:28.146Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-16T18:28:28.153Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-16T18:28:28.153Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-16T18:28:54.151Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-16T18:28:54.158Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-16T18:28:54.159Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-16T18:29:28.171Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-16T18:29:28.177Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-16T18:29:28.178Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-16T18:48:39.585Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-16T18:48:39.595Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-16T18:48:39.596Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:13:09.033Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:13:09.048Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:13:09.049Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:21:25.880Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:21:25.892Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:21:25.893Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:21:37.310Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:21:37.321Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:21:37.322Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:21:55.444Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:21:55.459Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:21:55.459Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:22:20.337Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:22:20.347Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:22:20.347Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:22:23.725Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:22:23.736Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:22:23.736Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:23:20.017Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:23:20.024Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:23:20.025Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:23:25.541Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:23:25.559Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:23:25.561Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:24:21.759Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:24:21.768Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:24:21.769Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:25:19.050Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:25:19.061Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:25:19.061Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:25:43.373Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:25:43.388Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:25:43.389Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:25:50.431Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:25:50.442Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:25:50.443Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:26:36.498Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:26:36.507Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:26:36.509Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:28:10.426Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:28:10.437Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:28:10.438Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:28:33.325Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:28:33.337Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:28:33.338Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:28:38.092Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:28:38.103Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:28:38.104Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:28:52.688Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:28:52.698Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:28:52.699Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:29:03.759Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:29:03.770Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:29:03.771Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:29:45.315Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:29:45.326Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:29:45.327Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:30:20.903Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:30:20.912Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:30:20.913Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:31:59.968Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:31:59.977Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:31:59.978Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:32:09.704Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:32:09.715Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:32:09.716Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:32:14.867Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:32:14.876Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:32:14.877Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:38:41.844Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:38:41.854Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:38:41.855Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T10:38:45.898Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NDg4NjMyNSwiZXhwIjoxNzQ1NDkxMTI1fQ.GxAnnFMe58sAo16wMPR39mwT0W2IMT4kibDVVvUEEjk",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": null,
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-16T18:26:21.624Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:41:27.199Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:41:27.212Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:41:27.213Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:42:03.080Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:42:03.095Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:42:03.097Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:43:10.496Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:43:10.508Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:43:10.509Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:43:51.322Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:43:51.334Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:43:51.335Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:44:02.025Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:44:02.040Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:44:02.041Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:44:16.121Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:44:16.131Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:44:16.132Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:45:24.826Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:45:24.836Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:45:24.837Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:45:39.226Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:45:39.236Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:45:39.237Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:45:51.197Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:45:51.207Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:45:51.208Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:46:35.660Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:46:35.671Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:46:35.672Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:46:45.026Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:46:45.037Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:46:45.038Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:47:18.350Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:47:18.360Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:47:18.361Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T10:47:32.778Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NDg4Njg1MiwiZXhwIjoxNzQ1NDkxNjUyfQ.VuhizrnHCdhYl0EfO0iq6ow9O8TRWmKax67-3nxKogg",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": null,
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-16T18:26:21.624Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:50:19.307Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:50:19.333Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:50:19.334Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T10:50:49.631Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T10:50:49.641Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T10:50:49.642Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:04:18.297Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:04:18.309Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:04:18.310Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:05:43.956Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:05:43.973Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:05:43.974Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:06:02.437Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:06:02.450Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:06:02.451Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:07:12.368Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:07:12.382Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:07:12.383Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:07:38.770Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:07:38.783Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:07:38.784Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:07:40.822Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:07:40.833Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:07:40.834Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:09:17.419Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:09:17.430Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:09:17.431Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:09:33.867Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:09:33.878Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:09:33.878Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:10:50.226Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:10:50.237Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:10:50.238Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:11:07.533Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:11:07.544Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:11:07.545Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:13:31.819Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:13:31.829Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:13:31.831Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:13:55.877Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:13:55.886Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:13:55.887Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:15:10.943Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:15:10.956Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:15:10.957Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:15:22.194Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:15:22.204Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:15:22.205Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:15:46.636Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:15:46.646Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:15:46.647Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:16:04.295Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:16:04.305Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:16:04.306Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:16:37.088Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:16:37.098Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:16:37.099Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:17:06.000Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:17:06.008Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:17:06.009Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:17:29.256Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:17:29.265Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:17:29.266Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:17:54.520Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:17:54.531Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:17:54.532Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:18:25.323Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:18:25.330Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:18:25.331Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:18:40.876Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NDg4ODcyMCwiZXhwIjoxNzQ1NDkzNTIwfQ.mF-TOM5KI1l4LyivHyJqjFVkoVD6Oou8apv8DrJRKNs",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": null,
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-16T18:26:21.624Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:20:34.759Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:20:34.769Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:20:34.770Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:21:01.265Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:21:01.276Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:21:01.277Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:21:31.844Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:21:31.853Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:21:31.854Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:21:35.576Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/payment/initiate"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "orderId": "order_QK6ekdr0nhMaX1",
+            "amount": "500",
+            "currency": "INR",
+            "key": "rzp_test_1C4SVtMx6mc2jh"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:23:03.470Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/payment/initiate"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "orderId": "order_QK6gIgybIFMuyL",
+            "amount": "500",
+            "currency": "INR",
+            "key": "rzp_test_1C4SVtMx6mc2jh"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:24:32.143Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/payment/initiate"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "orderId": "order_QK6hrTYEQ1HxVw",
+            "amount": "500",
+            "currency": "INR",
+            "key": "rzp_test_1C4SVtMx6mc2jh"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:27:32.343Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:27:32.368Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:27:32.369Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:30:03.239Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:30:03.264Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:30:03.266Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:30:16.332Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/payment/initiate"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "orderId": "order_QK6nv8dJ752aAM",
+            "amount": "500",
+            "currency": "INR",
+            "key": "rzp_test_1C4SVtMx6mc2jh"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:30:40.967Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/payment/verify"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "paymentId": "pay_QK6o2KMnhrC2tS",
+            "status": "success"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:31:51.413Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:31:51.428Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:31:51.429Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:38:52.304Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:38:52.322Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:38:52.323Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:39:16.872Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:39:16.887Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:39:16.890Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:39:30.992Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:39:31.000Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:39:31.001Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:40:39.029Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:40:39.038Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:40:39.039Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:41:37.520Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NDg5MDA5NywiZXhwIjoxNzQ1NDk0ODk3fQ.egN4Um-hO9KNGh1jRHd-idFEgXNBbSSonw6O0GHQBrA",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": null,
+                "isFeePaid": true,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-17T11:30:40.956Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:43:02.863Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/user/self"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "address": null,
+                "profession": null
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": null,
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-17T11:30:40.956Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:43:41.682Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:43:41.693Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:43:41.694Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:45:25.142Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:45:25.154Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:45:25.155Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:46:45.069Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "address": null,
+                "profession": null
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+1234567890",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-17T11:46:45.050Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:46:54.776Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "profession": null,
+                "address": "123 Main St, City"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+1234567890",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-17T11:46:54.769Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-17T11:47:19.331Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "profession": null,
+                "address": "123 Main St, City"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+1234567890",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-17T11:47:19.325Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:50:40.886Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:50:40.901Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:50:40.901Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T11:53:22.341Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T11:53:22.356Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T11:53:22.357Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T12:01:08.236Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T12:01:08.250Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T12:01:08.251Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T12:02:54.434Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T12:02:54.446Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T12:02:54.447Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T12:05:08.893Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T12:05:08.904Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T12:05:08.905Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-17T12:05:42.672Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-17T12:05:42.699Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-17T12:05:42.700Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
