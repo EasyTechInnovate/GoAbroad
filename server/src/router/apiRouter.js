@@ -5,6 +5,8 @@ import paymentController from '../controller/paymentController.js'
 import authentication, { paymentMiddleWare } from '../middleware/authentication.js'
 import userController from '../controller/userController.js'
 import { uploadFiles } from '../middleware/multerHandler.js'
+import adminController from '../controller/adminController.js'
+import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
 
 const router = Router()
 
@@ -27,5 +29,18 @@ router.route('/payment/verify').post(paymentMiddleWare, paymentController.verify
 // user routes
 router.route('/user/self').get(authentication, userController.getSelfData);
 router.route('/user/profile').put(authentication, userController.updateProfile);
+
+
+// Admins route
+router.route('/admin/auth/login').post(adminController.login);
+router.route('/admin/auth/update-password').post(memberAccess, adminController.updatePassword);
+
+router.route('/admin/create-member').post(adminOnly, adminController.addNewMember);
+router.route('/admin/update-profile/:id').put(adminOnly, adminController.updateProfileByAdmin);
+router.route('/admin/members').get(adminOnly, adminController.getAllMembers);
+
+
+router.route('/admin/self').get(memberAccess, adminController.getSelfData);
+router.route('/admin/profile').put(memberAccess, adminController.updateProfile);
 
 export default router

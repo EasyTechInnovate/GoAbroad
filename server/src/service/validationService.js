@@ -73,8 +73,45 @@ export const ValidateProfileUpdate = Joi.object({
         visaInterviewDate: Joi.date().allow(null),
         visaInterviewLocation: Joi.string().allow(null)
     }).allow(null)
-}).unknown(false); // Keep unknown fields disallowed
+}).unknown(false);
 // ############ PROFILE Validation END ################
+
+
+
+// ############ MEMBER Validation ################
+export const ValidateMemberCreate = Joi.object({
+    firstName: Joi.string().trim().required(),
+    lastName: Joi.string().trim().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).required(),
+    role: Joi.string().valid('ADMIN', 'EDITOR', 'VIEWER').required(),
+    status: Joi.string().valid('ACTIVE', 'INACTIVE', 'INVITED').default('INVITED'),
+    phone: Joi.string().trim().allow(null),
+    address: Joi.string().trim().allow(null),
+    profilePicture: Joi.string().allow(null)
+});
+
+export const ValidateMemberUpdate = Joi.object({
+    firstName: Joi.string().trim().allow(null),
+    lastName: Joi.string().trim().allow(null),
+    phone: Joi.string().trim().allow(null),
+    address: Joi.string().trim().allow(null),
+    profilePicture: Joi.string().allow(null)
+}).or('firstName', 'lastName', 'phone', 'address', 'profilePicture').unknown(false);
+
+export const ValidatePasswordUpdate = Joi.object({
+    oldPassword: Joi.string().min(6).required(),
+    newPassword: Joi.string().min(6).required(),
+    confirmPassword: Joi.string().min(6).required().valid(Joi.ref('newPassword'))
+}).unknown(false);
+
+
+export const ValidateMembersQuery = Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(10)
+}).unknown(false);
+
+// ############ MEMBER Validation END ################
 
 
 export const validateJoiSchema = (schema, value) => {
