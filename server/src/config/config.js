@@ -10,7 +10,7 @@ const config = Object.freeze({
 
     ACCESS_TOKEN: {
         SECRET: process.env.ACCESS_TOKEN_SECRET,
-        EXPIRY: '7d'
+        EXPIRY: '24h'
     },
     REFRESH_TOKEN: {
         SECRET: process.env.REFRESH_TOKEN_SECRET,

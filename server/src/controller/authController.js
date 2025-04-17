@@ -35,6 +35,15 @@ export default {
                 config.ACCESS_TOKEN.EXPIRY
             );
 
+
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+                path: '/',
+                sameSite: 'strict'
+            });
+
             const userData = { ...student.toObject(), password: undefined };
             httpResponse(req, res, 200, responseMessage.SUCCESS, { accessToken, user: userData });
         } catch (err) {
