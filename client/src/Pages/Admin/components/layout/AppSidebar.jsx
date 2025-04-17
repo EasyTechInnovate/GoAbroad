@@ -27,6 +27,8 @@ import {
   Settings,
 } from 'lucide-react';
 
+import logo from '@/assets/logo.svg';
+
 const sidebarItems = [
   {
     title: 'Dashboard',
@@ -90,9 +92,9 @@ export function AppSidebar() {
         <div className="flex items-center justify-between h-16 px-4 border-b">
           <div className={cn('flex items-center gap-2', collapsed && 'justify-center w-full')}>
             <div className="bg-primary text-primary-foreground rounded h-8 w-8 flex items-center justify-center font-semibold">
-              SA
+            <img src={logo} alt="Logo" className="h-10 w-10" />
             </div>
-            {!collapsed && <span className="font-semibold text-lg">StudyAbroad</span>}
+            {!collapsed && <span className="font-semibold text-lg">GoupBroad</span>}
           </div>
           <Button
             variant="ghost"

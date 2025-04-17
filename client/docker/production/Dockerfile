@@ -13,7 +13,6 @@ RUN npm install
 
 # Copy all the source code
 COPY . .
-RUN if [ -d "public" ]; then mkdir -p dist/public && cp -r public/* dist/public/; fi
 
 # Build the app for production
 RUN npm run build
