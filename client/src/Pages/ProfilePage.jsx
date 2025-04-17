@@ -27,7 +27,7 @@ const ProfilePage = () => {
                     <div className="md:col-span-1">
                       <div className="bg-white rounded-lg overflow-hidden h-[300px]">
                         <img
-                          src="/profile-full.png"
+                          src="profile-full.svg"
                           alt="Profile"
                           className="w-full h-full object-cover"
                         />

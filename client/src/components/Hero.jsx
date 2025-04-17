@@ -76,7 +76,7 @@ export const Hero = () => {
                         className="flex flex-col sm:flex-row gap-4 mt-16"
                     >
                         <Link
-                            to={'/sign-in'}
+                            to={'/dashboard'}
                             className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-primary-1 transition-colors shadow-md hover:shadow-lg"
                         >
 

@@ -27,7 +27,7 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
 
               <div className="hidden md:flex items-center space-x-2 text-gray-700 cursor-pointer">
                 <img
-                  src="../../public/flag.svg"
+                  src="flag.svg"
                   alt="US Flag"
                   className="h-5 w-5 rounded-full object-cover"
                 />
@@ -44,7 +44,7 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
 
               <div className="flex items-center space-x-2 cursor-pointer">
                 <Avatar className="h-8 w-8">
-                  <img src="../../public/profile.png" alt="User" />
+                  <img src="profile.svg" alt="User" />
                 </Avatar>
                 <div className="hidden sm:block">
                   <p className="text-sm font-medium text-gray-800">Shrey</p>
