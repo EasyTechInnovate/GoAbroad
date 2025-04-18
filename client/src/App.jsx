@@ -1,9 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
-import Home from './Pages/Home';
+import Home from './Pages/LandingPage';
 import Dashboard from './Pages/Dashboard';
-import ProfilePage from './Pages/ProfilePage';
-import Index from './Pages/Admin/Index';
-import Students from './Pages/Admin/Students';
+
 import StudentDetails from './Pages/Admin/StudentDetails';
 import Tasks from './Pages/Admin/Tasks';
 import Applications from './Pages/Admin/Applications';
@@ -16,6 +14,9 @@ import AllActivities from './Pages/Admin/AllActivities';
 import Settings from './Pages/Admin/Settings';
 import NotFound from './Pages/Admin/NotFound';
 import AdminDashboard from './Pages/Admin/AdminDashboard';
+import ProfilePage from './Pages/Profile';
+import Index from './Pages/Admin/Index';
+import Students from './Pages/Admin/Students';
 
 const App = () => {
   return (

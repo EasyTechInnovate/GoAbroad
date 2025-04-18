@@ -43,7 +43,7 @@ const Dashboard = () => {
     },
   ];
 
-  const [isOpen,setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <SidebarProvider>
@@ -52,9 +52,8 @@ const Dashboard = () => {
         <SidebarInset>
           <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen}/>
           
-          <main className="p-4 md:p-6 bg-gray-50 flex-1">
-            
-            <div className="grid grid-cols-1 mt-10 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 bg-white p-8 rounded-md">
+          <main className="p-3 md:p-6 bg-gray-50 flex-1 overflow-x-hidden">
+            <div className="grid grid-cols-1 mt-4 sm:mt-6 md:mt-10 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8 bg-white p-4 sm:p-6 md:p-8 rounded-md">
               {stats.map((stat) => (
                 <StatCard
                   key={stat.id}

@@ -76,7 +76,6 @@ export default function Home() {
         <HowItWorks/>
         <ServerMetrics isOnline={isOnline} serverStatus={serverStatus}/>
         <TechStack/>
-        {/* <Testimonials/>  */}
         <Footer/>
       </main>
     </div>
