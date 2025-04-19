@@ -7,6 +7,8 @@ import userController from '../controller/userController.js'
 import { uploadFiles } from '../middleware/multerHandler.js'
 import adminController from '../controller/adminController.js'
 import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
+import faqController from '../controller/faqController.js'
+import categoryController from '../controller/categoryController.js'
 
 const router = Router()
 
@@ -42,5 +44,18 @@ router.route('/admin/members').get(adminOnly, adminController.getAllMembers);
 
 router.route('/admin/self').get(memberAccess, adminController.getSelfData);
 router.route('/admin/profile').put(memberAccess, adminController.updateProfile);
+
+
+// category routes
+router.route('/categories').get(categoryController.getAllCategories);//Public Access
+router.route('/admin/categories').post(adminOnly, categoryController.createCategory);
+router.route('/admin/categories/:id').put(adminOnly, categoryController.updateCategory);
+router.route('/admin/categories/:id').delete(adminOnly, categoryController.deleteCategory);
+
+// faq routes
+router.route('/faqs').get(faqController.getFaqs);//Public Access 
+router.route('/admin/faqs').post(adminOnly, faqController.createFaq);
+router.route('/admin/faqs/:id').put(adminOnly, faqController.updateFaq);
+router.route('/admin/faqs/:id').delete(adminOnly, faqController.deleteFaq);
 
 export default router

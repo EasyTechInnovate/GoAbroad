@@ -5589,3 +5589,731 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:28:24.541Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:28:24.550Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:28:24.551Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:29:10.826Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:29:10.832Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:29:10.833Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:29:55.671Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:29:55.679Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:29:55.680Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:30:04.614Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:30:04.631Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:30:04.633Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:30:16.938Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:30:16.946Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:30:16.948Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:30:27.494Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/categories"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Category created successfully",
+            "categoryId": "6803c19370badc01f0d94d6e"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:32:40.915Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:32:40.922Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:32:40.923Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:32:48.150Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:32:48.160Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:32:48.161Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:33:04.205Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "_id": "68013a01d2da4661a44bb909",
+                "firstName": "Charlie",
+                "lastName": "Wilson",
+                "email": "admin@example.com",
+                "phone": "+1234567890",
+                "address": "HELLO",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "profilePicture": null,
+                "createdDate": "2025-04-17T17:27:29.619Z",
+                "updatedDate": "2025-04-17T17:42:21.745Z"
+            },
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzYTAxZDJkYTQ2NjFhNDRiYjkwOSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDUwNzY3ODQsImV4cCI6MTc0NTE2MzE4NH0.n3h3EC-oUtLyL2O6-RVQaA8SEHs19xg2_v_UjoJq2sg"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:36:36.930Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:36:36.946Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:36:36.948Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:36:55.558Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/faqs"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "FAQ created successfully",
+            "faqId": "6803c3173b4f4cd9254b948e"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:38:56.991Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:38:57.000Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:38:57.003Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:39:04.443Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:39:04.452Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:39:04.453Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:39:15.200Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:39:15.207Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:39:15.208Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:39:16.226Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/categories/6803c19370badc01f0d94d6e"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "6803c19370badc01f0d94d6e",
+            "name": "Application Process",
+            "description": "Updated guidance",
+            "createdAt": "2025-04-19T15:30:27.484Z",
+            "updatedAt": "2025-04-19T15:39:16.209Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:40:04.256Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/categories"
+        },
+        "message": "The operation has been successful",
+        "data": [
+            {
+                "_id": "6803c19370badc01f0d94d6e",
+                "name": "Application Process",
+                "description": "Updated guidance",
+                "createdAt": "2025-04-19T15:30:27.484Z",
+                "updatedAt": "2025-04-19T15:39:16.209Z"
+            }
+        ]
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:40:44.427Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:40:44.436Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:40:44.437Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:42:42.629Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:42:42.638Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:42:42.640Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:42:51.116Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:42:51.126Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:42:51.127Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:43:23.283Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:43:23.290Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:43:23.291Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:48:18.560Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:48:18.567Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:48:18.568Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:48:35.086Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:48:35.095Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:48:35.097Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:48:36.083Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/faqs"
+        },
+        "message": "The operation has been successful",
+        "data": [
+            {
+                "_id": "6803c3173b4f4cd9254b948e",
+                "question": "What are the requirements?",
+                "answer": "Transcripts, etc.",
+                "categoryId": "6803c19370badc01f0d94d6e",
+                "createdAt": "2025-04-19T15:36:55.545Z",
+                "updatedAt": "2025-04-19T15:36:55.545Z"
+            }
+        ]
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:50:28.758Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:50:28.766Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:50:28.767Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T15:50:46.151Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T15:50:46.158Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T15:50:46.159Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:50:46.971Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/faqs"
+        },
+        "message": "The operation has been successful",
+        "data": [
+            {
+                "_id": "6803c19370badc01f0d94d6e",
+                "category": {
+                    "_id": "6803c19370badc01f0d94d6e",
+                    "name": "Application Process",
+                    "description": "Updated guidance",
+                    "createdAt": "2025-04-19T15:30:27.484Z",
+                    "updatedAt": "2025-04-19T15:39:16.209Z"
+                },
+                "faqs": [
+                    {
+                        "_id": "6803c3173b4f4cd9254b948e",
+                        "question": "What are the requirements?",
+                        "answer": "Transcripts, etc.",
+                        "categoryId": "6803c19370badc01f0d94d6e",
+                        "createdAt": "2025-04-19T15:36:55.545Z",
+                        "updatedAt": "2025-04-19T15:36:55.545Z",
+                        "category": {
+                            "_id": "6803c19370badc01f0d94d6e",
+                            "name": "Application Process",
+                            "description": "Updated guidance",
+                            "createdAt": "2025-04-19T15:30:27.484Z",
+                            "updatedAt": "2025-04-19T15:39:16.209Z"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:51:28.528Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/faqs?categoryId=6803c19370badc01f0d94d6e"
+        },
+        "message": "The operation has been successful",
+        "data": [
+            {
+                "_id": "6803c3173b4f4cd9254b948e",
+                "question": "What are the requirements?",
+                "answer": "Transcripts, etc.",
+                "categoryId": "6803c19370badc01f0d94d6e",
+                "createdAt": "2025-04-19T15:36:55.545Z",
+                "updatedAt": "2025-04-19T15:36:55.545Z"
+            }
+        ]
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:53:01.076Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/faqs/6803c3173b4f4cd9254b948e"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "6803c3173b4f4cd9254b948e",
+            "question": "What are the requirements?",
+            "answer": "Transcripts, etc.",
+            "categoryId": "6803c19370badc01f0d94d6e",
+            "createdAt": "2025-04-19T15:36:55.545Z",
+            "updatedAt": "2025-04-19T15:53:01.058Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:53:31.931Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/faqs/6803c3173b4f4cd9254b948e"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "6803c3173b4f4cd9254b948e",
+            "question": "Hwllo",
+            "answer": "Transcripts, etc.",
+            "categoryId": "6803c19370badc01f0d94d6e",
+            "createdAt": "2025-04-19T15:36:55.545Z",
+            "updatedAt": "2025-04-19T15:53:31.926Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:54:04.547Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/faqs/6803c3173b4f4cd9254b948e"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "FAQ deleted successfully"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T15:54:30.844Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/categories/6803c19370badc01f0d94d6e"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Category and associated FAQs deleted successfully"
+        }
+    }
+}
