@@ -114,6 +114,30 @@ export const ValidateMembersQuery = Joi.object({
 // ############ MEMBER Validation END ################
 
 
+// ############ CATEGORY Validation ################
+export const ValidateCategory = Joi.object({
+    name: Joi.string().trim().optional(),
+    description: Joi.string().trim().allow(null)
+}).unknown(false);
+
+
+// ############ CATEGORY Validation END ################
+
+// ############ FAQ Validation ################
+export const ValidateFaq = Joi.object({
+    question: Joi.string().trim().optional(),
+    answer: Joi.string().trim().optional(),
+    categoryId: Joi.string()
+        .regex(/^[0-9a-fA-F]{24}$/)
+        .optional()
+        .messages({
+            'string.pattern.base': 'categoryId must be a valid 24-character hexadecimal string',
+            'any.required': 'categoryId is required'
+        })
+}).unknown(false);
+
+// ############ FAQ Validation END ################
+
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {
