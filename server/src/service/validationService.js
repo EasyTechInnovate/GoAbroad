@@ -86,6 +86,7 @@ export const ValidateMemberCreate = Joi.object({
     password: Joi.string().min(6).required(),
     role: Joi.string().valid('ADMIN', 'EDITOR', 'VIEWER').required(),
     status: Joi.string().valid('ACTIVE', 'INACTIVE', 'INVITED').default('INVITED'),
+    bio: Joi.string().trim().allow(null),
     phone: Joi.string().trim().allow(null),
     address: Joi.string().trim().allow(null),
     profilePicture: Joi.string().allow(null)
@@ -98,9 +99,10 @@ export const ValidateMemberUpdate = Joi.object({
     phone: Joi.string().trim().allow(null),
     address: Joi.string().trim().allow(null),
     profilePicture: Joi.string().allow(null),
+    bio: Joi.string().trim().allow(null),
     role: Joi.string().valid('ADMIN', 'EDITOR', 'VIEWER').allow(null), // Allow for admin updates
     status: Joi.string().valid('ACTIVE', 'INACTIVE', 'INVITED').allow(null) // Allow for admin updates
-}).or('firstName', 'lastName', 'email', 'phone', 'address', 'profilePicture', 'role', 'status').unknown(false);
+}).or('firstName', 'lastName', 'email', 'phone', 'address', 'profilePicture', 'role', 'status', 'bio').unknown(false);
 
 
 export const ValidatePasswordUpdate = Joi.object({

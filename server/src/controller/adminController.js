@@ -49,18 +49,19 @@ export default {
     // Admin-only: Add new member
     addNewMember: async (req, res, next) => {
         try {
-            const { firstName, lastName, email, password, role, phone, address, profilePicture } = req.body;
 
             const validationResult = validateJoiSchema(ValidateMemberCreate, req.body);
             if (validationResult.error) {
                 return httpError(next, validationResult.error, req, 422);
             }
+            const { firstName, lastName, email, password, role, phone, address, profilePicture, bio } = validationResult.value;
 
             const hashedPassword = await quicker.hashPassword(password);
             const member = new Member({
                 firstName,
                 lastName,
                 email,
+                bio,
                 password: hashedPassword,
                 role,
                 status: 'INVITED',

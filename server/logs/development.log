@@ -6856,3 +6856,137 @@
         "SERVER_URL": "http://localhost:5000"
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-19T18:02:54.303Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-19T18:02:54.318Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-19T18:02:54.320Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T18:02:56.987Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/members?page=1&limit=10"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "members": [],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 0,
+                "totalItems": 0,
+                "itemsPerPage": 10
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T18:03:30.393Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/create-member"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Member invited successfully",
+            "memberId": "6803e5728260f400b293137d"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T18:03:34.210Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/members?page=1&limit=10"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "members": [
+                {
+                    "_id": "6803e5728260f400b293137d",
+                    "firstName": "Charlie",
+                    "lastName": "Wilson",
+                    "email": "cdminpdateharlie@example.com",
+                    "bio": "HEllo this is bio",
+                    "phone": null,
+                    "address": null,
+                    "role": "EDITOR",
+                    "status": "INVITED",
+                    "profilePicture": null,
+                    "createdDate": "2025-04-19T18:03:30.372Z",
+                    "updatedDate": "2025-04-19T18:03:30.372Z"
+                }
+            ],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 1,
+                "totalItems": 1,
+                "itemsPerPage": 10
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-19T18:04:14.807Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/update-profile/6803e5728260f400b293137d"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "6803e5728260f400b293137d",
+            "firstName": "Charlie",
+            "lastName": "Wilson",
+            "email": "cdminpdateharlie@example.com",
+            "bio": "NEW bio",
+            "phone": null,
+            "address": "456 Oak St",
+            "role": "EDITOR",
+            "status": "INVITED",
+            "profilePicture": null,
+            "createdDate": "2025-04-19T18:03:30.372Z",
+            "updatedDate": "2025-04-19T18:04:14.803Z"
+        }
+    }
+}

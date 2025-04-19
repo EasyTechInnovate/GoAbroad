@@ -18,6 +18,9 @@ const membersSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
+    bio: {
+        type: String
+    },
     phone: {
         type: String,
         trim: true,
