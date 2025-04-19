@@ -77,7 +77,7 @@ export default {
         }
     },
 
-    // Admin-only: Update any member's profile ,Not Self
+    // Admin-only: Update any member's profile (not self)
     updateProfileByAdmin: async (req, res, next) => {
         try {
             const admin = req.authenticatedMember;
@@ -90,11 +90,16 @@ export default {
             if (memberId === admin._id.toString()) {
                 return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE("CANNOT UPDATE YOURSELF")), req, 403);
             }
-            const updateData = req.body;
 
-            const validationResult = validateJoiSchema(ValidateMemberUpdate, updateData);
-            if (validationResult.error) {
-                return httpError(next, validationResult.error, req, 422);
+            const { value, error } = validateJoiSchema(ValidateMemberUpdate, req.body);
+            if (error) {
+                return httpError(next, error, req, 422);
+            }
+
+            const updateData = value;
+
+            if (updateData.password) {
+                return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE("Cannot update password via this endpoint")), req, 403);
             }
 
             const updatedMember = await Member.findByIdAndUpdate(
@@ -112,6 +117,7 @@ export default {
             httpError(next, err, req, 500);
         }
     },
+
 
     // Admin-only: Get all members 
     getAllMembers: async (req, res, next) => {
@@ -151,6 +157,41 @@ export default {
         }
     },
 
+    // Admin Only Delete Member
+    deleteMember: async (req, res, next) => {
+        try {
+            const { id } = req.params
+
+            if (id === req.authenticatedMember._id.toString()) {
+                return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE("Cannot Delete YourSelf")), req, 403);
+            }
+
+            const checkisMemberAdmin = await Member.findOne({
+                _id: id,
+                role: "ADMIN"
+            })
+
+
+
+            if (checkisMemberAdmin) {
+                return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE("Cannot Delete Admin Member")), req, 403);
+            }
+
+            const deleteMember = await Member.findByIdAndDelete(id)
+
+            console.log(deleteMember);
+
+
+            if (!deleteMember) {
+                return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE("Member Not Found for Delete")), req, 404);
+            }
+
+            httpResponse(req, res, 200, "Member Deleted Succefully", {})
+        } catch (error) {
+            httpError(next, error, req, 500)
+        }
+    },
+
     /**
    * **************************************************
    *                      ADMIN ONLY ROUTES END
@@ -180,15 +221,15 @@ export default {
     updateProfile: async (req, res, next) => {
         try {
             const memberId = req.authenticatedMember._id;
-            const updateData = req.body;
-
-            const validationResult = validateJoiSchema(ValidateMemberUpdate, updateData);
-            if (validationResult.error) {
-                return httpError(next, validationResult.error, req, 422);
+            const { value, error } = validateJoiSchema(ValidateMemberUpdate, req.body);
+            if (error) {
+                return httpError(next, error, req, 422);
             }
 
+            const updateData = value;
+
             // Prevent changes to restricted fields
-            const restrictedFields = ['email', 'password', 'role', 'status'];
+            const restrictedFields = ['password', 'role', 'status'];
             restrictedFields.forEach(field => {
                 if (updateData[field] !== undefined) {
                     return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE(`Cannot update ${field}`)), req, 403);

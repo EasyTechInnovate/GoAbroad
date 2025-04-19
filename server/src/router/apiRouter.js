@@ -40,6 +40,7 @@ router.route('/admin/auth/update-password').post(memberAccess, adminController.u
 router.route('/admin/create-member').post(adminOnly, adminController.addNewMember);
 router.route('/admin/update-profile/:id').put(adminOnly, adminController.updateProfileByAdmin);
 router.route('/admin/members').get(adminOnly, adminController.getAllMembers);
+router.route('/admin/members/:id').delete(adminOnly, adminController.deleteMember);
 
 
 router.route('/admin/self').get(memberAccess, adminController.getSelfData);
