@@ -17,15 +17,14 @@ const ProfilePage = () => {
         <SidebarInset>
           <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen} />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 md:gap-6 p-3 sm:p-4 md:p-5 bg-gray-50 overflow-x-hidden">
+          <div className="grid grid-cols-1 gap-3 p-2 sm:p-3 md:p-4 lg:p-5 bg-gray-50 overflow-x-hidden">
 
-            <div className="sm:col-span-2 lg:col-span-4">
-              <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 h-full">
+            <div className="col-span-1">
+              <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-5 h-full">
                 <div className="flex flex-col h-full">
-                  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                    {/* Profile Image */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="md:col-span-1">
-                      <div className="bg-white rounded-lg overflow-hidden h-[200px] sm:h-[250px] md:h-[300px] mx-auto max-w-[200px] md:max-w-full">
+                      <div className="bg-white rounded-lg overflow-hidden h-[180px] sm:h-[220px] md:h-[250px] lg:h-[300px] mx-auto max-w-[180px] sm:max-w-[220px] md:max-w-full">
                         <img
                           src="/profile-full.svg"
                           alt="Profile"
@@ -34,11 +33,10 @@ const ProfilePage = () => {
                       </div>
                     </div>
 
-                    {/* Program & Contact Details */}
                     <div className="md:col-span-2">
-                      <div className="mb-5 max-w-full sm:max-w-[250px]">
-                        <h2 className="text-lg font-semibold mb-4">Program Details</h2>
-                        <div className="space-y-5">
+                      <div className="mb-4 sm:mb-5">
+                        <h2 className="text-lg font-semibold mb-3">Program Details</h2>
+                        <div className="space-y-3 sm:space-y-4">
                           <DataField
                             icon={<BriefcaseBusiness className="w-5 h-5" fill='#145044' />}
                             label="Program"
@@ -52,9 +50,9 @@ const ProfilePage = () => {
                         </div>
                       </div>
 
-                      <div className="max-w-full sm:max-w-[250px]">
-                        <h2 className="text-lg font-semibold mb-4">Contact Details</h2>
-                        <div className="space-y-5">
+                      <div>
+                        <h2 className="text-lg font-semibold mb-3">Contact Details</h2>
+                        <div className="space-y-3 sm:space-y-4">
                           <DataField
                             icon={<PhoneIcon className="w-5 h-5" />}
                             label="Phone"
@@ -63,7 +61,7 @@ const ProfilePage = () => {
                           <DataField
                             icon={<MailIcon className="w-5 h-5" />}
                             label="E-mail"
-                            value="shreyrock420@gmail.com"
+                            value={<span className="break-all">shreyrock420@gmail.com</span>}
                           />
                         </div>
                       </div>
@@ -73,10 +71,9 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Personal Details Column */}
-            <div className="sm:col-span-1 lg:col-span-3">
+            <div className="col-span-1">
               <ProfileDetailsCard title="Personal Details">
-                <div className="space-y-5">
+                <div className="space-y-3 sm:space-y-4">
                   <DataField
                     icon={<CalendarIcon className="w-5 h-5" />}
                     label="Date of Birth"
@@ -91,7 +88,7 @@ const ProfilePage = () => {
                     icon={<LocateFixedIcon className="w-5 h-5" />}
                     label="Address"
                     value={
-                      <div>
+                      <div className="text-sm sm:text-base">
                         <div>11, Shrimali Society, Opps. Jain Temple</div>
                         <div>Ahmedabad</div>
                         <div>Gujarat</div>
@@ -109,11 +106,10 @@ const ProfilePage = () => {
               </ProfileDetailsCard>
             </div>
 
-            {/* College Details Column */}
-            <div className="sm:col-span-1 lg:col-span-5">
+            <div className="col-span-1">
               <ProfileDetailsCard title="College Details">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="col-span-1 space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="col-span-1 space-y-3 sm:space-y-4">
                     <DataField
                       icon={<GraduationCapIcon className="w-5 h-5" />}
                       label="Branch"
@@ -140,7 +136,7 @@ const ProfilePage = () => {
                       value="0"
                     />
                   </div>
-                  <div className="col-span-1 space-y-5">
+                  <div className="col-span-1 space-y-3 sm:space-y-4">
                     <DataField
                       icon={<GraduationCapIcon className="w-5 h-5" />}
                       label="Highest Degree"
@@ -166,17 +162,16 @@ const ProfilePage = () => {
               </ProfileDetailsCard>
             </div>
 
-            {/* GRE Section */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-4">
-              <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 h-full">
-                <h2 className="text-lg font-semibold mb-4 sm:mb-5">GRE</h2>
-                <div className="space-y-4 sm:space-y-5">
+            <div className="col-span-1">
+              <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-5 h-full">
+                <h2 className="text-lg font-semibold mb-3 sm:mb-4">GRE</h2>
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary-1 text-white p-1.5 rounded-md flex-shrink-0">
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">GRE Plan</div>
+                      <div>GRE Plan</div>
                       <div className="text-sm text-gray-500 truncate">15/08/2022</div>
                     </div>
                   </div>
@@ -186,7 +181,7 @@ const ProfilePage = () => {
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">GRE Date</div>
+                      <div>GRE Date</div>
                       <div className="text-sm text-gray-500 truncate">15/08/2022</div>
                     </div>
                   </div>
@@ -196,7 +191,7 @@ const ProfilePage = () => {
                       <ListBulletIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">GRE Score</div>
+                      <div>GRE Score</div>
                       <div className="grid grid-cols-3 gap-2 text-sm text-gray-500">
                         <div>
                           <div className="text-gray-500">Verbal</div>
@@ -219,7 +214,7 @@ const ProfilePage = () => {
                       <FileIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">GRE Scorecard</div>
+                      <div>GRE Scorecard</div>
                       <div className="text-sm text-gray-500 truncate">Yes</div>
                     </div>
                   </div>
@@ -229,7 +224,7 @@ const ProfilePage = () => {
                       <CalendarRangeIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">Retaking GRE</div>
+                      <div>Retaking GRE</div>
                       <div className="text-sm text-gray-500 truncate">Yet to decide</div>
                     </div>
                   </div>
@@ -237,17 +232,16 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* IELTS Section */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-4">
-              <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 h-full">
-                <h2 className="text-lg font-semibold mb-4 sm:mb-5">IELTS</h2>
-                <div className="space-y-4 sm:space-y-5">
+            <div className="col-span-1">
+              <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-5 h-full">
+                <h2 className="text-lg font-semibold mb-3 sm:mb-4">IELTS</h2>
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary-1 text-white p-1.5 rounded-md flex-shrink-0">
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">IELTS Plan</div>
+                      <div>IELTS Plan</div>
                       <div className="text-sm text-gray-500 truncate">13/10/2022</div>
                     </div>
                   </div>
@@ -257,7 +251,7 @@ const ProfilePage = () => {
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">IELTS Date</div>
+                      <div>IELTS Date</div>
                       <div className="text-sm text-gray-500 truncate">13/10/2022</div>
                     </div>
                   </div>
@@ -267,7 +261,7 @@ const ProfilePage = () => {
                       <ListBulletIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">IELTS Score</div>
+                      <div>IELTS Score</div>
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div>
                           <div className="text-gray-500">Reading</div>
@@ -294,7 +288,7 @@ const ProfilePage = () => {
                       <CalendarRangeIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">Retaking IELTS</div>
+                      <div>Retaking IELTS</div>
                       <div className="text-sm text-gray-500 truncate">Not set</div>
                     </div>
                   </div>
@@ -302,18 +296,16 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            
-            {/* VISA Section */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-4">
-              <div className="bg-[#f0f7f5] rounded-lg shadow-sm p-4 sm:p-5 border border-primary/60">
-                <h2 className="text-lg font-semibold mb-4 sm:mb-5">VISA</h2>
-                <div className="space-y-4 sm:space-y-5">
+            <div className="col-span-1">
+              <div className="bg-[#f0f7f5] rounded-lg shadow-sm p-3 sm:p-4 md:p-5 border border-primary/60">
+                <h2 className="text-lg font-semibold mb-3 sm:mb-4">VISA</h2>
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary-1 text-white p-1.5 rounded-md flex-shrink-0">
                       <LocateFixedIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">Countries planning to apply</div>
+                      <div>Countries planning to apply</div>
                       <div className="mt-1">
                         <span className="bg-[#e9eeee] text-gray-700 px-2 py-1 rounded text-sm">USA</span>
                       </div>
@@ -325,7 +317,7 @@ const ProfilePage = () => {
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">Visa Interview Date</div>
+                      <div>Visa Interview Date</div>
                       <div className="text-sm text-gray-500 truncate">13/10/2022</div>
                     </div>
                   </div>
@@ -335,7 +327,7 @@ const ProfilePage = () => {
                       <LocateFixedIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">Visa Interview Location</div>
+                      <div>Visa Interview Location</div>
                       <div className="text-sm text-gray-500 truncate">Not Set</div>
                     </div>
                   </div>
@@ -343,17 +335,16 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            {/* TOEFL Section */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-4">
-              <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 h-full">
-                <h2 className="text-lg font-semibold mb-4 sm:mb-5">TOEFL</h2>
-                <div className="space-y-4 sm:space-y-5">
+            <div className="col-span-1">
+              <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-5 h-full">
+                <h2 className="text-lg font-semibold mb-3 sm:mb-4">TOEFL</h2>
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="bg-primary-1 text-white p-1.5 rounded-md flex-shrink-0">
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">TOEFL Plan</div>
+                      <div>TOEFL Plan</div>
                       <div className="text-sm text-gray-500 truncate">13/10/2022</div>
                     </div>
                   </div>
@@ -363,7 +354,7 @@ const ProfilePage = () => {
                       <CalendarIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">TOEFL Date</div>
+                      <div>TOEFL Date</div>
                       <div className="text-sm text-gray-500 truncate">13/10/2022</div>
                     </div>
                   </div>
@@ -373,7 +364,7 @@ const ProfilePage = () => {
                       <ListBulletIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">TOEFL Score</div>
+                      <div>TOEFL Score</div>
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div>
                           <div className="text-gray-500">Reading</div>
@@ -396,14 +387,13 @@ const ProfilePage = () => {
                       <CalendarRangeIcon className="w-5 h-5 stroke-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="">Retaking TOEFL</div>
+                      <div>Retaking TOEFL</div>
                       <div className="text-sm text-gray-500 truncate">Not set</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </SidebarInset>
       </div>

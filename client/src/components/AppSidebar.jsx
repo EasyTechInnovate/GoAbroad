@@ -29,7 +29,7 @@ const AppSidebar = ({ isSidebarOpen }) => {
   const menuItems = [
     { id: 1, name: 'Profile', icon: <User className="h-5 w-5" />, link: '/dashboard/profile' },
     { id: 2, name: 'Dashboard', icon: <PieChartIcon className="h-5 w-5" />, link: '/dashboard' },
-    { id: 3, name: 'Order', icon: <ShoppingCart className="h-5 w-5" />, link: '/dashboard/order' },
+    { id: 3, name: 'Timeline', icon: <ShoppingCart className="h-5 w-5" />, link: '/dashboard/order' },
     { id: 4, name: 'Products', icon: <Package2 className="h-5 w-5" />, link: '/dashboard/products' },
     { id: 5, name: 'Sales Report', icon: <LineChart className="h-5 w-5" />, link: '/dashboard/sales-report' },
     { id: 6, name: 'Messages', icon: <MessageSquare className="h-5 w-5" />, link: '/dashboard/messages' },
