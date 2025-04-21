@@ -2,9 +2,42 @@ import { SidebarTrigger } from './ui/sidebar'
 import { Bell, ChevronDown, Menu, Search } from 'lucide-react'
 import { Avatar } from '@radix-ui/react-avatar'
 import PropTypes from 'prop-types'
+import { useLocation } from 'react-router-dom'
 
 const SidebarHeader = ({isOpen,setIsOpen}) => {
-
+  const location = useLocation();
+  
+  const getPageTitle = () => {
+    const path = location.pathname;
+    
+    if (path === '/dashboard') return 'Dashboard';
+    if (path === '/dashboard/profile') return 'Profile';
+    if (path === '/dashboard/eduloan') return 'Education Loan';
+    if (path === '/dashboard/order') return 'Timeline';
+    if (path === '/dashboard/products') return 'Products';
+    if (path === '/dashboard/faq') return 'FAQs';
+    if (path === '/dashboard/documents') return 'Doc Manager';
+    if (path === '/dashboard/sales-report') return 'Sales Report';
+    if (path === '/dashboard/messages') return 'Messages';
+    if (path === '/dashboard/settings') return 'Settings';
+    
+    if (path.startsWith('/admin')) {
+      const subPath = path.replace('/admin/', '');
+      if (path === '/admin') return 'Admin Dashboard';
+      if (subPath === 'students') return 'Student Management';
+      if (subPath === 'tasks') return 'Task Management';
+      if (subPath === 'applications') return 'Applications & Essays';
+      if (subPath === 'universities') return 'University Management';
+      if (subPath === 'messages') return 'Communication';
+      if (subPath === 'forms') return 'Questionnaires';
+      if (subPath === 'documents') return 'Document Manager';
+      if (subPath === 'faqs') return 'FAQs & Knowledge Base';
+      if (subPath === 'activities') return 'Activities';
+      if (subPath === 'settings') return 'Settings';
+    }
+    
+    return 'Go Abroad';
+  };
   return (
     <header className="bg-white py-4 px-6 flex justify-between items-center border-b border-gray-200">
             <div className="flex items-center gap-2">
@@ -13,7 +46,7 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
                   <Menu className="h-5 w-5" />
                 </SidebarTrigger>
               </div>
-              <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+              <h1 className="text-2xl font-semibold text-gray-800">{getPageTitle()}</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative hidden sm:block">

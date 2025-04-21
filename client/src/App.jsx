@@ -17,14 +17,28 @@ import AdminDashboard from './Pages/Admin/AdminDashboard';
 import ProfilePage from './Pages/Profile';
 import Index from './Pages/Admin/Index';
 import Students from './Pages/Admin/Students';
+import SignUp from './Pages/Auth/SignUp';
+import Login from './Pages/Auth/Login';
+import ForgotPassword from './Pages/Auth/ForgotPassword';
+import EduLoan from './Pages/EduLoan';
+import FAQ from './Pages/FAQ';
+import DocManager from './Pages/DocManager';
+import UniversityManagement from './Pages/UniversityManagement';
 
 const App = () => {
   return (
 
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dashboard/profile" element={<ProfilePage />} />
+      <Route path="/dashboard/eduloan" element={<EduLoan />} />
+      <Route path="/dashboard/faq" element={<FAQ />} />
+      <Route path="/dashboard/documents" element={<DocManager />} />
+      <Route path="/dashboard/universities" element={<UniversityManagement />} />
       
       <Route path="/admin" element={<Index />}>
         <Route index element={<AdminDashboard />} />
