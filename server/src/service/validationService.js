@@ -144,6 +144,99 @@ export const ValidateFaq = Joi.object({
 
 // ############ FAQ Validation END ################
 
+
+// ############ LOAN Validation ################
+export const ValidateLoanApplication = Joi.object({
+    name: Joi.string().trim().required(),
+    phoneNumber: Joi.string().trim().required(),
+    email: Joi.string().email().required(),
+    pinCode: Joi.string().trim().required(),
+    address: Joi.string().trim().required(),
+    admissionTerm: Joi.string().trim().required(),
+    admissionStatus: Joi.string().trim().required(),
+    coBorrower: Joi.object({
+        name: Joi.string().trim().required(),
+        universitiesReceivedAdmitFrom: Joi.array().items(Joi.string().trim()).required()
+    }).required(),
+
+}).unknown(false);
+
+export const ValidateLoanQuery = Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(10),
+    status: Joi.string().valid('PENDING', 'APPROVED', 'REJECTED').optional(),
+    search: Joi.string().trim().optional(),
+    admissionTerm: Joi.string().trim().optional(),
+    admissionStatus: Joi.string().trim().optional(),
+}).unknown(false);
+// ############ LOAN Validation END ################
+
+
+// ############ UNIVERSITY Validation ################
+export const ValidateUniversityCreate = Joi.object({
+    name: Joi.string().trim().required(),
+    logo: Joi.string().trim().uri().allow(null),
+    banner: Joi.string().trim().uri().allow(null),
+    description: Joi.string().trim().allow(null),
+    website_url: Joi.string().trim().uri().allow(null),
+    location: Joi.string().trim().allow(null),
+    university_type: Joi.string().trim().allow(null),
+    address: Joi.string().trim().allow(null),
+    program: Joi.string().trim().required(),
+    university_category: Joi.string().trim().allow(null),
+    ranking: Joi.object({
+        international: Joi.number().min(0).allow(null),
+        national: Joi.number().min(0).allow(null)
+    }).allow(null),
+    acceptance_rate: Joi.number().min(0).max(100).allow(null),
+    living_cost_per_year: Joi.number().min(0).allow(null),
+    tuition_fees_per_year: Joi.number().min(0).allow(null),
+    application_fee: Joi.number().min(0).allow(null),
+    application_deadline: Joi.date().allow(null)
+}).unknown(false);
+
+export const ValidateUniversityUpdate = Joi.object({
+    name: Joi.string().trim(),
+    logo: Joi.string().trim().uri().allow(null),
+    banner: Joi.string().trim().uri().allow(null),
+    description: Joi.string().trim().allow(null),
+    website_url: Joi.string().trim().uri().allow(null),
+    location: Joi.string().trim().allow(null),
+    university_type: Joi.string().trim().allow(null),
+    address: Joi.string().trim().allow(null),
+    program: Joi.string().trim(),
+    university_category: Joi.string().trim().allow(null),
+    ranking: Joi.object({
+        international: Joi.number().min(0).allow(null),
+        national: Joi.number().min(0).allow(null)
+    }).allow(null),
+    acceptance_rate: Joi.number().min(0).max(100).allow(null),
+    living_cost_per_year: Joi.number().min(0).allow(null),
+    tuition_fees_per_year: Joi.number().min(0).allow(null),
+    application_fee: Joi.number().min(0).allow(null),
+    application_deadline: Joi.date().allow(null)
+}).or('name', 'logo', 'banner', 'description', 'website_url', 'location', 'university_type', 'address', 'program', 'university_category', 'ranking', 'acceptance_rate', 'living_cost_per_year', 'tuition_fees_per_year', 'application_fee', 'application_deadline').unknown(false);
+
+export const ValidateUniversityQuery = Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(10),
+    name: Joi.string().trim().optional(),
+    program: Joi.string().trim().optional(),
+    university_type: Joi.string().trim().optional(),
+    university_category: Joi.string().trim().optional(),
+    min_acceptance_rate: Joi.number().min(0).max(100).optional(),
+    max_acceptance_rate: Joi.number().min(0).max(100).optional(),
+    min_living_cost_per_year: Joi.number().min(0).optional(),
+    max_living_cost_per_year: Joi.number().min(0).optional(),
+    min_tuition_fees_per_year: Joi.number().min(0).optional(),
+    max_tuition_fees_per_year: Joi.number().min(0).optional(),
+    min_application_fee: Joi.number().min(0).optional(),
+    max_application_fee: Joi.number().min(0).optional(),
+    status: Joi.string().optional(), // If status is added later
+    search: Joi.string().trim().optional()
+}).unknown(false);
+// ############ UNIVERSITY Validation END ################
+
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {

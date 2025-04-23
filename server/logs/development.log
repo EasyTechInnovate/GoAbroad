@@ -6990,3 +6990,1072 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:18:50.095Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:18:50.103Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:18:50.106Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:19:17.217Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NTQyODc1NywiZXhwIjoxNzQ1NTE1MTU3fQ.L2DkIOMePCoX-n843xYc4R3hhsTr92gkiQmZ99B511Y",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "profession": null,
+                    "address": "123 Main St, City"
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "status": "PENDING",
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": "+1234567890",
+                "isFeePaid": true,
+                "isVerified": true,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-17T11:47:19.325Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:21:05.150Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:21:05.158Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:21:05.160Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:21:09.302Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/loans/apply"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Loan application submitted successfully",
+            "loanId": "6809218506851ec826df6593"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:21:33.498Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "_id": "68013a01d2da4661a44bb909",
+                "firstName": "Charlie",
+                "lastName": "Wilson",
+                "email": "admin@example.com",
+                "phone": "+1234567890",
+                "address": "HELLO",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "profilePicture": null,
+                "createdDate": "2025-04-17T17:27:29.619Z",
+                "updatedDate": "2025-04-17T17:42:21.745Z"
+            },
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzYTAxZDJkYTQ2NjFhNDRiYjkwOSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDU0Mjg4OTMsImV4cCI6MTc0NTUxNTI5M30.JMmvNEs2OAUFn2GvS5TTQRLhrdWLJv8Q4Xn6H50rVac"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:25:08.887Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:25:08.898Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:25:08.899Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:25:40.127Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:25:40.135Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:25:40.136Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:25:42.541Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:25:42.548Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:25:42.549Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:25:47.946Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/loans?page=1&limit=10&status=PENDING&admissionTerm=Fall%2723&search=Harvard"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "loans": [
+                {
+                    "coBorrower": {
+                        "name": "Jane Doe",
+                        "universitiesReceivedAdmitFrom": [
+                            "Harvard",
+                            "Stanford"
+                        ]
+                    },
+                    "_id": "6809218506851ec826df6593",
+                    "name": "John Doe",
+                    "phoneNumber": "+1234567890",
+                    "email": "john.doe@example.com",
+                    "pinCode": "123456",
+                    "address": "123 Main St",
+                    "admissionTerm": "Fall'23",
+                    "admissionStatus": "Accepted",
+                    "appliedBy": {
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "profession": null,
+                            "address": "123 Main St, City"
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreBoard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "_id": "67fff64d9ba0b759cb6dfc1f",
+                        "email": "hello@gmail.com",
+                        "phoneNumber": "+1234567890",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-16T18:26:21.624Z",
+                        "updatedAt": "2025-04-17T11:47:19.325Z"
+                    },
+                    "status": "PENDING",
+                    "appliedDate": "2025-04-23T17:21:09.283Z",
+                    "createdAt": "2025-04-23T17:21:09.292Z",
+                    "updatedAt": "2025-04-23T17:21:09.292Z"
+                }
+            ],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 1,
+                "totalItems": 1,
+                "itemsPerPage": 10
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:27:57.842Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:27:57.852Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:27:57.853Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:32:33.879Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:32:33.887Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:32:33.888Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:41:14.552Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:41:14.574Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:41:14.576Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:41:17.149Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:41:17.157Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:41:17.158Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:42:00.372Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:42:00.380Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:42:00.381Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:43:38.823Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:43:38.843Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:43:38.845Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:43:42.700Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:43:42.708Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:43:42.709Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:44:01.469Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:44:01.475Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:44:01.476Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:44:07.962Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:44:07.970Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:44:07.971Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:44:32.825Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:44:32.833Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:44:32.835Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:44:47.803Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:44:47.811Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:44:47.813Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:44:50.219Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:44:50.226Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:44:50.227Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:45:03.292Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:45:03.299Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:45:03.300Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:45:45.301Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:45:45.309Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:45:45.311Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:46:55.491Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:46:55.499Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:46:55.500Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:47:27.089Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:47:27.101Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:47:27.103Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-23T17:47:32.255Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-23T17:47:32.263Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-23T17:47:32.264Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:49:06.436Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/universities"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "University created successfully",
+            "universityId": "68092812e76d46fe9285d107"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:50:10.318Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/universities?page=1&limit=10&name=MIT&program=Law&min_acceptance_rate=5&max_acceptance_rate=10&search=law"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "universities": [
+                {
+                    "ranking": {
+                        "international": null,
+                        "national": null
+                    },
+                    "_id": "68092812e76d46fe9285d107",
+                    "name": "MIT",
+                    "logo": null,
+                    "banner": null,
+                    "description": "Top law school",
+                    "website_url": null,
+                    "location": null,
+                    "university_type": "Private",
+                    "address": null,
+                    "program": "Law",
+                    "university_category": null,
+                    "acceptance_rate": 7.9,
+                    "living_cost_per_year": 20000,
+                    "tuition_fees_per_year": 55000,
+                    "application_fee": 75,
+                    "application_deadline": null,
+                    "createdAt": "2025-04-23T17:49:06.427Z",
+                    "updatedAt": "2025-04-23T17:49:06.427Z"
+                }
+            ],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 1,
+                "totalItems": 1,
+                "itemsPerPage": 10
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:51:51.069Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/universities/68092812e76d46fe9285d107"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "ranking": {
+                "international": null,
+                "national": null
+            },
+            "_id": "68092812e76d46fe9285d107",
+            "name": "MIT",
+            "logo": null,
+            "banner": null,
+            "description": "Top law school",
+            "website_url": null,
+            "location": null,
+            "university_type": "Private",
+            "address": null,
+            "program": "Law",
+            "university_category": null,
+            "acceptance_rate": 7.9,
+            "living_cost_per_year": 20000,
+            "tuition_fees_per_year": 55000,
+            "application_fee": 75,
+            "application_deadline": null,
+            "createdAt": "2025-04-23T17:49:06.427Z",
+            "updatedAt": "2025-04-23T17:49:06.427Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:53:18.415Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/universities/68092812e76d46fe9285d107"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "ranking": {
+                "international": 100,
+                "national": 50
+            },
+            "_id": "68092812e76d46fe9285d107",
+            "name": "MIT",
+            "logo": null,
+            "banner": null,
+            "description": "Top law school",
+            "website_url": null,
+            "location": null,
+            "university_type": "Private",
+            "address": null,
+            "program": "Law",
+            "university_category": null,
+            "acceptance_rate": 7.9,
+            "living_cost_per_year": 20000,
+            "tuition_fees_per_year": 56000,
+            "application_fee": 75,
+            "application_deadline": null,
+            "createdAt": "2025-04-23T17:49:06.427Z",
+            "updatedAt": "2025-04-23T17:53:18.389Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:53:30.998Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/universities/68092812e76d46fe9285d107"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "ranking": {
+                "international": 100,
+                "national": 50
+            },
+            "_id": "68092812e76d46fe9285d107",
+            "name": "MIT",
+            "logo": null,
+            "banner": null,
+            "description": "Top law school",
+            "website_url": null,
+            "location": null,
+            "university_type": "Private",
+            "address": null,
+            "program": "Law",
+            "university_category": null,
+            "acceptance_rate": 7.9,
+            "living_cost_per_year": 20000,
+            "tuition_fees_per_year": 56000,
+            "application_fee": 75,
+            "application_deadline": null,
+            "createdAt": "2025-04-23T17:49:06.427Z",
+            "updatedAt": "2025-04-23T17:53:18.389Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:56:00.313Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NTQzMDk2MCwiZXhwIjoxNzQ1NTE3MzYwfQ.MCW2GjU2vA4Lhv5sYgh2R_Q06HSKKHY-9bFnaaqjK1E",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "profession": null,
+                    "address": "123 Main St, City"
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "status": "PENDING",
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": "+1234567890",
+                "isFeePaid": true,
+                "isVerified": true,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-17T11:47:19.325Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-23T17:56:23.588Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/universities/68092812e76d46fe9285d107"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "ranking": {
+                "international": 100,
+                "national": 50
+            },
+            "_id": "68092812e76d46fe9285d107",
+            "name": "MIT",
+            "logo": null,
+            "banner": null,
+            "description": "Top law school",
+            "website_url": null,
+            "location": null,
+            "university_type": "Private",
+            "address": null,
+            "program": "Law",
+            "university_category": null,
+            "acceptance_rate": 7.9,
+            "living_cost_per_year": 20000,
+            "tuition_fees_per_year": 56000,
+            "application_fee": 75,
+            "application_deadline": null,
+            "createdAt": "2025-04-23T17:49:06.427Z",
+            "updatedAt": "2025-04-23T17:53:18.389Z"
+        }
+    }
+}
