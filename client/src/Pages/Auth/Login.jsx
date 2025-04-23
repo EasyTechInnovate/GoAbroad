@@ -1,14 +1,30 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { loginUser } from '@/services/api.services';
+import { setAuth } from '@/lib/auth';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  // Check for success message from signup
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Clear the message from history so it doesn't show up again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,13 +32,58 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear any errors when user starts typing
+    if (apiError) {
+      setApiError('');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login submitted:', formData);
-
-};
+    
+    // Reset errors
+    setApiError('');
+    
+    try {
+      setIsLoading(true);
+      
+      const userData = {
+        email: formData.email,
+        password: formData.password
+      };
+      
+      const response = await loginUser(userData);
+      
+      // Handle successful login
+      if (response.success) {
+        // Store authentication data including user details and token
+        setAuth({
+          accessToken: response.data.accessToken,
+          user: response.data.user
+        });
+        
+        // Redirect to appropriate dashboard based on user role
+        const userRole = response.data.user.role;
+        if (userRole === 'ADMIN' || userRole === 'EDITOR' || userRole === 'VIEWER') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      
+      // Handle API errors
+      if (error.response && error.response.data) {
+        setApiError(error.response.data.message || 'Invalid email or password. Please try again.');
+      } else {
+        setApiError('Network error. Please check your connection and try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-screen flex flex-col md:flex-row">
@@ -36,6 +97,18 @@ const Login = () => {
 
           <h1 className="text-2xl font-semibold mb-2">Login</h1>
           <p className="text-gray-600 mb-8">Don&apos;t have an account? <Link to="/signup" className="text-primary-1 hover:underline">Sign Up</Link></p>
+
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-600 rounded-md text-sm">
+              {successMessage}
+            </div>
+          )}
+
+          {apiError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+              {apiError}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
@@ -85,8 +158,9 @@ const Login = () => {
             <Button 
               type="submit" 
               className="w-full cursor-pointer bg-primary-1 hover:bg-primary-1/90 text-white py-2 rounded-md transition-colors"
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
 

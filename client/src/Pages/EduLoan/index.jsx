@@ -5,7 +5,7 @@ import AppSidebar from '../../components/AppSidebar';
 import { SidebarProvider, SidebarInset } from '../../components/ui/sidebar';
 
 const EduLoan = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',

@@ -5,7 +5,7 @@ import AppSidebar from '../../components/AppSidebar';
 import SidebarHeader from '../../components/SidebarHeader';
 
 const DocManager = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openCategories, setOpenCategories] = useState({
     'category1': true, 
   });

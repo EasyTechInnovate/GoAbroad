@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { registerUser } from '@/services/api.services';
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
   const [formData, setFormData] = useState({
-    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -21,22 +24,62 @@ const SignUp = () => {
       [name]: value
     }));
     
-    // Clear password error when user starts typing in either password field
+    // Clear errors when user starts typing
     if (name === 'password' || name === 'confirmPassword') {
       setPasswordError('');
     }
+    if (apiError) {
+      setApiError('');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check if passwords match
+    // Reset errors
+    setPasswordError('');
+    setApiError('');
+    
+    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match');
       return;
     }
     
-    console.log('Sign Up submitted:', formData);
+    // Validate password complexity
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setPasswordError('Password must be at least 8 characters with a number and a special character');
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      
+      const userData = {
+        email: formData.email,
+        password: formData.password
+      };
+      
+      const response = await registerUser(userData);
+      
+      // Handle successful signup
+      if (response.success) {
+        // Redirect to login with success message or directly to dashboard if auto-login
+        navigate('/login', { state: { message: 'Account created successfully! Please log in.' } });
+      }
+    } catch (error) {
+      console.error('Signup failed:', error);
+      
+      // Handle API errors
+      if (error.response && error.response.data) {
+        setApiError(error.response.data.message || 'Signup failed. Please try again.');
+      } else {
+        setApiError('Network error. Please check your connection and try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,10 +96,13 @@ const SignUp = () => {
           <h1 className="text-2xl font-semibold mb-2">Sign Up</h1>
           <p className="text-gray-600 mb-8">Already have an account? <Link to="/login" className="text-primary-1 hover:underline">Login</Link></p>
 
+          {apiError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+              {apiError}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-           
-
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
@@ -136,8 +182,9 @@ const SignUp = () => {
             <Button 
               type="submit" 
               className="w-full cursor-pointer bg-primary-1 hover:bg-primary-1/90 text-white py-2 rounded-md transition-colors"
+              disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? 'Signing Up...' : 'Sign Up'}
             </Button>
           </form>
 

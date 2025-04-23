@@ -16,6 +16,9 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
     if (path === '/dashboard/order') return 'Timeline';
     if (path === '/dashboard/products') return 'Products';
     if (path === '/dashboard/faq') return 'FAQs';
+    if (path === '/dashboard/chat') return 'Messages';
+    if (path === '/dashboard/timeline') return 'Timeline';
+    if (path === '/dashboard/checklist') return 'CheckList';
     if (path === '/dashboard/documents') return 'Doc Manager';
     if (path === '/dashboard/sales-report') return 'Sales Report';
     if (path === '/dashboard/messages') return 'Messages';

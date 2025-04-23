@@ -1,9 +1,10 @@
 import { useLocation } from 'react-router-dom'; // Import useLocation
 import {
-  ShoppingCart, User, Package2,
+   User, Home,
    MessageSquare, Settings, LogOut,
-  PieChartIcon, GraduationCap, HelpCircle,
-  FileText, School
+  HelpCircle,
+   FileText, School, ListChecks,
+   CheckSquare, BriefcaseBusiness
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -28,15 +29,15 @@ const AppSidebar = ({ isSidebarOpen }) => {
   };
 
   const menuItems = [
+    { id: 2, name: 'Dashboard', icon: <Home className="h-5 w-5" />, link: '/dashboard' },
     { id: 1, name: 'Profile', icon: <User className="h-5 w-5" />, link: '/dashboard/profile' },
-    { id: 2, name: 'Dashboard', icon: <PieChartIcon className="h-5 w-5" />, link: '/dashboard' },
-    { id: 3, name: 'Timeline', icon: <ShoppingCart className="h-5 w-5" />, link: '/dashboard/order' },
-    { id: 4, name: 'Products', icon: <Package2 className="h-5 w-5" />, link: '/dashboard/products' },
+    { id: 3, name: 'Timeline', icon: <ListChecks className="h-5 w-5" />, link: '/dashboard/timeline' },
+    { id: 4, name: 'Checklist', icon: <CheckSquare className="h-5 w-5" />, link: '/dashboard/checklist' },
     { id: 5, name: 'Universities', icon: <School className="h-5 w-5" />, link: '/dashboard/universities' },
-    { id: 6, name: 'Edu Loan', icon: <GraduationCap className="h-5 w-5" />, link: '/dashboard/eduloan' },
+    { id: 6, name: 'Edu Loan', icon: <BriefcaseBusiness className="h-5 w-5" />, link: '/dashboard/edu-loan' },
     { id: 7, name: 'FAQs', icon: <HelpCircle className="h-5 w-5" />, link: '/dashboard/faq' },
     { id: 8, name: 'Documents', icon: <FileText className="h-5 w-5" />, link: '/dashboard/documents' },
-    { id: 10, name: 'Messages', icon: <MessageSquare className="h-5 w-5" />, link: '/dashboard/messages' },
+    { id: 10, name: 'Messages', icon: <MessageSquare className="h-5 w-5" />, link: '/dashboard/chat' },
     { id: 11, name: 'Settings', icon: <Settings className="h-5 w-5" />, link: '/dashboard/settings' },
     { id: 12, name: 'Sign Out', icon: <LogOut className="h-5 w-5" />, action: handleLogout },
   ];

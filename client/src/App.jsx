@@ -24,6 +24,9 @@ import EduLoan from './Pages/EduLoan';
 import FAQ from './Pages/FAQ';
 import DocManager from './Pages/DocManager';
 import UniversityManagement from './Pages/UniversityManagement';
+import Checklist from './Pages/Checklist';
+import StudentTasks from './Pages/Tasks';
+import Chat from './Pages/Messages';
 
 const App = () => {
   return (
@@ -35,8 +38,11 @@ const App = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dashboard/profile" element={<ProfilePage />} />
-      <Route path="/dashboard/eduloan" element={<EduLoan />} />
+      <Route path="/dashboard/timeline" element={<StudentTasks />} />
+      <Route path="/dashboard/chat" element={<Chat />} />
       <Route path="/dashboard/faq" element={<FAQ />} />
+      <Route path="/dashboard/edu-loan" element={<EduLoan />} />
+      <Route path="/dashboard/checklist" element={<Checklist />} />
       <Route path="/dashboard/documents" element={<DocManager />} />
       <Route path="/dashboard/universities" element={<UniversityManagement />} />
       

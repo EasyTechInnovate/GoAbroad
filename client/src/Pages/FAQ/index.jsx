@@ -5,7 +5,7 @@ import AppSidebar from '../../components/AppSidebar';
 import SidebarHeader from '../../components/SidebarHeader';
 
 const FAQ = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [faqData, setFaqData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

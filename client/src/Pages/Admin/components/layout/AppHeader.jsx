@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Bell, 
   Search, 
   User,
   Calendar,
-  ChevronDown
+  ChevronDown,
+  LogOut,
+  Settings
 } from 'lucide-react';
 import { 
   DropdownMenu,
@@ -17,10 +20,31 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { getUser, getUserInitials, logout } from '@/lib/auth';
 
 export function AppHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userInitials, setUserInitials] = useState('');
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Get user data from auth
+    const userData = getUser();
+    if (userData) {
+      setUser(userData);
+      setUserInitials(getUserInitials());
+    }
+  }, []);
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
+  // Get email for display
+  const userEmail = user?.email || '';
+  
   return (
     <header className="h-16 border-b bg-background/95 backdrop-blur flex items-center px-4 sticky top-0 z-30 w-full">
       <div className="flex items-center justify-between w-full">
@@ -82,20 +106,31 @@ export function AppHeader() {
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="" />
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarFallback>{userInitials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                <div className="flex flex-col">
+                  <span className="font-medium">{userEmail}</span>
+                  <span className="text-xs text-muted-foreground">{user?.role || 'User'}</span>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
