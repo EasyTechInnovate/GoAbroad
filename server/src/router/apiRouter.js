@@ -1,16 +1,16 @@
 import { Router } from 'express'
-import apiController from '../controller/apiController.js'
-import authController from '../controller/authController.js'
-import paymentController from '../controller/paymentController.js'
-import authentication, { paymentMiddleWare } from '../middleware/authentication.js'
-import userController from '../controller/userController.js'
-import { uploadFiles } from '../middleware/multerHandler.js'
-import adminController from '../controller/adminController.js'
-import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
-import faqController from '../controller/faqController.js'
-import categoryController from '../controller/categoryController.js'
 import loanController from '../controller/Loan/loanController.js'
 import universityController from '../controller/University/universityController.js'
+import apiController from '../controller/apiController/apiController.js'
+import { uploadFiles } from '../middleware/multerHandler.js'
+import authController from '../controller/authController/authController.js'
+import authentication, { paymentMiddleWare } from '../middleware/authentication.js'
+import adminController from '../controller/adminController/adminController.js'
+import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
+import categoryController from '../controller/faqController/categoryController.js'
+import faqController from '../controller/faqController/faqController.js'
+import paymentController from '../controller/paymentController/paymentController.js'
+import studentController from '../controller/studentController/studentController.js'
 
 const router = Router()
 
@@ -31,8 +31,8 @@ router.route('/payment/verify').post(paymentMiddleWare, paymentController.verify
 
 
 // user routes
-router.route('/user/self').get(authentication, userController.getSelfData);
-router.route('/user/profile').put(authentication, userController.updateProfile);
+router.route('/user/self').get(authentication, studentController.getSelfData);
+router.route('/user/profile').put(authentication, studentController.updateProfile);
 
 
 // Admins route

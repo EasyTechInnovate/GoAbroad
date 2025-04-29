@@ -18,7 +18,16 @@ export const ValidateProfileUpdate = Joi.object({
         program: Joi.string().allow(null),
         validity: Joi.date().allow(null)
     }).allow(null),
-    phoneNumber: Joi.string().allow(null),
+    phoneNumber: Joi.string()
+  .pattern(/^\+([1-9]{1}[0-9]{1,2})\d{10}$/)
+  .required()
+  .trim()
+  .messages({
+    'string.pattern.base': 'Phone number must start with a country code (e.g., +918388656625)',
+    'string.empty': 'Phone number is required',
+    'any.required': 'Phone number is required',
+  }),
+
     personalDetails: Joi.object({
         dob: Joi.date().allow(null),
         gender: Joi.string().valid('MALE', 'FEMALE', 'OTHER').allow(null),
@@ -73,7 +82,7 @@ export const ValidateProfileUpdate = Joi.object({
         visaInterviewDate: Joi.date().allow(null),
         visaInterviewLocation: Joi.string().allow(null)
     }).allow(null)
-}).unknown(false);
+})
 // ############ PROFILE Validation END ################
 
 

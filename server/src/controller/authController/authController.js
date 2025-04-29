@@ -1,10 +1,10 @@
-import httpResponse from '../util/httpResponse.js';
-import responseMessage from '../constant/responseMessage.js';
-import httpError from '../util/httpError.js';
-import quicker from '../util/quicker.js';
-import { validateJoiSchema, ValidateLogin, ValidateSignup } from '../service/validationService.js';
-import config from '../config/config.js';
-import Student from '../model/studentModel.js';
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpError from '../../util/httpError.js';
+import quicker from '../../util/quicker.js';
+import { validateJoiSchema, ValidateLogin, ValidateSignup } from '../../service/validationService.js';
+import config from '../../config/config.js';
+import Student from '../../model/studentModel.js';
 
 export default {
     login: async (req, res, next) => {

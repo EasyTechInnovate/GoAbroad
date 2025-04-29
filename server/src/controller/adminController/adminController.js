@@ -1,10 +1,10 @@
-import httpResponse from '../util/httpResponse.js';
-import responseMessage from '../constant/responseMessage.js';
-import httpError from '../util/httpError.js';
-import { ValidateMemberCreate, ValidateMemberUpdate, ValidatePasswordUpdate, ValidateLogin, validateJoiSchema, ValidateMembersQuery } from '../service/validationService.js';
-import quicker from '../util/quicker.js';
-import config from '../config/config.js';
-import Member from "../model/membersModel.js"
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpError from '../../util/httpError.js';
+import { ValidateMemberCreate, ValidateMemberUpdate, ValidatePasswordUpdate, ValidateLogin, validateJoiSchema, ValidateMembersQuery } from '../../service/validationService.js';
+import quicker from '../../util/quicker.js';
+import config from '../../config/config.js';
+import Member from "../../model/membersModel.js"
 
 export default {
     // All members: Login with cookie

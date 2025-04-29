@@ -1,8 +1,8 @@
-import httpResponse from '../util/httpResponse.js';
-import responseMessage from '../constant/responseMessage.js';
-import httpError from '../util/httpError.js';
-import { ValidateProfileUpdate, validateJoiSchema } from '../service/validationService.js';
-import Student from '../model/studentModel.js';
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpError from '../../util/httpError.js';
+import { ValidateProfileUpdate, validateJoiSchema } from '../../service/validationService.js';
+import Student from '../../model/studentModel.js';
 
 export default {
     getSelfData: async (req, res, next) => {

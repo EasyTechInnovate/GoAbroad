@@ -8059,3 +8059,962 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T05:49:53.280Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T05:49:53.290Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T05:49:53.291Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T05:50:18.946Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY3ZmZmNjRkOWJhMGI3NTljYjZkZmMxZiIsImlhdCI6MTc0NTkwNTgxOCwiZXhwIjoxNzQ1OTkyMjE4fQ.opsc5y8sX9eNzdN0xEChGxaTqEPmU4Gx0XCHUn1zlFw",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "profession": null,
+                    "address": "123 Main St, City"
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "status": "PENDING",
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "phoneNumber": "+1234567890",
+                "isFeePaid": true,
+                "isVerified": true,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-17T11:47:19.325Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T05:51:48.340Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T05:51:48.347Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T05:51:48.348Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T05:52:35.588Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "address": null,
+                "profession": null,
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "status": "PENDING",
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+9876543210",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-29T05:52:35.554Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T05:56:05.088Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T05:56:05.098Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T05:56:05.100Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T05:56:08.092Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "address": null,
+                "profession": null,
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "status": "PENDING",
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+9876543210",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-29T05:56:08.073Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T05:56:44.573Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T05:56:44.595Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T05:56:44.597Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T05:56:48.756Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "address": null,
+                "profession": null,
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "status": "PENDING",
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+9876543210",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-29T05:56:48.741Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:00:05.059Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:00:05.065Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:00:05.066Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:00:25.408Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:00:25.416Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:00:25.417Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:00:49.932Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:00:49.939Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:00:49.940Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:01:30.618Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:01:30.625Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:01:30.626Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:02:30.637Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:02:30.650Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:02:30.651Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:03:00.258Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:03:00.266Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:03:00.266Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:03:50.169Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:03:50.178Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:03:50.179Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:05:31.580Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:05:31.588Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:05:31.590Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:05:36.134Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:05:36.142Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:05:36.144Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:07:23.760Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:07:23.768Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:07:23.769Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:07:27.896Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "address": null,
+                "profession": null,
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "status": "PENDING",
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+91234567890",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-29T06:07:27.877Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:08:44.426Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:08:44.435Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:08:44.437Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:08:45.387Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "address": null,
+                "profession": null,
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "status": "PENDING",
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+912345678901",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-29T06:08:45.367Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:09:58.135Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:09:58.142Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:09:58.144Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:10:06.382Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/user/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "address": null,
+                "profession": null,
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE"
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "status": "PENDING",
+            "_id": "67fff64d9ba0b759cb6dfc1f",
+            "email": "hello@gmail.com",
+            "phoneNumber": "+912345678901",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-16T18:26:21.624Z",
+            "updatedAt": "2025-04-29T06:10:06.364Z"
+        }
+    }
+}

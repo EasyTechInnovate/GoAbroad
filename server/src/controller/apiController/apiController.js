@@ -1,8 +1,8 @@
-import httpResponse from '../util/httpResponse.js';
-import responseMessage from '../constant/responseMessage.js';
-import httpError from '../util/httpError.js';
-import quicker from '../util/quicker.js';
-import { uploadOnImageKit } from '../service/imageKitService.js';
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpError from '../../util/httpError.js';
+import quicker from '../../util/quicker.js';
+import { uploadOnImageKit } from '../../service/imageKitService.js';
 
 export default {
     self: (req, res, next) => {

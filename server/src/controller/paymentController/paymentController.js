@@ -1,12 +1,12 @@
-import httpResponse from '../util/httpResponse.js';
-import responseMessage from '../constant/responseMessage.js';
-import httpError from '../util/httpError.js';
-import quicker from '../util/quicker.js';
-import config from '../config/config.js';
-import Payment from '../model/paymentModel.js';
-import Student from '../model/studentModel.js';
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpError from '../../util/httpError.js';
+import quicker from '../../util/quicker.js';
+import config from '../../config/config.js';
+import Payment from '../../model/paymentModel.js';
+import Student from '../../model/studentModel.js';
 import crypto from "crypto"
-import { razorpayInstance } from '../config/razorpayConfig.js';
+import { razorpayInstance } from '../../config/razorpayConfig.js';
 export default {
     initiatePayment: async (req, res, next) => {
         try {

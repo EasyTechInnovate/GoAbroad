@@ -1,9 +1,9 @@
-import httpError from '../util/httpError.js';
-import httpResponse from '../util/httpResponse.js';
-import responseMessage from '../constant/responseMessage.js';
-import { ValidateCategory, validateJoiSchema } from '../service/validationService.js';
-import Category from '../model/categoryModel.js';
-import Faq from '../model/faqModel.js';
+import httpError from '../../util/httpError.js';
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import { ValidateCategory, validateJoiSchema } from '../../service/validationService.js';
+import Category from '../../model/categoryModel.js';
+import Faq from '../../model/faqModel.js';
 
 export default {
     // Create a new category (Admin-only)
