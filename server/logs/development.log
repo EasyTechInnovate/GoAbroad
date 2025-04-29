@@ -9018,3 +9018,1565 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:46:49.267Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:46:49.277Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:46:49.278Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:46:51.078Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "_id": "68013a01d2da4661a44bb909",
+                "firstName": "Charlie",
+                "lastName": "Wilson",
+                "email": "admin@example.com",
+                "phone": "+1234567890",
+                "address": "HELLO",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "profilePicture": null,
+                "createdDate": "2025-04-17T17:27:29.619Z",
+                "updatedDate": "2025-04-17T17:42:21.745Z"
+            },
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzYTAxZDJkYTQ2NjFhNDRiYjkwOSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDU5MDkyMTEsImV4cCI6MTc0NTk5NTYxMX0.agpvMxPl9tYmTwfD9D5-C7sa6Yf2fkCWi8CJGy7air8"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:47:39.987Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/students?page=1&limit=10&search=john&status=ACTIVE&isVerified=true&sortBy=createdAt&sortOrder=desc"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "students": [],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 0,
+                "totalStudents": 0,
+                "limit": 10,
+                "hasNext": false,
+                "hasPrev": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:47:48.801Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/students?page=1&limit=10&status=ACTIVE&isVerified=true&sortBy=createdAt&sortOrder=desc"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "students": [],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 0,
+                "totalStudents": 0,
+                "limit": 10,
+                "hasNext": false,
+                "hasPrev": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:47:57.341Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/students?page=1&limit=10&isVerified=true&sortBy=createdAt&sortOrder=desc"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "students": [
+                {
+                    "_id": "67fff64d9ba0b759cb6dfc1f",
+                    "email": "hello@gmail.com",
+                    "programDetails": {
+                        "program": null,
+                        "validity": null
+                    },
+                    "phoneNumber": "+912345678901",
+                    "personalDetails": {
+                        "dob": "1995-05-15T00:00:00.000Z",
+                        "gender": "MALE"
+                    },
+                    "collegeDetails": {
+                        "branch": null,
+                        "highestDegree": null,
+                        "university": null,
+                        "college": null,
+                        "gpa": null,
+                        "toppersGPA": null,
+                        "noOfBacklogs": null,
+                        "admissionTerm": null,
+                        "coursesApplying": null
+                    },
+                    "greDetails": {
+                        "greScore": {
+                            "verbal": null,
+                            "quant": null,
+                            "awa": null
+                        },
+                        "grePlane": null,
+                        "greDate": null,
+                        "greScoreBoard": null,
+                        "retakingGRE": null
+                    },
+                    "ieltsDetails": {
+                        "ieltsScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null,
+                            "listening": null
+                        },
+                        "ieltsPlan": null,
+                        "ieltsDate": null,
+                        "retakingIELTS": null
+                    },
+                    "toeflDetails": {
+                        "toeflScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null
+                        },
+                        "toeflPlan": null,
+                        "toeflDate": null,
+                        "retakingTOEFL": null
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": null,
+                        "visaInterviewDate": null,
+                        "visaInterviewLocation": null
+                    },
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-16T18:26:21.624Z",
+                    "updatedAt": "2025-04-29T06:10:06.364Z"
+                }
+            ],
+            "pagination": {
+                "currentPage": 1,
+                "totalPages": 1,
+                "totalStudents": 1,
+                "limit": 10,
+                "hasNext": false,
+                "hasPrev": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:49:41.378Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:49:41.387Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:49:41.388Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:50:01.610Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:50:01.618Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:50:01.619Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:50:30.487Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:50:30.496Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:50:30.497Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:51:12.041Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:51:12.054Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:51:12.055Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:51:39.943Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:51:39.951Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:51:39.952Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T06:52:09.446Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T06:52:09.453Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T06:52:09.454Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:53:00.809Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/students/67fff64d9ba0b759cb6dfc1f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "student": {
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "phoneNumber": "+912345678901",
+                "personalDetails": {
+                    "dob": "1995-05-15T00:00:00.000Z",
+                    "gender": "MALE"
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "isFeePaid": true,
+                "isVerified": true,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-29T06:10:06.364Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:53:28.997Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/students/67fff64d9ba0b759cb6dfc1f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "student": {
+                "_id": "67fff64d9ba0b759cb6dfc1f",
+                "email": "hello@gmail.com",
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "phoneNumber": "+912345678901",
+                "personalDetails": {
+                    "dob": "1995-05-15T00:00:00.000Z",
+                    "gender": "MALE"
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "isFeePaid": true,
+                "isVerified": true,
+                "role": "STUDENT",
+                "createdAt": "2025-04-16T18:26:21.624Z",
+                "updatedAt": "2025-04-29T06:10:06.364Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T06:54:53.805Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/students/67fff64d9ba0b759cb6dfc1f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Student deleted successfully",
+            "studentId": "67fff64d9ba0b759cb6dfc1f"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T07:15:52.747Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T07:15:52.760Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T07:15:52.761Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T07:17:21.966Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T07:17:21.973Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T07:17:21.974Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T07:17:58.599Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T07:17:58.607Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T07:17:58.608Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:18:37.937Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "email": "hello@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "phoneNumber": null,
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "_id": "68107d4d1fbc5724e46a9b55",
+                "createdAt": "2025-04-29T07:18:37.922Z",
+                "updatedAt": "2025-04-29T07:18:37.922Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:18:40.116Z",
+    "meta": {
+        "success": true,
+        "statusCode": 409,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "Something went wrong! - Email already in use",
+        "data": null
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:19:10.800Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxvQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY4MTA3ZDRkMWZiYzU3MjRlNDZhOWI1NSIsImlhdCI6MTc0NTkxMTE1MCwiZXhwIjoxNzQ1OTk3NTUwfQ.39vTBXRT0sQGaOhOv2DEvAiD-F2EQzG2TKg7vzXqhqs",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreBoard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "68107d4d1fbc5724e46a9b55",
+                "email": "hello@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "phoneNumber": null,
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-29T07:18:37.922Z",
+                "updatedAt": "2025-04-29T07:18:37.922Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:22:29.801Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/student/self"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "address": null,
+                "profession": null
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "hello@gmail.com",
+            "name": null,
+            "profilePicture": null,
+            "phoneNumber": null,
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:18:37.922Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:22:49.500Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/student/self"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "address": null,
+                "profession": null
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreBoard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "hello@gmail.com",
+            "name": null,
+            "profilePicture": null,
+            "phoneNumber": null,
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:18:37.922Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:24:06.749Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/student/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": "Computer Science",
+                "validity": "2026-06-15T00:00:00.000Z"
+            },
+            "personalDetails": {
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE",
+                "address": "123 Main St, Cityville",
+                "profession": "Software Engineer"
+            },
+            "collegeDetails": {
+                "branch": "Computer Science",
+                "highestDegree": "Bachelor's",
+                "university": "XYZ University",
+                "college": "ABC College",
+                "gpa": 3.8,
+                "toppersGPA": 4,
+                "noOfBacklogs": 0,
+                "admissionTerm": "Fall 2023",
+                "coursesApplying": [
+                    "AI",
+                    "Machine Learning",
+                    "Data Science"
+                ]
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": 165,
+                    "quant": 170,
+                    "awa": 4.5
+                },
+                "grePlane": "2025-05-20T00:00:00.000Z",
+                "greDate": "2025-06-10T00:00:00.000Z",
+                "greScoreBoard": "https://example.com/gre_score.jpg",
+                "retakingGRE": "No"
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": 8,
+                    "writing": 7.5,
+                    "speaking": 8,
+                    "listening": 8.5
+                },
+                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                "retakingIELTS": "No"
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": 28,
+                    "writing": 27,
+                    "speaking": 25
+                },
+                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                "toeflDate": "2025-07-15T00:00:00.000Z",
+                "retakingTOEFL": "No"
+            },
+            "visa": {
+                "countriesPlanningToApply": [
+                    "USA",
+                    "Canada",
+                    "UK"
+                ],
+                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                "visaInterviewLocation": "New York"
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "johndoe@example.com",
+            "name": "John Doe",
+            "profilePicture": "https://example.com/profile.jpg",
+            "phoneNumber": "+912345678900",
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:24:06.653Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T07:25:08.761Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T07:25:08.776Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T07:25:08.777Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-29T07:25:13.846Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-29T07:25:13.862Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-29T07:25:13.864Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:25:35.082Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/student/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": "Computer Science",
+                "validity": "2026-06-15T00:00:00.000Z"
+            },
+            "personalDetails": {
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE",
+                "address": "123 Main St, Cityville",
+                "profession": "Software Engineer"
+            },
+            "collegeDetails": {
+                "branch": "Computer Science",
+                "highestDegree": "Bachelor's",
+                "university": "XYZ University",
+                "college": "ABC College",
+                "gpa": 3.8,
+                "toppersGPA": 4,
+                "noOfBacklogs": 0,
+                "admissionTerm": "Fall 2023",
+                "coursesApplying": [
+                    "AI",
+                    "Machine Learning",
+                    "Data Science"
+                ]
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": 165,
+                    "quant": 170,
+                    "awa": 4.5
+                },
+                "grePlane": "2025-05-20T00:00:00.000Z",
+                "greDate": "2025-06-10T00:00:00.000Z",
+                "greScoreCard": "YES",
+                "retakingGRE": "No"
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": 8,
+                    "writing": 7.5,
+                    "speaking": 8,
+                    "listening": 8.5
+                },
+                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                "retakingIELTS": "No"
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": 28,
+                    "writing": 27,
+                    "speaking": 25
+                },
+                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                "toeflDate": "2025-07-15T00:00:00.000Z",
+                "retakingTOEFL": "No"
+            },
+            "visa": {
+                "countriesPlanningToApply": [
+                    "USA",
+                    "Canada",
+                    "UK"
+                ],
+                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                "visaInterviewLocation": "New York"
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "johndoe@example.com",
+            "name": "John Doe",
+            "profilePicture": "https://example.com/profile.jpg",
+            "phoneNumber": "+912345678900",
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:25:35.057Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:26:57.310Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/student/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": "Computer Science",
+                "validity": "2026-06-15T00:00:00.000Z"
+            },
+            "personalDetails": {
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE",
+                "address": "123 Main St, Cityville",
+                "profession": "Software Engineer"
+            },
+            "collegeDetails": {
+                "branch": "Computer Science",
+                "highestDegree": "Bachelor's",
+                "university": "XYZ University",
+                "college": "ABC College",
+                "gpa": 3.8,
+                "toppersGPA": 4,
+                "noOfBacklogs": 0,
+                "admissionTerm": "Fall 2023",
+                "coursesApplying": [
+                    "AI",
+                    "Machine Learning",
+                    "Data Science"
+                ]
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": 165,
+                    "quant": 170,
+                    "awa": 4.5
+                },
+                "grePlane": "2025-05-20T00:00:00.000Z",
+                "greDate": "2025-06-10T00:00:00.000Z",
+                "greScoreCard": "YES",
+                "retakingGRE": "No"
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": 8,
+                    "writing": 7.5,
+                    "speaking": 8,
+                    "listening": 8.5
+                },
+                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                "retakingIELTS": "No"
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": 28,
+                    "writing": 27,
+                    "speaking": 25
+                },
+                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                "toeflDate": "2025-07-15T00:00:00.000Z",
+                "retakingTOEFL": "No"
+            },
+            "visa": {
+                "countriesPlanningToApply": [
+                    "USA",
+                    "Canada",
+                    "UK"
+                ],
+                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                "visaInterviewLocation": "New York"
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "johndoe@example.com",
+            "name": "John Doe",
+            "profilePicture": "https://example.com/profile.jpg",
+            "phoneNumber": "+912345678900",
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:26:57.297Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:27:16.000Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/student/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": "Computer Science",
+                "validity": "2026-06-15T00:00:00.000Z"
+            },
+            "personalDetails": {
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE",
+                "address": "123 Main St, Cityville",
+                "profession": "Software Engineer"
+            },
+            "collegeDetails": {
+                "branch": "Computer Science",
+                "highestDegree": "Bachelor's",
+                "university": "XYZ University",
+                "college": "ABC College",
+                "gpa": 3.8,
+                "toppersGPA": 4,
+                "noOfBacklogs": 0,
+                "admissionTerm": "Fall 2023",
+                "coursesApplying": [
+                    "AI",
+                    "Machine Learning",
+                    "Data Science"
+                ]
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": 165,
+                    "quant": 170,
+                    "awa": 4.5
+                },
+                "grePlane": "2025-05-20T00:00:00.000Z",
+                "greDate": "2025-06-10T00:00:00.000Z",
+                "greScoreCard": "YES",
+                "retakingGRE": "No"
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": 8,
+                    "writing": 7.5,
+                    "speaking": 8,
+                    "listening": 8.5
+                },
+                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                "retakingIELTS": "No"
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": 28,
+                    "writing": 27,
+                    "speaking": 25
+                },
+                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                "toeflDate": "2025-07-15T00:00:00.000Z",
+                "retakingTOEFL": "No"
+            },
+            "visa": {
+                "countriesPlanningToApply": [
+                    "USA",
+                    "Canada",
+                    "UK"
+                ],
+                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                "visaInterviewLocation": "New York"
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "johndoe@example.com",
+            "name": "John Doe",
+            "profilePicture": "https://example.com/profile.jpg",
+            "phoneNumber": "+912345678900",
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:27:15.990Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:27:29.646Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/student/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": "Computer Science",
+                "validity": "2026-06-15T00:00:00.000Z"
+            },
+            "personalDetails": {
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE",
+                "address": "123 Main St, Cityville",
+                "profession": "Software Engineer"
+            },
+            "collegeDetails": {
+                "branch": "Computer Science",
+                "highestDegree": "Bachelor's",
+                "university": "XYZ University",
+                "college": "ABC College",
+                "gpa": 3.8,
+                "toppersGPA": 4,
+                "noOfBacklogs": 0,
+                "admissionTerm": "Fall 2023",
+                "coursesApplying": [
+                    "AI",
+                    "Machine Learning",
+                    "Data Science"
+                ]
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": 165,
+                    "quant": 170,
+                    "awa": 4.5
+                },
+                "grePlane": "2025-05-20T00:00:00.000Z",
+                "greDate": "2025-06-10T00:00:00.000Z",
+                "greScoreCard": "YES",
+                "retakingGRE": "No"
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": 8,
+                    "writing": 7.5,
+                    "speaking": 8,
+                    "listening": 8.5
+                },
+                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                "retakingIELTS": "No"
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": 28,
+                    "writing": 27,
+                    "speaking": 25
+                },
+                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                "toeflDate": "2025-07-15T00:00:00.000Z",
+                "retakingTOEFL": "No"
+            },
+            "visa": {
+                "countriesPlanningToApply": [],
+                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                "visaInterviewLocation": "New York"
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "johndoe@example.com",
+            "name": "John Doe",
+            "profilePicture": "https://example.com/profile.jpg",
+            "phoneNumber": "+912345678900",
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:27:29.636Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-29T07:27:33.048Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/student/profile"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": "Computer Science",
+                "validity": "2026-06-15T00:00:00.000Z"
+            },
+            "personalDetails": {
+                "dob": "1995-05-15T00:00:00.000Z",
+                "gender": "MALE",
+                "address": "123 Main St, Cityville",
+                "profession": "Software Engineer"
+            },
+            "collegeDetails": {
+                "branch": "Computer Science",
+                "highestDegree": "Bachelor's",
+                "university": "XYZ University",
+                "college": "ABC College",
+                "gpa": 3.8,
+                "toppersGPA": 4,
+                "noOfBacklogs": 0,
+                "admissionTerm": "Fall 2023",
+                "coursesApplying": [
+                    "AI",
+                    "Machine Learning",
+                    "Data Science"
+                ]
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": 165,
+                    "quant": 170,
+                    "awa": 4.5
+                },
+                "grePlane": "2025-05-20T00:00:00.000Z",
+                "greDate": "2025-06-10T00:00:00.000Z",
+                "greScoreCard": "YES",
+                "retakingGRE": "No"
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": 8,
+                    "writing": 7.5,
+                    "speaking": 8,
+                    "listening": 8.5
+                },
+                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                "retakingIELTS": "No"
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": 28,
+                    "writing": 27,
+                    "speaking": 25
+                },
+                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                "toeflDate": "2025-07-15T00:00:00.000Z",
+                "retakingTOEFL": "No"
+            },
+            "visa": {
+                "countriesPlanningToApply": [
+                    "USA",
+                    "Canada",
+                    "UK"
+                ],
+                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                "visaInterviewLocation": "New York"
+            },
+            "_id": "68107d4d1fbc5724e46a9b55",
+            "email": "johndoe@example.com",
+            "name": "John Doe",
+            "profilePicture": "https://example.com/profile.jpg",
+            "phoneNumber": "+912345678900",
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-29T07:18:37.922Z",
+            "updatedAt": "2025-04-29T07:27:33.039Z"
+        }
+    }
+}

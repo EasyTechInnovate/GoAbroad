@@ -11,6 +11,7 @@ import categoryController from '../controller/faqController/categoryController.j
 import faqController from '../controller/faqController/faqController.js'
 import paymentController from '../controller/paymentController/paymentController.js'
 import studentController from '../controller/studentController/studentController.js'
+import adminStudentManagementController from '../controller/adminController/adminStudentManagementController.js'
 
 const router = Router()
 
@@ -29,12 +30,14 @@ router.route('/auth/signup').post(authController.signup);
 router.route('/payment/initiate').post(paymentMiddleWare, paymentController.initiatePayment);
 router.route('/payment/verify').post(paymentMiddleWare, paymentController.verifyPayment);
 
-
+// ******************** USER ROUTES ***********************************
 // user routes
-router.route('/user/self').get(authentication, studentController.getSelfData);
-router.route('/user/profile').put(authentication, studentController.updateProfile);
+router.route('/student/self').get(authentication, studentController.getSelfData);
+router.route('/student/profile').put(authentication, studentController.updateProfile);
+// ******************** USER ROUTES ***********************************
 
 
+// ******************** ADMIN ROUTES ***********************************
 // Admins route
 router.route('/admin/auth/login').post(adminController.login);
 router.route('/admin/auth/update-password').post(memberAccess, adminController.updatePassword);
@@ -73,5 +76,10 @@ router.route('/admin/universities/:id').get(memberAccess, universityController.g
 router.route('/admin/universities/:id').put(memberAccess, universityController.updateUniversity);
 router.route('/admin/universities/:id').delete(adminOnly, universityController.deleteUniversity);
 
-
+//Student Management
+router.route('/admin/students').get(memberAccess, adminStudentManagementController.getStudents);
+router.route('/admin/students/:studentId')
+    .get(memberAccess, adminStudentManagementController.getStudentById)
+    .delete(adminOnly, adminStudentManagementController.deleteStudent);
+// ******************** ADMIN ROUTES ***********************************
 export default router

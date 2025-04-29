@@ -19,21 +19,41 @@ export const ValidateProfileUpdate = Joi.object({
         validity: Joi.date().allow(null)
     }).allow(null),
     phoneNumber: Joi.string()
-  .pattern(/^\+([1-9]{1}[0-9]{1,2})\d{10}$/)
-  .required()
-  .trim()
-  .messages({
-    'string.pattern.base': 'Phone number must start with a country code (e.g., +918388656625)',
-    'string.empty': 'Phone number is required',
-    'any.required': 'Phone number is required',
-  }),
-
+      .pattern(/^\+([1-9]{1}[0-9]{1,2})\d{10}$/)
+      .required()
+      .trim()
+      .messages({
+        'string.pattern.base': 'Phone number must start with a country code (e.g., +918388656625)',
+        'string.empty': 'Phone number is required',
+        'any.required': 'Phone number is required',
+      }),
     personalDetails: Joi.object({
         dob: Joi.date().allow(null),
         gender: Joi.string().valid('MALE', 'FEMALE', 'OTHER').allow(null),
         address: Joi.string().allow(null),
         profession: Joi.string().allow(null)
     }).allow(null),
+    name: Joi.string()
+      .min(1)
+      .max(100)
+      .optional()
+      .messages({
+        'string.empty': 'Name cannot be empty',
+        'string.min': 'Name must be at least 1 character long',
+        'string.max': 'Name must be at most 100 characters long',
+      }),
+    profilePicture: Joi.string()
+      .uri()
+      .optional()
+      .messages({
+        'string.uri': 'Profile picture must be a valid URL',
+      }),
+    email: Joi.string()
+      .email()
+      .optional()
+      .messages({
+        'string.email': 'Please provide a valid email address',
+      }),
     collegeDetails: Joi.object({
         branch: Joi.string().allow(null),
         highestDegree: Joi.string().allow(null),
@@ -48,7 +68,7 @@ export const ValidateProfileUpdate = Joi.object({
     greDetails: Joi.object({
         grePlane: Joi.date().allow(null),
         greDate: Joi.date().allow(null),
-        greScoreBoard: Joi.string().allow(null),
+        greScoreCard: Joi.string().allow(null),
         greScore: Joi.object({
             verbal: Joi.number().allow(null),
             quant: Joi.number().allow(null),
@@ -82,7 +102,7 @@ export const ValidateProfileUpdate = Joi.object({
         visaInterviewDate: Joi.date().allow(null),
         visaInterviewLocation: Joi.string().allow(null)
     }).allow(null)
-})
+}).unknown(false);
 // ############ PROFILE Validation END ################
 
 
@@ -245,6 +265,82 @@ export const ValidateUniversityQuery = Joi.object({
     search: Joi.string().trim().optional()
 }).unknown(false);
 // ############ UNIVERSITY Validation END ################
+
+
+// ############# STUDENT MANAGEMENT ADMIN SIDE #############################
+export const getStudentsSchema = Joi.object({
+    page: Joi.number()
+        .min(1)
+        .default(1)
+        .label('Page')
+        .error((errors) => errors.map((error) => {
+            if (error.code === 'number.min') return new Error('Page must be greater than or equal to 1');
+            return error;
+        })),
+    limit: Joi.number()
+        .min(1)
+        .max(100)
+        .default(10)
+        .label('Limit')
+        .error((errors) => errors.map((error) => {
+            if (error.code === 'number.min') return new Error('Limit must be greater than or equal to 1');
+            if (error.code === 'number.max') return new Error('Limit must be less than or equal to 100');
+            return error;
+        })),
+    search: Joi.string()
+        .optional()
+        .allow('')
+        .label('Search')
+        .error((errors) => errors.map((error) => error)),
+    status: Joi.string()
+        .valid('PENDING', 'ACTIVE', 'COMPLETE', 'REJECTED')
+        .optional()
+        .label('Status')
+        .error((errors) => errors.map((error) => {
+            if (error.code === 'any.only') return new Error('Status must be one of PENDING, ACTIVE, COMPLETE, REJECTED');
+            return error;
+        })),
+    isVerified: Joi.boolean()
+        .optional()
+        .label('Is Verified')
+        .error((errors) => errors.map((error) => error)),
+    sortBy: Joi.string()
+        .valid('createdAt', 'updatedAt')
+        .default('createdAt')
+        .label('Sort By')
+        .error((errors) => errors.map((error) => {
+            if (error.code === 'any.only') return new Error('Sort By must be createdAt or updatedAt');
+            return error;
+        })),
+    sortOrder: Joi.string()
+        .valid('asc', 'desc')
+        .default('desc')
+        .label('Sort Order')
+        .error((errors) => errors.map((error) => {
+            if (error.code === 'any.only') return new Error('Sort Order must be asc or desc');
+            return error;
+        })),
+})
+
+export const studentIdSchema = Joi.object({
+    studentId: Joi.string()
+        .required()
+        .regex(/^[0-9a-fA-F]{24}$/)
+        .label('Student ID')
+        .error((errors) => errors.map((error) => {
+            switch (error.code) {
+                case 'any.required':
+                    return new Error('Student ID is required');
+                case 'string.pattern.base':
+                    return new Error('Student ID must be a valid MongoDB ObjectId');
+                default:
+                    return error;
+            }
+        })),
+});
+
+
+// ############# STUDENT MANAGEMENT ADMIN SIDE END #############################
 
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });

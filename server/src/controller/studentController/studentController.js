@@ -30,7 +30,7 @@ export default {
             }
 
             // Prevent changes to isFeePaid, isVerified, and role
-            const restrictedFields = ['isFeePaid', 'isVerified', 'role'];
+            const restrictedFields = ['isFeePaid', 'isVerified', 'role',"password"];
             restrictedFields.forEach(field => {
                 if (updateData[field] !== undefined) {
                     return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE(`Cannot update ${field}`)), req, 403);

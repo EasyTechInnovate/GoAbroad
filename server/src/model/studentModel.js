@@ -9,6 +9,14 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    name: {
+        type: String,
+        default: null,
+    },
+    profilePicture: {
+        type: String,
+        default: null,
+    },
     programDetails: {
         program: {
             type: String,
@@ -89,7 +97,7 @@ const studentSchema = new mongoose.Schema({
             type: Date,
             default: null
         },
-        greScoreBoard: {
+        greScoreCard: {
             type: String,
             default: null
         },
