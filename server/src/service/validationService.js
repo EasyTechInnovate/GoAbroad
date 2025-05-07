@@ -342,6 +342,44 @@ export const studentIdSchema = Joi.object({
 
 // ############# STUDENT MANAGEMENT ADMIN SIDE END #############################
 
+// ############ QUESTIONNAIRE Validation ################
+export const questionSchema = Joi.object({
+    question: Joi.string().trim().required(),
+    ansType: Joi.string().valid("TEXT", "MULTIPLE_CHOICE", "FILE", "DATE", "CHECKBOX", "PARAGRAPH").required(),
+    options: Joi.array().items(Joi.string().trim()).default([])
+        .when('ansType', {
+            is: 'MULTIPLE_CHOICE',
+            then: Joi.array().items(Joi.string().trim()).min(2).required(),
+            otherwise: Joi.array().items(Joi.string().trim()).optional()
+        })
+        .when('ansType', {
+            is: 'CHECKBOX',
+            then: Joi.array().items(Joi.string().trim()).min(2).required(),
+            otherwise: Joi.array().items(Joi.string().trim()).optional()
+        })
+});
+
+export const ValidateCreateQuestionnaire = Joi.object({
+    title: Joi.string().trim().required(),
+    description: Joi.string().trim().allow(null, ''),
+    status: Joi.string().valid("ACTIVE", "DRAFT", "ARCHIVED").default("DRAFT"),
+    questions: Joi.array().items(questionSchema).min(1).required()
+});
+
+export const ValidateUpdateQuestionnaire = Joi.object({
+    title: Joi.string().trim().optional(),
+    description: Joi.string().trim().allow(null, '').optional(),
+    status: Joi.string().valid("ACTIVE", "DRAFT", "ARCHIVED").optional(),
+    questions: Joi.array().items(questionSchema).optional()
+});
+
+export const ValidateDeleteQuestion = Joi.object({
+    questionnaireId: Joi.string().required(),
+    questionId: Joi.string().required()
+});
+// ############ QUESTIONNAIRE Validation END ################
+
+
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {

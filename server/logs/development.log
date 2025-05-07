@@ -10580,3 +10580,929 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-30T07:12:56.614Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-30T07:12:56.620Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-30T07:12:56.621Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-30T07:13:38.065Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "email": "test2@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "phoneNumber": null,
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreCard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "_id": "6811cda24b6f4ee3f0a766e6",
+                "createdAt": "2025-04-30T07:13:38.056Z",
+                "updatedAt": "2025-04-30T07:13:38.056Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-30T07:13:53.366Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInN0dWRlbnRJZCI6IjY4MTFjZGEyNGI2ZjRlZTNmMGE3NjZlNiIsImlhdCI6MTc0NTk5NzIzMywiZXhwIjoxNzQ2MDgzNjMzfQ.-FRWvU8p2rQ8Zdbcrz1lPvB-sdHcaVJ4QEIiq5GtN2Y",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreCard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "6811cda24b6f4ee3f0a766e6",
+                "email": "test2@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "phoneNumber": null,
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-04-30T07:13:38.056Z",
+                "updatedAt": "2025-04-30T07:13:38.056Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-04-30T07:15:07.391Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-04-30T07:15:07.400Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-04-30T07:15:07.401Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-04-30T07:15:26.026Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/student/self"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "programDetails": {
+                "program": null,
+                "validity": null
+            },
+            "personalDetails": {
+                "dob": null,
+                "gender": null,
+                "address": null,
+                "profession": null
+            },
+            "collegeDetails": {
+                "branch": null,
+                "highestDegree": null,
+                "university": null,
+                "college": null,
+                "gpa": null,
+                "toppersGPA": null,
+                "noOfBacklogs": null,
+                "admissionTerm": null,
+                "coursesApplying": null
+            },
+            "greDetails": {
+                "greScore": {
+                    "verbal": null,
+                    "quant": null,
+                    "awa": null
+                },
+                "grePlane": null,
+                "greDate": null,
+                "greScoreCard": null,
+                "retakingGRE": null
+            },
+            "ieltsDetails": {
+                "ieltsScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null,
+                    "listening": null
+                },
+                "ieltsPlan": null,
+                "ieltsDate": null,
+                "retakingIELTS": null
+            },
+            "toeflDetails": {
+                "toeflScore": {
+                    "reading": null,
+                    "writing": null,
+                    "speaking": null
+                },
+                "toeflPlan": null,
+                "toeflDate": null,
+                "retakingTOEFL": null
+            },
+            "visa": {
+                "countriesPlanningToApply": null,
+                "visaInterviewDate": null,
+                "visaInterviewLocation": null
+            },
+            "_id": "6811cda24b6f4ee3f0a766e6",
+            "email": "test2@gmail.com",
+            "name": null,
+            "profilePicture": null,
+            "phoneNumber": null,
+            "status": "PENDING",
+            "isFeePaid": true,
+            "isVerified": true,
+            "role": "STUDENT",
+            "createdAt": "2025-04-30T07:13:38.056Z",
+            "updatedAt": "2025-04-30T07:13:38.056Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-07T18:40:14.204Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-07T18:40:14.213Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-07T18:40:14.214Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-07T18:41:40.700Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-07T18:41:40.709Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-07T18:41:40.711Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:44:37.902Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "_id": "68013a01d2da4661a44bb909",
+                "firstName": "Charlie",
+                "lastName": "Wilson",
+                "email": "admin@example.com",
+                "phone": "+1234567890",
+                "address": "HELLO",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "profilePicture": null,
+                "createdDate": "2025-04-17T17:27:29.619Z",
+                "updatedDate": "2025-04-17T17:42:21.745Z"
+            },
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzYTAxZDJkYTQ2NjFhNDRiYjkwOSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDY2NDM0NzcsImV4cCI6MTc0NjcyOTg3N30.FPF4osMEMyTRgKIkIfTRBSHB284iKxMYol4mZn2hC6Q"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:46:08.147Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/questionnaires"
+        },
+        "message": "The operation has been successful",
+        "data": []
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:46:45.288Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/questionnaires"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Questionnaire created successfully",
+            "questionnaire": {
+                "title": "Comprehensive Admission Checklist",
+                "description": "A questionnaire covering all question types for testing",
+                "status": "ACTIVE",
+                "questions": [
+                    {
+                        "question": "What is your full name?",
+                        "ansType": "TEXT",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb96"
+                    },
+                    {
+                        "question": "Select your preferred program",
+                        "ansType": "MULTIPLE_CHOICE",
+                        "options": [
+                            "Computer Science",
+                            "Engineering",
+                            "Business"
+                        ],
+                        "_id": "681baa95f77037e29ee2cb97"
+                    },
+                    {
+                        "question": "Upload your transcript",
+                        "ansType": "FILE",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb98"
+                    },
+                    {
+                        "question": "What is your date of birth?",
+                        "ansType": "DATE",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb99"
+                    },
+                    {
+                        "question": "Which of the following skills do you have?",
+                        "ansType": "CHECKBOX",
+                        "options": [
+                            "Programming",
+                            "Communication",
+                            "Leadership"
+                        ],
+                        "_id": "681baa95f77037e29ee2cb9a"
+                    },
+                    {
+                        "question": "Describe your academic background in detail",
+                        "ansType": "PARAGRAPH",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb9b"
+                    }
+                ],
+                "_id": "681baa95f77037e29ee2cb95",
+                "createdAt": "2025-05-07T18:46:45.268Z",
+                "updatedAt": "2025-05-07T18:46:45.268Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:48:08.233Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/questionnaires"
+        },
+        "message": "The operation has been successful",
+        "data": [
+            {
+                "_id": "681baa95f77037e29ee2cb95",
+                "title": "Comprehensive Admission Checklist",
+                "description": "A questionnaire covering all question types for testing",
+                "status": "ACTIVE",
+                "questions": [
+                    {
+                        "question": "What is your full name?",
+                        "ansType": "TEXT",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb96"
+                    },
+                    {
+                        "question": "Select your preferred program",
+                        "ansType": "MULTIPLE_CHOICE",
+                        "options": [
+                            "Computer Science",
+                            "Engineering",
+                            "Business"
+                        ],
+                        "_id": "681baa95f77037e29ee2cb97"
+                    },
+                    {
+                        "question": "Upload your transcript",
+                        "ansType": "FILE",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb98"
+                    },
+                    {
+                        "question": "What is your date of birth?",
+                        "ansType": "DATE",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb99"
+                    },
+                    {
+                        "question": "Which of the following skills do you have?",
+                        "ansType": "CHECKBOX",
+                        "options": [
+                            "Programming",
+                            "Communication",
+                            "Leadership"
+                        ],
+                        "_id": "681baa95f77037e29ee2cb9a"
+                    },
+                    {
+                        "question": "Describe your academic background in detail",
+                        "ansType": "PARAGRAPH",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb9b"
+                    }
+                ],
+                "createdAt": "2025-05-07T18:46:45.268Z",
+                "updatedAt": "2025-05-07T18:46:45.268Z"
+            }
+        ]
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-07T18:51:17.094Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-07T18:51:17.100Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-07T18:51:17.101Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-07T18:51:36.297Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-07T18:51:36.304Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-07T18:51:36.305Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-07T18:51:54.025Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-07T18:51:54.034Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-07T18:51:54.035Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-07T18:51:59.112Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-07T18:51:59.118Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-07T18:51:59.119Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:52:12.618Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/questionnaires/681baa95f77037e29ee2cb95/questions"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Question added successfully",
+            "questionnaire": {
+                "_id": "681baa95f77037e29ee2cb95",
+                "title": "Comprehensive Admission Checklist",
+                "description": "A questionnaire covering all question types for testing",
+                "status": "ACTIVE",
+                "questions": [
+                    {
+                        "question": "What is your full name?",
+                        "ansType": "TEXT",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb96"
+                    },
+                    {
+                        "question": "Select your preferred program",
+                        "ansType": "MULTIPLE_CHOICE",
+                        "options": [
+                            "Computer Science",
+                            "Engineering",
+                            "Business"
+                        ],
+                        "_id": "681baa95f77037e29ee2cb97"
+                    },
+                    {
+                        "question": "Upload your transcript",
+                        "ansType": "FILE",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb98"
+                    },
+                    {
+                        "question": "What is your date of birth?",
+                        "ansType": "DATE",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb99"
+                    },
+                    {
+                        "question": "Which of the following skills do you have?",
+                        "ansType": "CHECKBOX",
+                        "options": [
+                            "Programming",
+                            "Communication",
+                            "Leadership"
+                        ],
+                        "_id": "681baa95f77037e29ee2cb9a"
+                    },
+                    {
+                        "question": "Describe your academic background in detail",
+                        "ansType": "PARAGRAPH",
+                        "options": [],
+                        "_id": "681baa95f77037e29ee2cb9b"
+                    },
+                    {
+                        "question": "Upload your transcript",
+                        "ansType": "FILE",
+                        "options": [],
+                        "_id": "681babdc0cbc222a9a9a9654"
+                    }
+                ],
+                "createdAt": "2025-05-07T18:46:45.268Z",
+                "updatedAt": "2025-05-07T18:52:12.596Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:53:15.802Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/questionnaires/681baa95f77037e29ee2cb95"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Questionnaire updated successfully",
+            "questionnaire": {
+                "_id": "681baa95f77037e29ee2cb95",
+                "title": "Comprehensive Admission Checklist",
+                "description": "A questionnaire covering all question types for testing",
+                "status": "ACTIVE",
+                "questions": [
+                    {
+                        "question": "What is your full name?",
+                        "ansType": "TEXT",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9660"
+                    },
+                    {
+                        "question": "Select your preferred program",
+                        "ansType": "MULTIPLE_CHOICE",
+                        "options": [
+                            "Computer Science",
+                            "Engineering",
+                            "Business"
+                        ],
+                        "_id": "681bac1b0cbc222a9a9a9661"
+                    },
+                    {
+                        "question": "Upload your transcript",
+                        "ansType": "FILE",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9662"
+                    },
+                    {
+                        "question": "What is your date of birth?",
+                        "ansType": "DATE",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9663"
+                    },
+                    {
+                        "question": "Which of the following skills do you have?",
+                        "ansType": "CHECKBOX",
+                        "options": [
+                            "Programming",
+                            "Communication",
+                            "Leadership"
+                        ],
+                        "_id": "681bac1b0cbc222a9a9a9664"
+                    },
+                    {
+                        "question": "Describe your academic background in detail",
+                        "ansType": "PARAGRAPH",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9665"
+                    }
+                ],
+                "createdAt": "2025-05-07T18:46:45.268Z",
+                "updatedAt": "2025-05-07T18:53:15.791Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:55:50.196Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/questionnaires/681baa95f77037e29ee2cb95/questions"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Question deleted successfully",
+            "questionnaire": {
+                "_id": "681baa95f77037e29ee2cb95",
+                "title": "Comprehensive Admission Checklist",
+                "description": "A questionnaire covering all question types for testing",
+                "status": "ACTIVE",
+                "questions": [
+                    {
+                        "question": "What is your full name?",
+                        "ansType": "TEXT",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9660"
+                    },
+                    {
+                        "question": "Select your preferred program",
+                        "ansType": "MULTIPLE_CHOICE",
+                        "options": [
+                            "Computer Science",
+                            "Engineering",
+                            "Business"
+                        ],
+                        "_id": "681bac1b0cbc222a9a9a9661"
+                    },
+                    {
+                        "question": "Upload your transcript",
+                        "ansType": "FILE",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9662"
+                    },
+                    {
+                        "question": "What is your date of birth?",
+                        "ansType": "DATE",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9663"
+                    },
+                    {
+                        "question": "Describe your academic background in detail",
+                        "ansType": "PARAGRAPH",
+                        "options": [],
+                        "_id": "681bac1b0cbc222a9a9a9665"
+                    }
+                ],
+                "createdAt": "2025-05-07T18:46:45.268Z",
+                "updatedAt": "2025-05-07T18:55:50.191Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:57:25.738Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/questionnaires/681baa95f77037e29ee2cb95"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "681baa95f77037e29ee2cb95",
+            "title": "Comprehensive Admission Checklist",
+            "description": "A questionnaire covering all question types for testing",
+            "status": "ACTIVE",
+            "questions": [
+                {
+                    "question": "What is your full name?",
+                    "ansType": "TEXT",
+                    "options": [],
+                    "_id": "681bac1b0cbc222a9a9a9660"
+                },
+                {
+                    "question": "Select your preferred program",
+                    "ansType": "MULTIPLE_CHOICE",
+                    "options": [
+                        "Computer Science",
+                        "Engineering",
+                        "Business"
+                    ],
+                    "_id": "681bac1b0cbc222a9a9a9661"
+                },
+                {
+                    "question": "Upload your transcript",
+                    "ansType": "FILE",
+                    "options": [],
+                    "_id": "681bac1b0cbc222a9a9a9662"
+                },
+                {
+                    "question": "What is your date of birth?",
+                    "ansType": "DATE",
+                    "options": [],
+                    "_id": "681bac1b0cbc222a9a9a9663"
+                },
+                {
+                    "question": "Describe your academic background in detail",
+                    "ansType": "PARAGRAPH",
+                    "options": [],
+                    "_id": "681bac1b0cbc222a9a9a9665"
+                }
+            ],
+            "createdAt": "2025-05-07T18:46:45.268Z",
+            "updatedAt": "2025-05-07T18:55:50.191Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-07T18:57:52.740Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/questionnaires/681baa95f77037e29ee2cb95"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Questionnaire deleted successfully"
+        }
+    }
+}

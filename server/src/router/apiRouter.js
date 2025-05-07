@@ -12,6 +12,7 @@ import faqController from '../controller/faqController/faqController.js'
 import paymentController from '../controller/paymentController/paymentController.js'
 import studentController from '../controller/studentController/studentController.js'
 import adminStudentManagementController from '../controller/adminController/adminStudentManagementController.js'
+import questionnaireController from '../controller/questionnaireController/questionnaireController.js'
 
 const router = Router()
 
@@ -82,4 +83,27 @@ router.route('/admin/students/:studentId')
     .get(memberAccess, adminStudentManagementController.getStudentById)
     .delete(adminOnly, adminStudentManagementController.deleteStudent);
 // ******************** ADMIN ROUTES ***********************************
+
+
+// ******************** QUESTIONNAIRE ROUTES ***********************************
+// Routes for all members (read-only)
+router.route('/admin/questionnaires')
+    .get(memberAccess, questionnaireController.getAllQuestionnaires);
+
+// Routes for ADMIN only (create, update, delete)
+router.route('/admin/questionnaires')
+    .post(adminOnly, questionnaireController.createQuestionnaire);
+
+router.route('/admin/questionnaires/:questionnaireId')
+    .get(memberAccess, questionnaireController.getQuestionnaireById)
+    .put(adminOnly, questionnaireController.updateQuestionnaire)
+    .delete(adminOnly, questionnaireController.deleteQuestionnaire);
+
+// Routes for managing questions (ADMIN only)
+router.route('/admin/questionnaires/:questionnaireId/questions')
+    .post(adminOnly, questionnaireController.addQuestion)
+    .delete(adminOnly, questionnaireController.deleteQuestion);
+// ******************** QUESTIONNAIRE ROUTES END ***********************************
+
+
 export default router
