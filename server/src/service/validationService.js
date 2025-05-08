@@ -403,6 +403,65 @@ export const ValidateUpdateSubtaskQuestionnaireAssignment = Joi.object({
     status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED").required()
 });
 // ############ SUBTASK QUESTIONNAIRE ASSIGNMENT Validation END ################
+
+
+// ############ TASK Validation ################
+export const ValidateCreateTask = Joi.object({
+    title: Joi.string().trim().required(),
+    description: Joi.string().trim().allow(null, ''),
+    logo: Joi.string().trim().allow(null, ''),
+    priority: Joi.string().valid("LOW", "MEDIUM", "HIGH").default("MEDIUM"),
+    assignee: Joi.string().optional(),
+    isDefault: Joi.boolean().default(false),
+    createdDate: Joi.date().default(Date.now),
+    studentIds: Joi.array().items(Joi.string()).default([]).optional(),
+    subtaskIds: Joi.array().items(Joi.string()).default([]).optional()
+});
+
+export const ValidateUpdateTask = Joi.object({
+    title: Joi.string().trim().optional(),
+    description: Joi.string().trim().allow(null, '').optional(),
+    logo: Joi.string().trim().allow(null, '').optional(),
+    priority: Joi.string().valid("LOW", "MEDIUM", "HIGH").optional(),
+    assignee: Joi.string().optional(),
+    isDefault: Joi.boolean().optional(),
+    createdDate: Joi.date().optional()
+});
+
+export const ValidateAddSubtasksToTask = Joi.object({
+    subtaskIds: Joi.array().items(Joi.string()).min(1).required()
+});
+
+export const ValidateRemoveSubtasksFromTask = Joi.object({
+    subtaskIds: Joi.array().items(Joi.string()).min(1).required()
+});
+
+export const ValidateUpdateTaskSubtaskAssignment = Joi.object({
+    assignmentId: Joi.string().required(),
+    status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED", "REJECTED").optional(),
+    isLocked: Joi.boolean().optional(),
+    dueDate: Joi.date().allow(null).optional()
+});
+// ############ TASK Validation END ################
+
+// ############ STUDENT TASK ASSIGNMENT Validation ################
+export const ValidateAddStudentsToTask = Joi.object({
+    studentIds: Joi.array().items(Joi.string()).min(1).required()
+});
+
+export const ValidateUpdateStudentTaskAssignment = Joi.object({
+    assignmentId: Joi.string().required(),
+    status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED", "REJECTED").optional(),
+    isLocked: Joi.boolean().optional(),
+    dueDate: Joi.date().allow(null).optional()
+});
+
+export const ValidateRemoveStudentFromTask = Joi.object({
+    studentId: Joi.string().required()
+});
+// ############ STUDENT TASK ASSIGNMENT Validation END ################
+
+
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {

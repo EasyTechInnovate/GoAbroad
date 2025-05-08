@@ -15,6 +15,9 @@ import adminStudentManagementController from '../controller/adminController/admi
 import questionnaireController from '../controller/questionnaireController/questionnaireController.js'
 import subtaskController from '../controller/subtaskController/subtaskController.js'
 import subtaskQuestionnaireAssignmentController from '../controller/subtaskController/subtaskQuestionnaireAssignmentController.js'
+import studentTaskAssignmentController from '../controller/taskController/studentTaskAssignmentController.js'
+import taskController from '../controller/taskController/taskController.js'
+import taskSubtaskAssignmentController from '../controller/taskController/taskSubtaskAssignmentController.js'
 
 const router = Router()
 
@@ -127,5 +130,43 @@ router.route('/admin/subtask-questionnaire-assignments/update-status')
 // ******************** SUBTASK ROUTES END ***********************************
 
 
+// ******************** TASK ROUTES ***********************************
+
+// Routes for all members (read-only)
+router.route('/admin/tasks')
+    .get(memberAccess, taskController.getAllTasks);
+
+// Routes for ADMIN only
+router.route('/admin/tasks')
+    .post(adminOnly, taskController.createTask);
+
+router.route('/admin/tasks/:taskId')
+    .get(memberAccess, taskController.getTaskById)
+    .put(adminOnly, taskController.updateTaskDetails)
+    .delete(adminOnly, taskController.deleteTask);
+
+// Routes for managing subtasks (ADMIN only)
+router.route('/admin/tasks/:taskId/subtasks/add')
+    .post(adminOnly, taskSubtaskAssignmentController.addSubtasksToTask);
+
+router.route('/admin/tasks/:taskId/subtasks/remove')
+    .post(adminOnly, taskSubtaskAssignmentController.removeSubtasksFromTask);
+
+// Route for updating TaskSubtaskAssignment (ADMIN only)
+router.route('/admin/task-subtask-assignments/update')
+    .put(adminOnly, taskSubtaskAssignmentController.updateTaskSubtaskAssignment);
+
+
+// Routes for ADMIN only
+router.route('/admin/tasks/:taskId/students/add')
+    .post(adminOnly, studentTaskAssignmentController.addStudentsToTask);
+
+router.route('/admin/tasks/:taskId/students/remove')
+    .post(adminOnly, studentTaskAssignmentController.removeStudentFromTask);
+
+// Route for updating StudentTaskAssignment (ADMIN only)
+router.route('/admin/student-task-assignments/update')
+    .put(adminOnly, studentTaskAssignmentController.updateStudentTaskAssignment);
+// ******************** TASK ROUTES END ***********************************
 
 export default router

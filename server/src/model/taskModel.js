@@ -29,7 +29,10 @@ const taskSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-
+    createdDate:{
+        type: Date,
+        default: Date.now
+    }
 }, {
     timestamps: true,
     versionKey: false

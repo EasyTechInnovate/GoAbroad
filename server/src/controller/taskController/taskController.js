@@ -1,0 +1,312 @@
+import httpResponse from '../../util/httpResponse.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpError from '../../util/httpError.js';
+import { ValidateCreateTask, ValidateUpdateTask, validateJoiSchema } from '../../service/validationService.js';
+import Task from '../../model/taskModel.js';
+import StudentTaskAssignment from '../../model/studentTaskAssignmentModel.js';
+import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
+import Student from '../../model/studentModel.js';
+import Subtask from '../../model/subtaskModel.js';
+import Member from '../../model/membersModel.js';
+
+export default {
+    // Create a new task with associated students and subtasks (ADMIN only)
+    createTask: async (req, res, next) => {
+        try {
+            // Validate input
+            const { value, error } = validateJoiSchema(ValidateCreateTask, req.body);
+            if (error) return httpError(next, error, req, 422);
+
+            // Check role
+            if (req.authenticatedMember.role !== 'ADMIN') {
+                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+            }
+
+            const { studentIds, subtaskIds, assignee, ...taskData } = value;
+
+            // Set assignee to authenticated member if not provided
+            taskData.assignee = assignee ? assignee : req.authenticatedMember._id;
+
+            // Validate assignee exists
+            const assigneeExists = await Member.findById(taskData.assignee).lean();
+            if (!assigneeExists) {
+                return httpError(next, new Error('Assignee not found'), req, 404);
+            }
+
+            // Validate studentIds exist
+            if (studentIds && studentIds.length > 0) {
+                const students = await Student.find({ _id: { $in: studentIds } }).lean();
+                if (students.length !== studentIds.length) {
+                    return httpError(next, new Error('One or more studentIds are invalid'), req, 400);
+                }
+            }
+
+            // Validate subtaskIds exist
+            if (subtaskIds && subtaskIds.length > 0) {
+                const subtasks = await Subtask.find({ _id: { $in: subtaskIds } }).lean();
+                if (subtasks.length !== subtaskIds.length) {
+                    return httpError(next, new Error('One or more subtaskIds are invalid'), req, 400);
+                }
+            }
+
+            // Create new task
+            const task = new Task(taskData);
+            await task.save();
+
+            // Create StudentTaskAssignment records
+            if (studentIds && studentIds.length > 0) {
+                const studentAssignmentPromises = studentIds.map(async (studentId) => {
+                    const assignment = new StudentTaskAssignment({
+                        studentId,
+                        taskId: task._id,
+                        assignedAt: new Date(),
+                        status: "PENDING",
+                        isLocked: false,
+                        dueDate: null
+                    });
+                    return assignment.save();
+                });
+                await Promise.all(studentAssignmentPromises);
+            }
+
+            // Create TaskSubtaskAssignment records for each student-subtask combination
+            if (subtaskIds && subtaskIds.length > 0 && studentIds && studentIds.length > 0) {
+                const assignmentPromises = [];
+                studentIds.forEach(studentId => {
+                    subtaskIds.forEach(subtaskId => {
+                        const assignment = new TaskSubtaskAssignment({
+                            studentId,
+                            taskId: task._id,
+                            subtaskId,
+                            assignedAt: new Date(),
+                            status: "PENDING",
+                            isLocked: false,
+                            dueDate: null
+                        });
+                        assignmentPromises.push(assignment.save());
+                    });
+                });
+                await Promise.all(assignmentPromises);
+            }
+
+            // Fetch the task with associated students and subtasks
+            const populatedTask = await Task.findById(task._id).lean();
+            const studentAssignments = await StudentTaskAssignment.find({ taskId: task._id })
+                .populate('studentId',"-password")
+                .lean();
+            const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId: task._id })
+                .populate('studentId',"-password")
+                .populate('subtaskId')
+                .lean();
+
+            populatedTask.students = studentAssignments.map(assignment => assignment.studentId);
+            populatedTask.subtasks = taskSubtaskAssignments.map(assignment => ({
+                subtask: assignment.subtaskId,
+                student: assignment.studentId,
+                status: assignment.status,
+                isLocked: assignment.isLocked,
+                dueDate: assignment.dueDate
+            }));
+
+            httpResponse(req, res, 201, responseMessage.SUCCESS, {
+                message: 'Task created successfully',
+                task: populatedTask
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Update task details (ADMIN only)
+    updateTaskDetails: async (req, res, next) => {
+        try {
+            const { taskId } = req.params;
+            const { value, error } = validateJoiSchema(ValidateUpdateTask, req.body);
+            if (error) return httpError(next, error, req, 422);
+
+            // Check role
+            if (req.authenticatedMember.role !== 'ADMIN') {
+                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+            }
+
+            // Find task
+            const task = await Task.findById(taskId);
+            if (!task) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND('Task')), req, 404);
+            }
+
+            // Validate assignee if provided
+            if (value.assignee) {
+                const assigneeExists = await Member.findById(value.assignee);
+                if (!assigneeExists) {
+                    return httpError(next, new Error('Assignee not found'), req, 404);
+                }
+            }
+
+            // Update task fields
+            if (value.title) task.title = value.title;
+            if (value.description !== undefined) task.description = value.description;
+            if (value.logo !== undefined) task.logo = value.logo;
+            if (value.priority) task.priority = value.priority;
+            if (value.assignee) task.assignee = value.assignee;
+            if (value.isDefault !== undefined) task.isDefault = value.isDefault;
+            if (value.createdDate) task.createdDate = value.createdDate;
+
+            await task.save();
+
+            // Fetch updated task with associations
+            const populatedTask = await Task.findById(task._id).lean();
+            const studentAssignments = await StudentTaskAssignment.find({ taskId: task._id })
+                .populate('studentId',"-password")
+                .lean();
+            const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId: task._id })
+                .populate('studentId',"-password")
+                .populate('subtaskId')
+                .lean();
+
+            populatedTask.students = studentAssignments.map(assignment => assignment.studentId);
+            populatedTask.subtasks = taskSubtaskAssignments.map(assignment => ({
+                subtask: assignment.subtaskId,
+                student: assignment.studentId,
+                status: assignment.status,
+                isLocked: assignment.isLocked,
+                dueDate: assignment.dueDate
+            }));
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                message: 'Task updated successfully',
+                task: populatedTask
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Delete a task and its associated assignments (ADMIN only)
+    deleteTask: async (req, res, next) => {
+        try {
+            const { taskId } = req.params;
+
+            // Check role
+            if (req.authenticatedMember.role !== 'ADMIN') {
+                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+            }
+
+            // Find task
+            const task = await Task.findById(taskId);
+            if (!task) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND('Task')), req, 404);
+            }
+
+            // Delete associated StudentTaskAssignment and TaskSubtaskAssignment records
+            await StudentTaskAssignment.deleteMany({ taskId:task._id });
+            await TaskSubtaskAssignment.deleteMany({ taskId:task._id });
+
+            // Delete task
+            await Task.findByIdAndDelete(task._id);
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                message: 'Task deleted successfully'
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Get all tasks with associated students and subtasks (accessible to all members)
+    getAllTasks: async (req, res, next) => {
+        try {
+            // Extract pagination parameters
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const skip = (page - 1) * limit;
+
+            // Fetch total count for pagination
+            const totalTasks = await Task.countDocuments();
+
+            // Fetch paginated tasks
+            const tasks = await Task.find()
+                .skip(skip)
+                .limit(limit)
+                .lean();
+
+            const taskIds = tasks.map(task => task._id);
+
+            // Fetch associated assignments
+            const studentAssignments = await StudentTaskAssignment.find({ taskId: { $in: taskIds } })
+                .populate('studentId', '-password')
+                .lean();
+            const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId: { $in: taskIds } })
+                .populate('subtaskId')
+                .lean();
+
+            // Map assignments to tasks
+            const tasksWithAssignments = tasks.map(task => {
+                const taskStudentAssignments = studentAssignments.filter(assignment => assignment.taskId.toString() === task._id.toString());
+                const taskSubtaskAssignmentsForTask = taskSubtaskAssignments.filter(assignment => assignment.taskId.toString() === task._id.toString());
+
+                task.students = taskStudentAssignments.map(assignment => assignment.studentId);
+                // Get unique subtasks by subtaskId
+                const uniqueSubtasks = [...new Map(taskSubtaskAssignmentsForTask.map(assignment => [assignment.subtaskId._id.toString(), {
+                    subtask: assignment.subtaskId,
+                    status: assignment.status,
+                    isLocked: assignment.isLocked,
+                    dueDate: assignment.dueDate
+                }])).values()];
+                task.subtasks = uniqueSubtasks;
+                task.totalStudent = task.students.length;
+                task.totalSubtask = task.subtasks.length;
+                return task;
+            });
+
+            // Pagination metadata
+            const pagination = {
+                total: totalTasks,
+                page,
+                limit,
+                totalPages: Math.ceil(totalTasks / limit),
+                hasNextPage: page < Math.ceil(totalTasks / limit),
+                hasPrevPage: page > 1
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                tasks: tasksWithAssignments,
+                pagination
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+    // Get a specific task by ID with associated students and subtasks (accessible to all members)
+    getTaskById: async (req, res, next) => {
+        try {
+            const { taskId } = req.params;
+            const task = await Task.findById(taskId).lean();
+            if (!task) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND('Task')), req, 404);
+            }
+
+            // Fetch associated assignments
+            const studentAssignments = await StudentTaskAssignment.find({ taskId })
+                .populate('studentId',"-password")
+                .lean();
+            const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId })
+                .populate('studentId',"-password")
+                .populate('subtaskId')
+                .lean();
+
+            task.students = studentAssignments.map(assignment => assignment.studentId);
+            task.subtasks = taskSubtaskAssignments.map(assignment => ({
+                subtask: assignment.subtaskId,
+                student: assignment.studentId,
+                status: assignment.status,
+                isLocked: assignment.isLocked,
+                dueDate: assignment.dueDate
+            }));
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, task);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    }
+};

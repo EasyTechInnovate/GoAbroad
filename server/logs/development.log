@@ -14284,3 +14284,4520 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T11:46:23.088Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T11:46:23.097Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T11:46:23.098Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T11:49:29.879Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T11:49:29.888Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T11:49:29.890Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:08:58.379Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:08:58.405Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:08:58.407Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:31:04.020Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:31:04.031Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:31:04.032Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:31:33.900Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:31:33.907Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:31:33.908Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:32:27.528Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:32:27.537Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:32:27.538Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:32:39.052Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:32:39.057Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:32:39.058Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:37:32.863Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:37:32.871Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:37:32.873Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:40:39.646Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:40:39.656Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:40:39.658Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:40:50.324Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:40:50.331Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:40:50.332Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:41:09.352Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:41:09.362Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:41:09.363Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:43:14.357Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:43:14.366Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:43:14.368Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:47:37.123Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:47:37.132Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:47:37.134Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:48:22.662Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:48:22.670Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:48:22.672Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:53:23.098Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:53:23.106Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:53:23.108Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:53:57.887Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:53:57.896Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:53:57.898Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:54:27.630Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:54:27.640Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:54:27.641Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:58:48.112Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:58:48.122Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:58:48.123Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T12:59:09.737Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T12:59:09.744Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T12:59:09.744Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:00:30.199Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:00:30.206Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:00:30.207Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:02:12.890Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:02:12.898Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:02:12.899Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:07:49.020Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "tasks": [],
+            "pagination": {
+                "total": 0,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 0,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:12:38.969Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/tasks"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Task created successfully",
+            "task": {
+                "_id": "681cadc654d7a3482ad6bd0f",
+                "title": "Complete Registration Process",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "HIGH",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:12:38.831Z",
+                "createdAt": "2025-05-08T13:12:38.884Z",
+                "updatedAt": "2025-05-08T13:12:38.884Z",
+                "students": [
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    },
+                    {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "password": "$2b$10$cCzK1KJXjtpITG2QKc28ne9w5SvCnZFU.d1c9SiuTPWmmnM/mmu3.",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    }
+                ],
+                "subtasks": [
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    },
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "password": "$2b$10$cCzK1KJXjtpITG2QKc28ne9w5SvCnZFU.d1c9SiuTPWmmnM/mmu3.",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    }
+                ]
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:14:33.455Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:14:33.465Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:14:33.466Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:15:24.406Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:15:24.416Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:15:24.417Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:15:50.412Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:15:50.419Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:15:50.420Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:16:43.463Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:16:43.474Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:16:43.475Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:17:53.473Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:17:53.481Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:17:53.482Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:17:54.556Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "tasks": [
+                {
+                    "_id": "681cadc654d7a3482ad6bd0f",
+                    "title": "Complete Registration Process",
+                    "description": "Handle registration steps",
+                    "logo": "http://local.png",
+                    "priority": "HIGH",
+                    "assignee": "68013a01d2da4661a44bb909",
+                    "isDefault": false,
+                    "createdDate": "2025-05-08T13:12:38.831Z",
+                    "createdAt": "2025-05-08T13:12:38.884Z",
+                    "updatedAt": "2025-05-08T13:12:38.884Z",
+                    "students": [
+                        {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        }
+                    ],
+                    "subtasks": [
+                        {
+                            "subtask": {
+                                "_id": "681c5a5ea34ea39b0bc5b1e0",
+                                "title": "Prepare Application Documents",
+                                "description": "Gather all required documents",
+                                "logo": "https://example.com/logo.png",
+                                "priority": "HIGH",
+                                "createdAt": "2025-05-08T07:16:46.266Z",
+                                "updatedAt": "2025-05-08T07:16:46.266Z"
+                            },
+                            "student": {
+                                "_id": "68107d4d1fbc5724e46a9b55",
+                                "email": "johndoe@example.com",
+                                "name": "John Doe",
+                                "profilePicture": "https://example.com/profile.jpg",
+                                "programDetails": {
+                                    "program": "Computer Science",
+                                    "validity": "2026-06-15T00:00:00.000Z"
+                                },
+                                "phoneNumber": "+912345678900",
+                                "personalDetails": {
+                                    "dob": "1995-05-15T00:00:00.000Z",
+                                    "gender": "MALE",
+                                    "address": "123 Main St, Cityville",
+                                    "profession": "Software Engineer"
+                                },
+                                "collegeDetails": {
+                                    "branch": "Computer Science",
+                                    "highestDegree": "Bachelor's",
+                                    "university": "XYZ University",
+                                    "college": "ABC College",
+                                    "gpa": 3.8,
+                                    "toppersGPA": 4,
+                                    "noOfBacklogs": 0,
+                                    "admissionTerm": "Fall 2023",
+                                    "coursesApplying": [
+                                        "AI",
+                                        "Machine Learning",
+                                        "Data Science"
+                                    ]
+                                },
+                                "greDetails": {
+                                    "grePlane": "2025-05-20T00:00:00.000Z",
+                                    "greDate": "2025-06-10T00:00:00.000Z",
+                                    "greScoreCard": "YES",
+                                    "greScore": {
+                                        "verbal": 165,
+                                        "quant": 170,
+                                        "awa": 4.5
+                                    },
+                                    "retakingGRE": "No"
+                                },
+                                "ieltsDetails": {
+                                    "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                    "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                    "ieltsScore": {
+                                        "reading": 8,
+                                        "writing": 7.5,
+                                        "speaking": 8,
+                                        "listening": 8.5
+                                    },
+                                    "retakingIELTS": "No"
+                                },
+                                "toeflDetails": {
+                                    "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                    "toeflDate": "2025-07-15T00:00:00.000Z",
+                                    "toeflScore": {
+                                        "reading": 28,
+                                        "writing": 27,
+                                        "speaking": 25
+                                    },
+                                    "retakingTOEFL": "No"
+                                },
+                                "visa": {
+                                    "countriesPlanningToApply": [
+                                        "USA",
+                                        "Canada",
+                                        "UK"
+                                    ],
+                                    "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                    "visaInterviewLocation": "New York"
+                                },
+                                "status": "PENDING",
+                                "isFeePaid": true,
+                                "isVerified": true,
+                                "role": "STUDENT",
+                                "createdAt": "2025-04-29T07:18:37.922Z",
+                                "updatedAt": "2025-04-29T07:27:33.039Z"
+                            },
+                            "status": "PENDING",
+                            "isLocked": false,
+                            "dueDate": null
+                        },
+                        {
+                            "subtask": {
+                                "_id": "681c5a5ea34ea39b0bc5b1e0",
+                                "title": "Prepare Application Documents",
+                                "description": "Gather all required documents",
+                                "logo": "https://example.com/logo.png",
+                                "priority": "HIGH",
+                                "createdAt": "2025-05-08T07:16:46.266Z",
+                                "updatedAt": "2025-05-08T07:16:46.266Z"
+                            },
+                            "student": {
+                                "_id": "6811cda24b6f4ee3f0a766e6",
+                                "email": "test2@gmail.com",
+                                "name": null,
+                                "profilePicture": null,
+                                "programDetails": {
+                                    "program": null,
+                                    "validity": null
+                                },
+                                "phoneNumber": null,
+                                "personalDetails": {
+                                    "dob": null,
+                                    "gender": null,
+                                    "address": null,
+                                    "profession": null
+                                },
+                                "collegeDetails": {
+                                    "branch": null,
+                                    "highestDegree": null,
+                                    "university": null,
+                                    "college": null,
+                                    "gpa": null,
+                                    "toppersGPA": null,
+                                    "noOfBacklogs": null,
+                                    "admissionTerm": null,
+                                    "coursesApplying": null
+                                },
+                                "greDetails": {
+                                    "greScore": {
+                                        "verbal": null,
+                                        "quant": null,
+                                        "awa": null
+                                    },
+                                    "grePlane": null,
+                                    "greDate": null,
+                                    "greScoreCard": null,
+                                    "retakingGRE": null
+                                },
+                                "ieltsDetails": {
+                                    "ieltsScore": {
+                                        "reading": null,
+                                        "writing": null,
+                                        "speaking": null,
+                                        "listening": null
+                                    },
+                                    "ieltsPlan": null,
+                                    "ieltsDate": null,
+                                    "retakingIELTS": null
+                                },
+                                "toeflDetails": {
+                                    "toeflScore": {
+                                        "reading": null,
+                                        "writing": null,
+                                        "speaking": null
+                                    },
+                                    "toeflPlan": null,
+                                    "toeflDate": null,
+                                    "retakingTOEFL": null
+                                },
+                                "visa": {
+                                    "countriesPlanningToApply": null,
+                                    "visaInterviewDate": null,
+                                    "visaInterviewLocation": null
+                                },
+                                "status": "PENDING",
+                                "isFeePaid": true,
+                                "isVerified": true,
+                                "role": "STUDENT",
+                                "createdAt": "2025-04-30T07:13:38.056Z",
+                                "updatedAt": "2025-04-30T07:13:38.056Z"
+                            },
+                            "status": "PENDING",
+                            "isLocked": false,
+                            "dueDate": null
+                        }
+                    ],
+                    "totalStudent": 2,
+                    "totalSubtask": 2
+                }
+            ],
+            "pagination": {
+                "total": 1,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 1,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:24:05.435Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:24:05.443Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:24:05.444Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:24:10.391Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:24:10.398Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:24:10.399Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:24:11.101Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "tasks": [
+                {
+                    "_id": "681cadc654d7a3482ad6bd0f",
+                    "title": "Complete Registration Process",
+                    "description": "Handle registration steps",
+                    "logo": "http://local.png",
+                    "priority": "HIGH",
+                    "assignee": "68013a01d2da4661a44bb909",
+                    "isDefault": false,
+                    "createdDate": "2025-05-08T13:12:38.831Z",
+                    "createdAt": "2025-05-08T13:12:38.884Z",
+                    "updatedAt": "2025-05-08T13:12:38.884Z",
+                    "students": [
+                        {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        }
+                    ],
+                    "subtasks": [
+                        {
+                            "subtask": {
+                                "_id": "681c5a5ea34ea39b0bc5b1e0",
+                                "title": "Prepare Application Documents",
+                                "description": "Gather all required documents",
+                                "logo": "https://example.com/logo.png",
+                                "priority": "HIGH",
+                                "createdAt": "2025-05-08T07:16:46.266Z",
+                                "updatedAt": "2025-05-08T07:16:46.266Z"
+                            },
+                            "status": "PENDING",
+                            "isLocked": false,
+                            "dueDate": null
+                        }
+                    ],
+                    "totalStudent": 2,
+                    "totalSubtask": 1
+                }
+            ],
+            "pagination": {
+                "total": 1,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 1,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:24:55.008Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks/681cadc654d7a3482ad6bd0f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "681cadc654d7a3482ad6bd0f",
+            "title": "Complete Registration Process",
+            "description": "Handle registration steps",
+            "logo": "http://local.png",
+            "priority": "HIGH",
+            "assignee": "68013a01d2da4661a44bb909",
+            "isDefault": false,
+            "createdDate": "2025-05-08T13:12:38.831Z",
+            "createdAt": "2025-05-08T13:12:38.884Z",
+            "updatedAt": "2025-05-08T13:12:38.884Z",
+            "students": [
+                {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe",
+                    "profilePicture": "https://example.com/profile.jpg",
+                    "programDetails": {
+                        "program": "Computer Science",
+                        "validity": "2026-06-15T00:00:00.000Z"
+                    },
+                    "phoneNumber": "+912345678900",
+                    "personalDetails": {
+                        "dob": "1995-05-15T00:00:00.000Z",
+                        "gender": "MALE",
+                        "address": "123 Main St, Cityville",
+                        "profession": "Software Engineer"
+                    },
+                    "collegeDetails": {
+                        "branch": "Computer Science",
+                        "highestDegree": "Bachelor's",
+                        "university": "XYZ University",
+                        "college": "ABC College",
+                        "gpa": 3.8,
+                        "toppersGPA": 4,
+                        "noOfBacklogs": 0,
+                        "admissionTerm": "Fall 2023",
+                        "coursesApplying": [
+                            "AI",
+                            "Machine Learning",
+                            "Data Science"
+                        ]
+                    },
+                    "greDetails": {
+                        "grePlane": "2025-05-20T00:00:00.000Z",
+                        "greDate": "2025-06-10T00:00:00.000Z",
+                        "greScoreCard": "YES",
+                        "greScore": {
+                            "verbal": 165,
+                            "quant": 170,
+                            "awa": 4.5
+                        },
+                        "retakingGRE": "No"
+                    },
+                    "ieltsDetails": {
+                        "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                        "ieltsDate": "2025-06-20T00:00:00.000Z",
+                        "ieltsScore": {
+                            "reading": 8,
+                            "writing": 7.5,
+                            "speaking": 8,
+                            "listening": 8.5
+                        },
+                        "retakingIELTS": "No"
+                    },
+                    "toeflDetails": {
+                        "toeflPlan": "2025-07-10T00:00:00.000Z",
+                        "toeflDate": "2025-07-15T00:00:00.000Z",
+                        "toeflScore": {
+                            "reading": 28,
+                            "writing": 27,
+                            "speaking": 25
+                        },
+                        "retakingTOEFL": "No"
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": [
+                            "USA",
+                            "Canada",
+                            "UK"
+                        ],
+                        "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                        "visaInterviewLocation": "New York"
+                    },
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-29T07:18:37.922Z",
+                    "updatedAt": "2025-04-29T07:27:33.039Z"
+                },
+                {
+                    "_id": "6811cda24b6f4ee3f0a766e6",
+                    "email": "test2@gmail.com",
+                    "name": null,
+                    "profilePicture": null,
+                    "programDetails": {
+                        "program": null,
+                        "validity": null
+                    },
+                    "phoneNumber": null,
+                    "personalDetails": {
+                        "dob": null,
+                        "gender": null,
+                        "address": null,
+                        "profession": null
+                    },
+                    "collegeDetails": {
+                        "branch": null,
+                        "highestDegree": null,
+                        "university": null,
+                        "college": null,
+                        "gpa": null,
+                        "toppersGPA": null,
+                        "noOfBacklogs": null,
+                        "admissionTerm": null,
+                        "coursesApplying": null
+                    },
+                    "greDetails": {
+                        "greScore": {
+                            "verbal": null,
+                            "quant": null,
+                            "awa": null
+                        },
+                        "grePlane": null,
+                        "greDate": null,
+                        "greScoreCard": null,
+                        "retakingGRE": null
+                    },
+                    "ieltsDetails": {
+                        "ieltsScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null,
+                            "listening": null
+                        },
+                        "ieltsPlan": null,
+                        "ieltsDate": null,
+                        "retakingIELTS": null
+                    },
+                    "toeflDetails": {
+                        "toeflScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null
+                        },
+                        "toeflPlan": null,
+                        "toeflDate": null,
+                        "retakingTOEFL": null
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": null,
+                        "visaInterviewDate": null,
+                        "visaInterviewLocation": null
+                    },
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-30T07:13:38.056Z",
+                    "updatedAt": "2025-04-30T07:13:38.056Z"
+                }
+            ],
+            "subtasks": [
+                {
+                    "subtask": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents",
+                        "description": "Gather all required documents",
+                        "logo": "https://example.com/logo.png",
+                        "priority": "HIGH",
+                        "createdAt": "2025-05-08T07:16:46.266Z",
+                        "updatedAt": "2025-05-08T07:16:46.266Z"
+                    },
+                    "student": {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    },
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null
+                },
+                {
+                    "subtask": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents",
+                        "description": "Gather all required documents",
+                        "logo": "https://example.com/logo.png",
+                        "priority": "HIGH",
+                        "createdAt": "2025-05-08T07:16:46.266Z",
+                        "updatedAt": "2025-05-08T07:16:46.266Z"
+                    },
+                    "student": {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    },
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null
+                }
+            ]
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:26:31.748Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks/681cadc654d7a3482ad6bd0f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "681cadc654d7a3482ad6bd0f",
+            "title": "Complete Registration Process",
+            "description": "Handle registration steps",
+            "logo": "http://local.png",
+            "priority": "HIGH",
+            "assignee": "68013a01d2da4661a44bb909",
+            "isDefault": false,
+            "createdDate": "2025-05-08T13:12:38.831Z",
+            "createdAt": "2025-05-08T13:12:38.884Z",
+            "updatedAt": "2025-05-08T13:12:38.884Z",
+            "students": [
+                {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe",
+                    "profilePicture": "https://example.com/profile.jpg",
+                    "programDetails": {
+                        "program": "Computer Science",
+                        "validity": "2026-06-15T00:00:00.000Z"
+                    },
+                    "phoneNumber": "+912345678900",
+                    "personalDetails": {
+                        "dob": "1995-05-15T00:00:00.000Z",
+                        "gender": "MALE",
+                        "address": "123 Main St, Cityville",
+                        "profession": "Software Engineer"
+                    },
+                    "collegeDetails": {
+                        "branch": "Computer Science",
+                        "highestDegree": "Bachelor's",
+                        "university": "XYZ University",
+                        "college": "ABC College",
+                        "gpa": 3.8,
+                        "toppersGPA": 4,
+                        "noOfBacklogs": 0,
+                        "admissionTerm": "Fall 2023",
+                        "coursesApplying": [
+                            "AI",
+                            "Machine Learning",
+                            "Data Science"
+                        ]
+                    },
+                    "greDetails": {
+                        "grePlane": "2025-05-20T00:00:00.000Z",
+                        "greDate": "2025-06-10T00:00:00.000Z",
+                        "greScoreCard": "YES",
+                        "greScore": {
+                            "verbal": 165,
+                            "quant": 170,
+                            "awa": 4.5
+                        },
+                        "retakingGRE": "No"
+                    },
+                    "ieltsDetails": {
+                        "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                        "ieltsDate": "2025-06-20T00:00:00.000Z",
+                        "ieltsScore": {
+                            "reading": 8,
+                            "writing": 7.5,
+                            "speaking": 8,
+                            "listening": 8.5
+                        },
+                        "retakingIELTS": "No"
+                    },
+                    "toeflDetails": {
+                        "toeflPlan": "2025-07-10T00:00:00.000Z",
+                        "toeflDate": "2025-07-15T00:00:00.000Z",
+                        "toeflScore": {
+                            "reading": 28,
+                            "writing": 27,
+                            "speaking": 25
+                        },
+                        "retakingTOEFL": "No"
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": [
+                            "USA",
+                            "Canada",
+                            "UK"
+                        ],
+                        "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                        "visaInterviewLocation": "New York"
+                    },
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-29T07:18:37.922Z",
+                    "updatedAt": "2025-04-29T07:27:33.039Z"
+                },
+                {
+                    "_id": "6811cda24b6f4ee3f0a766e6",
+                    "email": "test2@gmail.com",
+                    "name": null,
+                    "profilePicture": null,
+                    "programDetails": {
+                        "program": null,
+                        "validity": null
+                    },
+                    "phoneNumber": null,
+                    "personalDetails": {
+                        "dob": null,
+                        "gender": null,
+                        "address": null,
+                        "profession": null
+                    },
+                    "collegeDetails": {
+                        "branch": null,
+                        "highestDegree": null,
+                        "university": null,
+                        "college": null,
+                        "gpa": null,
+                        "toppersGPA": null,
+                        "noOfBacklogs": null,
+                        "admissionTerm": null,
+                        "coursesApplying": null
+                    },
+                    "greDetails": {
+                        "greScore": {
+                            "verbal": null,
+                            "quant": null,
+                            "awa": null
+                        },
+                        "grePlane": null,
+                        "greDate": null,
+                        "greScoreCard": null,
+                        "retakingGRE": null
+                    },
+                    "ieltsDetails": {
+                        "ieltsScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null,
+                            "listening": null
+                        },
+                        "ieltsPlan": null,
+                        "ieltsDate": null,
+                        "retakingIELTS": null
+                    },
+                    "toeflDetails": {
+                        "toeflScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null
+                        },
+                        "toeflPlan": null,
+                        "toeflDate": null,
+                        "retakingTOEFL": null
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": null,
+                        "visaInterviewDate": null,
+                        "visaInterviewLocation": null
+                    },
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-30T07:13:38.056Z",
+                    "updatedAt": "2025-04-30T07:13:38.056Z"
+                }
+            ],
+            "subtasks": [
+                {
+                    "subtask": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents",
+                        "description": "Gather all required documents",
+                        "logo": "https://example.com/logo.png",
+                        "priority": "HIGH",
+                        "createdAt": "2025-05-08T07:16:46.266Z",
+                        "updatedAt": "2025-05-08T07:16:46.266Z"
+                    },
+                    "student": {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    },
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null
+                },
+                {
+                    "subtask": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents",
+                        "description": "Gather all required documents",
+                        "logo": "https://example.com/logo.png",
+                        "priority": "HIGH",
+                        "createdAt": "2025-05-08T07:16:46.266Z",
+                        "updatedAt": "2025-05-08T07:16:46.266Z"
+                    },
+                    "student": {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    },
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null
+                }
+            ]
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:26:38.283Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/tasks/681cadc654d7a3482ad6bd0f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Task updated successfully",
+            "task": {
+                "_id": "681cadc654d7a3482ad6bd0f",
+                "title": "Complete Admission Process - Updated",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "LOW",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:12:38.831Z",
+                "createdAt": "2025-05-08T13:12:38.884Z",
+                "updatedAt": "2025-05-08T13:26:38.257Z",
+                "students": [
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    },
+                    {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    }
+                ],
+                "subtasks": [
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    },
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    }
+                ]
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:26:44.035Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks/681cadc654d7a3482ad6bd0f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "681cadc654d7a3482ad6bd0f",
+            "title": "Complete Admission Process - Updated",
+            "description": "Handle registration steps",
+            "logo": "http://local.png",
+            "priority": "LOW",
+            "assignee": "68013a01d2da4661a44bb909",
+            "isDefault": false,
+            "createdDate": "2025-05-08T13:12:38.831Z",
+            "createdAt": "2025-05-08T13:12:38.884Z",
+            "updatedAt": "2025-05-08T13:26:38.257Z",
+            "students": [
+                {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe",
+                    "profilePicture": "https://example.com/profile.jpg",
+                    "programDetails": {
+                        "program": "Computer Science",
+                        "validity": "2026-06-15T00:00:00.000Z"
+                    },
+                    "phoneNumber": "+912345678900",
+                    "personalDetails": {
+                        "dob": "1995-05-15T00:00:00.000Z",
+                        "gender": "MALE",
+                        "address": "123 Main St, Cityville",
+                        "profession": "Software Engineer"
+                    },
+                    "collegeDetails": {
+                        "branch": "Computer Science",
+                        "highestDegree": "Bachelor's",
+                        "university": "XYZ University",
+                        "college": "ABC College",
+                        "gpa": 3.8,
+                        "toppersGPA": 4,
+                        "noOfBacklogs": 0,
+                        "admissionTerm": "Fall 2023",
+                        "coursesApplying": [
+                            "AI",
+                            "Machine Learning",
+                            "Data Science"
+                        ]
+                    },
+                    "greDetails": {
+                        "grePlane": "2025-05-20T00:00:00.000Z",
+                        "greDate": "2025-06-10T00:00:00.000Z",
+                        "greScoreCard": "YES",
+                        "greScore": {
+                            "verbal": 165,
+                            "quant": 170,
+                            "awa": 4.5
+                        },
+                        "retakingGRE": "No"
+                    },
+                    "ieltsDetails": {
+                        "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                        "ieltsDate": "2025-06-20T00:00:00.000Z",
+                        "ieltsScore": {
+                            "reading": 8,
+                            "writing": 7.5,
+                            "speaking": 8,
+                            "listening": 8.5
+                        },
+                        "retakingIELTS": "No"
+                    },
+                    "toeflDetails": {
+                        "toeflPlan": "2025-07-10T00:00:00.000Z",
+                        "toeflDate": "2025-07-15T00:00:00.000Z",
+                        "toeflScore": {
+                            "reading": 28,
+                            "writing": 27,
+                            "speaking": 25
+                        },
+                        "retakingTOEFL": "No"
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": [
+                            "USA",
+                            "Canada",
+                            "UK"
+                        ],
+                        "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                        "visaInterviewLocation": "New York"
+                    },
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-29T07:18:37.922Z",
+                    "updatedAt": "2025-04-29T07:27:33.039Z"
+                },
+                {
+                    "_id": "6811cda24b6f4ee3f0a766e6",
+                    "email": "test2@gmail.com",
+                    "name": null,
+                    "profilePicture": null,
+                    "programDetails": {
+                        "program": null,
+                        "validity": null
+                    },
+                    "phoneNumber": null,
+                    "personalDetails": {
+                        "dob": null,
+                        "gender": null,
+                        "address": null,
+                        "profession": null
+                    },
+                    "collegeDetails": {
+                        "branch": null,
+                        "highestDegree": null,
+                        "university": null,
+                        "college": null,
+                        "gpa": null,
+                        "toppersGPA": null,
+                        "noOfBacklogs": null,
+                        "admissionTerm": null,
+                        "coursesApplying": null
+                    },
+                    "greDetails": {
+                        "greScore": {
+                            "verbal": null,
+                            "quant": null,
+                            "awa": null
+                        },
+                        "grePlane": null,
+                        "greDate": null,
+                        "greScoreCard": null,
+                        "retakingGRE": null
+                    },
+                    "ieltsDetails": {
+                        "ieltsScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null,
+                            "listening": null
+                        },
+                        "ieltsPlan": null,
+                        "ieltsDate": null,
+                        "retakingIELTS": null
+                    },
+                    "toeflDetails": {
+                        "toeflScore": {
+                            "reading": null,
+                            "writing": null,
+                            "speaking": null
+                        },
+                        "toeflPlan": null,
+                        "toeflDate": null,
+                        "retakingTOEFL": null
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": null,
+                        "visaInterviewDate": null,
+                        "visaInterviewLocation": null
+                    },
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-30T07:13:38.056Z",
+                    "updatedAt": "2025-04-30T07:13:38.056Z"
+                }
+            ],
+            "subtasks": [
+                {
+                    "subtask": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents",
+                        "description": "Gather all required documents",
+                        "logo": "https://example.com/logo.png",
+                        "priority": "HIGH",
+                        "createdAt": "2025-05-08T07:16:46.266Z",
+                        "updatedAt": "2025-05-08T07:16:46.266Z"
+                    },
+                    "student": {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    },
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null
+                },
+                {
+                    "subtask": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents",
+                        "description": "Gather all required documents",
+                        "logo": "https://example.com/logo.png",
+                        "priority": "HIGH",
+                        "createdAt": "2025-05-08T07:16:46.266Z",
+                        "updatedAt": "2025-05-08T07:16:46.266Z"
+                    },
+                    "student": {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    },
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null
+                }
+            ]
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:27:45.129Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/tasks/681cadc654d7a3482ad6bd0f"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Task deleted successfully"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:28:34.823Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/tasks"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Task created successfully",
+            "task": {
+                "_id": "681cb182628976c60536a4a0",
+                "title": "Complete Registration Process",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "HIGH",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:28:34.779Z",
+                "createdAt": "2025-05-08T13:28:34.791Z",
+                "updatedAt": "2025-05-08T13:28:34.791Z",
+                "students": [
+                    {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    },
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    }
+                ],
+                "subtasks": [
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    },
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    }
+                ]
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:29:24.968Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/tasks"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "tasks": [
+                {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process",
+                    "description": "Handle registration steps",
+                    "logo": "http://local.png",
+                    "priority": "HIGH",
+                    "assignee": "68013a01d2da4661a44bb909",
+                    "isDefault": false,
+                    "createdDate": "2025-05-08T13:28:34.779Z",
+                    "createdAt": "2025-05-08T13:28:34.791Z",
+                    "updatedAt": "2025-05-08T13:28:34.791Z",
+                    "students": [
+                        {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        },
+                        {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        }
+                    ],
+                    "subtasks": [
+                        {
+                            "subtask": {
+                                "_id": "681c5a5ea34ea39b0bc5b1e0",
+                                "title": "Prepare Application Documents",
+                                "description": "Gather all required documents",
+                                "logo": "https://example.com/logo.png",
+                                "priority": "HIGH",
+                                "createdAt": "2025-05-08T07:16:46.266Z",
+                                "updatedAt": "2025-05-08T07:16:46.266Z"
+                            },
+                            "status": "PENDING",
+                            "isLocked": false,
+                            "dueDate": null
+                        }
+                    ],
+                    "totalStudent": 2,
+                    "totalSubtask": 1
+                }
+            ],
+            "pagination": {
+                "total": 1,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 1,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:31:40.648Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/tasks/681cb182628976c60536a4a0/subtasks/remove"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Subtasks removed from task successfully",
+            "task": {
+                "_id": "681cb182628976c60536a4a0",
+                "title": "Complete Registration Process",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "HIGH",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:28:34.779Z",
+                "createdAt": "2025-05-08T13:28:34.791Z",
+                "updatedAt": "2025-05-08T13:28:34.791Z",
+                "students": [
+                    {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null
+                    },
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe"
+                    }
+                ],
+                "subtasks": []
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:32:59.361Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/tasks/681cb182628976c60536a4a0/subtasks/add"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Subtasks added to task successfully",
+            "task": {
+                "_id": "681cb182628976c60536a4a0",
+                "title": "Complete Registration Process",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "HIGH",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:28:34.779Z",
+                "createdAt": "2025-05-08T13:28:34.791Z",
+                "updatedAt": "2025-05-08T13:28:34.791Z",
+                "students": [
+                    {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "name": null
+                    },
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe"
+                    }
+                ],
+                "subtasks": [
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents"
+                        },
+                        "student": {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "name": null
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    },
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents"
+                        },
+                        "student": {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "name": "John Doe"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    }
+                ]
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:37:04.379Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/task-subtask-assignments/update"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "TaskSubtaskAssignment updated successfully",
+            "assignment": {
+                "_id": "681cb28b628976c60536a4ce",
+                "studentId": {
+                    "_id": "6811cda24b6f4ee3f0a766e6",
+                    "email": "test2@gmail.com",
+                    "name": null
+                },
+                "taskId": {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process"
+                },
+                "subtaskId": {
+                    "_id": "681c5a5ea34ea39b0bc5b1e0",
+                    "title": "Prepare Application Documents"
+                },
+                "assignedAt": "2025-05-08T13:32:59.323Z",
+                "status": "IN_PROGRESS",
+                "isLocked": true,
+                "dueDate": "2025-05-15T00:00:00.000Z",
+                "createdAt": "2025-05-08T13:32:59.326Z",
+                "updatedAt": "2025-05-08T13:37:04.373Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-08T13:40:06.843Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-08T13:40:06.862Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-08T13:40:06.863Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:41:06.283Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/tasks/681cb182628976c60536a4a0/students/remove"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Student removed from task successfully",
+            "task": {
+                "_id": "681cb182628976c60536a4a0",
+                "title": "Complete Registration Process",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "HIGH",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:28:34.779Z",
+                "createdAt": "2025-05-08T13:28:34.791Z",
+                "updatedAt": "2025-05-08T13:28:34.791Z",
+                "students": [
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    }
+                ],
+                "subtasks": [
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    }
+                ]
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:41:25.253Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/tasks/681cb182628976c60536a4a0/students/add"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Students added to task successfully",
+            "task": {
+                "_id": "681cb182628976c60536a4a0",
+                "title": "Complete Registration Process",
+                "description": "Handle registration steps",
+                "logo": "http://local.png",
+                "priority": "HIGH",
+                "assignee": "68013a01d2da4661a44bb909",
+                "isDefault": false,
+                "createdDate": "2025-05-08T13:28:34.779Z",
+                "createdAt": "2025-05-08T13:28:34.791Z",
+                "updatedAt": "2025-05-08T13:28:34.791Z",
+                "students": [
+                    {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                        "name": "John Doe",
+                        "profilePicture": "https://example.com/profile.jpg",
+                        "programDetails": {
+                            "program": "Computer Science",
+                            "validity": "2026-06-15T00:00:00.000Z"
+                        },
+                        "phoneNumber": "+912345678900",
+                        "personalDetails": {
+                            "dob": "1995-05-15T00:00:00.000Z",
+                            "gender": "MALE",
+                            "address": "123 Main St, Cityville",
+                            "profession": "Software Engineer"
+                        },
+                        "collegeDetails": {
+                            "branch": "Computer Science",
+                            "highestDegree": "Bachelor's",
+                            "university": "XYZ University",
+                            "college": "ABC College",
+                            "gpa": 3.8,
+                            "toppersGPA": 4,
+                            "noOfBacklogs": 0,
+                            "admissionTerm": "Fall 2023",
+                            "coursesApplying": [
+                                "AI",
+                                "Machine Learning",
+                                "Data Science"
+                            ]
+                        },
+                        "greDetails": {
+                            "grePlane": "2025-05-20T00:00:00.000Z",
+                            "greDate": "2025-06-10T00:00:00.000Z",
+                            "greScoreCard": "YES",
+                            "greScore": {
+                                "verbal": 165,
+                                "quant": 170,
+                                "awa": 4.5
+                            },
+                            "retakingGRE": "No"
+                        },
+                        "ieltsDetails": {
+                            "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                            "ieltsDate": "2025-06-20T00:00:00.000Z",
+                            "ieltsScore": {
+                                "reading": 8,
+                                "writing": 7.5,
+                                "speaking": 8,
+                                "listening": 8.5
+                            },
+                            "retakingIELTS": "No"
+                        },
+                        "toeflDetails": {
+                            "toeflPlan": "2025-07-10T00:00:00.000Z",
+                            "toeflDate": "2025-07-15T00:00:00.000Z",
+                            "toeflScore": {
+                                "reading": 28,
+                                "writing": 27,
+                                "speaking": 25
+                            },
+                            "retakingTOEFL": "No"
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": [
+                                "USA",
+                                "Canada",
+                                "UK"
+                            ],
+                            "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                            "visaInterviewLocation": "New York"
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-29T07:18:37.922Z",
+                        "updatedAt": "2025-04-29T07:27:33.039Z"
+                    },
+                    {
+                        "_id": "6811cda24b6f4ee3f0a766e6",
+                        "email": "test2@gmail.com",
+                        "password": "$2b$10$cCzK1KJXjtpITG2QKc28ne9w5SvCnZFU.d1c9SiuTPWmmnM/mmu3.",
+                        "name": null,
+                        "profilePicture": null,
+                        "programDetails": {
+                            "program": null,
+                            "validity": null
+                        },
+                        "phoneNumber": null,
+                        "personalDetails": {
+                            "dob": null,
+                            "gender": null,
+                            "address": null,
+                            "profession": null
+                        },
+                        "collegeDetails": {
+                            "branch": null,
+                            "highestDegree": null,
+                            "university": null,
+                            "college": null,
+                            "gpa": null,
+                            "toppersGPA": null,
+                            "noOfBacklogs": null,
+                            "admissionTerm": null,
+                            "coursesApplying": null
+                        },
+                        "greDetails": {
+                            "greScore": {
+                                "verbal": null,
+                                "quant": null,
+                                "awa": null
+                            },
+                            "grePlane": null,
+                            "greDate": null,
+                            "greScoreCard": null,
+                            "retakingGRE": null
+                        },
+                        "ieltsDetails": {
+                            "ieltsScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null,
+                                "listening": null
+                            },
+                            "ieltsPlan": null,
+                            "ieltsDate": null,
+                            "retakingIELTS": null
+                        },
+                        "toeflDetails": {
+                            "toeflScore": {
+                                "reading": null,
+                                "writing": null,
+                                "speaking": null
+                            },
+                            "toeflPlan": null,
+                            "toeflDate": null,
+                            "retakingTOEFL": null
+                        },
+                        "visa": {
+                            "countriesPlanningToApply": null,
+                            "visaInterviewDate": null,
+                            "visaInterviewLocation": null
+                        },
+                        "status": "PENDING",
+                        "isFeePaid": true,
+                        "isVerified": true,
+                        "role": "STUDENT",
+                        "createdAt": "2025-04-30T07:13:38.056Z",
+                        "updatedAt": "2025-04-30T07:13:38.056Z"
+                    }
+                ],
+                "subtasks": [
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "68107d4d1fbc5724e46a9b55",
+                            "email": "johndoe@example.com",
+                            "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                            "name": "John Doe",
+                            "profilePicture": "https://example.com/profile.jpg",
+                            "programDetails": {
+                                "program": "Computer Science",
+                                "validity": "2026-06-15T00:00:00.000Z"
+                            },
+                            "phoneNumber": "+912345678900",
+                            "personalDetails": {
+                                "dob": "1995-05-15T00:00:00.000Z",
+                                "gender": "MALE",
+                                "address": "123 Main St, Cityville",
+                                "profession": "Software Engineer"
+                            },
+                            "collegeDetails": {
+                                "branch": "Computer Science",
+                                "highestDegree": "Bachelor's",
+                                "university": "XYZ University",
+                                "college": "ABC College",
+                                "gpa": 3.8,
+                                "toppersGPA": 4,
+                                "noOfBacklogs": 0,
+                                "admissionTerm": "Fall 2023",
+                                "coursesApplying": [
+                                    "AI",
+                                    "Machine Learning",
+                                    "Data Science"
+                                ]
+                            },
+                            "greDetails": {
+                                "grePlane": "2025-05-20T00:00:00.000Z",
+                                "greDate": "2025-06-10T00:00:00.000Z",
+                                "greScoreCard": "YES",
+                                "greScore": {
+                                    "verbal": 165,
+                                    "quant": 170,
+                                    "awa": 4.5
+                                },
+                                "retakingGRE": "No"
+                            },
+                            "ieltsDetails": {
+                                "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                                "ieltsDate": "2025-06-20T00:00:00.000Z",
+                                "ieltsScore": {
+                                    "reading": 8,
+                                    "writing": 7.5,
+                                    "speaking": 8,
+                                    "listening": 8.5
+                                },
+                                "retakingIELTS": "No"
+                            },
+                            "toeflDetails": {
+                                "toeflPlan": "2025-07-10T00:00:00.000Z",
+                                "toeflDate": "2025-07-15T00:00:00.000Z",
+                                "toeflScore": {
+                                    "reading": 28,
+                                    "writing": 27,
+                                    "speaking": 25
+                                },
+                                "retakingTOEFL": "No"
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": [
+                                    "USA",
+                                    "Canada",
+                                    "UK"
+                                ],
+                                "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                                "visaInterviewLocation": "New York"
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-29T07:18:37.922Z",
+                            "updatedAt": "2025-04-29T07:27:33.039Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    },
+                    {
+                        "subtask": {
+                            "_id": "681c5a5ea34ea39b0bc5b1e0",
+                            "title": "Prepare Application Documents",
+                            "description": "Gather all required documents",
+                            "logo": "https://example.com/logo.png",
+                            "priority": "HIGH",
+                            "createdAt": "2025-05-08T07:16:46.266Z",
+                            "updatedAt": "2025-05-08T07:16:46.266Z"
+                        },
+                        "student": {
+                            "_id": "6811cda24b6f4ee3f0a766e6",
+                            "email": "test2@gmail.com",
+                            "password": "$2b$10$cCzK1KJXjtpITG2QKc28ne9w5SvCnZFU.d1c9SiuTPWmmnM/mmu3.",
+                            "name": null,
+                            "profilePicture": null,
+                            "programDetails": {
+                                "program": null,
+                                "validity": null
+                            },
+                            "phoneNumber": null,
+                            "personalDetails": {
+                                "dob": null,
+                                "gender": null,
+                                "address": null,
+                                "profession": null
+                            },
+                            "collegeDetails": {
+                                "branch": null,
+                                "highestDegree": null,
+                                "university": null,
+                                "college": null,
+                                "gpa": null,
+                                "toppersGPA": null,
+                                "noOfBacklogs": null,
+                                "admissionTerm": null,
+                                "coursesApplying": null
+                            },
+                            "greDetails": {
+                                "greScore": {
+                                    "verbal": null,
+                                    "quant": null,
+                                    "awa": null
+                                },
+                                "grePlane": null,
+                                "greDate": null,
+                                "greScoreCard": null,
+                                "retakingGRE": null
+                            },
+                            "ieltsDetails": {
+                                "ieltsScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null,
+                                    "listening": null
+                                },
+                                "ieltsPlan": null,
+                                "ieltsDate": null,
+                                "retakingIELTS": null
+                            },
+                            "toeflDetails": {
+                                "toeflScore": {
+                                    "reading": null,
+                                    "writing": null,
+                                    "speaking": null
+                                },
+                                "toeflPlan": null,
+                                "toeflDate": null,
+                                "retakingTOEFL": null
+                            },
+                            "visa": {
+                                "countriesPlanningToApply": null,
+                                "visaInterviewDate": null,
+                                "visaInterviewLocation": null
+                            },
+                            "status": "PENDING",
+                            "isFeePaid": true,
+                            "isVerified": true,
+                            "role": "STUDENT",
+                            "createdAt": "2025-04-30T07:13:38.056Z",
+                            "updatedAt": "2025-04-30T07:13:38.056Z"
+                        },
+                        "status": "PENDING",
+                        "isLocked": false,
+                        "dueDate": null
+                    }
+                ]
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-08T13:42:45.844Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/student-task-assignments/update"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "StudentTaskAssignment updated successfully",
+            "assignment": {
+                "_id": "681cb182628976c60536a4a2",
+                "studentId": {
+                    "programDetails": {
+                        "program": "Computer Science",
+                        "validity": "2026-06-15T00:00:00.000Z"
+                    },
+                    "personalDetails": {
+                        "dob": "1995-05-15T00:00:00.000Z",
+                        "gender": "MALE",
+                        "address": "123 Main St, Cityville",
+                        "profession": "Software Engineer"
+                    },
+                    "collegeDetails": {
+                        "branch": "Computer Science",
+                        "highestDegree": "Bachelor's",
+                        "university": "XYZ University",
+                        "college": "ABC College",
+                        "gpa": 3.8,
+                        "toppersGPA": 4,
+                        "noOfBacklogs": 0,
+                        "admissionTerm": "Fall 2023",
+                        "coursesApplying": [
+                            "AI",
+                            "Machine Learning",
+                            "Data Science"
+                        ]
+                    },
+                    "greDetails": {
+                        "greScore": {
+                            "verbal": 165,
+                            "quant": 170,
+                            "awa": 4.5
+                        },
+                        "grePlane": "2025-05-20T00:00:00.000Z",
+                        "greDate": "2025-06-10T00:00:00.000Z",
+                        "greScoreCard": "YES",
+                        "retakingGRE": "No"
+                    },
+                    "ieltsDetails": {
+                        "ieltsScore": {
+                            "reading": 8,
+                            "writing": 7.5,
+                            "speaking": 8,
+                            "listening": 8.5
+                        },
+                        "ieltsPlan": "2025-06-15T00:00:00.000Z",
+                        "ieltsDate": "2025-06-20T00:00:00.000Z",
+                        "retakingIELTS": "No"
+                    },
+                    "toeflDetails": {
+                        "toeflScore": {
+                            "reading": 28,
+                            "writing": 27,
+                            "speaking": 25
+                        },
+                        "toeflPlan": "2025-07-10T00:00:00.000Z",
+                        "toeflDate": "2025-07-15T00:00:00.000Z",
+                        "retakingTOEFL": "No"
+                    },
+                    "visa": {
+                        "countriesPlanningToApply": [
+                            "USA",
+                            "Canada",
+                            "UK"
+                        ],
+                        "visaInterviewDate": "2025-08-01T00:00:00.000Z",
+                        "visaInterviewLocation": "New York"
+                    },
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "password": "$2b$10$prNa4MVQo9XsXMMyh0KbiefCrhQ.a9gcqWl.yO2cS4Ijp8ceQmhTG",
+                    "name": "John Doe",
+                    "profilePicture": "https://example.com/profile.jpg",
+                    "phoneNumber": "+912345678900",
+                    "status": "PENDING",
+                    "isFeePaid": true,
+                    "isVerified": true,
+                    "role": "STUDENT",
+                    "createdAt": "2025-04-29T07:18:37.922Z",
+                    "updatedAt": "2025-04-29T07:27:33.039Z"
+                },
+                "taskId": {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process",
+                    "description": "Handle registration steps",
+                    "logo": "http://local.png",
+                    "priority": "HIGH",
+                    "assignee": "68013a01d2da4661a44bb909",
+                    "isDefault": false,
+                    "createdDate": "2025-05-08T13:28:34.779Z",
+                    "createdAt": "2025-05-08T13:28:34.791Z",
+                    "updatedAt": "2025-05-08T13:28:34.791Z"
+                },
+                "assignedAt": "2025-05-08T13:28:34.795Z",
+                "status": "IN_PROGRESS",
+                "isLocked": true,
+                "dueDate": "2025-05-15T00:00:00.000Z",
+                "createdAt": "2025-05-08T13:28:34.797Z",
+                "updatedAt": "2025-05-08T13:42:45.834Z"
+            }
+        }
+    }
+}

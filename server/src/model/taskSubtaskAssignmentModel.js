@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const taskSubtaskAssignmentSchema = new mongoose.Schema({
+    studentId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true
+    },
     taskId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task',
