@@ -4,6 +4,7 @@ import httpError from '../../util/httpError.js';
 import { ValidateCreateQuestionnaire, ValidateUpdateQuestionnaire, ValidateDeleteQuestion, validateJoiSchema, questionSchema } from '../../service/validationService.js';
 import Questionnaire from '../../model/questionnaireModel.js';
 import Joi from 'joi'
+import SubtaskQuestionnaireAssignment from '../../model/subtaskQuestionnaireAssignmentModel.js';
 export default {
     // Create a new questionnaire (ADMIN only)
     createQuestionnaire: async (req, res, next) => {
@@ -140,9 +141,14 @@ export default {
         try {
             const { questionnaireId } = req.params;
 
-            // Check role
-            if (req.authenticatedMember.role !== 'ADMIN') {
-                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+       
+            // check is the Questionnaire is assigned to any Subtask
+            const isAssignedToSubtask = await SubtaskQuestionnaireAssignment.findOne({
+                questionnaireId:questionnaireId
+            })
+
+            if(isAssignedToSubtask){
+                   return httpError(next, new Error('Cannot delete Questionnaire: it is associated with a Subtask'), req, 400);
             }
 
             // Find and delete questionnaire

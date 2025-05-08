@@ -15,6 +15,11 @@ const subtaskSchema = new mongoose.Schema({
         trim: true,
         default: null
     },
+    priority: {
+        type: String,
+        enum: ["LOW", "MEDIUM", "HIGH"],
+        default: "LOW"
+    },
 }, {
     timestamps: true,
     versionKey: false

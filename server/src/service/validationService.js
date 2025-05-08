@@ -379,7 +379,30 @@ export const ValidateDeleteQuestion = Joi.object({
 });
 // ############ QUESTIONNAIRE Validation END ################
 
+// ############ SUBTASK Validation ################
+export const ValidateCreateSubtask = Joi.object({
+    title: Joi.string().trim().required(),
+    description: Joi.string().trim().allow(null, ''),
+    logo: Joi.string().trim().allow(null, ''),
+    priority: Joi.string().valid("LOW", "MEDIUM", "HIGH").default("LOW"),
+    questionnaireIds: Joi.array().items(Joi.string()).default([]).optional()
+});
 
+export const ValidateUpdateSubtask = Joi.object({
+    title: Joi.string().trim().optional(),
+    description: Joi.string().trim().allow(null, '').optional(),
+    logo: Joi.string().trim().allow(null, '').optional(),
+    priority: Joi.string().valid("LOW", "MEDIUM", "HIGH").optional(),
+    questionnaireIds: Joi.array().items(Joi.string()).optional()
+});
+// ############ SUBTASK Validation END ################
+
+// ############ SUBTASK QUESTIONNAIRE ASSIGNMENT Validation ################
+export const ValidateUpdateSubtaskQuestionnaireAssignment = Joi.object({
+    assignmentId: Joi.string().required(),
+    status: Joi.string().valid("PENDING", "IN_PROGRESS", "COMPLETED").required()
+});
+// ############ SUBTASK QUESTIONNAIRE ASSIGNMENT Validation END ################
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {

@@ -20,7 +20,6 @@ const subtaskQuestionnaireAssignmentSchema = new mongoose.Schema({
         enum: ["PENDING", "IN_PROGRESS", "COMPLETED"],
         default: "PENDING"
     },
-
 }, {
     timestamps: true,
     versionKey: false

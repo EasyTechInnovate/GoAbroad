@@ -13,6 +13,8 @@ import paymentController from '../controller/paymentController/paymentController
 import studentController from '../controller/studentController/studentController.js'
 import adminStudentManagementController from '../controller/adminController/adminStudentManagementController.js'
 import questionnaireController from '../controller/questionnaireController/questionnaireController.js'
+import subtaskController from '../controller/subtaskController/subtaskController.js'
+import subtaskQuestionnaireAssignmentController from '../controller/subtaskController/subtaskQuestionnaireAssignmentController.js'
 
 const router = Router()
 
@@ -104,6 +106,26 @@ router.route('/admin/questionnaires/:questionnaireId/questions')
     .post(adminOnly, questionnaireController.addQuestion)
     .delete(adminOnly, questionnaireController.deleteQuestion);
 // ******************** QUESTIONNAIRE ROUTES END ***********************************
+
+// ******************** SUBTASK ROUTES  ***********************************
+// Routes for all members (read-only)
+router.route('/admin/subtasks')
+    .get(memberAccess, subtaskController.getAllSubtasks);
+
+// Routes for ADMIN only (create, update, delete)
+router.route('/admin/subtasks')
+    .post(adminOnly, subtaskController.createSubtask);
+
+router.route('/admin/subtasks/:subtaskId')
+    .get(memberAccess, subtaskController.getSubtaskById)
+    .put(adminOnly, subtaskController.updateSubtask)
+    .delete(adminOnly, subtaskController.deleteSubtask);
+
+// Update Stautus 
+router.route('/admin/subtask-questionnaire-assignments/update-status')
+    .put(adminOnly, subtaskQuestionnaireAssignmentController.updateAssignmentStatus);
+// ******************** SUBTASK ROUTES END ***********************************
+
 
 
 export default router
