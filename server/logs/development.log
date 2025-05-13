@@ -18801,3 +18801,878 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:33:20.237Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:33:20.246Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:33:20.247Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:36:46.854Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:36:46.870Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:36:46.871Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:36:56.216Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "_id": "68013a01d2da4661a44bb909",
+                "firstName": "Charlie",
+                "lastName": "Wilson",
+                "email": "admin@example.com",
+                "phone": "+1234567890",
+                "address": "HELLO",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "profilePicture": null,
+                "createdDate": "2025-04-17T17:27:29.619Z",
+                "updatedDate": "2025-04-17T17:42:21.745Z"
+            },
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDEzYTAxZDJkYTQ2NjFhNDRiYjkwOSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDcxNTA2MTYsImV4cCI6MTc0NzIzNzAxNn0.vlIdnUPL23IKwdv6zVs0OKV9gNZe_gqWGK77G5kORtw"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:38:06.388Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/documents"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Document created successfully",
+            "document": {
+                "_id": "6823675e35733fca4143bf8d",
+                "studentId": {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe"
+                },
+                "taskId": {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process"
+                },
+                "subtaskId": {
+                    "_id": "681c5a5ea34ea39b0bc5b1e0",
+                    "title": "Prepare Application Documents"
+                },
+                "uploader": {
+                    "_id": "68013a01d2da4661a44bb909",
+                    "email": "admin@example.com"
+                },
+                "fileUrl": "https://example.com/documents/application.pdf",
+                "fileName": "application.pdf",
+                "fileSize": 1024000,
+                "fileType": "PDF",
+                "status": "PENDING",
+                "uploadedAt": "2025-05-13T15:38:06.336Z",
+                "createdAt": "2025-05-13T15:38:06.342Z",
+                "updatedAt": "2025-05-13T15:38:06.342Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:40:39.133Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:40:39.142Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:40:39.144Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:41:35.651Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:41:35.657Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:41:35.658Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:42:33.173Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:42:33.234Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:42:33.235Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:42:39.208Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:42:39.216Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:42:39.217Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:43:13.103Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/documents/6823675e35733fca4143bf8d"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Document updated successfully",
+            "document": {
+                "_id": "6823675e35733fca4143bf8d",
+                "studentId": {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe"
+                },
+                "taskId": {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process"
+                },
+                "subtaskId": {
+                    "_id": "681c5a5ea34ea39b0bc5b1e0",
+                    "title": "Prepare Application Documents"
+                },
+                "uploader": {
+                    "_id": "68013a01d2da4661a44bb909",
+                    "email": "admin@example.com"
+                },
+                "fileUrl": "https://example.com/documents/updated-application.pdf",
+                "fileName": "application.pdf",
+                "fileSize": 1024000,
+                "fileType": "PDF",
+                "status": "VERIFIED",
+                "uploadedAt": "2025-05-13T15:38:06.336Z",
+                "createdAt": "2025-05-13T15:38:06.342Z",
+                "updatedAt": "2025-05-13T15:43:13.053Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:43:26.613Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "PUT",
+            "url": "/v1/admin/documents/6823675e35733fca4143bf8d"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Document updated successfully",
+            "document": {
+                "_id": "6823675e35733fca4143bf8d",
+                "studentId": {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe"
+                },
+                "taskId": {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process"
+                },
+                "subtaskId": {
+                    "_id": "681c5a5ea34ea39b0bc5b1e0",
+                    "title": "Prepare Application Documents"
+                },
+                "uploader": {
+                    "_id": "68013a01d2da4661a44bb909",
+                    "email": "admin@example.com"
+                },
+                "fileUrl": "https://example.com/documents/updated-application.pdf",
+                "fileName": "application.pdf",
+                "fileSize": 1024000,
+                "fileType": "PDF",
+                "status": "VERIFIED",
+                "uploadedAt": "2025-05-13T15:38:06.336Z",
+                "createdAt": "2025-05-13T15:38:06.342Z",
+                "updatedAt": "2025-05-13T15:43:13.053Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:44:22.127Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "DELETE",
+            "url": "/v1/admin/documents/6823675e35733fca4143bf8d"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Document deleted successfully"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:46:22.232Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/documents?status=VERIFIED&studentId=68107d4d1fbc5724e46a9b55&page=1&limit=10"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "documents": [],
+            "pagination": {
+                "total": 0,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 0,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:46:46.308Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/admin/documents"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "message": "Document created successfully",
+            "document": {
+                "_id": "68236966317976f2fec09904",
+                "studentId": {
+                    "_id": "68107d4d1fbc5724e46a9b55",
+                    "email": "johndoe@example.com",
+                    "name": "John Doe"
+                },
+                "taskId": {
+                    "_id": "681cb182628976c60536a4a0",
+                    "title": "Complete Registration Process"
+                },
+                "subtaskId": {
+                    "_id": "681c5a5ea34ea39b0bc5b1e0",
+                    "title": "Prepare Application Documents"
+                },
+                "uploader": {
+                    "_id": "68013a01d2da4661a44bb909",
+                    "email": "admin@example.com"
+                },
+                "fileUrl": "https://example.com/documents/application.pdf",
+                "fileName": "application.pdf",
+                "fileSize": 1024000,
+                "fileType": "PDF",
+                "status": "PENDING",
+                "uploadedAt": "2025-05-13T15:46:46.290Z",
+                "createdAt": "2025-05-13T15:46:46.291Z",
+                "updatedAt": "2025-05-13T15:46:46.291Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:46:55.960Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/documents?page=1&limit=10"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "documents": [
+                {
+                    "_id": "68236966317976f2fec09904",
+                    "studentId": {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe"
+                    },
+                    "taskId": {
+                        "_id": "681cb182628976c60536a4a0",
+                        "title": "Complete Registration Process"
+                    },
+                    "subtaskId": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents"
+                    },
+                    "uploader": {
+                        "_id": "68013a01d2da4661a44bb909",
+                        "email": "admin@example.com"
+                    },
+                    "fileUrl": "https://example.com/documents/application.pdf",
+                    "fileName": "application.pdf",
+                    "fileSize": 1024000,
+                    "fileType": "PDF",
+                    "status": "PENDING",
+                    "uploadedAt": "2025-05-13T15:46:46.290Z",
+                    "createdAt": "2025-05-13T15:46:46.291Z",
+                    "updatedAt": "2025-05-13T15:46:46.291Z"
+                }
+            ],
+            "pagination": {
+                "total": 1,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 1,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:47:36.838Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/documents?studentId=68107d4d1fbc5724e46a9b55&page=1&limit=10"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "documents": [
+                {
+                    "_id": "68236966317976f2fec09904",
+                    "studentId": {
+                        "_id": "68107d4d1fbc5724e46a9b55",
+                        "email": "johndoe@example.com",
+                        "name": "John Doe"
+                    },
+                    "taskId": {
+                        "_id": "681cb182628976c60536a4a0",
+                        "title": "Complete Registration Process"
+                    },
+                    "subtaskId": {
+                        "_id": "681c5a5ea34ea39b0bc5b1e0",
+                        "title": "Prepare Application Documents"
+                    },
+                    "uploader": {
+                        "_id": "68013a01d2da4661a44bb909",
+                        "email": "admin@example.com"
+                    },
+                    "fileUrl": "https://example.com/documents/application.pdf",
+                    "fileName": "application.pdf",
+                    "fileSize": 1024000,
+                    "fileType": "PDF",
+                    "status": "PENDING",
+                    "uploadedAt": "2025-05-13T15:46:46.290Z",
+                    "createdAt": "2025-05-13T15:46:46.291Z",
+                    "updatedAt": "2025-05-13T15:46:46.291Z"
+                }
+            ],
+            "pagination": {
+                "total": 1,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 1,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T15:47:55.089Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/documents/68236966317976f2fec09904"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "_id": "68236966317976f2fec09904",
+            "studentId": {
+                "_id": "68107d4d1fbc5724e46a9b55",
+                "email": "johndoe@example.com",
+                "name": "John Doe"
+            },
+            "taskId": {
+                "_id": "681cb182628976c60536a4a0",
+                "title": "Complete Registration Process"
+            },
+            "subtaskId": {
+                "_id": "681c5a5ea34ea39b0bc5b1e0",
+                "title": "Prepare Application Documents"
+            },
+            "uploader": {
+                "_id": "68013a01d2da4661a44bb909",
+                "email": "admin@example.com"
+            },
+            "fileUrl": "https://example.com/documents/application.pdf",
+            "fileName": "application.pdf",
+            "fileSize": 1024000,
+            "fileType": "PDF",
+            "status": "PENDING",
+            "uploadedAt": "2025-05-13T15:46:46.290Z",
+            "createdAt": "2025-05-13T15:46:46.291Z",
+            "updatedAt": "2025-05-13T15:46:46.291Z"
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T15:54:58.269Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T15:54:58.284Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T15:54:58.287Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:05:06.757Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:05:06.776Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:05:06.777Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:06:56.316Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:06:56.324Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:06:56.326Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:07:12.482Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:07:12.492Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:07:12.493Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:07:37.499Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:07:37.507Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:07:37.508Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:08:34.042Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:08:34.050Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:08:34.051Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:08:36.692Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:08:36.699Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:08:36.700Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:09:31.704Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:09:31.713Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:09:31.714Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:09:51.091Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:09:51.099Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:09:51.100Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:11:02.660Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:11:02.670Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:11:02.671Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:12:45.417Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:12:45.425Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:12:45.426Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:12:51.370Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:12:51.378Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:12:51.379Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-05-13T16:16:19.078Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-05-13T16:16:19.086Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-05-13T16:16:19.087Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-05-13T16:20:41.313Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/student-university-assignments?page=1&limit=10"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "assignments": [],
+            "pagination": {
+                "total": 0,
+                "page": 1,
+                "limit": 10,
+                "totalPages": 0,
+                "hasNextPage": false,
+                "hasPrevPage": false
+            }
+        }
+    }
+}

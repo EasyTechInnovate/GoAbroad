@@ -1,0 +1,233 @@
+import httpError from '../../util/httpError.js';
+import responseMessage from '../../constant/responseMessage.js';
+import httpResponse from '../../util/httpResponse.js';
+import {ValidateCreateDocument, ValidateUpdateDocument, ValidateFilterDocuments, validateJoiSchema } from '../../service/validationService.js';
+import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
+import Document from '../../model/documentModel.js';
+import mongoose from 'mongoose';
+export default {
+    // Create a new document (ADMIN and EDITOR only)
+    createDocument: async (req, res, next) => {
+        try {
+            // Validate input
+            const { value, error } = validateJoiSchema(ValidateCreateDocument, req.body);
+            if (error) return httpError(next, error, req, 422);
+
+            // Check role
+            if (!['ADMIN', 'EDITOR'].includes(req.authenticatedMember.role)) {
+                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+            }
+
+            const { studentId, taskId, subtaskId, fileUrl, fileName, fileSize, fileType } = value;
+
+            // Validate that the student is assigned to the task and subtask
+            const assignment = await TaskSubtaskAssignment.findOne({
+                studentId,
+                taskId,
+                subtaskId
+            }).lean();
+            if (!assignment) {
+                return httpError(next, new Error('Student is not assigned to this task and subtask'), req, 400);
+            }
+
+            // Create new document
+            const document = new Document({
+                studentId,
+                taskId,
+                subtaskId,
+                uploader: req.authenticatedMember._id,
+                fileUrl,
+                fileName,
+                fileSize,
+                fileType
+            });
+            await document.save();
+
+            // Fetch the document with populated fields
+            const populatedDocument = await Document.findById(document._id)
+                .populate('studentId', 'name email')
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            httpResponse(req, res, 201, responseMessage.SUCCESS, {
+                message: 'Document created successfully',
+                document: populatedDocument
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Update document details (ADMIN and EDITOR only)
+    updateDocument: async (req, res, next) => {
+        try {
+
+            const {documentId}= req.params
+            const { value, error } = validateJoiSchema(ValidateUpdateDocument, req.body);
+            if (error) return httpError(next, error, req, 422);
+
+            // Check role
+            if (!['ADMIN', 'EDITOR'].includes(req.authenticatedMember.role)) {
+                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+            }
+
+            const {  studentId, taskId, subtaskId, fileUrl, fileName, fileSize, fileType, status } = value;
+
+            if(!mongoose.Types.ObjectId.isValid(documentId)){
+                 return httpError(next, new Error("Valid Document Id Required"), req, 403);
+            }
+            // Find document
+            const document = await Document.findById(documentId);
+            if (!document) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND('Document')), req, 404);
+            }
+
+            // If studentId, taskId, or subtaskId is provided, validate the new assignment
+            if (studentId || taskId || subtaskId) {
+                const updatedStudentId = studentId || document.studentId;
+                const updatedTaskId = taskId || document.taskId;
+                const updatedSubtaskId = subtaskId || document.subtaskId;
+
+                const assignment = await TaskSubtaskAssignment.findOne({
+                    studentId: updatedStudentId,
+                    taskId: updatedTaskId,
+                    subtaskId: updatedSubtaskId
+                }).lean();
+
+                if (!assignment) {
+                    return httpError(next, new Error('Student is not assigned to this task and subtask'), req, 400);
+                }
+
+                // Update the fields
+                document.studentId = updatedStudentId;
+                document.taskId = updatedTaskId;
+                document.subtaskId = updatedSubtaskId;
+            }
+
+            // Update other fields if provided
+            if (fileUrl) document.fileUrl = fileUrl;
+            if (fileName) document.fileName = fileName;
+            if (fileSize !== undefined) document.fileSize = fileSize;
+            if (fileType) document.fileType = fileType;
+            if (status) document.status = status;
+
+            await document.save();
+
+            // Fetch updated document with populated fields
+            const populatedDocument = await Document.findById(document._id)
+                .populate('studentId', 'name email')
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                message: 'Document updated successfully',
+                document: populatedDocument
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Delete a document (ADMIN and EDITOR only)
+    deleteDocument: async (req, res, next) => {
+        try {
+            const { documentId } = req.params;
+
+            // Check role
+            if (!['ADMIN', 'EDITOR'].includes(req.authenticatedMember.role)) {
+                return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
+            }
+
+            // Find document
+            const document = await Document.findById(documentId);
+            if (!document) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND('Document')), req, 404);
+            }
+
+            // Delete document
+            await Document.findByIdAndDelete(documentId);
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                message: 'Document deleted successfully'
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Get all documents with pagination and filtering (accessible to all members)
+    getAllDocuments: async (req, res, next) => {
+        try {
+            // Validate filter query
+            const { value, error } = validateJoiSchema(ValidateFilterDocuments, { ...req.query });
+            if (error) return httpError(next, error, req, 422);
+
+            const { status, uploader, studentId, taskId, subtaskId, page, limit } = value;
+            const skip = (page - 1) * limit;
+
+            // Build query
+            const query = {};
+            if (status) query.status = status;
+            if (uploader) query.uploader = uploader;
+            if (studentId) query.studentId = studentId;
+            if (taskId) query.taskId = taskId;
+            if (subtaskId) query.subtaskId = subtaskId;
+
+            // Fetch total count for pagination
+            const totalDocuments = await Document.countDocuments(query);
+
+            // Fetch paginated documents
+            const documents = await Document.find(query)
+                .skip(skip)
+                .limit(limit)
+                .populate('studentId', 'name email')
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            // Pagination metadata
+            const pagination = {
+                total: totalDocuments,
+                page,
+                limit,
+                totalPages: Math.ceil(totalDocuments / limit),
+                hasNextPage: page < Math.ceil(totalDocuments / limit),
+                hasPrevPage: page > 1
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                documents,
+                pagination
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Get a specific document by ID (accessible to all members)
+    getDocumentById: async (req, res, next) => {
+        try {
+            const { documentId } = req.params;
+
+            const document = await Document.findById(documentId)
+                .populate('studentId', 'name email')
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            if (!document) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND('Document')), req, 404);
+            }
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, document);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    }
+};

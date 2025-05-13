@@ -461,6 +461,170 @@ export const ValidateRemoveStudentFromTask = Joi.object({
 });
 // ############ STUDENT TASK ASSIGNMENT Validation END ################
 
+// ############ Admin Side Document Manager ################
+
+// Validation for creating a document
+export const ValidateCreateDocument = Joi.object({
+    studentId: Joi.string().required().messages({
+        'string.base': 'Student ID must be a valid ObjectId',
+        'any.required': 'Student ID is required'
+    }),
+    taskId: Joi.string().required().messages({
+        'string.base': 'Task ID must be a valid ObjectId',
+        'any.required': 'Task ID is required'
+    }),
+    subtaskId: Joi.string().required().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId',
+        'any.required': 'Subtask ID is required'
+    }),
+    fileUrl: Joi.string().uri().required().messages({
+        'string.uri': 'File URL must be a valid URL',
+        'any.required': 'File URL is required'
+    }),
+    fileName: Joi.string().trim().required().messages({
+        'string.base': 'File name must be a string',
+        'any.required': 'File name is required'
+    }),
+    fileSize: Joi.number().optional().allow(null).messages({
+        'number.base': 'File size must be a number'
+    }),
+    fileType: Joi.string().trim().required().valid('PDF', 'DOCX', 'JPG', 'PNG').messages({
+        'string.base': 'File type must be a string',
+        'any.required': 'File type is required',
+        'any.only': 'File type must be one of PDF, DOCX, JPG, PNG'
+    })
+});
+
+// Validation for updating a document
+export const ValidateUpdateDocument = Joi.object({
+
+    studentId: Joi.string().optional().messages({
+        'string.base': 'Student ID must be a valid ObjectId'
+    }),
+    taskId: Joi.string().optional().messages({
+        'string.base': 'Task ID must be a valid ObjectId'
+    }),
+    subtaskId: Joi.string().optional().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId'
+    }),
+    fileUrl: Joi.string().uri().optional().messages({
+        'string.uri': 'File URL must be a valid URL'
+    }),
+    fileName: Joi.string().trim().optional().messages({
+        'string.base': 'File name must be a string'
+    }),
+    fileSize: Joi.number().optional().allow(null).messages({
+        'number.base': 'File size must be a number'
+    }),
+    fileType: Joi.string().trim().optional().valid('PDF', 'DOCX', 'JPG', 'PNG').messages({
+        'string.base': 'File type must be a string',
+        'any.only': 'File type must be one of PDF, DOCX, JPG, PNG'
+    }),
+    status: Joi.string().valid('PENDING', 'VERIFIED', 'REJECTED').optional().messages({
+        'string.base': 'Status must be a string',
+        'any.only': 'Status must be one of PENDING, VERIFIED, REJECTED'
+    })
+});
+
+
+// Validation for filtering documents
+export const ValidateFilterDocuments = Joi.object({
+    status: Joi.string().valid('PENDING', 'VERIFIED', 'REJECTED').optional().messages({
+        'string.base': 'Status must be a string',
+        'any.only': 'Status must be one of PENDING, VERIFIED, REJECTED'
+    }),
+    uploader: Joi.string().optional().messages({
+        'string.base': 'Uploader ID must be a valid ObjectId'
+    }),
+    studentId: Joi.string().optional().messages({
+        'string.base': 'Student ID must be a valid ObjectId'
+    }),
+    taskId: Joi.string().optional().messages({
+        'string.base': 'Task ID must be a valid ObjectId'
+    }),
+    subtaskId: Joi.string().optional().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId'
+    }),
+    page: Joi.number().integer().min(1).optional().default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).optional().default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.min': 'Limit must be at least 1'
+    })
+});
+// ############ Admin Side Document Manager END ################
+
+// ############ Admin Side Student University Assignment ################
+
+// Validation for creating a student-university assignment
+export const ValidateCreateStudentUniversityAssignment = Joi.object({
+    studentId: Joi.string().required().messages({
+        'string.base': 'Student ID must be a valid ObjectId',
+        'any.required': 'Student ID is required'
+    }),
+    universityId: Joi.string().required().messages({
+        'string.base': 'University ID must be a valid ObjectId',
+        'any.required': 'University ID is required'
+    }),
+    admissionStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission status must be a string'
+    }),
+    admissionComments: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission comments must be a string'
+    }),
+    universityStatus: Joi.string().trim().valid('Safe', 'Achievable', 'Ambitious', 'Very Ambitious', 'Can Try').optional().allow(null).messages({
+        'string.base': 'University status must be a string',
+        'any.only': 'University status must be one of Safe, Achievable, Ambitious, Very Ambitious, Can Try'
+    })
+});
+
+// Validation for updating a student-university assignment
+export const ValidateUpdateStudentUniversityAssignment = Joi.object({
+    studentId: Joi.string().optional().messages({
+        'string.base': 'Student ID must be a valid ObjectId'
+    }),
+    universityId: Joi.string().optional().messages({
+        'string.base': 'University ID must be a valid ObjectId'
+    }),
+    admissionStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission status must be a string'
+    }),
+    admissionComments: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission comments must be a string'
+    }),
+    universityStatus: Joi.string().trim().valid('Safe', 'Achievable', 'Ambitious', 'Very Ambitious', 'Can Try').optional().allow(null).messages({
+        'string.base': 'University status must be a string',
+        'any.only': 'University status must be one of Safe, Achievable, Ambitious, Very Ambitious, Can Try'
+    })
+});
+
+// Validation for filtering student-university assignments
+export const ValidateFilterStudentUniversityAssignments = Joi.object({
+    studentId: Joi.string().optional().messages({
+        'string.base': 'Student ID must be a valid ObjectId'
+    }),
+    universityId: Joi.string().optional().messages({
+        'string.base': 'University ID must be a valid ObjectId'
+    }),
+    admissionStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission status must be a string'
+    }),
+    universityStatus: Joi.string().trim().valid('Safe', 'Achievable', 'Ambitious', 'Very Ambitious', 'Can Try').optional().allow(null).messages({
+        'string.base': 'University status must be a string',
+        'any.only': 'University status must be one of Safe, Achievable, Ambitious, Very Ambitious, Can Try'
+    }),
+    page: Joi.number().integer().min(1).optional().default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).optional().default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.min': 'Limit must be at least 1'
+    })
+});
+// ############ Admin Side Student University Assignment END ################
 
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });

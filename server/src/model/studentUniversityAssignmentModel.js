@@ -20,21 +20,21 @@ const studentUniversityAssignmentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    isAdmitted: {
-        type: Boolean,
-        default: false
-    },
     admissionStatus: {
         type: String,
-        enum: ["PENDING", "APPLIED", "ACCEPTED", "REJECTED", "ENROLLED"],
-        default: "PENDING"
+        trim: true,
+        default: null
     },
     admissionComments: {
         type: String,
         trim: true,
         default: null
     },
-
+    universityStatus: {
+        type: String,
+        trim: true,
+        default: null // Will store "Safe", "Achievable", "Ambitious", "Very Ambitious", "Can Try"
+    }
 }, {
     timestamps: true,
     versionKey: false

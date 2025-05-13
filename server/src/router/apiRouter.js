@@ -6,7 +6,7 @@ import { uploadFiles } from '../middleware/multerHandler.js'
 import authController from '../controller/authController/authController.js'
 import authentication, { paymentMiddleWare } from '../middleware/authentication.js'
 import adminController from '../controller/adminController/adminController.js'
-import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
+import { adminEditorOnly, adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
 import categoryController from '../controller/faqController/categoryController.js'
 import faqController from '../controller/faqController/faqController.js'
 import paymentController from '../controller/paymentController/paymentController.js'
@@ -18,6 +18,8 @@ import subtaskQuestionnaireAssignmentController from '../controller/subtaskContr
 import studentTaskAssignmentController from '../controller/taskController/studentTaskAssignmentController.js'
 import taskController from '../controller/taskController/taskController.js'
 import taskSubtaskAssignmentController from '../controller/taskController/taskSubtaskAssignmentController.js'
+import documentController from '../controller/documentController/documentController.js'
+import studentUniversityAssignmentController from '../controller/University/studentUniversityAssignmentController.js'
 
 const router = Router()
 
@@ -169,4 +171,30 @@ router.route('/admin/student-task-assignments/update')
     .put(adminOnly, studentTaskAssignmentController.updateStudentTaskAssignment);
 // ******************** TASK ROUTES END ***********************************
 
+// ******************** DOCUMENT ROUTES ***********************************
+// Routes for documents (read-only for all members)
+router.route('/admin/documents')
+    .get(memberAccess, documentController.getAllDocuments);
+
+// Routes for documents (ADMIN and EDITOR only for create)
+router.route('/admin/documents')
+    .post(adminEditorOnly, documentController.createDocument);
+
+// Routes for a specific document (read-only for all members, update/delete for ADMIN and EDITOR)
+router.route('/admin/documents/:documentId')
+    .get(memberAccess, documentController.getDocumentById)
+    .put(adminEditorOnly, documentController.updateDocument)
+    .delete(adminEditorOnly, documentController.deleteDocument);
+// ******************** DOCUMENT ROUTES END ***********************************
+
+// ******************** Student University Assignement ***********************************
+router.route('/admin/student-university-assignments')
+    .get(memberAccess, studentUniversityAssignmentController.getAllStudentUniversityAssignments)
+    .post(adminEditorOnly, studentUniversityAssignmentController.createStudentUniversityAssignment);
+
+router.route('/admin/student-university-assignments/:assignmentId')
+    .get(memberAccess, studentUniversityAssignmentController.getStudentUniversityAssignmentById)
+    .put(adminEditorOnly, studentUniversityAssignmentController.updateStudentUniversityAssignment)
+    .delete(adminEditorOnly, studentUniversityAssignmentController.deleteStudentUniversityAssignment);
+// ******************** STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
 export default router

@@ -16,33 +16,38 @@ const documentSchema = new mongoose.Schema({
         ref: 'Subtask',
         required: true
     },
-    uploads: [
-        {
-            uploader: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Member',
-                required: true
-            },
-            fileUrl: {
-                type: String,
-                required: true 
-            },
-            fileName: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            fileType: {
-                type: String,
-                required: true,
-                trim: true // e.g., "PDF", "DOCX"
-            },
-            uploadedAt: {
-                type: Date,
-                default: Date.now
-            }
-        }
-    ],
+    uploader: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Member',
+        required: true
+    },
+    fileUrl: {
+        type: String,
+        required: true
+    },
+    fileName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    fileSize: {
+        type: Number,
+        default: null
+    },
+    fileType: {
+        type: String,
+        required: true,
+        trim: true // e.g., "PDF", "DOCX"
+    },
+    uploadedAt: {
+        type: Date,
+        default: Date.now
+    },
+    status: {
+        type: String,
+        enum: ["PENDING", "VERIFIED", "REJECTED"],
+        default: "PENDING"
+    }
 }, {
     timestamps: true,
     versionKey: false
