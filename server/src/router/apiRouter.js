@@ -28,7 +28,7 @@ const router = Router()
 router.route('/self').get(apiController.self)
 router.route('/health').get(apiController.health)
 router.route('/upload-file').post(uploadFiles, apiController.uploadFile);
-
+router.route('/faqs').get(faqController.getFaqs)
 // auth routes
 router.route('/auth/login').post(authController.login);
 router.route('/auth/signup').post(authController.signup);
@@ -187,7 +187,7 @@ router.route('/admin/documents/:documentId')
     .delete(adminEditorOnly, documentController.deleteDocument);
 // ******************** DOCUMENT ROUTES END ***********************************
 
-// ******************** Student University Assignement ***********************************
+// ******************** ADMIN Student University Assignement ***********************************
 router.route('/admin/student-university-assignments')
     .get(memberAccess, studentUniversityAssignmentController.getAllStudentUniversityAssignments)
     .post(adminEditorOnly, studentUniversityAssignmentController.createStudentUniversityAssignment);
@@ -196,5 +196,17 @@ router.route('/admin/student-university-assignments/:assignmentId')
     .get(memberAccess, studentUniversityAssignmentController.getStudentUniversityAssignmentById)
     .put(adminEditorOnly, studentUniversityAssignmentController.updateStudentUniversityAssignment)
     .delete(adminEditorOnly, studentUniversityAssignmentController.deleteStudentUniversityAssignment);
-// ******************** STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
+// ******************** ADMIN STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
+
+// ********************  STUDENT UNIVERSITY ASSIGNMENT ROUTES  ***********************************
+router.route('/student/assigned-universities')
+    .get(authentication, studentController.getAssignedUniversities);
+
+router.route('/student/assigned-universities/:assignmentId')
+    .put(authentication, studentController.updateAssignedUniversityStatus);
+
+// ********************  STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
+
+
+
 export default router

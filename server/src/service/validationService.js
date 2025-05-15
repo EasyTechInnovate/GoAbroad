@@ -626,6 +626,42 @@ export const ValidateFilterStudentUniversityAssignments = Joi.object({
 });
 // ############ Admin Side Student University Assignment END ################
 
+// ############ Student Assign University  ################
+
+export const ValidateFilterAssignedUniversities = Joi.object({
+    universityId: Joi.string().optional().messages({
+        'string.base': 'University ID must be a valid ObjectId'
+    }),
+    admissionStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission status must be a string'
+    }),
+    universityStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'University status must be a string',
+    }),
+    page: Joi.number().integer().min(1).optional().default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).optional().default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.min': 'Limit must be at least 1'
+    }),
+    sortOrder: Joi.string().valid('asc', 'desc').optional().default('desc').messages({
+        'string.base': 'Sort order must be a string',
+        'any.only': 'Sort order must be either asc or desc'
+    })
+});
+
+export const ValidateUpdateAssignedUniversityStatus = Joi.object({
+    admissionStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'Admission status must be a string'
+    }),
+    universityStatus: Joi.string().trim().optional().allow(null).messages({
+        'string.base': 'University status must be a string',
+    })
+});
+
+// ############ Student Assign University  ################
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {

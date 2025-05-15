@@ -3,6 +3,7 @@ import httpError from '../../util/httpError.js';
 import responseMessage from '../../constant/responseMessage.js';
 import { ValidateUniversityCreate, ValidateUniversityUpdate, ValidateUniversityQuery, validateJoiSchema } from '../../service/validationService.js';
 import University from '../../model/universityModel.js';
+import StudentUniversityAssignment from '../../model/studentUniversityAssignmentModel.js';
 export default {
     // Create a new university 
     createUniversity: async (req, res, next) => {
@@ -134,10 +135,20 @@ export default {
         try {
             const { id } = req.params;
 
-            const deletedUniversity = await University.findByIdAndDelete(id);
-            if (!deletedUniversity) {
+            const isUniversityExist = await University.findById(id)
+            if (!isUniversityExist) {
                 return httpError(next, new Error(responseMessage.NOT_FOUND('University')), req, 404);
             }
+
+            const isUniversityAssignedToTheStudent = await StudentUniversityAssignment.findOne({
+                universityId:isUniversityExist._id
+            })
+
+            if(isUniversityAssignedToTheStudent){
+                 return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE('This University is Assigned To the Student ')), req, 404);
+            }
+
+            const deletedUniversity = await University.findByIdAndDelete(id);
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, { message: 'University deleted successfully' });
         } catch (err) {
