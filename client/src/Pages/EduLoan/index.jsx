@@ -59,7 +59,7 @@ const EduLoan = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await apiService.post('/loans/apply', {
+      const response = await apiService.post('v1/loans/apply', {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
@@ -74,9 +74,9 @@ const EduLoan = () => {
       });
 
       if (response.success) {
-        // Show success message
+
         alert('Loan application submitted successfully!');
-        // Redirect to dashboard or another appropriate page
+
         navigate('/dashboard');
       } else {
         setError(response.message || 'Failed to submit loan application');

@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, Edit, Plus, FilePlus, Trash2 } from 'lucide-react';
-import { 
+import { toast } from "sonner";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -13,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { getCategories, getFaqs, createCategory, createFaq, updateFaq, deleteFaq, deleteCategory } from '../../services/api.services';
+import { getCategories, getFaqs, createCategory, createFaq, updateFaq, deleteFaq, deleteCategory, updateCategory } from '../../services/api.services';
 
 const FAQs = () => {
   const [categories, setCategories] = useState([]);
@@ -35,38 +36,55 @@ const FAQs = () => {
     name: '',
     description: ''
   });
-
-  const fetchData = async () => {
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
+  const [editCategoryForm, setEditCategoryForm] = useState({
+    name: '',
+    description: ''
+  });
+  const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
       const [categoriesRes, faqsRes] = await Promise.all([
         getCategories(),
-        getFaqs()
+        getFaqs(selectedCategory !== 'all' ? selectedCategory : null)
       ]);
 
       if (categoriesRes.success) {
         setCategories(categoriesRes.data);
-        // Process categories with FAQ counts
-        const processedCategories = categoriesRes.data.map(category => ({
-          id: category._id,
-          name: category.name,
-          count: faqsRes.success ? faqsRes.data.filter(faq => faq.categoryId === category._id).length : 0
-        }));
-        setFaqCategories(processedCategories);
       }
+
       if (faqsRes.success) {
-        setFaqs(faqsRes.data);
+        if (selectedCategory !== 'all') {
+          setFaqs(faqsRes.data);
+        } else {
+          const allFaqs = faqsRes.data.flatMap(category =>
+            category.faqs.map(faq => ({
+              ...faq,
+              categoryName: category.category.name
+            }))
+          );
+          setFaqs(allFaqs);
+          const processedCategories = categoriesRes.data.map(category => {
+            const categoryData = faqsRes.data.find(c => c._id === category._id);
+            return {
+              id: category._id,
+              name: category.name,
+              count: categoryData?.faqs?.length || 0
+            };
+          });
+          setFaqCategories(processedCategories);
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }, [selectedCategory]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleAddFaq = async (e) => {
     e.preventDefault();
@@ -76,9 +94,11 @@ const FAQs = () => {
         await fetchData();
         setIsAddModalOpen(false);
         setFormData({ question: '', answer: '', categoryId: '' });
+        toast.success("FAQ added successfully");
       }
     } catch (error) {
       console.error('Error adding FAQ:', error);
+      toast.error(error.response?.data?.message || "Failed to add FAQ");
     }
   };
 
@@ -91,9 +111,11 @@ const FAQs = () => {
         setIsEditModalOpen(false);
         setEditingFaq(null);
         setFormData({ question: '', answer: '', categoryId: '' });
+        toast.success("FAQ updated successfully");
       }
     } catch (error) {
       console.error('Error updating FAQ:', error);
+      toast.error(error.response?.data?.message || "Failed to update FAQ");
     }
   };
 
@@ -103,13 +125,14 @@ const FAQs = () => {
         const response = await deleteFaq(faqId);
         if (response.success) {
           await fetchData();
+          toast.success("FAQ deleted successfully");
         }
       } catch (error) {
         console.error('Error deleting FAQ:', error);
+        toast.error(error.response?.data?.message || "Failed to delete FAQ");
       }
     }
   };
-
   const handleAddCategory = async (e) => {
     e.preventDefault();
     try {
@@ -118,9 +141,28 @@ const FAQs = () => {
         await fetchData();
         setIsNewCategoryModalOpen(false);
         setNewCategory({ name: '', description: '' });
+        toast.success("Category added successfully");
       }
     } catch (error) {
       console.error('Error adding category:', error);
+      toast.error(error.response?.data?.message || "Failed to add category");
+    }
+  };
+
+  const handleUpdateCategory = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateCategory(editingCategory._id, editCategoryForm);
+      if (response.success) {
+        await fetchData();
+        setIsEditCategoryModalOpen(false);
+        setEditingCategory(null);
+        setEditCategoryForm({ name: '', description: '' });
+        toast.success("Category updated successfully");
+      }
+    } catch (error) {
+      console.error('Error updating category:', error);
+      toast.error(error.response?.data?.message || "Failed to update category");
     }
   };
 
@@ -130,9 +172,11 @@ const FAQs = () => {
         const response = await deleteCategory(categoryId);
         if (response.success) {
           await fetchData();
+          toast.success("Category and associated FAQs deleted successfully");
         }
       } catch (error) {
         console.error('Error deleting category:', error);
+        toast.error(error.response?.data?.message || "Failed to delete category");
       }
     }
   };
@@ -187,14 +231,13 @@ const FAQs = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">FAQs & Knowledge Base</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setIsNewCategoryModalOpen(true)}>
+        <div className="flex gap-2">          <Button variant="outline" className="cursor-pointer" onClick={() => setIsNewCategoryModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" /> Add Category
           </Button>
-          <Button onClick={() => setIsAddModalOpen(true)}>
+          <Button className="cursor-pointer" onClick={() => setIsAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" /> Add FAQ
           </Button>
-          <Button>
+          <Button className="cursor-pointer">
             <FilePlus className="mr-2 h-4 w-4" /> New Article
           </Button>
         </div>
@@ -216,7 +259,7 @@ const FAQs = () => {
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
           <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="faqs" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card className="md:col-span-1">
@@ -227,27 +270,39 @@ const FAQs = () => {
                 <ScrollArea className="h-[calc(100vh-300px)]">
                   <div className="space-y-2">
                     <div
-                      className={`flex items-center justify-between rounded-md px-3 py-2 ${
-                        selectedCategory === 'all' ? 'bg-muted' : ''
-                      } cursor-pointer`}
+                      className={`flex items-center justify-between rounded-md px-3 py-2 ${selectedCategory === 'all' ? 'bg-muted' : ''
+                        } cursor-pointer`}
                       onClick={() => setSelectedCategory('all')}
                     >
                       <span>All Categories</span>
                       <Badge variant="secondary">{faqs.length}</Badge>
                     </div>
                     {categories.map((category) => (
-                      <div 
+                      <div
                         key={category._id}
-                        className={`flex items-center justify-between rounded-md px-3 py-2 ${
-                          selectedCategory === category._id ? 'bg-muted' : ''
-                        } hover:bg-muted cursor-pointer`}
+                        className={`flex items-center justify-between rounded-md px-3 py-2 ${selectedCategory === category._id ? 'bg-muted' : ''
+                          } hover:bg-muted cursor-pointer`}
                         onClick={() => setSelectedCategory(category._id)}
                       >
-                        <span>{category.name}</span>
-                        <div className="flex items-center gap-2">
+                        <span>{category.name}</span>                        <div className="flex items-center gap-2">
                           <Badge variant="outline">
-                            {faqs.filter(faq => faq.categoryId === category._id).length}
-                          </Badge>
+                            {faqCategories.find(c => c.id === category._id)?.count || 0}
+                          </Badge>              <Button
+                variant="ghost"
+                size="icon"
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingCategory(category);
+                  setEditCategoryForm({
+                    name: category.name,
+                    description: category.description || ''
+                  });
+                  setIsEditCategoryModalOpen(true);
+                }}
+              >
+                            <Edit className="h-4 w-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -286,10 +341,10 @@ const FAQs = () => {
                           <AccordionTrigger className="text-left flex-1">
                             {faq.question}
                           </AccordionTrigger>
-                          <div className="flex gap-2 mr-4">
-                            <Button
+                          <div className="flex gap-2 mr-4">                              <Button
                               variant="ghost"
                               size="icon"
+                              className="cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setEditingFaq(faq);
@@ -306,6 +361,7 @@ const FAQs = () => {
                             <Button
                               variant="ghost"
                               size="icon"
+                              className="cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleDeleteFaq(faq._id);
@@ -326,7 +382,7 @@ const FAQs = () => {
             </Card>
           </div>
         </TabsContent>
-        
+
         <TabsContent value="knowledge" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card className="md:col-span-1">
@@ -341,8 +397,8 @@ const FAQs = () => {
                       <Badge variant="secondary">{faqCategories.reduce((acc, cat) => acc + cat.count, 0)}</Badge>
                     </div>
                     {faqCategories.map((category) => (
-                      <div 
-                        key={category.id} 
+                      <div
+                        key={category.id}
                         className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted cursor-pointer"
                       >
                         <span>{category.name}</span>
@@ -523,6 +579,38 @@ const FAQs = () => {
             </div>
             <DialogFooter>
               <Button type="submit">Update FAQ</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditCategoryModalOpen} onOpenChange={setIsEditCategoryModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Category</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateCategory} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Category Name</label>
+              <Input
+                value={editCategoryForm.name}
+                onChange={(e) => setEditCategoryForm(prev => ({ ...prev, name: e.target.value }))
+                }
+                placeholder="Enter category name"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Description</label>
+              <Input
+                value={editCategoryForm.description}
+                onChange={(e) => setEditCategoryForm(prev => ({ ...prev, description: e.target.value }))
+                }
+                placeholder="Enter category description"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Update Category</Button>
             </DialogFooter>
           </form>
         </DialogContent>

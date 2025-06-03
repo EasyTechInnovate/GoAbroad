@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/sonner';
-import { updatePassword, getCurrentUser, updateProfile } from '@/services/api.services';
+import { updatePassword, getCurrentUser, updateProfile, uploadFile } from '@/services/api.services';
 import {
   User,
   Bell,
@@ -186,7 +186,7 @@ const Settings = () => {
     }
   };
 
-  
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -222,285 +222,282 @@ const Settings = () => {
           </div>
 
           <div className="flex-1">
-            <div className="space-y-4">              <TabsContent value="profile">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profile Information</CardTitle>
-                  <CardDescription>
-                    Update your personal information and profile settings
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                    <Avatar className="w-16 h-16">
-                      <AvatarImage src={user?.profilePicture || ""} />
-                      <AvatarFallback className="text-lg">{getMemberInitials(user?.firstName, user?.lastName)}</AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                      <h3 className="font-medium">Profile Picture</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Upload a picture to personalize your account
-                      </p>
-                      <div className="flex gap-2 mt-2">
-                        <input
-                          type="file"
-                          id="profile-image"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
+            <div className="space-y-4">
+              <TabsContent value="profile">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Profile Information</CardTitle>
+                    <CardDescription>
+                      Update your personal information and profile settings
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                      <Avatar className="w-16 h-16">
+                        <AvatarImage src={user?.profilePicture || ""} />
+                        <AvatarFallback className="text-lg">{getMemberInitials(user?.firstName, user?.lastName)}</AvatarFallback>
+                      </Avatar>
+                      <div className="space-y-1">
+                        <h3 className="font-medium">Profile Picture</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Upload a picture to personalize your account
+                        </p>
+                        <div className="flex gap-2 mt-2">
+                          <input
+                            type="file"
+                            id="profile-image"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
 
-                            try {
-                              setLoading(true);
-                              const formData = new FormData();
-                              formData.append('file', file);
-                              formData.append('category', 'profile');
+                              try {
+                                setLoading(true);
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                formData.append('category', 'profile');
 
-                              const response = await fetch('http://localhost:5000/v1/upload-file', {
-                                method: 'POST',
-                                body: formData
-                              });
+                                const response = await uploadFile(formData);
+                                if (!response.success) {
+                                  throw new Error(response.message || 'Failed to upload image');
+                                }
 
-                              const result = await response.json();
-                              if (!result.success) {
-                                throw new Error(result.message || 'Failed to upload image');
+                                await updateProfile({
+                                  profilePicture: response.data.url
+                                });
+
+                                const localUser = getUser();
+                                localStorage.setItem('user', JSON.stringify({
+                                  ...localUser,
+                                  profilePicture: response.data.url
+                                }));
+
+                                toast.success('Profile picture updated successfully');
+                                window.location.reload();
+                              } catch (error) {
+                                console.error('Error uploading profile picture:', error);
+                                toast.error(error?.message || 'Failed to update profile picture');
+                              } finally {
+                                setLoading(false);
                               }
+                            }}
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => document.getElementById('profile-image').click()}
+                            disabled={loading}
+                          >
+                            {loading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Uploading...
+                              </>
+                            ) : (
+                              'Change'
+                            )}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-destructive"
+                            onClick={async () => {
+                              try {
+                                setLoading(true);
+                                await updateProfile({
+                                  profilePicture: ''
+                                });
+
+                                const localUser = getUser();
+                                localStorage.setItem('user', JSON.stringify({
+                                  ...localUser,
+                                  profilePicture: ''
+                                }));
+
+                                toast.success('Profile picture removed');
+                                window.location.reload();
+                              } catch (error) {
+                                console.error('Error removing profile picture:', error);
+                                toast.error('Failed to remove profile picture');
+                              } finally {
+                                setLoading(false);
+                              }
+                            }}
+                            disabled={loading || !user?.profilePicture}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <Separator />
+                    <form onChange={(e) => {
+                      const formData = new FormData(e.target.form);
+                      const fields = {};
+                      ['firstName', 'lastName', 'phone', 'address', 'bio'].forEach(field => {
+                        fields[field] = formData.get(field)?.trim() || '';
+                      });
+                      const hasChanges = checkForChanges(fields);
+                      setHasChanges(hasChanges);
+                    }} onSubmit={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      if (loading) return;
+                      setLoading(true);
+                      try {
+                        const formData = new FormData(e.target);
+                        const updateData = {};
+                        const fields = ['firstName', 'lastName', 'phone', 'address', 'bio'];
+
+                        fields.forEach(field => {
+                          const value = formData.get(field);
+                          if (value && value.trim()) {
+                            updateData[field] = value.trim();
+                          }
+                        }); if (Object.keys(updateData).length === 0) {
+                          toast.error('Please update at least one field');
+                          setLoading(false);
+                          return;
+                        }
 
 
-                await updateProfile({
-                                profilePicture: result.data.url
-                              });
+                        const { firstName, lastName } = updateData;
+                        if (firstName && firstName.length < 2) {
+                          toast.error('First name must be at least 2 characters');
+                          setLoading(false);
+                          return;
+                        }
+                        if (lastName && lastName.length < 2) {
+                          toast.error('Last name must be at least 2 characters');
+                          setLoading(false);
+                          return;
+                        }
+
+                        const response = await updateProfile(updateData);
+
+                        if (response.success) {
+
+                          const updatedUserData = response.data;
+                          setFormData(prev => ({ ...prev, ...updatedUserData }));
 
 
-                              const localUser = getUser();
-                              localStorage.setItem('user', JSON.stringify({
-                                ...localUser,
-                                profilePicture: result.data.url
-                              }));
+                          setUser(prev => ({ ...prev, ...updatedUserData }));
 
-                              toast.success('Profile picture updated successfully');
-                              window.location.reload();
-                            } catch (error) {
-                              console.error('Error uploading profile picture:', error);
-                              toast.error(error?.message || 'Failed to update profile picture');
-                            } finally {
-                              setLoading(false);
-                            }
-                          }}
-                        />
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => document.getElementById('profile-image').click()}
-                          disabled={loading}
+
+                          const localUser = getUser();
+                          localStorage.setItem('user', JSON.stringify({
+                            ...localUser,
+                            ...updatedUserData
+                          }));
+
+                          toast.success('Profile updated successfully');
+                        } else {
+                          throw new Error(response.message || 'Failed to update profile');
+                        }
+                      } catch (error) {
+                        console.error('Profile update error:', error);
+                        toast.error(error?.response?.data?.message || 'Failed to update profile');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName">First Name</Label>
+                          <Input
+                            id="firstName"
+                            name="firstName"
+                            defaultValue={user?.firstName}
+                            onChange={(e) => {
+                              setFormData({ ...formData, firstName: e.target.value });
+                              setHasChanges(checkForChanges({ ...formData, firstName: e.target.value }));
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <Input
+                            id="lastName"
+                            name="lastName"
+                            defaultValue={user?.lastName}
+                            onChange={(e) => {
+                              setFormData({ ...formData, lastName: e.target.value });
+                              setHasChanges(checkForChanges({ ...formData, lastName: e.target.value }));
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            defaultValue={user?.email}
+                            disabled
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Phone Number</Label>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            defaultValue={user?.phone || ""}
+                            placeholder="+1234567890"
+                            onChange={(e) => {
+                              setFormData({ ...formData, phone: e.target.value });
+                              setHasChanges(checkForChanges({ ...formData, phone: e.target.value }));
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="address">Address</Label>
+                          <Input
+                            id="address"
+                            name="address"
+                            defaultValue={user?.address || ""}
+                            placeholder="Your address"
+                            onChange={(e) => {
+                              setFormData({ ...formData, address: e.target.value });
+                              setHasChanges(checkForChanges({ ...formData, address: e.target.value }));
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="bio">Bio</Label>
+                          <Input
+                            id="bio"
+                            name="bio"
+                            defaultValue={user?.bio || ""}
+                            placeholder="Tell us about yourself"
+                            onChange={(e) => {
+                              setFormData({ ...formData, bio: e.target.value });
+                              setHasChanges(checkForChanges({ ...formData, bio: e.target.value }));
+                            }}
+                          />
+                        </div>
+                      </div>                        <div className="mt-6 flex justify-end">
+                        <Button
+                          type="submit"
+                          className={`hover:cursor-pointer transition-colors ${hasChanges ? 'hover:bg-primary/90' : ''}`}
+                          variant="default"
+                          disabled={loading || !hasChanges}
                         >
                           {loading ? (
                             <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Uploading...
+                              Saving...
                             </>
                           ) : (
-                            'Change'
+                            'Save Changes'
                           )}
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="text-destructive"
-                          onClick={async () => {
-                            try {
-                              setLoading(true);                              await updateProfile({
-                                profilePicture: ''
-                              });
-
-                              const localUser = getUser();
-                              localStorage.setItem('user', JSON.stringify({
-                                ...localUser,
-                                profilePicture: ''
-                              }));
-
-                              toast.success('Profile picture removed');
-                              window.location.reload();
-                            } catch (error) {
-                              console.error('Error removing profile picture:', error);
-                              toast.error('Failed to remove profile picture');
-                            } finally {
-                              setLoading(false);
-                            }
-                          }}
-                          disabled={loading || !user?.profilePicture}
-                        >
-                          Remove
-                        </Button>
                       </div>
-                    </div>
-                  </div>                  <Separator />                      
-                  <form onChange={(e) => {
-                    const formData = new FormData(e.target.form);
-                    const fields = {};
-                    ['firstName', 'lastName', 'phone', 'address', 'bio'].forEach(field => {
-                      fields[field] = formData.get(field)?.trim() || '';
-                    });
-                    const hasChanges = checkForChanges(fields);
-                    setHasChanges(hasChanges);
-                  }} onSubmit={async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    if (loading) return;
-                    setLoading(true);
-                      try {
-                      const formData = new FormData(e.target);
-                      const updateData = {};
-                      const fields = ['firstName', 'lastName', 'phone', 'address', 'bio'];
-                      
-                      fields.forEach(field => {
-                        const value = formData.get(field);
-                        if (value && value.trim()) {
-                          updateData[field] = value.trim();
-                        }
-                      });if (Object.keys(updateData).length === 0) {
-                        toast.error('Please update at least one field');
-                        setLoading(false);
-                        return;
-                      }
-
-
-                      const { firstName, lastName } = updateData;
-                      if (firstName && firstName.length < 2) {
-                        toast.error('First name must be at least 2 characters');
-                        setLoading(false);
-                        return;
-                      }
-                      if (lastName && lastName.length < 2) {
-                        toast.error('Last name must be at least 2 characters');
-                        setLoading(false);
-                        return;
-                      }
-
-                      const response = await updateProfile(updateData);
-                      
-                      if (response.success) {
-
-                        const updatedUserData = response.data;
-                        setFormData(prev => ({ ...prev, ...updatedUserData }));
-                        
-
-                        setUser(prev => ({ ...prev, ...updatedUserData }));
-
-
-                        const localUser = getUser();
-                        localStorage.setItem('user', JSON.stringify({
-                          ...localUser,
-                          ...updatedUserData
-                        }));
-
-                        toast.success('Profile updated successfully');
-                      } else {
-                        throw new Error(response.message || 'Failed to update profile');
-                      }
-                    } catch (error) {
-                      console.error('Profile update error:', error);
-                      toast.error(error?.response?.data?.message || 'Failed to update profile');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>                          
-                        <Input
-                          id="firstName"
-                          name="firstName"
-                          defaultValue={user?.firstName}
-                          onChange={(e) => {
-                            setFormData({ ...formData, firstName: e.target.value });
-                            setHasChanges(checkForChanges({ ...formData, firstName: e.target.value }));
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>                         
-                         <Input
-                          id="lastName"
-                          name="lastName"
-                          defaultValue={user?.lastName}
-                          onChange={(e) => {
-                            setFormData({ ...formData, lastName: e.target.value });
-                            setHasChanges(checkForChanges({ ...formData, lastName: e.target.value }));
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          defaultValue={user?.email}
-                          disabled
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number</Label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          defaultValue={user?.phone || ""}
-                          placeholder="+1234567890"
-                          onChange={(e) => {
-                            setFormData({ ...formData, phone: e.target.value });
-                            setHasChanges(checkForChanges({ ...formData, phone: e.target.value }));
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="address">Address</Label>
-                        <Input
-                          id="address"
-                          name="address"
-                          defaultValue={user?.address || ""}
-                          placeholder="Your address"
-                          onChange={(e) => {
-                            setFormData({ ...formData, address: e.target.value });
-                            setHasChanges(checkForChanges({ ...formData, address: e.target.value }));
-                          }}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="bio">Bio</Label>
-                        <Input
-                          id="bio"
-                          name="bio"
-                          defaultValue={user?.bio || ""}
-                          placeholder="Tell us about yourself"
-                          onChange={(e) => {
-                            setFormData({ ...formData, bio: e.target.value });
-                            setHasChanges(checkForChanges({ ...formData, bio: e.target.value }));
-                          }}
-                        />
-                      </div>
-                    </div>                        <div className="mt-6 flex justify-end">
-                      <Button 
-                        type="submit" 
-                        className={`hover:cursor-pointer transition-colors ${hasChanges ? 'hover:bg-primary/90' : ''}`}
-                        variant="default"
-                        disabled={loading || !hasChanges}
-                      >
-                        {loading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Saving...
-                          </>
-                        ) : (
-                          'Save Changes'
-                        )}
-                      </Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
 
               <TabsContent value="notifications">
