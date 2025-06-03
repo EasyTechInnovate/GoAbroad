@@ -1,8 +1,12 @@
 import { Outlet } from 'react-router-dom';
+import { DashboardLayout } from './components/layout/DashboardLayout';
 
-// Index component that serves as a parent container for admin routes
 const Index = () => {
-  return <Outlet />;
+  return (
+    <DashboardLayout>
+      <Outlet />
+    </DashboardLayout>
+  );
 };
 
 export default Index;

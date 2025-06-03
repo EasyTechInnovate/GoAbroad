@@ -29,7 +29,6 @@ export function AppHeader() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Get user data from auth
     const userData = getUser();
     if (userData) {
       setUser(userData);
@@ -42,7 +41,6 @@ export function AppHeader() {
     navigate('/login');
   };
 
-  // Get email for display
   const userEmail = user?.email || '';
   
   return (

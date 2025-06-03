@@ -44,7 +44,6 @@ import { cn } from '@/lib/utils';
 import PropTypes from 'prop-types';
 
 export function StudentProfile({ id }) {
-  // In a real app, you'd fetch the student data based on the ID
   const student = {
     id,
     name: 'Emma Johnson',

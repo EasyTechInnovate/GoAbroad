@@ -1,4 +1,3 @@
-  
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +11,6 @@ import {
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { DashboardLayout } from './components/layout/DashboardLayout';
 
 const FAQs = () => {
   const faqCategories = [
@@ -115,160 +113,158 @@ const FAQs = () => {
   ];
 
   return (
-    <DashboardLayout>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">FAQs & Knowledge Base</h1>
-          <div className="flex gap-2">
-            <Button variant="outline">
-              <Plus className="mr-2 h-4 w-4" /> Add FAQ
-            </Button>
-            <Button>
-              <FilePlus className="mr-2 h-4 w-4" /> New Article
-            </Button>
-          </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">FAQs & Knowledge Base</h1>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Plus className="mr-2 h-4 w-4" /> Add FAQ
+          </Button>
+          <Button>
+            <FilePlus className="mr-2 h-4 w-4" /> New Article
+          </Button>
         </div>
+      </div>
 
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search for FAQs and articles..."
-            className="pl-8 w-full"
-          />
-        </div>
+      <div className="relative">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search for FAQs and articles..."
+          className="pl-8 w-full"
+        />
+      </div>
 
-        <Tabs defaultValue="faqs">
-          <TabsList>
-            <TabsTrigger value="faqs">FAQs</TabsTrigger>
-            <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="faqs" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="md:col-span-1">
-                <CardHeader>
-                  <CardTitle className="text-lg">Categories</CardTitle>
-                </CardHeader>
-                <CardContent className="p-3">
-                  <ScrollArea className="h-[calc(100vh-300px)]">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between rounded-md px-3 py-2 bg-muted font-medium cursor-pointer">
-                        <span>All Categories</span>
-                        <Badge variant="secondary">{faqCategories.reduce((acc, cat) => acc + cat.count, 0)}</Badge>
-                      </div>
-                      {faqCategories.map((category) => (
-                        <div 
-                          key={category.id} 
-                          className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted cursor-pointer"
-                        >
-                          <span>{category.name}</span>
-                          <Badge variant="outline">{category.count}</Badge>
-                        </div>
-                      ))}
+      <Tabs defaultValue="faqs">
+        <TabsList>
+          <TabsTrigger value="faqs">FAQs</TabsTrigger>
+          <TabsTrigger value="knowledge">Knowledge Base</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="faqs" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="md:col-span-1">
+              <CardHeader>
+                <CardTitle className="text-lg">Categories</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <ScrollArea className="h-[calc(100vh-300px)]">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between rounded-md px-3 py-2 bg-muted font-medium cursor-pointer">
+                      <span>All Categories</span>
+                      <Badge variant="secondary">{faqCategories.reduce((acc, cat) => acc + cat.count, 0)}</Badge>
                     </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-
-              <Card className="md:col-span-3">
-                <CardHeader>
-                  <CardTitle>Frequently Asked Questions</CardTitle>
-                  <CardDescription>
-                    Common questions from students about studying abroad
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Accordion type="single" collapsible className="w-full">
-                    {faqs.map((faq) => (
-                      <AccordionItem key={faq.id} value={`item-${faq.id}`}>
-                        <div className="flex items-center justify-between">
-                          <AccordionTrigger className="text-left">
-                            {faq.question}
-                          </AccordionTrigger>
-                          <Button variant="ghost" size="icon" className="mr-4">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <AccordionContent className="text-muted-foreground">
-                          {faq.answer}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="knowledge" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="md:col-span-1">
-                <CardHeader>
-                  <CardTitle className="text-lg">Categories</CardTitle>
-                </CardHeader>
-                <CardContent className="p-3">
-                  <ScrollArea className="h-[calc(100vh-300px)]">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between rounded-md px-3 py-2 bg-muted font-medium cursor-pointer">
-                        <span>All Categories</span>
-                        <Badge variant="secondary">{faqCategories.reduce((acc, cat) => acc + cat.count, 0)}</Badge>
+                    {faqCategories.map((category) => (
+                      <div 
+                        key={category.id} 
+                        className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted cursor-pointer"
+                      >
+                        <span>{category.name}</span>
+                        <Badge variant="outline">{category.count}</Badge>
                       </div>
-                      {faqCategories.map((category) => (
-                        <div 
-                          key={category.id} 
-                          className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted cursor-pointer"
-                        >
-                          <span>{category.name}</span>
-                          <Badge variant="outline">{category.count}</Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-
-              <Card className="md:col-span-3">
-                <CardHeader>
-                  <CardTitle>Knowledge Base Articles</CardTitle>
-                  <CardDescription>
-                    In-depth guides and resources for students and advisors
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {knowledgeArticles.map((article) => (
-                      <Card key={article.id} className="overflow-hidden">
-                        <CardContent className="p-0">
-                          <div className="p-6">
-                            <div className="flex items-center justify-between mb-2">
-                              <Badge variant="outline">{article.category}</Badge>
-                              <span className="text-xs text-muted-foreground">
-                                Updated: {article.dateUpdated}
-                              </span>
-                            </div>
-                            <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
-                            <p className="text-sm text-muted-foreground mb-4">
-                              {article.description}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <Button variant="outline" size="sm">Read More</Button>
-                              <Button variant="ghost" size="icon">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </DashboardLayout>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-3">
+              <CardHeader>
+                <CardTitle>Frequently Asked Questions</CardTitle>
+                <CardDescription>
+                  Common questions from students about studying abroad
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {faqs.map((faq) => (
+                    <AccordionItem key={faq.id} value={`item-${faq.id}`}>
+                      <div className="flex items-center justify-between">
+                        <AccordionTrigger className="text-left">
+                          {faq.question}
+                        </AccordionTrigger>
+                        <Button variant="ghost" size="icon" className="mr-4">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <AccordionContent className="text-muted-foreground">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="knowledge" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="md:col-span-1">
+              <CardHeader>
+                <CardTitle className="text-lg">Categories</CardTitle>
+              </CardHeader>
+              <CardContent className="p-3">
+                <ScrollArea className="h-[calc(100vh-300px)]">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between rounded-md px-3 py-2 bg-muted font-medium cursor-pointer">
+                      <span>All Categories</span>
+                      <Badge variant="secondary">{faqCategories.reduce((acc, cat) => acc + cat.count, 0)}</Badge>
+                    </div>
+                    {faqCategories.map((category) => (
+                      <div 
+                        key={category.id} 
+                        className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted cursor-pointer"
+                      >
+                        <span>{category.name}</span>
+                        <Badge variant="outline">{category.count}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-3">
+              <CardHeader>
+                <CardTitle>Knowledge Base Articles</CardTitle>
+                <CardDescription>
+                  In-depth guides and resources for students and advisors
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {knowledgeArticles.map((article) => (
+                    <Card key={article.id} className="overflow-hidden">
+                      <CardContent className="p-0">
+                        <div className="p-6">
+                          <div className="flex items-center justify-between mb-2">
+                            <Badge variant="outline">{article.category}</Badge>
+                            <span className="text-xs text-muted-foreground">
+                              Updated: {article.dateUpdated}
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            {article.description}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <Button variant="outline" size="sm">Read More</Button>
+                            <Button variant="ghost" size="icon">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

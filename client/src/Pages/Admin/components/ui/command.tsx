@@ -85,7 +85,11 @@ const CommandGroup = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Group>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
 >(({ className, ...props }, ref) => {
+<<<<<<< HEAD
+
+=======
   // Ensure children is always valid for the component
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   const safeProps = {
     ...props,
     children: props.children || null

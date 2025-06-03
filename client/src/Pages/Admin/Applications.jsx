@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,7 +13,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -30,10 +28,8 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -47,13 +43,11 @@ import {
 } from '@/components/ui/select';
 import {
   Search,
-  Filter,
   MoreHorizontal,
   Eye,
   Clock,
   CheckCircle2,
   XCircle,
-  Loader2,
   Download,
   User,
   FileText,
@@ -65,7 +59,7 @@ import {
 import { toast } from '@/components/ui/sonner';
 import { Link } from 'react-router-dom';
 
-// Custom date formatter function instead of using date-fns
+
 const format = (date, formatStr) => {
   if (!date) return '';
   const d = new Date(date);
@@ -85,12 +79,12 @@ const format = (date, formatStr) => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
 
-// Fake data generator
+
 const generateRandomDate = (start, end) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-// Fake data for applications
+
 const APPLICATIONS = [
   {
     id: 'APP-2023-001',
@@ -266,16 +260,16 @@ const Applications = () => {
     direction: 'desc',
   });
 
-  // Filter applications based on status and search query
+
   const filterApplications = (status, query) => {
     let filtered = [...applications];
     
-    // Filter by status
+
     if (status !== 'all') {
       filtered = filtered.filter(app => app.status === status);
     }
     
-    // Filter by search query
+
     if (query) {
       const lowercaseQuery = query.toLowerCase();
       filtered = filtered.filter(app => 
@@ -286,10 +280,10 @@ const Applications = () => {
       );
     }
     
-    // Apply sorting
+
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        // Handle nested properties
+
         let aValue, bValue;
         
         if (sortConfig.key.includes('.')) {
@@ -301,25 +295,25 @@ const Applications = () => {
           bValue = b[sortConfig.key];
         }
         
-        // Handle dates
+
         if (aValue instanceof Date && bValue instanceof Date) {
           return sortConfig.direction === 'asc' 
             ? aValue.getTime() - bValue.getTime()
             : bValue.getTime() - aValue.getTime();
         }
         
-        // Handle strings
+
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return sortConfig.direction === 'asc' 
             ? aValue.localeCompare(bValue)
             : bValue.localeCompare(aValue);
         }
         
-        // Handle nulls
+
         if (aValue === null) return sortConfig.direction === 'asc' ? -1 : 1;
         if (bValue === null) return sortConfig.direction === 'asc' ? 1 : -1;
         
-        // Default comparison
+
         return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
       });
     }
@@ -345,7 +339,7 @@ const Applications = () => {
     }
     setSortConfig({ key, direction });
     
-    // Re-filter with new sort
+
     filterApplications(activeStatus, searchQuery);
   };
 
@@ -358,7 +352,7 @@ const Applications = () => {
           decisionDate: newStatus === 'pending' ? null : new Date(),
         };
         
-        // If we're viewing this application, update the selected one too
+
         if (selectedApplication && selectedApplication.id === id) {
           setSelectedApplication(updatedApp);
         }
@@ -417,333 +411,87 @@ const Applications = () => {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
-          <div className="flex items-center gap-2">
-            <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Export
-            </Button>
-          </div>
-        </div>
-
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
         <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search applications..."
-              className="pl-8 w-full"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-          </div>
-          <Select defaultValue="recent">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recent">Most Recent</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="az">A-Z</SelectItem>
-              <SelectItem value="za">Z-A</SelectItem>
-            </SelectContent>
-          </Select>
+          <Button variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
         </div>
+      </div>
 
-        <Tabs defaultValue="all" value={activeStatus} onValueChange={handleTabChange}>
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-            <TabsTrigger value="interview">Interview</TabsTrigger>
-          </TabsList>
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search applications..."
+            className="pl-8 w-full"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </div>
+        <Select defaultValue="recent">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recent">Most Recent</SelectItem>
+            <SelectItem value="oldest">Oldest First</SelectItem>
+            <SelectItem value="az">A-Z</SelectItem>
+            <SelectItem value="za">Z-A</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-          <TabsContent value="all" className="space-y-4">
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[20%]">Student</TableHead>
-                      <TableHead className="w-[25%]">
-                        <div 
-                          className="flex items-center cursor-pointer"
-                          onClick={() => handleSort('university')}
-                        >
-                          University
-                          <ArrowUpDown className="ml-2 h-4 w-4" />
-                        </div>
-                      </TableHead>
-                      <TableHead className="w-[20%]">Program</TableHead>
-                      <TableHead className="w-[15%]">
-                        <div 
-                          className="flex items-center cursor-pointer"
-                          onClick={() => handleSort('submissionDate')}
-                        >
-                          Date
-                          <ArrowUpDown className="ml-2 h-4 w-4" />
-                        </div>
-                      </TableHead>
-                      <TableHead className="w-[10%]">Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredApplications.map((app) => (
-                      <TableRow key={app.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={app.student.avatar} alt={app.student.name} />
-                              <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium">{app.student.name}</div>
-                              <div className="text-xs text-muted-foreground">{app.id}</div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{app.university}</TableCell>
-                        <TableCell>{app.program}</TableCell>
-                        <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                        <TableCell>{getStatusBadge(app.status)}</TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleView(app)}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View Application
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link to={`/student/${app.student.id}`} className="flex items-center">
-                                  <User className="mr-2 h-4 w-4" />
-                                  View Student
-                                </Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuLabel>Set Status</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'approved')}>
-                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                                Approve
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'rejected')}>
-                                <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                                Reject
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'interview')}>
-                                <Calendar className="mr-2 h-4 w-4 text-blue-500" />
-                                Schedule Interview
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'pending')}>
-                                <Clock className="mr-2 h-4 w-4 text-yellow-500" />
-                                Mark Pending
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
+      <Tabs defaultValue="all" value={activeStatus} onValueChange={handleTabChange}>
+        <TabsList>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="pending">Pending</TabsTrigger>
+          <TabsTrigger value="approved">Approved</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          <TabsTrigger value="interview">Interview</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="pending" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Pending Applications</CardTitle>
-                <CardDescription>
-                  Applications awaiting review and decision
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[25%]">Student</TableHead>
-                      <TableHead className="w-[20%]">University</TableHead>
-                      <TableHead className="w-[20%]">Program</TableHead>
-                      <TableHead className="w-[15%]">Submission Date</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredApplications.length > 0 ? (
-                      filteredApplications.map((app) => (
-                        <TableRow key={app.id}>
-                          <TableCell className="font-medium">
-                            <div className="flex items-center gap-2">
-                              <Avatar className="h-8 w-8">
-                                <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <div className="font-medium">{app.student.name}</div>
-                                <div className="text-xs text-muted-foreground">{app.id}</div>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>{app.university}</TableCell>
-                          <TableCell>{app.program}</TableCell>
-                          <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end space-x-2">
-                              <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
-                                <CheckCircle2 className="mr-2 h-4 w-4" />
-                                Approve
-                              </Button>
-                              <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
-                                Schedule Interview
-                              </Button>
-                              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-4">
-                          No pending applications found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="approved" className="space-y-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[25%]">Student</TableHead>
-                  <TableHead className="w-[20%]">University</TableHead>
-                  <TableHead className="w-[20%]">Program</TableHead>
-                  <TableHead className="w-[15%]">Approval Date</TableHead>
-                  <TableHead className="w-[10%]">Start Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredApplications.length > 0 ? (
-                  filteredApplications.map((app) => (
-                    <TableRow key={app.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{app.student.name}</div>
-                            <div className="text-xs text-muted-foreground">{app.id}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{app.university}</TableCell>
-                      <TableCell>{app.program}</TableCell>
-                      <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
-                      <TableCell>{app.startDate ? format(app.startDate, 'MMM yyyy') : 'N/A'}</TableCell>
-                      <TableCell className="text-right">
-                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
+        <TabsContent value="all" className="space-y-4">
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-4">
-                      No approved applications found
-                    </TableCell>
+                    <TableHead className="w-[20%]">Student</TableHead>
+                    <TableHead className="w-[25%]">
+                      <div 
+                        className="flex items-center cursor-pointer"
+                        onClick={() => handleSort('university')}
+                      >
+                        University
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </div>
+                    </TableHead>
+                    <TableHead className="w-[20%]">Program</TableHead>
+                    <TableHead className="w-[15%]">
+                      <div 
+                        className="flex items-center cursor-pointer"
+                        onClick={() => handleSort('submissionDate')}
+                      >
+                        Date
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </div>
+                    </TableHead>
+                    <TableHead className="w-[10%]">Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TabsContent>
-
-          <TabsContent value="rejected" className="space-y-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[25%]">Student</TableHead>
-                  <TableHead className="w-[20%]">University</TableHead>
-                  <TableHead className="w-[20%]">Program</TableHead>
-                  <TableHead className="w-[15%]">Rejection Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredApplications.length > 0 ? (
-                  filteredApplications.map((app) => (
+                </TableHeader>
+                <TableBody>
+                  {filteredApplications.map((app) => (
                     <TableRow key={app.id}>
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
-                            <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{app.student.name}</div>
-                            <div className="text-xs text-muted-foreground">{app.id}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{app.university}</TableCell>
-                      <TableCell>{app.program}</TableCell>
-                      <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => handleStatusChange(app.id, 'pending')}>
-                            Reconsider
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-4">
-                      No rejected applications found
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TabsContent>
-
-          <TabsContent value="interview" className="space-y-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[25%]">Student</TableHead>
-                  <TableHead className="w-[20%]">University</TableHead>
-                  <TableHead className="w-[20%]">Program</TableHead>
-                  <TableHead className="w-[15%]">Submission Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredApplications.length > 0 ? (
-                  filteredApplications.map((app) => (
-                    <TableRow key={app.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={app.student.avatar} alt={app.student.name} />
                             <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                           </Avatar>
                           <div>
@@ -755,35 +503,279 @@ const Applications = () => {
                       <TableCell>{app.university}</TableCell>
                       <TableCell>{app.program}</TableCell>
                       <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                      <TableCell>{getStatusBadge(app.status)}</TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
-                            <CheckCircle2 className="mr-2 h-4 w-4" />
-                            Approve
-                          </Button>
-                          <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'rejected')}>
-                            <XCircle className="mr-2 h-4 w-4" />
-                            Reject
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleView(app)}>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Application
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link to={`/student/${app.student.id}`} className="flex items-center">
+                                <User className="mr-2 h-4 w-4" />
+                                View Student
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Set Status</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'approved')}>
+                              <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                              Approve
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'rejected')}>
+                              <XCircle className="mr-2 h-4 w-4 text-red-500" />
+                              Reject
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'interview')}>
+                              <Calendar className="mr-2 h-4 w-4 text-blue-500" />
+                              Schedule Interview
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'pending')}>
+                              <Clock className="mr-2 h-4 w-4 text-yellow-500" />
+                              Mark Pending
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="pending" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pending Applications</CardTitle>
+              <CardDescription>
+                Applications awaiting review and decision
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-4">
-                      No interview applications found
+                    <TableHead className="w-[25%]">Student</TableHead>
+                    <TableHead className="w-[20%]">University</TableHead>
+                    <TableHead className="w-[20%]">Program</TableHead>
+                    <TableHead className="w-[15%]">Submission Date</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredApplications.length > 0 ? (
+                    filteredApplications.map((app) => (
+                      <TableRow key={app.id}>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium">{app.student.name}</div>
+                              <div className="text-xs text-muted-foreground">{app.id}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{app.university}</TableCell>
+                        <TableCell>{app.program}</TableCell>
+                        <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end space-x-2">
+                            <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
+                              <CheckCircle2 className="mr-2 h-4 w-4" />
+                              Approve
+                            </Button>
+                            <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
+                              Schedule Interview
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-4">
+                        No pending applications found
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="approved" className="space-y-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[25%]">Student</TableHead>
+                <TableHead className="w-[20%]">University</TableHead>
+                <TableHead className="w-[20%]">Program</TableHead>
+                <TableHead className="w-[15%]">Approval Date</TableHead>
+                <TableHead className="w-[10%]">Start Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredApplications.length > 0 ? (
+                filteredApplications.map((app) => (
+                  <TableRow key={app.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">{app.student.name}</div>
+                          <div className="text-xs text-muted-foreground">{app.id}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{app.university}</TableCell>
+                    <TableCell>{app.program}</TableCell>
+                    <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
+                    <TableCell>{app.startDate ? format(app.startDate, 'MMM yyyy') : 'N/A'}</TableCell>
+                    <TableCell className="text-right">
+                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                        <Eye className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TabsContent>
-        </Tabs>
-      </div>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-4">
+                    No approved applications found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TabsContent>
+
+        <TabsContent value="rejected" className="space-y-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[25%]">Student</TableHead>
+                <TableHead className="w-[20%]">University</TableHead>
+                <TableHead className="w-[20%]">Program</TableHead>
+                <TableHead className="w-[15%]">Rejection Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredApplications.length > 0 ? (
+                filteredApplications.map((app) => (
+                  <TableRow key={app.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">{app.student.name}</div>
+                          <div className="text-xs text-muted-foreground">{app.id}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{app.university}</TableCell>
+                    <TableCell>{app.program}</TableCell>
+                    <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => handleStatusChange(app.id, 'pending')}>
+                          Reconsider
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-4">
+                    No rejected applications found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TabsContent>
+
+        <TabsContent value="interview" className="space-y-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[25%]">Student</TableHead>
+                <TableHead className="w-[20%]">University</TableHead>
+                <TableHead className="w-[20%]">Program</TableHead>
+                <TableHead className="w-[15%]">Submission Date</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredApplications.length > 0 ? (
+                filteredApplications.map((app) => (
+                  <TableRow key={app.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">{app.student.name}</div>
+                          <div className="text-xs text-muted-foreground">{app.id}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{app.university}</TableCell>
+                    <TableCell>{app.program}</TableCell>
+                    <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-2">
+                        <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />
+                          Approve
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'rejected')}>
+                          <XCircle className="mr-2 h-4 w-4" />
+                          Reject
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-4">
+                    No interview applications found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TabsContent>
+      </Tabs>
 
       {/* Application Detail Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
@@ -903,7 +895,7 @@ const Applications = () => {
           )}
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </div>
   );
 };
 

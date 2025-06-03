@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { loginUser } from '@/services/api.services';
-import { setAuth } from '@/lib/auth';
+import { setAuth, isAuthenticated } from '@/lib/auth';
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
@@ -17,14 +18,23 @@ const Login = () => {
     password: '',
   });
 
-  // Check for success message from signup
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
   useEffect(() => {
     if (location.state?.message) {
       setSuccessMessage(location.state.message);
-      // Clear the message from history so it doesn't show up again on refresh
       window.history.replaceState({}, document.title);
     }
-  }, [location.state]);
+    
+    const tokenExpired = searchParams.get('expired');
+    if (tokenExpired === 'true') {
+      setApiError('Your session has expired. Please log in again.');
+    }
+  }, [location.state, searchParams]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +43,6 @@ const Login = () => {
       [name]: value
     }));
     
-    // Clear any errors when user starts typing
     if (apiError) {
       setApiError('');
     }
@@ -42,7 +51,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Reset errors
     setApiError('');
     
     try {
@@ -55,26 +63,24 @@ const Login = () => {
       
       const response = await loginUser(userData);
       
-      // Handle successful login
       if (response.success) {
-        // Store authentication data including user details and token
         setAuth({
           accessToken: response.data.accessToken,
           user: response.data.user
         });
         
-        // Redirect to appropriate dashboard based on user role
+        const redirectPath = location.state?.from || '/dashboard';
         const userRole = response.data.user.role;
+        
         if (userRole === 'ADMIN' || userRole === 'EDITOR' || userRole === 'VIEWER') {
-          navigate('/admin/dashboard');
+          navigate('/admin');
         } else {
-          navigate('/dashboard');
+          navigate(redirectPath);
         }
       }
     } catch (error) {
       console.error('Login failed:', error);
       
-      // Handle API errors
       if (error.response && error.response.data) {
         setApiError(error.response.data.message || 'Invalid email or password. Please try again.');
       } else {
@@ -92,7 +98,7 @@ const Login = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="../../public/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
           </div>
 
           <h1 className="text-2xl font-semibold mb-2">Login</h1>

@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, CalendarClock } from 'lucide-react';
 
-// Removed TypeScript interface: Deadline
 const mockDeadlines = [
   {
     id: '1',

@@ -1,15 +1,33 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { isAuthenticated } from '@/lib/auth';
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Forgot password submitted for:', email);
-    setSubmitted(true);
+    setIsLoading(true);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Forgot password submitted for:', email);
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error requesting password reset:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -19,12 +37,11 @@ const ForgotPassword = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="../../../node_modules/date-fns/docs/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
           </div>
 
           {!submitted ? (
             <>
-
               <h1 className="text-2xl font-semibold mb-2">Reset Password</h1>
               <p className="text-gray-600 mb-8">
                 Enter your email address and we&apos;ll send you instructions to reset your password.
@@ -50,13 +67,13 @@ const ForgotPassword = () => {
                 <Button 
                   type="submit" 
                   className="w-full cursor-pointer bg-primary-1 hover:bg-primary-1/90 text-white py-2 rounded-md transition-colors"
+                  disabled={isLoading}
                 >
-                  Send Reset Instructions
+                  {isLoading ? 'Sending...' : 'Send Reset Instructions'}
                 </Button>
               </form>
             </>
           ) : (
-
             <div className="text-center">
               <div className="mb-6 flex justify-center">
                 <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
@@ -77,7 +94,6 @@ const ForgotPassword = () => {
               </Button>
             </div>
           )}
-
 
           <div className="mt-8 text-center">
             <Link to="/login" className="text-sm text-primary-1 hover:underline">

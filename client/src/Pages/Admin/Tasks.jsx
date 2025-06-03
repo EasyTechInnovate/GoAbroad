@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DashboardLayout } from './components/layout/DashboardLayout';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   CheckCircle, Circle, Clock, Filter, Plus, Search, Users, 
-  FileQuestion, ChevronRight, Edit, X, Briefcase
+  FileQuestion, Edit, X, Briefcase
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -106,8 +106,8 @@ const Tasks = () => {
   const [isAssignStudentOpen, setIsAssignStudentOpen] = useState(false);
   const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
   const [isCreateQuestionnaireOpen, setIsCreateQuestionnaireOpen] = useState(false);
-  
-  const [currentUser, setCurrentUser] = useState({
+
+  const [currentUser, _setCurrentUser] = useState({
     id: 1,
     name: 'John Doe',
     role: 'admin'
@@ -390,9 +390,8 @@ const Tasks = () => {
     
     return matchesSearch && matchesStudent;
   });
-
   return (
-    <DashboardLayout>
+    <>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
@@ -1128,7 +1127,7 @@ const Tasks = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </>
   );
 };
 

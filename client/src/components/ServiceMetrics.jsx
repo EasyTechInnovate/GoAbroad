@@ -1,4 +1,3 @@
-// components/ServerMetrics.tsx
 
 import { motion } from 'framer-motion';
 import { Server, Cpu, Brain, Clock } from 'lucide-react';

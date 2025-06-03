@@ -6,12 +6,27 @@ import { uploadFiles } from '../middleware/multerHandler.js'
 import authController from '../controller/authController/authController.js'
 import authentication, { paymentMiddleWare } from '../middleware/authentication.js'
 import adminController from '../controller/adminController/adminController.js'
+<<<<<<< HEAD
 import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
+=======
+import { adminEditorOnly, adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import categoryController from '../controller/faqController/categoryController.js'
 import faqController from '../controller/faqController/faqController.js'
 import paymentController from '../controller/paymentController/paymentController.js'
 import studentController from '../controller/studentController/studentController.js'
 import adminStudentManagementController from '../controller/adminController/adminStudentManagementController.js'
+<<<<<<< HEAD
+=======
+import questionnaireController from '../controller/questionnaireController/questionnaireController.js'
+import subtaskController from '../controller/subtaskController/subtaskController.js'
+import subtaskQuestionnaireAssignmentController from '../controller/subtaskController/subtaskQuestionnaireAssignmentController.js'
+import studentTaskAssignmentController from '../controller/taskController/studentTaskAssignmentController.js'
+import taskController from '../controller/taskController/taskController.js'
+import taskSubtaskAssignmentController from '../controller/taskController/taskSubtaskAssignmentController.js'
+import documentController from '../controller/documentController/documentController.js'
+import studentUniversityAssignmentController from '../controller/University/studentUniversityAssignmentController.js'
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 
 const router = Router()
 
@@ -20,7 +35,11 @@ const router = Router()
 router.route('/self').get(apiController.self)
 router.route('/health').get(apiController.health)
 router.route('/upload-file').post(uploadFiles, apiController.uploadFile);
+<<<<<<< HEAD
 
+=======
+router.route('/faqs').get(faqController.getFaqs)
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 // auth routes
 router.route('/auth/login').post(authController.login);
 router.route('/auth/signup').post(authController.signup);
@@ -42,7 +61,11 @@ router.route('/student/profile').put(authentication, studentController.updatePro
 router.route('/admin/auth/login').post(adminController.login);
 router.route('/admin/auth/update-password').post(memberAccess, adminController.updatePassword);
 
+<<<<<<< HEAD
+router.route('/admin/create-member').post(adminController.addNewMember);
+=======
 router.route('/admin/create-member').post(adminOnly, adminController.addNewMember);
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 router.route('/admin/update-profile/:id').put(adminOnly, adminController.updateProfileByAdmin);
 router.route('/admin/members').get(adminOnly, adminController.getAllMembers);
 router.route('/admin/members/:id').delete(adminOnly, adminController.deleteMember);
@@ -82,4 +105,126 @@ router.route('/admin/students/:studentId')
     .get(memberAccess, adminStudentManagementController.getStudentById)
     .delete(adminOnly, adminStudentManagementController.deleteStudent);
 // ******************** ADMIN ROUTES ***********************************
+<<<<<<< HEAD
+=======
+
+
+// ******************** QUESTIONNAIRE ROUTES ***********************************
+// Routes for all members (read-only)
+router.route('/admin/questionnaires')
+    .get(memberAccess, questionnaireController.getAllQuestionnaires);
+
+// Routes for ADMIN only (create, update, delete)
+router.route('/admin/questionnaires')
+    .post(adminOnly, questionnaireController.createQuestionnaire);
+
+router.route('/admin/questionnaires/:questionnaireId')
+    .get(memberAccess, questionnaireController.getQuestionnaireById)
+    .put(adminOnly, questionnaireController.updateQuestionnaire)
+    .delete(adminOnly, questionnaireController.deleteQuestionnaire);
+
+// Routes for managing questions (ADMIN only)
+router.route('/admin/questionnaires/:questionnaireId/questions')
+    .post(adminOnly, questionnaireController.addQuestion)
+    .delete(adminOnly, questionnaireController.deleteQuestion);
+// ******************** QUESTIONNAIRE ROUTES END ***********************************
+
+// ******************** SUBTASK ROUTES  ***********************************
+// Routes for all members (read-only)
+router.route('/admin/subtasks')
+    .get(memberAccess, subtaskController.getAllSubtasks);
+
+// Routes for ADMIN only (create, update, delete)
+router.route('/admin/subtasks')
+    .post(adminOnly, subtaskController.createSubtask);
+
+router.route('/admin/subtasks/:subtaskId')
+    .get(memberAccess, subtaskController.getSubtaskById)
+    .put(adminOnly, subtaskController.updateSubtask)
+    .delete(adminOnly, subtaskController.deleteSubtask);
+
+// Update Stautus 
+router.route('/admin/subtask-questionnaire-assignments/update-status')
+    .put(adminOnly, subtaskQuestionnaireAssignmentController.updateAssignmentStatus);
+// ******************** SUBTASK ROUTES END ***********************************
+
+
+// ******************** TASK ROUTES ***********************************
+
+// Routes for all members (read-only)
+router.route('/admin/tasks')
+    .get(memberAccess, taskController.getAllTasks);
+
+// Routes for ADMIN only
+router.route('/admin/tasks')
+    .post(adminOnly, taskController.createTask);
+
+router.route('/admin/tasks/:taskId')
+    .get(memberAccess, taskController.getTaskById)
+    .put(adminOnly, taskController.updateTaskDetails)
+    .delete(adminOnly, taskController.deleteTask);
+
+// Routes for managing subtasks (ADMIN only)
+router.route('/admin/tasks/:taskId/subtasks/add')
+    .post(adminOnly, taskSubtaskAssignmentController.addSubtasksToTask);
+
+router.route('/admin/tasks/:taskId/subtasks/remove')
+    .post(adminOnly, taskSubtaskAssignmentController.removeSubtasksFromTask);
+
+// Route for updating TaskSubtaskAssignment (ADMIN only)
+router.route('/admin/task-subtask-assignments/update')
+    .put(adminOnly, taskSubtaskAssignmentController.updateTaskSubtaskAssignment);
+
+
+// Routes for ADMIN only
+router.route('/admin/tasks/:taskId/students/add')
+    .post(adminOnly, studentTaskAssignmentController.addStudentsToTask);
+
+router.route('/admin/tasks/:taskId/students/remove')
+    .post(adminOnly, studentTaskAssignmentController.removeStudentFromTask);
+
+// Route for updating StudentTaskAssignment (ADMIN only)
+router.route('/admin/student-task-assignments/update')
+    .put(adminOnly, studentTaskAssignmentController.updateStudentTaskAssignment);
+// ******************** TASK ROUTES END ***********************************
+
+// ******************** DOCUMENT ROUTES ***********************************
+// Routes for documents (read-only for all members)
+router.route('/admin/documents')
+    .get(memberAccess, documentController.getAllDocuments);
+
+// Routes for documents (ADMIN and EDITOR only for create)
+router.route('/admin/documents')
+    .post(adminEditorOnly, documentController.createDocument);
+
+// Routes for a specific document (read-only for all members, update/delete for ADMIN and EDITOR)
+router.route('/admin/documents/:documentId')
+    .get(memberAccess, documentController.getDocumentById)
+    .put(adminEditorOnly, documentController.updateDocument)
+    .delete(adminEditorOnly, documentController.deleteDocument);
+// ******************** DOCUMENT ROUTES END ***********************************
+
+// ******************** ADMIN Student University Assignement ***********************************
+router.route('/admin/student-university-assignments')
+    .get(memberAccess, studentUniversityAssignmentController.getAllStudentUniversityAssignments)
+    .post(adminEditorOnly, studentUniversityAssignmentController.createStudentUniversityAssignment);
+
+router.route('/admin/student-university-assignments/:assignmentId')
+    .get(memberAccess, studentUniversityAssignmentController.getStudentUniversityAssignmentById)
+    .put(adminEditorOnly, studentUniversityAssignmentController.updateStudentUniversityAssignment)
+    .delete(adminEditorOnly, studentUniversityAssignmentController.deleteStudentUniversityAssignment);
+// ******************** ADMIN STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
+
+// ********************  STUDENT UNIVERSITY ASSIGNMENT ROUTES  ***********************************
+router.route('/student/assigned-universities')
+    .get(authentication, studentController.getAssignedUniversities);
+
+router.route('/student/assigned-universities/:assignmentId')
+    .put(authentication, studentController.updateAssignedUniversityStatus);
+
+// ********************  STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
+
+
+
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 export default router
