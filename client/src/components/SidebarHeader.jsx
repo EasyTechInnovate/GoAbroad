@@ -1,11 +1,38 @@
 import { SidebarTrigger } from './ui/sidebar'
-import { Bell, ChevronDown, Menu, Search } from 'lucide-react'
+import { Bell, ChevronDown, LogOut, Menu, Search, User, Settings } from 'lucide-react'
 import { Avatar } from '@radix-ui/react-avatar'
 import PropTypes from 'prop-types'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { getUser, getUserInitials, logout } from '@/lib/auth'
 
 const SidebarHeader = ({isOpen,setIsOpen}) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [user, setUser] = useState(null);
+  const dropdownRef = useRef(null);
+  
+  useEffect(() => {
+    const userData = getUser();
+    setUser(userData);
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   
   const getPageTitle = () => {
     const path = location.pathname;
@@ -41,6 +68,20 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
     
     return 'Go Abroad';
   };
+
+  const getUserName = () => {
+    if (!user) return 'User';
+    
+    if (user.name) return user.name;
+    
+    if (user.email) {
+      const emailParts = user.email.split('@');
+      return emailParts[0].charAt(0).toUpperCase() + emailParts[0].slice(1);
+    }
+    
+    return 'User';
+  };
+
   return (
     <header className="bg-white py-4 px-6 flex justify-between items-center border-b border-gray-200">
             <div className="flex items-center gap-2">
@@ -78,20 +119,69 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <Avatar className="h-8 w-8">
-                  <img src="/profile.svg" alt="User" />
-                </Avatar>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-gray-800">Shrey</p>
-                  <p className="text-xs text-gray-500">Admin</p>
+              <div className="relative">
+                <div 
+                  className="flex items-center space-x-2 cursor-pointer"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                >
+                  <Avatar className="h-8 w-8 rounded-full bg-primary-1 text-white flex items-center justify-center overflow-hidden">
+                    {user?.profilePicture ? (
+                      <img 
+                        src={user.profilePicture} 
+                        alt={getUserName()} 
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-primary-1 flex items-center justify-center text-sm font-medium">
+                        {getUserInitials()}
+                      </div>
+                    )}
+                  </Avatar>
+                  <div className="hidden sm:block">
+                    <p className="text-sm font-medium text-gray-800">{getUserName()}</p>
+                    <p className="text-xs text-gray-500">{user?.role || 'User'}</p>
+                  </div>
+                  <ChevronDown className={`h-4 w-4 text-gray-700 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
                 </div>
-                <ChevronDown className="h-4 w-4 text-gray-700" />
+
+                {showDropdown && (
+                  <div 
+                    ref={dropdownRef}
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200"
+                  >
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900 truncate">{user?.email || 'No email'}</p>
+                      <p className="text-xs text-gray-500">{user?.phoneNumber || 'No phone number'}</p>
+                    </div>
+                    <a 
+                      href="/dashboard/profile" 
+                      className="px-4 py-2 text-sm curosor-pointer text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      Profile
+                    </a>
+                    <a 
+                      href="/dashboard/settings" 
+                      className="px-4 py-2 text-sm curosor-pointer text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Settings
+                    </a>
+                    <button 
+                      onClick={handleLogout} 
+                      className="w-full text-left curosor-pointer px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </header>
   )
 }
+
 SidebarHeader.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,

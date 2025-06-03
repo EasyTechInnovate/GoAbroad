@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -233,7 +232,7 @@ const Universities = () => {
   });
 
   return (
-    <DashboardLayout>
+    <>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">University Management</h1>
@@ -547,7 +546,7 @@ const Universities = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </>
   );
 };
 

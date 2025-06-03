@@ -4,8 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format:check": "prettier . --check",
     "format:fix": "prettier . --fix",
     "prepare": "husky"

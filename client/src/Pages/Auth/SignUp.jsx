@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { registerUser } from '@/services/api.services';
+import { isAuthenticated } from '@/lib/auth';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -17,6 +18,12 @@ const SignUp = () => {
     confirmPassword: '',
   });
 
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -24,7 +31,6 @@ const SignUp = () => {
       [name]: value
     }));
     
-    // Clear errors when user starts typing
     if (name === 'password' || name === 'confirmPassword') {
       setPasswordError('');
     }
@@ -36,17 +42,14 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Reset errors
     setPasswordError('');
     setApiError('');
     
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match');
       return;
     }
     
-    // Validate password complexity
     const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
     if (!passwordRegex.test(formData.password)) {
       setPasswordError('Password must be at least 8 characters with a number and a special character');
@@ -63,15 +66,12 @@ const SignUp = () => {
       
       const response = await registerUser(userData);
       
-      // Handle successful signup
       if (response.success) {
-        // Redirect to login with success message or directly to dashboard if auto-login
         navigate('/login', { state: { message: 'Account created successfully! Please log in.' } });
       }
     } catch (error) {
       console.error('Signup failed:', error);
       
-      // Handle API errors
       if (error.response && error.response.data) {
         setApiError(error.response.data.message || 'Signup failed. Please try again.');
       } else {
@@ -89,7 +89,7 @@ const SignUp = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="../../public/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
           </div>
 
 

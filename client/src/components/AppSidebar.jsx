@@ -47,13 +47,13 @@ const AppSidebar = ({ isSidebarOpen }) => {
       <SidebarHeader className={'bg-white'}>
         {isSidebarOpen && (
           <div className="py-4 ml-1">
-            <img src="/logo.svg" height={35} width={35} />
+            <img src="../../public/logo.svg" height={35} width={35} />
           </div>
         )}
           {!isSidebarOpen && (
         <div className="md:py-6 flex md:items-center md:space-x-2 px-1">
             <>
-              <img src="/logo.svg" height={40} width={40} />
+              <img src="../../public/logo.svg" height={40} width={40} />
               <span className="text-2xl font-bold text-gray-900">Goupbroad</span>
             </>
         </div>

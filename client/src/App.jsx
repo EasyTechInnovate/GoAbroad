@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from './Pages/LandingPage';
 import Dashboard from './Pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import StudentDetails from './Pages/Admin/StudentDetails';
 import Tasks from './Pages/Admin/Tasks';
@@ -27,29 +28,30 @@ import UniversityManagement from './Pages/UniversityManagement';
 import Checklist from './Pages/Checklist';
 import StudentTasks from './Pages/Tasks';
 import Chat from './Pages/Messages';
+import AdminLogin from './Pages/Admin/Login';
+import PrivateAdminRoute from './components/PrivateAdminRoute';
 
 const App = () => {
   return (
-
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/dashboard/profile" element={<ProfilePage />} />
-      <Route path="/dashboard/timeline" element={<StudentTasks />} />
-      <Route path="/dashboard/chat" element={<Chat />} />
-      <Route path="/dashboard/faq" element={<FAQ />} />
-      <Route path="/dashboard/edu-loan" element={<EduLoan />} />
-      <Route path="/dashboard/checklist" element={<Checklist />} />
-      <Route path="/dashboard/documents" element={<DocManager />} />
-      <Route path="/dashboard/universities" element={<UniversityManagement />} />
+      <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      <Route path="/signup" element={<ProtectedRoute><SignUp /></ProtectedRoute>} />
+      <Route path="/login" element={<ProtectedRoute><Login /></ProtectedRoute>} />
+      <Route path="/forgot-password" element={<ProtectedRoute><ForgotPassword /></ProtectedRoute>} />
       
-      <Route path="/admin" element={<Index />}>
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/dashboard/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+      <Route path="/dashboard/timeline" element={<ProtectedRoute><StudentTasks /></ProtectedRoute>} />
+      <Route path="/dashboard/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+      <Route path="/dashboard/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
+      <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />      <Route path="/dashboard/checklist" element={<ProtectedRoute><Checklist /></ProtectedRoute>} />
+      <Route path="/dashboard/documents" element={<ProtectedRoute><DocManager /></ProtectedRoute>} />
+      <Route path="/dashboard/universities" element={<ProtectedRoute><UniversityManagement /></ProtectedRoute>} />      
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/*" element={<PrivateAdminRoute><Index /></PrivateAdminRoute>}>
         <Route index element={<AdminDashboard />} />
         <Route path="students" element={<Students />} />
-        <Route path="students/:id" element={<StudentDetails />} />
+        <Route path="students/:id" element={<StudentDetails />} />        
         <Route path="tasks" element={<Tasks />} />
         <Route path="applications" element={<Applications />} />
         <Route path="universities" element={<Universities />} />
@@ -59,10 +61,8 @@ const App = () => {
         <Route path="faqs" element={<FAQs />} />
         <Route path="activities" element={<AllActivities />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="*" element={<NotFound />} />
       </Route>
       
-      {/* Catch all route */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

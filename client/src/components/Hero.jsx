@@ -2,8 +2,27 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TypewriterEffect from './ui/TypewriteEffect';
+import { useState, useEffect } from 'react';
+import { isAuthenticated, subscribeToAuth } from '@/lib/auth';
 
 export const Hero = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+
+        setIsLoggedIn(isAuthenticated());
+        
+
+        const unsubscribe = subscribeToAuth((authenticated) => {
+            setIsLoggedIn(authenticated);
+        });
+        
+        return () => unsubscribe();
+    }, []);
+
+    const primaryButtonText = isLoggedIn ? "Go to Dashboard" : "Get Started";
+    const primaryButtonPath = isLoggedIn ? "/dashboard" : "/signup";
+
     return (
         <section
             id="hero"
@@ -47,7 +66,6 @@ export const Hero = () => {
                     >
                         <span className="block">Study Abroad. Simplified.</span>
                         <span className="inline-block">
-
                             <TypewriterEffect
                             className="mt-2"
                                 words={[
@@ -76,12 +94,10 @@ export const Hero = () => {
                         className="flex flex-col sm:flex-row gap-4 mt-16"
                     >
                         <Link
-                            to={'/signup'}
+                            to={primaryButtonPath}
                             className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-primary-1 transition-colors shadow-md hover:shadow-lg"
                         >
-
-
-                            Get Started
+                            {primaryButtonText}
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
 

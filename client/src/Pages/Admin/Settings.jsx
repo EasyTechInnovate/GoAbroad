@@ -1,25 +1,33 @@
-import { DashboardLayout } from './components/layout/DashboardLayout';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  User, 
-  Bell, 
-  Shield, 
-  Users, 
-  LogOut, 
-  Mail,  
-  Smartphone,
+import { toast } from '@/components/ui/sonner';
+import { updatePassword, getCurrentUser, updateProfile } from '@/services/api.services';
+import {
+  User,
+  Bell,
+  Shield,
+  Users,
+  LogOut,
   ExternalLink,
   Check,
   Loader2,
-  Calendar,
   Plus,
-  Laptop,
-  MessageSquare,
-  FileText
+  Trash2,
+  Edit
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { getTeamMembers, addTeamMember, updateTeamMember, deleteTeamMember } from '@/services/teamService';
 import {
   Avatar,
   AvatarFallback,
@@ -37,100 +45,465 @@ import {
 } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { getUser } from '@/lib/auth';
 
 const Settings = () => {
-  return (
-    <DashboardLayout>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        </div>
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [editMember, setEditMember] = useState(null);
+  const [user, setUser] = useState(getUser());
+  const [initialFormData, setInitialFormData] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    bio: '',
+    role: 'VIEWER'
+  });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10
+  });
 
-        <Tabs defaultValue="profile">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="sm:w-64 w-full">
-              <TabsList className="flex flex-col w-full h-full space-y-1 bg-transparent p-0">
-                <TabsTrigger value="profile" className="justify-start w-full">
-                  <User className="mr-2 h-4 w-4" /> Profile
-                </TabsTrigger>
-                <TabsTrigger value="notifications" className="justify-start w-full">
-                  <Bell className="mr-2 h-4 w-4" /> Notifications
-                </TabsTrigger>
-                <TabsTrigger value="security" className="justify-start w-full">
-                  <Shield className="mr-2 h-4 w-4" /> Security
-                </TabsTrigger>
+  const fetchMembers = async () => {
+    if (user?.role !== 'ADMIN') return;
+
+    try {
+      setLoading(true);
+      const response = await getTeamMembers({ page: pagination.currentPage, limit: pagination.itemsPerPage });
+      setMembers(response.data.members);
+      setPagination(response.data.pagination);
+    } catch (error) {
+      console.error('Error fetching members:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (user?.role === 'ADMIN') {
+      fetchMembers();
+    }
+  }, [pagination.currentPage, user?.role]);
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await getCurrentUser();
+        const userData = response.data;
+        setFormData(prev => ({ ...prev, ...userData }));
+        setInitialFormData(userData); // Store initial data
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        toast.error('Failed to load profile data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      const initialData = {
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        phone: user.phone || "",
+        address: user.address || "",
+        bio: user.bio || "",
+      };
+      setFormData(initialData);
+      setInitialFormData(initialData);
+    }
+  }, [user]);
+
+  const checkForChanges = (fields) => {
+    if (!initialFormData) return false;
+    return Object.keys(fields).some(field => {
+      const newValue = fields[field]?.toString()?.trim() || '';
+      const initialValue = initialFormData[field]?.toString()?.trim() || '';
+      return newValue !== initialValue;
+    });
+  };
+
+  const handleMemberSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editMember) {
+        await updateTeamMember(editMember._id, formData);
+      } else {
+        await addTeamMember(formData);
+      }
+      fetchMembers();
+      setAddMemberOpen(false);
+      setEditMember(null);
+      setFormData({ firstName: '', lastName: '', email: '', password: '', bio: '', role: 'VIEWER' });
+    } catch (error) {
+      console.error('Error saving member:', error);
+    }
+  };
+  const handleDeleteMember = async (memberId) => {
+    try {
+      await deleteTeamMember(memberId);
+      fetchMembers();
+    } catch (error) {
+      console.error('Error deleting member:', error);
+      alert(error?.response?.data?.message || 'Cannot delete this team member');
+    }
+  };
+
+  const getMemberInitials = (firstName, lastName) => {
+    return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'ACTIVE':
+        return 'text-green-500 border-green-500';
+      case 'INVITED':
+        return 'text-amber-500 border-amber-500';
+      default:
+        return 'text-gray-500 border-gray-500';
+    }
+  };
+
+  const getRoleBadgeStyle = (role) => {
+    switch (role) {
+      case 'ADMIN':
+        return 'bg-purple-500';
+      case 'EDITOR':
+        return 'bg-blue-500';
+      case 'VIEWER':
+        return 'bg-gray-500';
+      default:
+        return '';
+    }
+  };
+
+  
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+      </div>
+
+      <Tabs defaultValue="profile">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="sm:w-64 w-full">
+            <TabsList className="flex flex-col w-full h-full space-y-1 bg-transparent p-0">
+              <TabsTrigger value="profile" className="justify-start w-full">
+                <User className="mr-2 h-4 w-4" /> Profile
+              </TabsTrigger>
+              <TabsTrigger value="notifications" className="justify-start w-full">
+                <Bell className="mr-2 h-4 w-4" /> Notifications
+              </TabsTrigger>
+              <TabsTrigger value="security" className="justify-start w-full">
+                <Shield className="mr-2 h-4 w-4" /> Security
+              </TabsTrigger>
+              {user?.role === 'ADMIN' && (
                 <TabsTrigger value="team" className="justify-start w-full">
                   <Users className="mr-2 h-4 w-4" /> Team Members
                 </TabsTrigger>
-                <TabsTrigger value="integrations" className="justify-start w-full">
-                  <ExternalLink className="mr-2 h-4 w-4" /> Integrations
-                </TabsTrigger>
-              </TabsList>
-              <Separator className="my-4" />
-              <Button variant="outline" className="w-full justify-start text-destructive">
-                <LogOut className="mr-2 h-4 w-4" /> Log Out
-              </Button>
-            </div>
-            
-            <div className="flex-1 space-y-4">
-              <TabsContent value="profile" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Profile Information</CardTitle>
-                    <CardDescription>
-                      Update your personal information and profile settings
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                      <Avatar className="w-16 h-16">
-                        <AvatarImage src="" />
-                        <AvatarFallback className="text-lg">JD</AvatarFallback>
-                      </Avatar>
-                      <div className="space-y-1">
-                        <h3 className="font-medium">Profile Picture</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Upload a picture to personalize your account
-                        </p>
-                        <div className="flex gap-2 mt-2">
-                          <Button size="sm" variant="outline">Change</Button>
-                          <Button size="sm" variant="outline" className="text-destructive">Remove</Button>
-                        </div>
+              )}
+              <TabsTrigger value="integrations" className="justify-start w-full">
+                <ExternalLink className="mr-2 h-4 w-4" /> Integrations
+              </TabsTrigger>
+            </TabsList>
+            <Separator className="my-4" />
+            <Button variant="outline" className="w-full justify-start text-destructive">
+              <LogOut className="mr-2 h-4 w-4" /> Log Out
+            </Button>
+          </div>
+
+          <div className="flex-1">
+            <div className="space-y-4">              <TabsContent value="profile">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Profile Information</CardTitle>
+                  <CardDescription>
+                    Update your personal information and profile settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={user?.profilePicture || ""} />
+                      <AvatarFallback className="text-lg">{getMemberInitials(user?.firstName, user?.lastName)}</AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <h3 className="font-medium">Profile Picture</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Upload a picture to personalize your account
+                      </p>
+                      <div className="flex gap-2 mt-2">
+                        <input
+                          type="file"
+                          id="profile-image"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+
+                            try {
+                              setLoading(true);
+                              const formData = new FormData();
+                              formData.append('file', file);
+                              formData.append('category', 'profile');
+
+                              const response = await fetch('http://localhost:5000/v1/upload-file', {
+                                method: 'POST',
+                                body: formData
+                              });
+
+                              const result = await response.json();
+                              if (!result.success) {
+                                throw new Error(result.message || 'Failed to upload image');
+                              }
+
+
+                await updateProfile({
+                                profilePicture: result.data.url
+                              });
+
+
+                              const localUser = getUser();
+                              localStorage.setItem('user', JSON.stringify({
+                                ...localUser,
+                                profilePicture: result.data.url
+                              }));
+
+                              toast.success('Profile picture updated successfully');
+                              window.location.reload();
+                            } catch (error) {
+                              console.error('Error uploading profile picture:', error);
+                              toast.error(error?.message || 'Failed to update profile picture');
+                            } finally {
+                              setLoading(false);
+                            }
+                          }}
+                        />
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => document.getElementById('profile-image').click()}
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Uploading...
+                            </>
+                          ) : (
+                            'Change'
+                          )}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-destructive"
+                          onClick={async () => {
+                            try {
+                              setLoading(true);                              await updateProfile({
+                                profilePicture: ''
+                              });
+
+                              const localUser = getUser();
+                              localStorage.setItem('user', JSON.stringify({
+                                ...localUser,
+                                profilePicture: ''
+                              }));
+
+                              toast.success('Profile picture removed');
+                              window.location.reload();
+                            } catch (error) {
+                              console.error('Error removing profile picture:', error);
+                              toast.error('Failed to remove profile picture');
+                            } finally {
+                              setLoading(false);
+                            }
+                          }}
+                          disabled={loading || !user?.profilePicture}
+                        >
+                          Remove
+                        </Button>
                       </div>
                     </div>
+                  </div>                  <Separator />                      
+                  <form onChange={(e) => {
+                    const formData = new FormData(e.target.form);
+                    const fields = {};
+                    ['firstName', 'lastName', 'phone', 'address', 'bio'].forEach(field => {
+                      fields[field] = formData.get(field)?.trim() || '';
+                    });
+                    const hasChanges = checkForChanges(fields);
+                    setHasChanges(hasChanges);
+                  }} onSubmit={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     
-                    <Separator />
-                    
+                    if (loading) return;
+                    setLoading(true);
+                      try {
+                      const formData = new FormData(e.target);
+                      const updateData = {};
+                      const fields = ['firstName', 'lastName', 'phone', 'address', 'bio'];
+                      
+                      fields.forEach(field => {
+                        const value = formData.get(field);
+                        if (value && value.trim()) {
+                          updateData[field] = value.trim();
+                        }
+                      });if (Object.keys(updateData).length === 0) {
+                        toast.error('Please update at least one field');
+                        setLoading(false);
+                        return;
+                      }
+
+
+                      const { firstName, lastName } = updateData;
+                      if (firstName && firstName.length < 2) {
+                        toast.error('First name must be at least 2 characters');
+                        setLoading(false);
+                        return;
+                      }
+                      if (lastName && lastName.length < 2) {
+                        toast.error('Last name must be at least 2 characters');
+                        setLoading(false);
+                        return;
+                      }
+
+                      const response = await updateProfile(updateData);
+                      
+                      if (response.success) {
+
+                        const updatedUserData = response.data;
+                        setFormData(prev => ({ ...prev, ...updatedUserData }));
+                        
+
+                        setUser(prev => ({ ...prev, ...updatedUserData }));
+
+
+                        const localUser = getUser();
+                        localStorage.setItem('user', JSON.stringify({
+                          ...localUser,
+                          ...updatedUserData
+                        }));
+
+                        toast.success('Profile updated successfully');
+                      } else {
+                        throw new Error(response.message || 'Failed to update profile');
+                      }
+                    } catch (error) {
+                      console.error('Profile update error:', error);
+                      toast.error(error?.response?.data?.message || 'Failed to update profile');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="first-name">First Name</Label>
-                        <Input id="first-name" defaultValue="John" />
+                        <Label htmlFor="firstName">First Name</Label>                          
+                        <Input
+                          id="firstName"
+                          name="firstName"
+                          defaultValue={user?.firstName}
+                          onChange={(e) => {
+                            setFormData({ ...formData, firstName: e.target.value });
+                            setHasChanges(checkForChanges({ ...formData, firstName: e.target.value }));
+                          }}
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="last-name">Last Name</Label>
-                        <Input id="last-name" defaultValue="Doe" />
+                        <Label htmlFor="lastName">Last Name</Label>                         
+                         <Input
+                          id="lastName"
+                          name="lastName"
+                          defaultValue={user?.lastName}
+                          onChange={(e) => {
+                            setFormData({ ...formData, lastName: e.target.value });
+                            setHasChanges(checkForChanges({ ...formData, lastName: e.target.value }));
+                          }}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" defaultValue="john.doe@example.com" />
+                        <Input
+                          id="email"
+                          type="email"
+                          defaultValue={user?.email}
+                          disabled
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Phone Number</Label>
-                        <Input id="phone" type="tel" defaultValue="+1 (555) 123-4567" />
+                        <Input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          defaultValue={user?.phone || ""}
+                          placeholder="+1234567890"
+                          onChange={(e) => {
+                            setFormData({ ...formData, phone: e.target.value });
+                            setHasChanges(checkForChanges({ ...formData, phone: e.target.value }));
+                          }}
+                        />
                       </div>
-                      <div className="space-y-2 sm:col-span-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="address">Address</Label>
+                        <Input
+                          id="address"
+                          name="address"
+                          defaultValue={user?.address || ""}
+                          placeholder="Your address"
+                          onChange={(e) => {
+                            setFormData({ ...formData, address: e.target.value });
+                            setHasChanges(checkForChanges({ ...formData, address: e.target.value }));
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="bio">Bio</Label>
-                        <Input id="bio" defaultValue="Education Consultant with 10+ years of experience" />
+                        <Input
+                          id="bio"
+                          name="bio"
+                          defaultValue={user?.bio || ""}
+                          placeholder="Tell us about yourself"
+                          onChange={(e) => {
+                            setFormData({ ...formData, bio: e.target.value });
+                            setHasChanges(checkForChanges({ ...formData, bio: e.target.value }));
+                          }}
+                        />
                       </div>
+                    </div>                        <div className="mt-6 flex justify-end">
+                      <Button 
+                        type="submit" 
+                        className={`hover:cursor-pointer transition-colors ${hasChanges ? 'hover:bg-primary/90' : ''}`}
+                        variant="default"
+                        disabled={loading || !hasChanges}
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          'Save Changes'
+                        )}
+                      </Button>
                     </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-end">
-                    <Button>Save Changes</Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="notifications" className="space-y-4">
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+
+              <TabsContent value="notifications">
                 <Card>
                   <CardHeader>
                     <CardTitle>Notification Preferences</CardTitle>
@@ -177,9 +550,9 @@ const Settings = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <Separator />
-                    
+
                     <div className="space-y-4">
                       <h3 className="text-sm font-medium">In-App Notifications</h3>
                       <div className="grid gap-4">
@@ -218,9 +591,9 @@ const Settings = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <Separator />
-                    
+
                     <div className="space-y-2">
                       <h3 className="text-sm font-medium">Notification Delivery</h3>
                       <div className="grid gap-4 sm:grid-cols-2">
@@ -246,296 +619,310 @@ const Settings = () => {
                   </CardFooter>
                 </Card>
               </TabsContent>
-              
-              <TabsContent value="security" className="space-y-4">
+
+              <TabsContent value="security">
                 <Card>
                   <CardHeader>
                     <CardTitle>Security Settings</CardTitle>
                     <CardDescription>
-                      Manage your account security and login preferences
+                      Update your password
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="space-y-4">
-                      <h3 className="text-sm font-medium">Change Password</h3>
-                      <div className="grid gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="current-password">Current Password</Label>
-                          <Input id="current-password" type="password" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="new-password">New Password</Label>
-                          <Input id="new-password" type="password" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="confirm-password">Confirm New Password</Label>
-                          <Input id="confirm-password" type="password" />
-                        </div>
-                        <Button className="w-fit">Update Password</Button>
-                      </div>
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="space-y-4">
-                      <h3 className="text-sm font-medium">Two-Factor Authentication</h3>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm">Enable two-factor authentication for enhanced security</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Protect your account with an extra layer of security
-                          </p>
-                        </div>
-                        <Switch id="two-factor" />
-                      </div>
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="space-y-4">
-                      <h3 className="text-sm font-medium">Session Management</h3>
-                      <div className="space-y-2">
-                        <p className="text-sm text-muted-foreground">
-                          Review and manage your active sessions across different devices.
-                        </p>
-                        <div className="border rounded-md">
-                          <div className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="bg-primary/10 p-2 rounded-full">
-                                <Laptop className="h-5 w-5" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium">Current Device - MacBook Pro</p>
-                                <p className="text-xs text-muted-foreground">Last active: Just now</p>
-                              </div>
-                            </div>
-                            <Badge>Current</Badge>
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.target);
+                      const oldPassword = formData.get('oldPassword');
+                      const newPassword = formData.get('newPassword');
+                      const confirmPassword = formData.get('confirmPassword');
+
+                      if (newPassword !== confirmPassword) {
+                        toast.error('New passwords do not match');
+                        return;
+                      }
+
+                      try {
+                        await updatePassword({
+                          oldPassword,
+                          newPassword,
+                          confirmPassword
+                        });
+                        toast.success('Password updated successfully');
+                        e.target.reset();
+                      } catch (error) {
+                        toast.error(error?.response?.data?.message || 'Failed to update password');
+                      }
+                    }}>
+                      <div className="space-y-4">
+                        <div className="grid gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="oldPassword">Current Password</Label>
+                            <Input id="oldPassword" name="oldPassword" type="password" required />
                           </div>
-                          <Separator />
-                          <div className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="bg-primary/10 p-2 rounded-full">
-                                <Smartphone className="h-5 w-5" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium">iPhone 13</p>
-                                <p className="text-xs text-muted-foreground">Last active: Yesterday</p>
-                              </div>
-                            </div>
-                            <Button variant="outline" size="sm">Sign Out</Button>
+                          <div className="space-y-2">
+                            <Label htmlFor="newPassword">New Password</Label>
+                            <Input id="newPassword" name="newPassword" type="password" required minLength={6} />
                           </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                            <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={6} />
+                          </div>
+                          <Button type="submit" className="w-fit">Update Password</Button>
                         </div>
                       </div>
-                    </div>
+                    </form>
                   </CardContent>
                 </Card>
               </TabsContent>
-              
-              <TabsContent value="team" className="space-y-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <div>
-                      <CardTitle>Team Members</CardTitle>
-                      <CardDescription>
-                        Manage team access and permissions
-                      </CardDescription>
-                    </div>
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Member
-                    </Button>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Role</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback>JD</AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">John Doe</span>
-                          </TableCell>
-                          <TableCell>john.doe@example.com</TableCell>
-                          <TableCell>
-                            <Badge className="bg-purple-500">Admin</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="text-green-500 border-green-500">Active</Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm">Edit</Button>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback>EW</AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">Emma Wilson</span>
-                          </TableCell>
-                          <TableCell>emma.w@example.com</TableCell>
-                          <TableCell>
-                            <Badge>Editor</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="text-green-500 border-green-500">Active</Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm">Edit</Button>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback>MB</AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">Michael Brown</span>
-                          </TableCell>
-                          <TableCell>m.brown@example.com</TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">Viewer</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="text-amber-500 border-amber-500">Invited</Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm">Edit</Button>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Role Permissions</CardTitle>
-                    <CardDescription>
-                      Define access levels for different user roles
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Permission</TableHead>
-                          <TableHead className="text-center">Admin</TableHead>
-                          <TableHead className="text-center">Editor</TableHead>
-                          <TableHead className="text-center">Viewer</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell className="font-medium">View Dashboard</TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Edit Student Profiles</TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center">-</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Manage Users</TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center">-</TableCell>
-                          <TableCell className="text-center">-</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">View Reports</TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
-                          <TableCell className="text-center">-</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
+              <TabsContent value="team">
+                {user?.role === 'ADMIN' && (
+                  <div className="space-y-4">
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                        <div>
+                          <CardTitle>Team Members</CardTitle>
+                          <CardDescription>
+                            Manage team access and permissions
+                          </CardDescription>
+                        </div>
+                        <Dialog open={addMemberOpen} onOpenChange={setAddMemberOpen}>
+                          <DialogTrigger asChild>
+                            <Button onClick={() => {
+                              setEditMember(null);
+                              setFormData({ firstName: '', lastName: '', email: '', password: '', bio: '', role: 'VIEWER' });
+                            }}>
+                              <Plus className="mr-2 h-4 w-4" />
+                              Add Member
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>{editMember ? 'Edit Member' : 'Add New Member'}</DialogTitle>
+                              <DialogDescription>
+                                {editMember ? 'Update member information and role.' : 'Add a new team member and set their role.'}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleMemberSubmit} className="space-y-4">
+                              <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor="firstName">First Name</Label>
+                                    <Input
+                                      id="firstName"
+                                      value={formData.firstName}
+                                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                      required
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label htmlFor="lastName">Last Name</Label>
+                                    <Input
+                                      id="lastName"
+                                      value={formData.lastName}
+                                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                                <div className="space-y-2">
+                                  <Label htmlFor="email">Email</Label>
+                                  <Input
+                                    id="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    required
+                                  />
+                                </div>
+                                {!editMember && (
+                                  <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                      id="password"
+                                      type="password"
+                                      value={formData.password}
+                                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                      required
+                                    />
+                                  </div>
+                                )}
+                                <div className="space-y-2">
+                                  <Label htmlFor="bio">Bio</Label>
+                                  <Input
+                                    id="bio"
+                                    value={formData.bio}
+                                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label htmlFor="role">Role</Label>
+                                  <Select
+                                    value={formData.role}
+                                    onValueChange={(value) => setFormData({ ...formData, role: value })}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="ADMIN">Admin</SelectItem>
+                                      <SelectItem value="EDITOR">Editor</SelectItem>
+                                      <SelectItem value="VIEWER">Viewer</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                              <DialogFooter>
+                                <Button type="submit">{editMember ? 'Update' : 'Add'} Member</Button>
+                              </DialogFooter>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
+                      </CardHeader>
+                      <CardContent>
+                        {loading ? (
+                          <div className="flex justify-center items-center p-8">
+                            <Loader2 className="h-8 w-8 animate-spin" />
+                          </div>
+                        ) : (
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead>Role</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {members.map((member) => (
+                                <TableRow key={member._id}>
+                                  <TableCell className="flex items-center gap-2">
+                                    <Avatar className="h-8 w-8">
+                                      {member.profilePicture ? (
+                                        <AvatarImage src={member.profilePicture} />
+                                      ) : null}
+                                      <AvatarFallback>{getMemberInitials(member.firstName, member.lastName)}</AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-medium">{member.firstName} {member.lastName}</span>
+                                  </TableCell>
+                                  <TableCell>{member.email}</TableCell>
+                                  <TableCell>
+                                    <Badge className={getRoleBadgeStyle(member.role)}>{member.role}</Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline" className={getStatusColor(member.status)}>
+                                      {member.status}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-right space-x-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => {
+                                        setEditMember(member);
+                                        setFormData({
+                                          firstName: member.firstName,
+                                          lastName: member.lastName,
+                                          email: member.email,
+                                          bio: member.bio || '',
+                                          role: member.role
+                                        });
+                                        setAddMemberOpen(true);
+                                      }}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>                                  <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-destructive"
+                                      onClick={() => handleDeleteMember(member._id)}
+                                      disabled={member.role === 'ADMIN'}
+                                      title={member.role === 'ADMIN' ? "Admin members cannot be deleted" : "Delete member"}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        )}
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Role Permissions</CardTitle>
+                        <CardDescription>
+                          Define access levels for different user roles
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Permission</TableHead>
+                              <TableHead className="text-center">Admin</TableHead>
+                              <TableHead className="text-center">Editor</TableHead>
+                              <TableHead className="text-center">Viewer</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell className="font-medium">View Dashboard</TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell className="font-medium">Edit Student Profiles</TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center">-</TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell className="font-medium">Manage Users</TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center">-</TableCell>
+                              <TableCell className="text-center">-</TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell className="font-medium">View Reports</TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center"><Check className="mx-auto h-4 w-4 text-green-500" /></TableCell>
+                              <TableCell className="text-center">-</TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </TabsContent>
-              
-              <TabsContent value="integrations" className="space-y-4">
+
+              {/* Integrations tab */}
+              <TabsContent value="integrations">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Connected Services</CardTitle>
+                    <CardTitle>Integrations</CardTitle>
                     <CardDescription>
-                      Manage integrations with external services and platforms
+                      Connect with external services and applications
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-blue-100 p-2 rounded-full">
-                          <Mail className="h-6 w-6 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Email Service</h3>
-                          <p className="text-sm text-muted-foreground">Connect to send automated emails</p>
-                        </div>
-                      </div>
-                      <Button className="gap-1" variant="outline">
-                        <Check className="h-4 w-4 text-green-500" /> Connected
-                      </Button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-green-100 p-2 rounded-full">
-                          <FileText className="h-6 w-6 text-green-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Document Storage</h3>
-                          <p className="text-sm text-muted-foreground">Sync with cloud storage service</p>
-                        </div>
-                      </div>
-                      <Button>Connect</Button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-amber-100 p-2 rounded-full">
-                          <Calendar className="h-6 w-6 text-amber-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Calendar</h3>
-                          <p className="text-sm text-muted-foreground">Sync deadlines with calendar service</p>
-                        </div>
-                      </div>
-                      <Button>Connect</Button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-purple-100 p-2 rounded-full">
-                          <MessageSquare className="h-6 w-6 text-purple-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">Communication Service</h3>
-                          <p className="text-sm text-muted-foreground">Connect messaging platform</p>
-                        </div>
-                      </div>
-                      <Button variant="outline" className="gap-1">
-                        <Loader2 className="h-4 w-4 animate-spin" /> Connecting
-                      </Button>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <p className="text-sm text-muted-foreground">
+                        Configure your integrations here.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
               </TabsContent>
             </div>
           </div>
-        </Tabs>
-      </div>
-    </DashboardLayout>
+        </div>
+      </Tabs>
+    </div>
   );
 };
 

@@ -1,4 +1,3 @@
-import { DashboardLayout } from './components/layout/DashboardLayout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +20,7 @@ import {
 } from '@/components/ui/table';
 import { MultipleStudentSelect } from './components/tasks/MultipleStudentSelect';
 
-// Mock activities data with more items and dates
+
 const mockActivities = [
   {
     id: '1',
@@ -152,7 +151,7 @@ const statusClasses = {
   rejected: 'bg-red-100 text-red-800 border-red-300',
 };
 
-// Mock student data for filtering
+
 const students = [
   { id: 1, name: 'Emma Johnson' },
   { id: 2, name: 'Daniel Lee' },
@@ -166,23 +165,23 @@ const students = [
   { id: 10, name: 'Isabella Martinez' }
 ];
 
-export default function AllActivities() {
+const AllActivities = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedStudents, setSelectedStudents] = useState([]);
   
   const filteredActivities = mockActivities.filter((activity) => {
-    // Search filter
+
     const matchesSearch = searchQuery === '' || 
       activity.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       activity.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       activity.action.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // Status filter
-    const matchesStatus = statusFilter === 'all' || activity.status === statusFilter;
+
+      const matchesStatus = statusFilter === 'all' || activity.status === statusFilter;
     
-    // Student filter
-    const matchesStudent = selectedStudents.length === 0 || 
+
+      const matchesStudent = selectedStudents.length === 0 || 
       selectedStudents.includes(activity.user.name);
     
     return matchesSearch && matchesStatus && matchesStudent;
@@ -193,85 +192,85 @@ export default function AllActivities() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold tracking-tight">All Activities</h1>
-        
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-          <Input
-            className="max-w-md"
-            placeholder="Search activities..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="complete">Complete</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <div className="w-[220px]">
-              <MultipleStudentSelect
-                students={students}
-                selectedStudents={selectedStudents}
-                onChange={handleStudentsChange}
-              />
-            </div>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold tracking-tight">All Activities</h1>
+      
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+        <Input
+          className="max-w-md"
+          placeholder="Search activities..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="complete">Complete</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <div className="w-[220px]">
+            <MultipleStudentSelect
+              students={students}
+              selectedStudents={selectedStudents}
+              onChange={handleStudentsChange}
+            />
           </div>
         </div>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Student Activities</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Student</TableHead>
-                  <TableHead>Action</TableHead>
-                  <TableHead>Subject</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredActivities.map((activity) => (
-                  <TableRow key={activity.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={activity.user.image} alt={activity.user.name} />
-                          <AvatarFallback>{activity.user.initials}</AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium">{activity.user.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{activity.action}</TableCell>
-                    <TableCell>{activity.subject}</TableCell>
-                    <TableCell>{activity.date}</TableCell>
-                    <TableCell>
-                      {activity.status && (
-                        <Badge variant="outline" className={statusClasses[activity.status]}>
-                          {activity.status}
-                        </Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
       </div>
-    </DashboardLayout>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Student Activities</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                <TableHead>Action</TableHead>
+                <TableHead>Subject</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredActivities.map((activity) => (
+                <TableRow key={activity.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={activity.user.image} alt={activity.user.name} />
+                        <AvatarFallback>{activity.user.initials}</AvatarFallback>
+                      </Avatar>
+                      <span className="font-medium">{activity.user.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{activity.action}</TableCell>
+                  <TableCell>{activity.subject}</TableCell>
+                  <TableCell>{activity.date}</TableCell>
+                  <TableCell>
+                    {activity.status && (
+                      <Badge variant="outline" className={statusClasses[activity.status]}>
+                        {activity.status}
+                      </Badge>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
+
+export default AllActivities;
