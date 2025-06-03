@@ -1,0 +1,391 @@
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-06-03T10:19:10.805Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-06-03T10:19:10.815Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-06-03T10:19:10.816Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:19:40.908Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/health"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "application": {
+                "environment": "development",
+                "uptime": "32.42 Seconds",
+                "memoryUsage": {
+                    "heapTotal": "33.13 MB",
+                    "heapUsed": "30.22 MB"
+                }
+            },
+            "system": {
+                "cpuUsage": [
+                    0,
+                    0,
+                    0
+                ],
+                "totalMemory": "5989.49 MB",
+                "freeMemory": "160.50 MB"
+            },
+            "timestamp": 1748945980905
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:19:40.924Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/health"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "application": {
+                "environment": "development",
+                "uptime": "32.44 Seconds",
+                "memoryUsage": {
+                    "heapTotal": "33.38 MB",
+                    "heapUsed": "30.58 MB"
+                }
+            },
+            "system": {
+                "cpuUsage": [
+                    0,
+                    0,
+                    0
+                ],
+                "totalMemory": "5989.49 MB",
+                "freeMemory": "163.89 MB"
+            },
+            "timestamp": 1748945980924
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:20:14.107Z",
+    "meta": {
+        "success": true,
+        "statusCode": 409,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "Something went wrong! - Email already in use",
+        "data": null
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:20:21.850Z",
+    "meta": {
+        "success": true,
+        "statusCode": 409,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "Something went wrong! - Email already in use",
+        "data": null
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:20:24.626Z",
+    "meta": {
+        "success": true,
+        "statusCode": 201,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/signup"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "user": {
+                "email": "test22@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "phoneNumber": null,
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreCard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "_id": "683ecc68d38d901891806b29",
+                "createdAt": "2025-06-03T10:20:24.601Z",
+                "updatedAt": "2025-06-03T10:20:24.601Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:20:32.849Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyMkBnbWFpbC5jb20iLCJzdHVkZW50SWQiOiI2ODNlY2M2OGQzOGQ5MDE4OTE4MDZiMjkiLCJpYXQiOjE3NDg5NDYwMzIsImV4cCI6MTc0OTAzMjQzMn0.He5iHIMrnH_oDg1BS51r7LjGytfKzaiP5s7E0lFPzYQ",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreCard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "683ecc68d38d901891806b29",
+                "email": "test22@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "phoneNumber": null,
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-06-03T10:20:24.601Z",
+                "updatedAt": "2025-06-03T10:20:24.601Z"
+            }
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-03T10:20:51.701Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "POST",
+            "url": "/v1/auth/login"
+        },
+        "message": "The operation has been successful",
+        "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyMkBnbWFpbC5jb20iLCJzdHVkZW50SWQiOiI2ODNlY2M2OGQzOGQ5MDE4OTE4MDZiMjkiLCJpYXQiOjE3NDg5NDYwNTEsImV4cCI6MTc0OTAzMjQ1MX0.1SLSNIEjclVpVkhQEGO0ybSP_eQNliHXOv_fJLIRHKg",
+            "user": {
+                "programDetails": {
+                    "program": null,
+                    "validity": null
+                },
+                "personalDetails": {
+                    "dob": null,
+                    "gender": null,
+                    "address": null,
+                    "profession": null
+                },
+                "collegeDetails": {
+                    "branch": null,
+                    "highestDegree": null,
+                    "university": null,
+                    "college": null,
+                    "gpa": null,
+                    "toppersGPA": null,
+                    "noOfBacklogs": null,
+                    "admissionTerm": null,
+                    "coursesApplying": null
+                },
+                "greDetails": {
+                    "greScore": {
+                        "verbal": null,
+                        "quant": null,
+                        "awa": null
+                    },
+                    "grePlane": null,
+                    "greDate": null,
+                    "greScoreCard": null,
+                    "retakingGRE": null
+                },
+                "ieltsDetails": {
+                    "ieltsScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null,
+                        "listening": null
+                    },
+                    "ieltsPlan": null,
+                    "ieltsDate": null,
+                    "retakingIELTS": null
+                },
+                "toeflDetails": {
+                    "toeflScore": {
+                        "reading": null,
+                        "writing": null,
+                        "speaking": null
+                    },
+                    "toeflPlan": null,
+                    "toeflDate": null,
+                    "retakingTOEFL": null
+                },
+                "visa": {
+                    "countriesPlanningToApply": null,
+                    "visaInterviewDate": null,
+                    "visaInterviewLocation": null
+                },
+                "_id": "683ecc68d38d901891806b29",
+                "email": "test22@gmail.com",
+                "name": null,
+                "profilePicture": null,
+                "phoneNumber": null,
+                "status": "PENDING",
+                "isFeePaid": false,
+                "isVerified": false,
+                "role": "STUDENT",
+                "createdAt": "2025-06-03T10:20:24.601Z",
+                "updatedAt": "2025-06-03T10:20:24.601Z"
+            }
+        }
+    }
+}

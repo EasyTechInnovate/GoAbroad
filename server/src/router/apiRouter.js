@@ -6,18 +6,12 @@ import { uploadFiles } from '../middleware/multerHandler.js'
 import authController from '../controller/authController/authController.js'
 import authentication, { paymentMiddleWare } from '../middleware/authentication.js'
 import adminController from '../controller/adminController/adminController.js'
-<<<<<<< HEAD
-import { adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
-=======
 import { adminEditorOnly, adminOnly, memberAccess } from '../middleware/rbacMiddleware.js'
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import categoryController from '../controller/faqController/categoryController.js'
 import faqController from '../controller/faqController/faqController.js'
 import paymentController from '../controller/paymentController/paymentController.js'
 import studentController from '../controller/studentController/studentController.js'
 import adminStudentManagementController from '../controller/adminController/adminStudentManagementController.js'
-<<<<<<< HEAD
-=======
 import questionnaireController from '../controller/questionnaireController/questionnaireController.js'
 import subtaskController from '../controller/subtaskController/subtaskController.js'
 import subtaskQuestionnaireAssignmentController from '../controller/subtaskController/subtaskQuestionnaireAssignmentController.js'
@@ -26,7 +20,6 @@ import taskController from '../controller/taskController/taskController.js'
 import taskSubtaskAssignmentController from '../controller/taskController/taskSubtaskAssignmentController.js'
 import documentController from '../controller/documentController/documentController.js'
 import studentUniversityAssignmentController from '../controller/University/studentUniversityAssignmentController.js'
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 
 const router = Router()
 
@@ -35,11 +28,7 @@ const router = Router()
 router.route('/self').get(apiController.self)
 router.route('/health').get(apiController.health)
 router.route('/upload-file').post(uploadFiles, apiController.uploadFile);
-<<<<<<< HEAD
-
-=======
 router.route('/faqs').get(faqController.getFaqs)
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 // auth routes
 router.route('/auth/login').post(authController.login);
 router.route('/auth/signup').post(authController.signup);
@@ -61,11 +50,7 @@ router.route('/student/profile').put(authentication, studentController.updatePro
 router.route('/admin/auth/login').post(adminController.login);
 router.route('/admin/auth/update-password').post(memberAccess, adminController.updatePassword);
 
-<<<<<<< HEAD
-router.route('/admin/create-member').post(adminController.addNewMember);
-=======
 router.route('/admin/create-member').post(adminOnly, adminController.addNewMember);
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 router.route('/admin/update-profile/:id').put(adminOnly, adminController.updateProfileByAdmin);
 router.route('/admin/members').get(adminOnly, adminController.getAllMembers);
 router.route('/admin/members/:id').delete(adminOnly, adminController.deleteMember);
@@ -88,8 +73,8 @@ router.route('/admin/faqs/:id').put(adminOnly, faqController.updateFaq);
 router.route('/admin/faqs/:id').delete(adminOnly, faqController.deleteFaq);
 
 //Loans Routes
-router.route("/loans/apply").post(authentication,loanController.applyForLoan)
-router.route("/loans").get(memberAccess,loanController.getAllLoans)
+router.route("/loans/apply").post(authentication, loanController.applyForLoan)
+router.route("/loans").get(memberAccess, loanController.getAllLoans)
 
 // University routes
 router.route('/admin/universities').post(memberAccess, universityController.createUniversity);
@@ -105,8 +90,6 @@ router.route('/admin/students/:studentId')
     .get(memberAccess, adminStudentManagementController.getStudentById)
     .delete(adminOnly, adminStudentManagementController.deleteStudent);
 // ******************** ADMIN ROUTES ***********************************
-<<<<<<< HEAD
-=======
 
 
 // ******************** QUESTIONNAIRE ROUTES ***********************************
@@ -226,5 +209,4 @@ router.route('/student/assigned-universities/:assignmentId')
 
 
 
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 export default router

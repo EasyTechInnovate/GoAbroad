@@ -4,13 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-=======
     "lint": "eslint",
     "lint:fix": "eslint --fix",
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
     "format:check": "prettier . --check",
     "format:fix": "prettier . --fix",
     "prepare": "husky"
