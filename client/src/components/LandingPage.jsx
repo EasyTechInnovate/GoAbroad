@@ -294,11 +294,6 @@ function TechStackItem({ name, variants }) {
   );
 }
 
-<<<<<<< HEAD
-
-=======
-// PropTypes
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 FeatureCard.propTypes = {
   icon: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,

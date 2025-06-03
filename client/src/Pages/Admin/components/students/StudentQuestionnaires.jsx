@@ -7,11 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-<<<<<<< HEAD
-
-=======
-// Mock questionnaires data
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 const mockQuestionnaires = [
   {
     id: 1,

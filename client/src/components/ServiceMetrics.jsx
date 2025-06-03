@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-
-=======
-// components/ServerMetrics.tsx
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 
 import { motion } from 'framer-motion';
 import { Server, Cpu, Brain, Clock } from 'lucide-react';

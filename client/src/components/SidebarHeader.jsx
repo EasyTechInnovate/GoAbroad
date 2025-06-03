@@ -1,5 +1,4 @@
 import { SidebarTrigger } from './ui/sidebar'
-<<<<<<< HEAD
 import { Bell, ChevronDown, LogOut, Menu, Search, User, Settings } from 'lucide-react'
 import { Avatar } from '@radix-ui/react-avatar'
 import PropTypes from 'prop-types'
@@ -34,15 +33,6 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
     logout();
     navigate('/login');
   };
-=======
-import { Bell, ChevronDown, Menu, Search } from 'lucide-react'
-import { Avatar } from '@radix-ui/react-avatar'
-import PropTypes from 'prop-types'
-import { useLocation } from 'react-router-dom'
-
-const SidebarHeader = ({isOpen,setIsOpen}) => {
-  const location = useLocation();
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   
   const getPageTitle = () => {
     const path = location.pathname;
@@ -78,7 +68,6 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
     
     return 'Go Abroad';
   };
-<<<<<<< HEAD
 
   const getUserName = () => {
     if (!user) return 'User';
@@ -93,8 +82,6 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
     return 'User';
   };
 
-=======
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   return (
     <header className="bg-white py-4 px-6 flex justify-between items-center border-b border-gray-200">
             <div className="flex items-center gap-2">
@@ -132,7 +119,6 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
                 </span>
               </div>
 
-<<<<<<< HEAD
               <div className="relative">
                 <div 
                   className="flex items-center space-x-2 cursor-pointer"
@@ -190,26 +176,11 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
                     </button>
                   </div>
                 )}
-=======
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <Avatar className="h-8 w-8">
-                  <img src="/profile.svg" alt="User" />
-                </Avatar>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-gray-800">Shrey</p>
-                  <p className="text-xs text-gray-500">Admin</p>
-                </div>
-                <ChevronDown className="h-4 w-4 text-gray-700" />
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
               </div>
             </div>
           </header>
   )
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 SidebarHeader.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
