@@ -29,7 +29,11 @@ export function AppHeader() {
   const navigate = useNavigate();
   
   useEffect(() => {
+<<<<<<< HEAD
 
+=======
+    // Get user data from auth
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
     const userData = getUser();
     if (userData) {
       setUser(userData);
@@ -42,7 +46,11 @@ export function AppHeader() {
     navigate('/login');
   };
 
+<<<<<<< HEAD
 
+=======
+  // Get email for display
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   const userEmail = user?.email || '';
   
   return (

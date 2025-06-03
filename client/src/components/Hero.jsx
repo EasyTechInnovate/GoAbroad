@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TypewriterEffect from './ui/TypewriteEffect';
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { isAuthenticated, subscribeToAuth } from '@/lib/auth';
 
@@ -23,6 +24,10 @@ export const Hero = () => {
     const primaryButtonText = isLoggedIn ? "Go to Dashboard" : "Get Started";
     const primaryButtonPath = isLoggedIn ? "/dashboard" : "/signup";
 
+=======
+
+export const Hero = () => {
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
     return (
         <section
             id="hero"
@@ -66,6 +71,10 @@ export const Hero = () => {
                     >
                         <span className="block">Study Abroad. Simplified.</span>
                         <span className="inline-block">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
                             <TypewriterEffect
                             className="mt-2"
                                 words={[
@@ -94,10 +103,19 @@ export const Hero = () => {
                         className="flex flex-col sm:flex-row gap-4 mt-16"
                     >
                         <Link
+<<<<<<< HEAD
                             to={primaryButtonPath}
                             className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-primary-1 transition-colors shadow-md hover:shadow-lg"
                         >
                             {primaryButtonText}
+=======
+                            to={'/signup'}
+                            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-primary-1 transition-colors shadow-md hover:shadow-lg"
+                        >
+
+
+                            Get Started
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
 

@@ -37,7 +37,7 @@ export default {
         }
     },
 
-    // Get all FAQs by category (Admin-only)
+    // Also the public
     getFaqs: async (req, res, next) => {
         try {
             const { categoryId } = req.query;

@@ -1,4 +1,8 @@
 import { useState } from 'react';
+<<<<<<< HEAD
+=======
+import { DashboardLayout } from './components/layout/DashboardLayout';
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -232,7 +236,11 @@ const Universities = () => {
   });
 
   return (
+<<<<<<< HEAD
     <>
+=======
+    <DashboardLayout>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">University Management</h1>
@@ -546,7 +554,11 @@ const Universities = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+<<<<<<< HEAD
     </>
+=======
+    </DashboardLayout>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   );
 };
 

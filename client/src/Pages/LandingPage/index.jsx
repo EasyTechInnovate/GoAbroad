@@ -1,5 +1,9 @@
 'use client';
+<<<<<<< HEAD
 import { Navbar } from '@/components/NavBar';
+=======
+import  { Navbar } from '@/components/NavBar';
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import { useEffect, useState } from 'react';
 import Hero from '@/components/Hero';
 import { Spotlight } from '@/components/ui/spotlight';
@@ -41,7 +45,12 @@ export default function Home() {
     const fetchServerStatus = async () => {
       try {
         const response = await getServerHealth();
+<<<<<<< HEAD
         
+=======
+        console.log(response.data);
+  
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
         if (response?.success) {
           setServerStatus(response.data);
           setIsOnline(true);
@@ -65,6 +74,7 @@ export default function Home() {
         <Loader />
       ) : (
         <div className="min-h-screen flex flex-col">
+<<<<<<< HEAD
           <Navbar status={isOnline} />
           <Spotlight className="-top-20 md:block bottom-3 md:left-60 md:-top-20" fill="#145044" /> 
           <Spotlight className="-top-20 md:block bottom-3 md:left-60 md:-top-20" fill="#145044" />
@@ -77,6 +87,21 @@ export default function Home() {
             <Footer/>
           </main>
         </div>
+=======
+
+      <Navbar status={isOnline} />
+      
+        <Spotlight className="-top-20 md:block bottom-3 md:left-60 md:-top-20" fill="#145044" /> <Spotlight className="-top-20 md:block bottom-3 md:left-60 md:-top-20" fill="#145044" />
+      <main className="flex-grow">
+        <Hero />
+        <Features/>
+        <HowItWorks/>
+        <ServerMetrics isOnline={isOnline} serverStatus={serverStatus}/>
+        <TechStack/>
+        <Footer/>
+      </main>
+    </div>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
       )}
     </>
   );

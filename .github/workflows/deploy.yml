@@ -25,7 +25,7 @@ jobs:
           DEPLOY_PATH: /home/GoAbroad
           DEPLOY_HOST: 82.29.164.111
           DEPLOY_USER: root
-          GITHUB_USERNAME: manishdashsharma
+          GITHUB_USERNAME: EasyTechInnovate
           GITHUB_REPO: GoAbroad
           GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
         run: |

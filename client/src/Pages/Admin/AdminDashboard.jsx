@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import { DashboardLayout } from './components/layout/DashboardLayout';
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,7 +33,11 @@ import {
   Legend,
 } from 'recharts';
 
+<<<<<<< HEAD
 
+=======
+// Mock data for charts
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 const applicationStats = [
   { name: 'Jan', count: 12 },
   { name: 'Feb', count: 19 },
@@ -110,6 +118,7 @@ const upcomingDeadlines = [
 
 const AdminDashboard = () => {
   return (
+<<<<<<< HEAD
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -126,6 +135,25 @@ const AdminDashboard = () => {
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="activity">Recent Activity</TabsTrigger>
         </TabsList>
+=======
+    <DashboardLayout>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <div className="flex items-center space-x-2">
+            <Button>
+              <Calendar className="mr-2 h-4 w-4" /> Oct 25, 2023
+            </Button>
+          </div>
+        </div>
+
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+          </TabsList>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 
           <TabsContent value="overview" className="space-y-4">
             {/* Stats Row */}
@@ -461,6 +489,10 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+<<<<<<< HEAD
+=======
+    </DashboardLayout>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   );
 };
 

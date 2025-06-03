@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
+<<<<<<< HEAD
 
+=======
+import { DashboardLayout } from './components/layout/DashboardLayout';
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   CheckCircle, Circle, Clock, Filter, Plus, Search, Users, 
+<<<<<<< HEAD
   FileQuestion, Edit, X, Briefcase
+=======
+  FileQuestion, ChevronRight, Edit, X, Briefcase
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -106,8 +114,13 @@ const Tasks = () => {
   const [isAssignStudentOpen, setIsAssignStudentOpen] = useState(false);
   const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
   const [isCreateQuestionnaireOpen, setIsCreateQuestionnaireOpen] = useState(false);
+<<<<<<< HEAD
 
   const [currentUser, _setCurrentUser] = useState({
+=======
+  
+  const [currentUser, setCurrentUser] = useState({
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
     id: 1,
     name: 'John Doe',
     role: 'admin'
@@ -390,8 +403,14 @@ const Tasks = () => {
     
     return matchesSearch && matchesStudent;
   });
+<<<<<<< HEAD
   return (
     <>
+=======
+
+  return (
+    <DashboardLayout>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
@@ -1127,7 +1146,11 @@ const Tasks = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+<<<<<<< HEAD
     </>
+=======
+    </DashboardLayout>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   );
 };
 

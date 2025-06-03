@@ -16,25 +16,21 @@ export default [
     ...eslintConfigPrettier,
   },
   {
-    files: ['client/**/*.js', 'client/**/*.jsx', 'client/**/*.ts', 'client/**/*.tsx'],
+    files: ['client/**/*.js', 'client/**/*.jsx'],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        React: 'readonly',
-        JSX: 'readonly'
-      },
+      globals: globals.browser,
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
         ecmaFeatures: {
-          jsx: true,
+          jsx: true, // Enable JSX support
         },
       },
     },
     ...eslint.configs.recommended,
     ...eslintConfigPrettier,
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+      'no-console': 'warn',
       'no-useless-catch': 0,
       quotes: ['error', 'single', { allowTemplateLiterals: true }],
     },

@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 'use client'
 import { useState, useEffect } from 'react';
 import { Menu, MonitorCheck, MonitorX, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import { isAuthenticated, subscribeToAuth } from '@/lib/auth';
+=======
+
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 import PropTypes from 'prop-types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
@@ -35,10 +43,20 @@ function ServerStatusIndicator({ status }) {
   );
 }
 
+<<<<<<< HEAD
 export const Navbar = ({ status }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+=======
+
+export const Navbar = ({ status }) => {
+
+  
+  
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   const isOnline = status;
 
   useEffect(() => {
@@ -54,6 +72,7 @@ export const Navbar = ({ status }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
 
     setIsLoggedIn(isAuthenticated());
@@ -69,6 +88,8 @@ export const Navbar = ({ status }) => {
   const buttonText = isLoggedIn ? "Dashboard" : "Get Started";
   const buttonPath = isLoggedIn ? "/dashboard" : "/signup";
 
+=======
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   return (
     <header
       className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
@@ -80,13 +101,22 @@ export const Navbar = ({ status }) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center">
+<<<<<<< HEAD
             <Link to="/" className="flex items-center gap-2">
             <img src="../../public/logo.svg" alt="Logo" className="h-10 w-10" />
+=======
+            <Link href="/" className="flex items-center gap-2">
+            <img src="logo.svg" alt="Logo" className="h-10 w-10" />
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
             <span className="text-2xl font-bold">Goupbroad</span>
             </Link>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
           <a
               href="/about-us"
               className="text-sm font-medium text-gray-700 hover:text-primary-1 dark:text-gray-300 transition-colors"
@@ -105,6 +135,7 @@ export const Navbar = ({ status }) => {
             >
               How It Works
             </a>
+<<<<<<< HEAD
           </nav>
 
           <div className="flex items-between justify-between gap-6">
@@ -117,6 +148,17 @@ export const Navbar = ({ status }) => {
               <svg width="5" height="5" viewBox="0 0 5 5" className="absolute bottom-[-2px] left-[-2px] fill-primary-1 dark:fill-primary-1"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg>
               <svg width="5" height="5" viewBox="0 0 5 5" className="absolute right-[-2px] bottom-[-2px] fill-primary-1 dark:fill-primary-1"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg>
             </Link>
+=======
+          
+          </nav>
+
+          <div className="flex items-between justify-between gap-6">
+
+          <ServerStatusIndicator status={isOnline} />
+
+
+          <Link to="/dashboard" className="group hidden md:inline-flex py-2 relative px-1.5 text-base text-primary-1 dark:text-primary-1"><span className="absolute inset-0 border border-dashed border-primary-1 bg-primary-1/10 group-hover:bg-primary-1/20 dark:border-primary-1"></span>Get Started<svg width="5" height="5" viewBox="0 0 5 5" className="absolute top-[-2px] left-[-2px] fill-primary-1 dark:fill-primary-1"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg><svg width="5" height="5" viewBox="0 0 5 5" className="absolute top-[-2px] right-[-2px] fill-primary-1 dark:fill-primary-1"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg><svg width="5" height="5" viewBox="0 0 5 5" className="absolute bottom-[-2px] left-[-2px] fill-primary-1 dark:fill-primary-1"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg><svg width="5" height="5" viewBox="0 0 5 5" className="absolute right-[-2px] bottom-[-2px] fill-primary-1 dark:fill-primary-1"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z"></path></svg></Link>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
             <button
               className="md:hidden text-primary-1"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -128,6 +170,10 @@ export const Navbar = ({ status }) => {
         </div>
       </div>
 
+<<<<<<< HEAD
+=======
+      {/* Mobile Menu */}
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
       {isMenuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-900 shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
@@ -152,6 +198,7 @@ export const Navbar = ({ status }) => {
             >
               Testimonials
             </a>
+<<<<<<< HEAD
             <Link
               to={buttonPath}
               className="block px-3 py-2 rounded-md text-base font-medium text-primary-1 hover:bg-gray-50 dark:text-primary-1 dark:hover:bg-gray-800"
@@ -159,6 +206,15 @@ export const Navbar = ({ status }) => {
             >
               {buttonText}
             </Link>
+=======
+            <a
+              href="#get-started"
+              className="block px-3 py-2 rounded-md text-base font-medium text-primary-1 hover:bg-gray-50 dark:text-primary-1 dark:hover:bg-gray-800"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Get Started
+            </a>
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
           </div>
         </div>
       )}
@@ -166,8 +222,15 @@ export const Navbar = ({ status }) => {
   );
 };
 
+<<<<<<< HEAD
 export default Navbar;
 
+=======
+
+export default Navbar;
+
+
+>>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 ServerStatusIndicator.propTypes = {
   status: PropTypes.bool.isRequired,
 };
