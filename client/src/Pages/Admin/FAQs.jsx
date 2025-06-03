@@ -1,8 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Edit, Plus, FilePlus } from 'lucide-react';
+import { Search, Edit, Plus, FilePlus, Trash2 } from 'lucide-react';
 import { 
   Accordion,
   AccordionContent,
@@ -11,68 +12,138 @@ import {
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { getCategories, getFaqs, createCategory, createFaq, updateFaq, deleteFaq, deleteCategory } from '../../services/api.services';
 
 const FAQs = () => {
-  const faqCategories = [
-    {
-      id: 'application',
-      name: 'Application Process',
-      count: 8
-    },
-    {
-      id: 'visa',
-      name: 'Visa Guidance',
-      count: 6
-    },
-    {
-      id: 'documents',
-      name: 'Required Documents',
-      count: 5
-    },
-    {
-      id: 'financial',
-      name: 'Financial Aid',
-      count: 4
-    },
-    {
-      id: 'admissions',
-      name: 'Admissions Timeline',
-      count: 3
-    }
-  ];
+  const [categories, setCategories] = useState([]);
+  const [faqs, setFaqs] = useState([]);
+  const [faqCategories, setFaqCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isNewCategoryModalOpen, setIsNewCategoryModalOpen] = useState(false);
+  const [editingFaq, setEditingFaq] = useState(null);
+  const [formData, setFormData] = useState({
+    question: '',
+    answer: '',
+    categoryId: ''
+  });
+  const [newCategory, setNewCategory] = useState({
+    name: '',
+    description: ''
+  });
 
-  const faqs = [
-    {
-      id: 1,
-      question: 'What are the basic requirements for applying to universities abroad?',
-      answer: 'Basic requirements typically include academic transcripts, standardized test scores (SAT, GRE, GMAT, etc.), English proficiency test scores (TOEFL, IELTS), Statement of Purpose, recommendation letters, and a resume. Specific requirements vary by university and program.',
-      category: 'application'
-    },
-    {
-      id: 2,
-      question: 'When should I start the university application process?',
-      answer: 'It\'s best to start the application process at least 12-18 months before your intended enrollment date. This gives you ample time to prepare for standardized tests, craft strong application materials, and meet application deadlines.',
-      category: 'application'
-    },
-    {
-      id: 3,
-      question: 'How many universities should I apply to?',
-      answer: 'We typically recommend applying to 6-8 universities: 2-3 reach schools, 2-3 target schools, and 2 safety schools. This balanced approach maximizes your chances of admission while managing application costs.',
-      category: 'application'
-    },
-    {
-      id: 4,
-      question: 'What is the difference between F1 and J1 student visas?',
-      answer: 'F1 visas are for full-time students attending academic institutions or language programs. J1 visas are for exchange visitors participating in programs that promote cultural exchange, including students, scholars, and professors. F1 visas have more flexible employment options during and after studies.',
-      category: 'visa'
-    },
-    {
-      id: 5,
-      question: 'When should I apply for my student visa?',
-      answer: 'You should apply for your student visa as soon as you receive your acceptance letter and I-20/DS-2019 form from your university. The visa application process can take 2-8 weeks depending on the country and time of year.',
-      category: 'visa'
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const [categoriesRes, faqsRes] = await Promise.all([
+        getCategories(),
+        getFaqs()
+      ]);
+
+      if (categoriesRes.success) {
+        setCategories(categoriesRes.data);
+        // Process categories with FAQ counts
+        const processedCategories = categoriesRes.data.map(category => ({
+          id: category._id,
+          name: category.name,
+          count: faqsRes.success ? faqsRes.data.filter(faq => faq.categoryId === category._id).length : 0
+        }));
+        setFaqCategories(processedCategories);
+      }
+      if (faqsRes.success) {
+        setFaqs(faqsRes.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleAddFaq = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await createFaq(formData);
+      if (response.success) {
+        await fetchData();
+        setIsAddModalOpen(false);
+        setFormData({ question: '', answer: '', categoryId: '' });
+      }
+    } catch (error) {
+      console.error('Error adding FAQ:', error);
+    }
+  };
+
+  const handleEditFaq = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateFaq(editingFaq._id, formData);
+      if (response.success) {
+        await fetchData();
+        setIsEditModalOpen(false);
+        setEditingFaq(null);
+        setFormData({ question: '', answer: '', categoryId: '' });
+      }
+    } catch (error) {
+      console.error('Error updating FAQ:', error);
+    }
+  };
+
+  const handleDeleteFaq = async (faqId) => {
+    if (window.confirm('Are you sure you want to delete this FAQ?')) {
+      try {
+        const response = await deleteFaq(faqId);
+        if (response.success) {
+          await fetchData();
+        }
+      } catch (error) {
+        console.error('Error deleting FAQ:', error);
+      }
+    }
+  };
+
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await createCategory(newCategory);
+      if (response.success) {
+        await fetchData();
+        setIsNewCategoryModalOpen(false);
+        setNewCategory({ name: '', description: '' });
+      }
+    } catch (error) {
+      console.error('Error adding category:', error);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    if (window.confirm('Are you sure you want to delete this category? All associated FAQs will also be deleted.')) {
+      try {
+        const response = await deleteCategory(categoryId);
+        if (response.success) {
+          await fetchData();
+        }
+      } catch (error) {
+        console.error('Error deleting category:', error);
+      }
+    }
+  };
+
+  const filteredFaqs = faqs.filter(faq => {
+    const matchesSearch = searchQuery.toLowerCase() === '' ||
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || faq.categoryId === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const knowledgeArticles = [
     {
@@ -117,7 +188,10 @@ const FAQs = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">FAQs & Knowledge Base</h1>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setIsNewCategoryModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Add Category
+          </Button>
+          <Button onClick={() => setIsAddModalOpen(true)}>
             <Plus className="mr-2 h-4 w-4" /> Add FAQ
           </Button>
           <Button>
@@ -130,8 +204,10 @@ const FAQs = () => {
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search for FAQs and articles..."
+          placeholder="Search FAQs and articles..."
           className="pl-8 w-full"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
@@ -150,17 +226,39 @@ const FAQs = () => {
               <CardContent className="p-3">
                 <ScrollArea className="h-[calc(100vh-300px)]">
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between rounded-md px-3 py-2 bg-muted font-medium cursor-pointer">
+                    <div
+                      className={`flex items-center justify-between rounded-md px-3 py-2 ${
+                        selectedCategory === 'all' ? 'bg-muted' : ''
+                      } cursor-pointer`}
+                      onClick={() => setSelectedCategory('all')}
+                    >
                       <span>All Categories</span>
-                      <Badge variant="secondary">{faqCategories.reduce((acc, cat) => acc + cat.count, 0)}</Badge>
+                      <Badge variant="secondary">{faqs.length}</Badge>
                     </div>
-                    {faqCategories.map((category) => (
+                    {categories.map((category) => (
                       <div 
-                        key={category.id} 
-                        className="flex items-center justify-between rounded-md px-3 py-2 hover:bg-muted cursor-pointer"
+                        key={category._id}
+                        className={`flex items-center justify-between rounded-md px-3 py-2 ${
+                          selectedCategory === category._id ? 'bg-muted' : ''
+                        } hover:bg-muted cursor-pointer`}
+                        onClick={() => setSelectedCategory(category._id)}
                       >
                         <span>{category.name}</span>
-                        <Badge variant="outline">{category.count}</Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">
+                            {faqs.filter(faq => faq.categoryId === category._id).length}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteCategory(category._id);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -172,27 +270,58 @@ const FAQs = () => {
               <CardHeader>
                 <CardTitle>Frequently Asked Questions</CardTitle>
                 <CardDescription>
-                  Common questions from students about studying abroad
+                  Manage FAQs for students about studying abroad
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.map((faq) => (
-                    <AccordionItem key={faq.id} value={`item-${faq.id}`}>
-                      <div className="flex items-center justify-between">
-                        <AccordionTrigger className="text-left">
-                          {faq.question}
-                        </AccordionTrigger>
-                        <Button variant="ghost" size="icon" className="mr-4">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <AccordionContent className="text-muted-foreground">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+                {isLoading ? (
+                  <div className="text-center py-8">Loading FAQs...</div>
+                ) : filteredFaqs.length === 0 ? (
+                  <div className="text-center py-8">No FAQs found</div>
+                ) : (
+                  <Accordion type="single" collapsible className="w-full">
+                    {filteredFaqs.map((faq) => (
+                      <AccordionItem key={faq._id} value={faq._id}>
+                        <div className="flex items-center justify-between">
+                          <AccordionTrigger className="text-left flex-1">
+                            {faq.question}
+                          </AccordionTrigger>
+                          <div className="flex gap-2 mr-4">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingFaq(faq);
+                                setFormData({
+                                  question: faq.question,
+                                  answer: faq.answer,
+                                  categoryId: faq.categoryId
+                                });
+                                setIsEditModalOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteFaq(faq._id);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                          </div>
+                        </div>
+                        <AccordionContent className="text-muted-foreground">
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -264,6 +393,140 @@ const FAQs = () => {
           </div>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={isNewCategoryModalOpen} onOpenChange={setIsNewCategoryModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Category</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddCategory} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Category Name</label>
+              <Input
+                value={newCategory.name}
+                onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))
+                }
+                placeholder="Enter category name"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Description</label>
+              <Input
+                value={newCategory.description}
+                onChange={(e) => setNewCategory(prev => ({ ...prev, description: e.target.value }))
+                }
+                placeholder="Enter category description"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Add Category</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New FAQ</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddFaq} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Category</label>
+              <select
+                value={formData.categoryId}
+                onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))
+                }
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Question</label>
+              <Input
+                value={formData.question}
+                onChange={(e) => setFormData(prev => ({ ...prev, question: e.target.value }))
+                }
+                placeholder="Enter FAQ question"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Answer</label>
+              <textarea
+                value={formData.answer}
+                onChange={(e) => setFormData(prev => ({ ...prev, answer: e.target.value }))
+                }
+                placeholder="Enter FAQ answer"
+                className="w-full px-3 py-2 border rounded-md min-h-[100px]"
+                required
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Add FAQ</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit FAQ</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditFaq} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Category</label>
+              <select
+                value={formData.categoryId}
+                onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))
+                }
+                className="w-full px-3 py-2 border rounded-md"
+                required
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Question</label>
+              <Input
+                value={formData.question}
+                onChange={(e) => setFormData(prev => ({ ...prev, question: e.target.value }))
+                }
+                placeholder="Enter FAQ question"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Answer</label>
+              <textarea
+                value={formData.answer}
+                onChange={(e) => setFormData(prev => ({ ...prev, answer: e.target.value }))
+                }
+                placeholder="Enter FAQ answer"
+                className="w-full px-3 py-2 border rounded-md min-h-[100px]"
+                required
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Update FAQ</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

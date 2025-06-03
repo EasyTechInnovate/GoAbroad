@@ -69,11 +69,6 @@ export default function GoupbroadLandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-<<<<<<< HEAD
-
-=======
-  // Animation variants
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
@@ -227,11 +222,6 @@ export default function GoupbroadLandingPage() {
   );
 }
 
-<<<<<<< HEAD
-
-=======
-// Components
->>>>>>> ca31a26dfb57d5460b4894654578e07d617fb4ad
 function FeatureCard({ icon, title, variants }) {
   return (
     <motion.div variants={variants}>
