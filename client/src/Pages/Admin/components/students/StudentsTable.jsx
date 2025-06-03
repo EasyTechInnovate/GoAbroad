@@ -1,26 +1,15 @@
-import { useState } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
+import { useState, useCallback, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -28,230 +17,238 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { 
-  MoreHorizontal, 
-  ChevronDown, 
-  Search,
-  Filter,
-  Eye,
-  Trash2,
-  UserPlus
-} from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { AddStudentForm } from './AddStudentForm';
+import { toast } from '@/components/ui/sonner';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { ChevronLeft, ChevronRight, Search, Trash2 } from 'lucide-react';
+import { getStudents, deleteStudent } from '@/services/studentService';
 
-const mockStudents = [
-  {
-    id: '1',
-    name: 'Emma Johnson',
-    email: 'emma.j@example.com',
-    university: 'Stanford University',
-    status: 'active',
-    lastUpdated: '2 hours ago',
-  },
-  {
-    id: '2',
-    name: 'Daniel Lee',
-    email: 'daniel.l@example.com',
-    university: 'MIT',
-    status: 'active',
-    lastUpdated: '1 day ago',
-  },
-  {
-    id: '3',
-    name: 'Sophia Chen',
-    email: 'sophia.c@example.com',
-    university: 'UC Berkeley',
-    status: 'pending',
-    lastUpdated: '3 days ago',
-  },
-  {
-    id: '4',
-    name: 'James Wilson',
-    email: 'james.w@example.com',
-    university: 'Harvard University',
-    status: 'complete',
-    lastUpdated: '1 week ago',
-  },
-  {
-    id: '5',
-    name: 'Olivia Garcia',
-    email: 'olivia.g@example.com',
-    university: 'UCLA',
-    status: 'rejected',
-    lastUpdated: '2 weeks ago',
-  },
-];
-
-const statusClasses = {
-  pending: 'status-pending',
-  active: 'status-active',
-  complete: 'status-complete',
-  rejected: 'status-rejected',
-};
-
-const statusLabels = {
-  pending: 'Pending',
-  active: 'Active',
-  complete: 'Complete',
-  rejected: 'Rejected',
-};
-
-export function StudentsTable() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
-  
-  const filteredStudents = mockStudents.filter((student) => {
-    const matchesSearch = 
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.university.toLowerCase().includes(searchTerm.toLowerCase());
-      
-    const matchesStatus = statusFilter === 'all' || student.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
+export function StudentsTable({ initialFilters = {} }) {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');  const [filters, setFilters] = useState({
+    status: 'ALL',
+    isVerified: initialFilters.isVerified || '',
+    sortBy: 'createdAt',
+    sortOrder: 'desc'
   });
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const handleAddStudent = (values) => {
-    console.log('New student data:', values);
-    setIsAddStudentOpen(false);
+  const fetchStudents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        limit: 10,
+        ...filters,
+        status: filters.status === 'ALL' ? '' : filters.status
+      };
+
+      if (searchTerm?.trim()) {
+        params.search = searchTerm.trim();
+      }
+
+      const response = await getStudents(params);
+      setStudents(response.data.students || []);
+      setTotalPages(response.data.pagination.totalPages);
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      toast.error('Failed to fetch students');
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, searchTerm, filters]);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
+
+  const handleDelete = async () => {
+    if (!selectedStudent) return;
+
+    try {
+      setLoading(true);
+      await deleteStudent(selectedStudent._id);
+      toast.success('Student deleted successfully');
+      setShowDeleteDialog(false);
+      setSelectedStudent(null);
+      fetchStudents();
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      toast.error('Failed to delete student');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center w-full sm:w-auto">
-          <div className="relative flex-1 sm:flex-initial">
+      <div className="flex flex-wrap gap-4 items-center justify-between">
+        <div className="flex flex-1 items-center gap-2">
+          <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              className="pl-8 w-full"
+              type="search"
               placeholder="Search students..."
+              className="pl-8"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-2">
-                <Filter className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Filter</span>
-                <ChevronDown className="h-4 w-4 ml-1 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px]">
-              <div className="p-2">
-                <p className="text-xs text-muted-foreground mb-2 font-medium">Status</p>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="All statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All statuses</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="complete">Complete</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => {
-                setSearchTerm('');
-                setStatusFilter('all');
-              }}>
-                Reset filters
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Select
+            value={filters.status}
+            onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+          >
+            <SelectTrigger className="w-[130px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>            <SelectContent>
+              <SelectItem value="ALL">All Status</SelectItem>
+              <SelectItem value="ACTIVE">Active</SelectItem>
+              <SelectItem value="INACTIVE">Inactive</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Button onClick={() => setIsAddStudentOpen(true)}>
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Student
-        </Button>
       </div>
 
-      <Dialog open={isAddStudentOpen} onOpenChange={setIsAddStudentOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Add New Student</DialogTitle>
-            <DialogDescription>
-              Enter the student&apos;s information to create a new student profile.
-            </DialogDescription>
-          </DialogHeader>
-          <AddStudentForm 
-            onSubmit={handleAddStudent}
-            onCancel={() => setIsAddStudentOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <div className="rounded-md border overflow-hidden">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead className="hidden md:table-cell">Email</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Contact</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden sm:table-cell">Last Updated</TableHead>
-              <TableHead className="w-12"></TableHead>
+              <TableHead>Verified</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredStudents.map((student) => (
-              <TableRow key={student.id}>
-                <TableCell>
-                  <Link to={`/students/${student.id}`} className="font-medium hover:underline">
-                    {student.name}
-                  </Link>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">{student.email}</TableCell>
-                <TableCell>
-                  <Badge className={cn('status-pill', statusClasses[student.status])}>
-                    {statusLabels[student.status]}
-                  </Badge>
-                </TableCell>
-                <TableCell className="hidden sm:table-cell text-muted-foreground">
-                  {student.lastUpdated}
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <Link to={`/students/${student.id}`} className="flex items-center">
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Student
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="flex items-center text-destructive">
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete Student
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-            {filteredStudents.length === 0 && (
+            {loading ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  No results found.
+                <TableCell colSpan={6} className="text-center py-10">
+                  Loading...
                 </TableCell>
               </TableRow>
+            ) : students.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-10">
+                  No students found
+                </TableCell>
+              </TableRow>
+            ) : (
+              students.map((student) => (
+                <TableRow key={student._id}>
+                  <TableCell className="font-medium">{student.name}</TableCell>
+                  <TableCell>{student.email}</TableCell>
+                  <TableCell>{student.contact}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      student.status === 'ACTIVE' 
+                        ? 'bg-green-100 text-green-700' 
+                        : 'bg-red-100 text-red-700'
+                    }`}>
+                      {student.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      student.isVerified 
+                        ? 'bg-blue-100 text-blue-700' 
+                        : 'bg-yellow-100 text-yellow-700'
+                    }`}>
+                      {student.isVerified ? 'Verified' : 'Unverified'}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => {
+                        setSelectedStudent(student);
+                        setShowDeleteDialog(true);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-end gap-2 mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1 || loading}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages || loading}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the student&apos;s account
+              and remove their data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
+
+StudentsTable.propTypes = {
+  initialFilters: PropTypes.shape({
+    status: PropTypes.string,
+    isVerified: PropTypes.string,
+    sortBy: PropTypes.string,
+    sortOrder: PropTypes.string
+  })
+};
+
+StudentsTable.defaultProps = {
+  initialFilters: {}
+};

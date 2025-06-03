@@ -6,19 +6,19 @@ import Questionnaire from '../../model/questionnaireModel.js';
 import Joi from 'joi'
 import SubtaskQuestionnaireAssignment from '../../model/subtaskQuestionnaireAssignmentModel.js';
 export default {
-    // Create a new questionnaire (ADMIN only)
+
     createQuestionnaire: async (req, res, next) => {
         try {
-            // Validate input
+
             const { value, error } = validateJoiSchema(ValidateCreateQuestionnaire, req.body);
             if (error) return httpError(next, error, req, 422);
 
-            // Check role (optional, since middleware already handles it, but added for clarity)
+
             if (req.authenticatedMember.role !== 'ADMIN') {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
 
-            // Create new questionnaire
+
             const questionnaire = new Questionnaire(value);
             await questionnaire.save();
 
@@ -31,30 +31,30 @@ export default {
         }
     },
 
-    // Update an existing questionnaire (ADMIN only)
+
     updateQuestionnaire: async (req, res, next) => {
         try {
             const { questionnaireId } = req.params;
             const { value, error } = validateJoiSchema(ValidateUpdateQuestionnaire, req.body);
             if (error) return httpError(next, error, req, 422);
 
-            // Check role
+
             if (req.authenticatedMember.role !== 'ADMIN') {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
 
-            // Find questionnaire
+
             const questionnaire = await Questionnaire.findById(questionnaireId);
             if (!questionnaire) {
                 return httpError(next, new Error(responseMessage.NOT_FOUND('Questionnaire')), req, 404);
             }
 
-            // Update fields
+
             if (value.title) questionnaire.title = value.title;
             if (value.description !== undefined) questionnaire.description = value.description;
             if (value.status) questionnaire.status = value.status;
 
-            // If questions are provided, replace the existing questions
+
             if (value.questions) {
                 questionnaire.questions = value.questions;
             }
@@ -70,19 +70,19 @@ export default {
         }
     },
 
-    // Add a new question to an existing questionnaire (ADMIN only)
+
     addQuestion: async (req, res, next) => {
         try {
             const { questionnaireId } = req.params;
             const { value, error } = validateJoiSchema(Joi.object({ question: questionSchema.required() }), req.body);
             if (error) return httpError(next, error, req, 422);
 
-            // Check role
+
             if (req.authenticatedMember.role !== 'ADMIN') {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
 
-            // Find questionnaire and add question
+
             const questionnaire = await Questionnaire.findById(questionnaireId);
             if (!questionnaire) {
                 return httpError(next, new Error(responseMessage.NOT_FOUND('Questionnaire')), req, 404);
@@ -100,7 +100,7 @@ export default {
         }
     },
 
-    // Delete a specific question from a questionnaire (ADMIN only)
+
     deleteQuestion: async (req, res, next) => {
         try {
             const { value, error } = validateJoiSchema(ValidateDeleteQuestion, req.body);
@@ -108,12 +108,12 @@ export default {
 
             const { questionnaireId, questionId } = value;
 
-            // Check role
+
             if (req.authenticatedMember.role !== 'ADMIN') {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
 
-            // Find questionnaire and remove question
+
             const questionnaire = await Questionnaire.findById(questionnaireId);
             if (!questionnaire) {
                 return httpError(next, new Error(responseMessage.NOT_FOUND('Questionnaire')), req, 404);
@@ -136,13 +136,13 @@ export default {
         }
     },
 
-    // Delete an entire questionnaire (ADMIN only)
+
     deleteQuestionnaire: async (req, res, next) => {
         try {
             const { questionnaireId } = req.params;
 
        
-            // check is the Questionnaire is assigned to any Subtask
+
             const isAssignedToSubtask = await SubtaskQuestionnaireAssignment.findOne({
                 questionnaireId:questionnaireId
             })
@@ -165,7 +165,7 @@ export default {
         }
     },
 
-    // Get all questionnaires (accessible to all members)
+
     getAllQuestionnaires: async (req, res, next) => {
         try {
             const questionnaires = await Questionnaire.find().lean();
@@ -175,7 +175,7 @@ export default {
         }
     },
 
-    // Get a specific questionnaire by ID (accessible to all members)
+
     getQuestionnaireById: async (req, res, next) => {
         try {
             const { questionnaireId } = req.params;

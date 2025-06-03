@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/components/ui/sonner';
 import { updatePassword, getCurrentUser, updateProfile, uploadFile } from '@/services/api.services';
+import { logout } from '@/lib/auth';
+import { useNavigate } from 'react-router-dom';
 import {
   User,
   Bell,
@@ -26,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import { getTeamMembers, addTeamMember, updateTeamMember, deleteTeamMember } from '@/services/teamService';
 import {
   Avatar,
@@ -48,6 +50,7 @@ import { Badge } from '@/components/ui/badge';
 import { getUser } from '@/lib/auth';
 
 const Settings = () => {
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
@@ -112,11 +115,11 @@ const Settings = () => {
   useEffect(() => {
     if (user) {
       const initialData = {
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        phone: user.phone || "",
-        address: user.address || "",
-        bio: user.bio || "",
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        phone: user.phone || '',
+        address: user.address || '',
+        bio: user.bio || '',
       };
       setFormData(initialData);
       setInitialFormData(initialData);
@@ -214,9 +217,16 @@ const Settings = () => {
               <TabsTrigger value="integrations" className="justify-start w-full">
                 <ExternalLink className="mr-2 h-4 w-4" /> Integrations
               </TabsTrigger>
-            </TabsList>
+            </TabsList>            
             <Separator className="my-4" />
-            <Button variant="outline" className="w-full justify-start text-destructive">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start text-destructive hover:text-destructive" 
+              onClick={() => {
+                logout();
+                navigate('/admin/login');
+              }}
+            >
               <LogOut className="mr-2 h-4 w-4" /> Log Out
             </Button>
           </div>
@@ -234,7 +244,7 @@ const Settings = () => {
                   <CardContent className="space-y-6">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                       <Avatar className="w-16 h-16">
-                        <AvatarImage src={user?.profilePicture || ""} />
+                        <AvatarImage src={user?.profilePicture || ''} />
                         <AvatarFallback className="text-lg">{getMemberInitials(user?.firstName, user?.lastName)}</AvatarFallback>
                       </Avatar>
                       <div className="space-y-1">
@@ -443,7 +453,7 @@ const Settings = () => {
                             id="phone"
                             name="phone"
                             type="tel"
-                            defaultValue={user?.phone || ""}
+                            defaultValue={user?.phone || ''}
                             placeholder="+1234567890"
                             onChange={(e) => {
                               setFormData({ ...formData, phone: e.target.value });
@@ -456,7 +466,7 @@ const Settings = () => {
                           <Input
                             id="address"
                             name="address"
-                            defaultValue={user?.address || ""}
+                            defaultValue={user?.address || ''}
                             placeholder="Your address"
                             onChange={(e) => {
                               setFormData({ ...formData, address: e.target.value });
@@ -469,7 +479,7 @@ const Settings = () => {
                           <Input
                             id="bio"
                             name="bio"
-                            defaultValue={user?.bio || ""}
+                            defaultValue={user?.bio || ''}
                             placeholder="Tell us about yourself"
                             onChange={(e) => {
                               setFormData({ ...formData, bio: e.target.value });
@@ -835,7 +845,7 @@ const Settings = () => {
                                       className="text-destructive"
                                       onClick={() => handleDeleteMember(member._id)}
                                       disabled={member.role === 'ADMIN'}
-                                      title={member.role === 'ADMIN' ? "Admin members cannot be deleted" : "Delete member"}
+                                      title={member.role === 'ADMIN' ? 'Admin members cannot be deleted' : 'Delete member'}
                                     >
                                       <Trash2 className="h-4 w-4" />
                                     </Button>

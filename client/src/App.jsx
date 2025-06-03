@@ -17,7 +17,6 @@ import NotFound from './Pages/Admin/NotFound';
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import ProfilePage from './Pages/Profile';
 import Index from './Pages/Admin/Index';
-import Students from './Pages/Admin/Students';
 import SignUp from './Pages/Auth/SignUp';
 import Login from './Pages/Auth/Login';
 import ForgotPassword from './Pages/Auth/ForgotPassword';
@@ -30,6 +29,7 @@ import StudentTasks from './Pages/Tasks';
 import Chat from './Pages/Messages';
 import AdminLogin from './Pages/Admin/Login';
 import PrivateAdminRoute from './components/PrivateAdminRoute';
+import Students from './Pages/Admin/components/students/Students';
 
 const App = () => {
   return (
@@ -44,7 +44,8 @@ const App = () => {
       <Route path="/dashboard/timeline" element={<ProtectedRoute><StudentTasks /></ProtectedRoute>} />
       <Route path="/dashboard/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
       <Route path="/dashboard/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
-      <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />      <Route path="/dashboard/checklist" element={<ProtectedRoute><Checklist /></ProtectedRoute>} />
+      <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />      
+      <Route path="/dashboard/checklist" element={<ProtectedRoute><Checklist /></ProtectedRoute>} />
       <Route path="/dashboard/documents" element={<ProtectedRoute><DocManager /></ProtectedRoute>} />
       <Route path="/dashboard/universities" element={<ProtectedRoute><UniversityManagement /></ProtectedRoute>} />      
       <Route path="/admin/login" element={<AdminLogin />} />

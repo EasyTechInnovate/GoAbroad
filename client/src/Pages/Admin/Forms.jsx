@@ -1,17 +1,16 @@
-import { useState } from 'react';
-import { DashboardLayout } from './components/layout/DashboardLayout';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Filter, Plus, Eye, Edit, Trash2, Copy, Save, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Search, Filter, Plus, Eye, Edit, Trash2, Save, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
   DialogTitle,
   DialogFooter
 } from '@/components/ui/dialog';
@@ -24,100 +23,68 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { createQuestionnaire, getQuestionnaires, deleteQuestionnaire, getQuestionnaireById, updateQuestionnaire } from '@/services/questionnaireService';
+import { getLoans } from '@/services/loanService';
 
 const Forms = () => {
-  const questionnaires = [
-    {
-      id: 1,
-      title: 'Initial Student Assessment',
-      description: 'Basic information and academic background',
-      questions: 15,
-      responses: 48,
-      status: 'active',
-      created: '2023-08-15'
-    },
-    {
-      id: 2,
-      title: 'University Preference Form',
-      description: 'Student university and program preferences',
-      questions: 10,
-      responses: 42,
-      status: 'active',
-      created: '2023-09-05'
-    },
-    {
-      id: 3,
-      title: 'Visa Documentation Checklist',
-      description: 'Required documents for visa application',
-      questions: 20,
-      responses: 36,
-      status: 'active',
-      created: '2023-09-12'
-    },
-    {
-      id: 4,
-      title: 'Financial Aid Application',
-      description: 'Information for scholarship and financial support',
-      questions: 25,
-      responses: 31,
-      status: 'draft',
-      created: '2023-10-01'
-    },
-    {
-      id: 5,
-      title: 'Post-Admission Survey',
-      description: 'Feedback after university admission',
-      questions: 12,
-      responses: 15,
-      status: 'archived',
-      created: '2023-07-20'
-    }
-  ];
+  const [questionnaires, setQuestionnaires] = useState([]);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
+  const [loans, setLoans] = useState([]);
+  const [loanFilters, setLoanFilters] = useState({
+    page: 1,
+    limit: 10,
+    status: '',
+    admissionTerm: '',
+    search: ''
+  });
+  const [loanPagination, setLoanPagination] = useState({
+    currentPage: 1,
+    totalPages: 0,
+    totalItems: 0,
+    itemsPerPage: 10
+  });  const [isLoadingLoans, setIsLoadingLoans] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);  const [isViewLoanOpen, setIsViewLoanOpen] = useState(false);
 
-  const eduLoanForms = [
-    {
-      id: 1,
-      title: 'Education Loan Application',
-      bank: 'Bank of America',
-      applicants: 18,
-      status: 'active',
-      created: '2023-09-01'
-    },
-    {
-      id: 2,
-      title: 'Loan Cosigner Form',
-      bank: 'Chase Bank',
-      applicants: 15,
-      status: 'active',
-      created: '2023-09-10'
-    },
-    {
-      id: 3,
-      title: 'Financial Statement Verification',
-      bank: 'CitiBank',
-      applicants: 12,
-      status: 'active',
-      created: '2023-09-15'
-    },
-    {
-      id: 4,
-      title: 'Income Proof Documentation',
-      bank: 'Wells Fargo',
-      applicants: 10,
-      status: 'draft',
-      created: '2023-09-22'
+  const fetchLoans = useCallback(async () => {
+    setIsLoadingLoans(true);
+    try {
+      const filters = { ...loanFilters };
+      if (filters.status === 'ALL') {
+        delete filters.status;
+      }
+      const response = await getLoans(filters);
+      setLoans(response.data.loans);
+      setLoanPagination(response.data.pagination);
+    } catch (error) {
+      toast.error(`Failed to fetch loans: ${error.message}`);
+    } finally {
+      setIsLoadingLoans(false);
     }
-  ];
+  }, [loanFilters]);
+  const fetchQuestionnaires = useCallback(async () => {
+    try {
+      const response = await getQuestionnaires();
+      setQuestionnaires(response.data || []);
+    } catch (error) {
+      toast.error(`Failed to fetch questionnaires: ${error.message}`);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchQuestionnaires();
+    fetchLoans();
+  }, [fetchLoans, fetchQuestionnaires]);
 
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formTitle, setFormTitle] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [questions, setQuestions] = useState([
-    { id: 1, text: '', type: 'text', required: true, options: [] }
+    { id: 1, text: '', type: 'TEXT', required: true, options: [] }
   ]);
   const [newQuestion, setNewQuestion] = useState('');
-  const [questionType, setQuestionType] = useState('text');
+  const [questionType, setQuestionType] = useState('TEXT');
   const [optionText, setOptionText] = useState('');
   const [selectedMainTask, setSelectedMainTask] = useState('');
   const [selectedSubtask, setSelectedSubtask] = useState('');
@@ -134,21 +101,21 @@ const Forms = () => {
   const subtaskTemplates = {
     'Application Documents': [
       'Draft SOP',
-      'Review with counselor', 
+      'Review with counselor',
       'Final submission',
-      'Fill personal details', 
-      'Academic information', 
+      'Fill personal details',
+      'Academic information',
       'Upload documents'
     ],
     'Test Preparation': [
-      'Speaking practice', 
-      'Writing exercise', 
+      'Speaking practice',
+      'Writing exercise',
       'Mock test',
       'Vocabulary building'
     ],
     'Financial Documentation': [
-      'Bank statements', 
-      'Income proof', 
+      'Bank statements',
+      'Income proof',
       'Affidavit',
       'Financial guarantee letter'
     ],
@@ -163,53 +130,74 @@ const Forms = () => {
       'Check requirements'
     ]
   };
-
   const statusBadge = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case 'active':
         return <Badge className="bg-green-500">Active</Badge>;
       case 'draft':
         return <Badge variant="outline">Draft</Badge>;
       case 'archived':
         return <Badge variant="secondary">Archived</Badge>;
+      case 'pending':
+        return <Badge variant="outline" className="border-yellow-500 text-yellow-500">Pending</Badge>;
+      case 'approved':
+        return <Badge className="bg-green-500">Approved</Badge>;
+      case 'rejected':
+        return <Badge variant="destructive">Rejected</Badge>;
       default:
-        return null;
+        return <Badge variant="secondary">Unknown</Badge>;
     }
-  };
+  }; const handleAddQuestion = () => {
+    if (!newQuestion.trim()) {
+      toast.error('Please enter question text');
+      return;
+    }
 
-  const handleAddQuestion = () => {
-    if (newQuestion.trim()) {
-      const newQuestionObj = {
-        id: questions.length + 1,
-        text: newQuestion,
-        type: questionType,
-        required: true,
-        options: questionType === 'multiple_choice' || questionType === 'checkbox' ? [] : undefined
-      };
+    const upperQuestionType = questionType.toUpperCase();
+    const newQuestionObj = {
+      id: questions.length + 1,
+      text: newQuestion,
+      type: upperQuestionType,
+      required: true,
+      options: (upperQuestionType === 'MULTIPLE_CHOICE' || upperQuestionType === 'CHECKBOX') ? [] : undefined
+    };
+
+    if (upperQuestionType === 'MULTIPLE_CHOICE' || upperQuestionType === 'CHECKBOX') {
+      setQuestions([...questions, newQuestionObj]);
+      setCurrentEditingQuestion(newQuestionObj);
+      toast.info('Please add at least 2 options for this question');
+    } else {
       setQuestions([...questions, newQuestionObj]);
       setNewQuestion('');
-      setQuestionType('text');
-      setCurrentEditingQuestion(newQuestionObj);
+      setQuestionType('TEXT');
     }
   };
-
   const handleAddOption = (questionId) => {
-    if (optionText.trim()) {
-      const updatedQuestions = questions.map(q => {
-        if (q.id === questionId) {
-          return {
-            ...q,
-            options: [...(q.options || []), optionText]
-          };
-        }
-        return q;
-      });
-      setQuestions(updatedQuestions);
-      setOptionText('');
+    if (!optionText.trim()) {
+      toast.error('Option text cannot be empty');
+      return;
     }
-  };
 
+    const updatedQuestions = questions.map(q => {
+      if (q.id === questionId) {
+        const newOptions = [...(q.options || []), optionText];
+        return {
+          ...q,
+          options: newOptions
+        };
+      }
+      return q;
+    });
+    setQuestions(updatedQuestions);
+    setOptionText('');
+  };
   const handleRemoveOption = (questionId, optionIndex) => {
+    const question = questions.find(q => q.id === questionId);
+    if (question && question.options && question.options.length <= 2) {
+      toast.error('Multiple choice questions must have at least 2 options');
+      return;
+    }
+
     const updatedQuestions = questions.map(q => {
       if (q.id === questionId) {
         const newOptions = [...(q.options || [])];
@@ -234,14 +222,14 @@ const Forms = () => {
           return {
             ...q,
             text: newQuestion,
-            type: questionType
+            type: questionType.toUpperCase()
           };
         }
         return q;
       });
       setQuestions(updatedQuestions);
       setNewQuestion('');
-      setQuestionType('text');
+      setQuestionType('TEXT');
       setCurrentEditingQuestion(null);
     }
   };
@@ -252,43 +240,74 @@ const Forms = () => {
     if (currentEditingQuestion?.id === questionId) {
       setCurrentEditingQuestion(null);
       setNewQuestion('');
-      setQuestionType('text');
+      setQuestionType('TEXT');
     }
   };
 
-  const handleSaveForm = () => {
+  const handleSaveForm = async () => {
     if (formTitle.trim() === '') {
       toast.error('Please enter a form title');
       return;
     }
-    
+
     if (questions.length === 0) {
       toast.error('Please add at least one question');
       return;
     }
-    
-    const newForm = {
-      id: questionnaires.length + 1,
-      title: formTitle,
-      description: formDescription,
-      questions: questions.length,
-      responses: 0,
-      status: 'active',
-      created: new Date().toISOString().split('T')[0]
-    };
-    
-    questionnaires.push(newForm);
-    setIsCreateFormOpen(false);
-    resetForm();
-    toast.success('Form created successfully!');
+
+
+    const invalidQuestion = questions.find(q => {
+      const questionType = q.type.toUpperCase();
+      return (questionType === 'MULTIPLE_CHOICE' || questionType === 'CHECKBOX') &&
+        (!q.options || q.options.length < 2);
+    });
+
+    if (invalidQuestion) {
+      toast.error(`Question "${invalidQuestion.text}" needs at least 2 options. Please add more options before saving.`);
+      setCurrentEditingQuestion(invalidQuestion);
+      setNewQuestion(invalidQuestion.text);
+      setQuestionType(invalidQuestion.type);
+      return;
+    }
+
+    try {
+      const formData = {
+        title: formTitle,
+        description: formDescription,
+        status: 'ACTIVE',
+        questions: questions.map(q => {
+          const questionType = q.type.toUpperCase();
+          return {
+            question: q.text,
+            ansType: questionType,
+            options: ['MULTIPLE_CHOICE', 'CHECKBOX'].includes(questionType) ? q.options : undefined
+          };
+        })
+      };
+
+      if (selectedQuestionnaire) {
+        await updateQuestionnaire(selectedQuestionnaire._id, formData);
+        toast.success('Form updated successfully!');
+      } else {
+        await createQuestionnaire(formData);
+        toast.success('Form created successfully!');
+      }
+
+      fetchQuestionnaires();
+      setIsCreateFormOpen(false);
+      resetForm();
+    } catch (error) {
+      console.error('Error saving form:', error);
+      toast.error(`Failed to save form: ${error.message}`);
+    }
   };
-  
+
   const handleSaveAndAssign = () => {
     if (formTitle.trim() === '' || !selectedMainTask || !selectedSubtask) {
       toast.error('Please fill all required fields');
       return;
     }
-    
+
     handleSaveForm();
     toast.success(`Form assigned to ${selectedMainTask} > ${selectedSubtask}`);
   };
@@ -296,12 +315,13 @@ const Forms = () => {
   const resetForm = () => {
     setFormTitle('');
     setFormDescription('');
-    setQuestions([{ id: 1, text: '', type: 'text', required: true, options: [] }]);
+    setQuestions([{ id: 1, text: '', type: 'TEXT', required: true, options: [] }]);
     setNewQuestion('');
     setCurrentStep(1);
     setSelectedMainTask('');
     setSelectedSubtask('');
     setCurrentEditingQuestion(null);
+    setSelectedQuestionnaire(null);
   };
 
   const nextStep = () => {
@@ -315,9 +335,14 @@ const Forms = () => {
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
   };
+  const handleViewLoan = async (loan) => {
+    setSelectedLoan(loan);
+    setIsViewLoanOpen(true);
+  };
 
+  console.log(questionnaires);
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Questionnaires & Forms</h1>
@@ -331,7 +356,7 @@ const Forms = () => {
             <TabsTrigger value="questionnaires">Questionnaires</TabsTrigger>
             <TabsTrigger value="eduloans">Education Loan Forms</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="questionnaires" className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="relative flex-1">
@@ -346,7 +371,7 @@ const Forms = () => {
                 <Filter className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>All Questionnaires</CardTitle>
@@ -368,26 +393,50 @@ const Forms = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {questionnaires.map((form) => (
-                      <TableRow key={form.id}>
-                        <TableCell className="font-medium">{form.title}</TableCell>
-                        <TableCell>{form.description}</TableCell>
-                        <TableCell>{form.questions}</TableCell>
-                        <TableCell>{form.responses}</TableCell>
-                        <TableCell>{statusBadge(form.status)}</TableCell>
-                        <TableCell>{form.created}</TableCell>
+                    {questionnaires.length === 0 ? (
+                      <TableRow>                        <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                        No questionnaires found. Click &quot;Create Form&quot; to add one.
+                      </TableCell>
+                      </TableRow>
+                    ) : questionnaires.map((form) => (
+                      <TableRow key={form._id}>
+                        <TableCell className="font-medium">{form.title || ''}</TableCell>
+                        <TableCell>{form.description || ''}</TableCell>
+                        <TableCell>{Array.isArray(form.questions) ? form.questions.length : 0}</TableCell>
+                        <TableCell>{form.responses || 0}</TableCell>
+                        <TableCell>{statusBadge(form.status || 'draft')}</TableCell>
+                        <TableCell>{form.createdAt ? new Date(form.createdAt).toLocaleDateString() : ''}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" onClick={async () => {
+                              try {
+                                const response = await getQuestionnaireById(form._id);
+                                setSelectedQuestionnaire(response.data);
+                                setFormTitle(response.data.title);
+                                setFormDescription(response.data.description);
+                                setQuestions(response.data.questions.map(q => ({
+                                  id: q._id,
+                                  text: q.question,
+                                  type: q.ansType,
+                                  required: true,
+                                  options: q.options || []
+                                })));
+                                setIsCreateFormOpen(true);
+                              } catch (error) {
+                                toast.error(`Failed to load questionnaire: ${error.message}`);
+                              }
+                            }}>
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon">
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="text-destructive">
+                            <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => {
+                              try {
+                                await deleteQuestionnaire(form._id);
+                                toast.success('Form deleted successfully');
+                                fetchQuestionnaires();
+                              } catch (error) {
+                                toast.error(`Failed to delete form: ${error.message}`);
+                              }
+                            }}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
@@ -399,66 +448,227 @@ const Forms = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
-          <TabsContent value="eduloans" className="space-y-4">
+
+          <TabsContent value="eduloans" className="space-y-4" onSelect={() => fetchLoans()}>
             <div className="flex items-center space-x-2">
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search loan forms..."
+                  placeholder="Search by university name..."
                   className="pl-8 w-full"
+                  value={loanFilters.search}
+                  onChange={(e) => {
+                    setLoanFilters(prev => ({ ...prev, search: e.target.value }));
+                    if (!e.target.value) fetchLoans();
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && fetchLoans()}
                 />
               </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
+              <Select
+                value={loanFilters.status}
+                onValueChange={(value) => {
+                  setLoanFilters(prev => ({ ...prev, status: value, page: 1 }));
+                  fetchLoans();
+                }}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>                <SelectContent>
+                  <SelectItem value="ALL">All Status</SelectItem>
+                  <SelectItem value="PENDING">Pending</SelectItem>
+                  <SelectItem value="APPROVED">Approved</SelectItem>
+                  <SelectItem value="REJECTED">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Education Loan Forms</CardTitle>
                 <CardDescription>
-                  Manage education loan applications and forms
+                  Manage education loan applications and their status
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Form Title</TableHead>
-                      <TableHead>Bank/Institution</TableHead>
-                      <TableHead>Applicants</TableHead>
+                      <TableHead>Student Name</TableHead>
+                      <TableHead>Universities Applied</TableHead>
+                      <TableHead>Loan Amount</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Created</TableHead>
+                      <TableHead>Admission Term</TableHead>
+                      <TableHead>Applied Date</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {eduLoanForms.map((form) => (
-                      <TableRow key={form.id}>
-                        <TableCell className="font-medium">{form.title}</TableCell>
-                        <TableCell>{form.bank}</TableCell>
-                        <TableCell>{form.applicants}</TableCell>
-                        <TableCell>{statusBadge(form.status)}</TableCell>
-                        <TableCell>{form.created}</TableCell>
+                    {isLoadingLoans ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="h-24 text-center">
+                          <div className="flex items-center justify-center">
+                            <Loader2 className="h-6 w-6 animate-spin" />
+                            <span className="ml-2">Loading loans...</span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ) : loans.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                          No loan applications found.
+                        </TableCell>
+                      </TableRow>
+                    ) : (loans.map((loan) => (
+                      <TableRow key={loan._id}>
+                        <TableCell className="font-medium">{loan.appliedBy?.name || loan.name || 'N/A'}</TableCell>
+                        <TableCell>{loan.coBorrower?.universitiesReceivedAdmitFrom?.join(', ') || 'N/A'}</TableCell>
+                        <TableCell>{loan.amount ? `$${loan.amount.toLocaleString()}` : 'N/A'}</TableCell>
+                        <TableCell>{statusBadge(loan.status?.toLowerCase())}</TableCell>
+                        <TableCell>{loan.admissionTerm || 'N/A'}</TableCell>
+                        <TableCell>{new Date(loan.createdAt).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" onClick={() => handleViewLoan(loan)}>
                               <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="text-destructive">
-                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                    )}
                   </TableBody>
                 </Table>
+
+
+                {loans.length > 0 && (
+                  <div className="flex items-center justify-between py-4">
+                    <div className="text-sm text-muted-foreground">
+                      Showing page {loanPagination.currentPage} of {loanPagination.totalPages}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setLoanFilters(prev => ({ ...prev, page: prev.page - 1 }));
+                          fetchLoans();
+                        }}
+                        disabled={loanPagination.currentPage === 1}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        Previous
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setLoanFilters(prev => ({ ...prev, page: prev.page + 1 }));
+                          fetchLoans();
+                        }}
+                        disabled={loanPagination.currentPage === loanPagination.totalPages}
+                      >
+                        Next
+                        <ChevronRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+
+                <Dialog open={isViewLoanOpen} onOpenChange={setIsViewLoanOpen}>
+                  <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Loan Application Details</DialogTitle>
+                      <DialogDescription>
+                        View detailed information about this loan application
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    {selectedLoan && (
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Student Name</Label>
+                            <p className="text-sm mt-1">{selectedLoan.appliedBy?.name || selectedLoan.name}</p>
+                          </div>
+                          <div>
+                            <Label>Status</Label>
+                            <div className="mt-1">{statusBadge(selectedLoan.status?.toLowerCase())}</div>
+                          </div>
+                          <div>
+                            <Label>Email</Label>
+                            <p className="text-sm mt-1">{selectedLoan.email}</p>
+                          </div>
+                          <div>
+                            <Label>Phone Number</Label>
+                            <p className="text-sm mt-1">{selectedLoan.phoneNumber}</p>
+                          </div>
+                          <div>
+                            <Label>Admission Term</Label>
+                            <p className="text-sm mt-1">{selectedLoan.admissionTerm}</p>
+                          </div>
+                          <div>
+                            <Label>Admission Status</Label>
+                            <p className="text-sm mt-1">{selectedLoan.admissionStatus}</p>
+                          </div>
+                        </div>
+
+                        <div className="border-t pt-4 mt-2">
+                          <h4 className="font-medium mb-2">Co-Borrower Details</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label>Co-Borrower Name</Label>
+                              <p className="text-sm mt-1">{selectedLoan.coBorrower?.name}</p>
+                            </div>
+                            <div className="col-span-2">
+                              <Label>Universities Applied</Label>
+                              <div className="mt-2 space-y-1">
+                                {selectedLoan.coBorrower?.universitiesReceivedAdmitFrom?.map((uni, index) => (
+                                  <Badge key={index} variant="secondary" className="mr-2">
+                                    {uni}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="border-t pt-4 mt-2">
+                          <h4 className="font-medium mb-2">Address Information</h4>
+                          <div>
+                            <Label>Address</Label>
+                            <p className="text-sm mt-1">{selectedLoan.address}</p>
+                          </div>
+                          <div className="mt-2">
+                            <Label>PIN Code</Label>
+                            <p className="text-sm mt-1">{selectedLoan.pinCode}</p>
+                          </div>
+                        </div>
+
+                        <div className="border-t pt-4 mt-2">
+                          <h4 className="font-medium mb-2">Application Timeline</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label>Applied Date</Label>
+                              <p className="text-sm mt-1">{new Date(selectedLoan.appliedDate).toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                              <Label>Last Updated</Label>
+                              <p className="text-sm mt-1">{new Date(selectedLoan.updatedAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsViewLoanOpen(false)}>
+                        Close
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardContent>
             </Card>
           </TabsContent>
@@ -469,8 +679,8 @@ const Forms = () => {
         if (!open) resetForm();
         setIsCreateFormOpen(open);
       }}>
-        <DialogContent className="sm:max-w-[700px]">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-none">
             <DialogTitle>Create New Form</DialogTitle>
             <DialogDescription>
               {currentStep === 1 && 'Set up basic form information'}
@@ -478,216 +688,289 @@ const Forms = () => {
               {currentStep === 3 && 'Assign form to a task (optional)'}
             </DialogDescription>
           </DialogHeader>
-          
-          {currentStep === 1 && (
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="formTitle">Form Title *</Label>
-                <Input 
-                  id="formTitle" 
-                  placeholder="Enter form title" 
-                  value={formTitle}
-                  onChange={(e) => setFormTitle(e.target.value)}
-                />
+
+          <div className="flex-1 overflow-y-auto px-6">
+            {currentStep === 1 && (
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="formTitle">Form Title *</Label>
+                  <Input
+                    id="formTitle"
+                    placeholder="Enter form title"
+                    value={formTitle}
+                    onChange={(e) => setFormTitle(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="formDescription">Description</Label>
+                  <Textarea
+                    id="formDescription"
+                    placeholder="Enter a description for this form"
+                    value={formDescription}
+                    onChange={(e) => setFormDescription(e.target.value)}
+                  />
+                </div>
               </div>
-              
-              <div className="grid gap-2">
-                <Label htmlFor="formDescription">Description</Label>
-                <Textarea 
-                  id="formDescription" 
-                  placeholder="Enter a description for this form" 
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
-          
-          {currentStep === 2 && (
-            <div className="grid gap-4 py-4">
-              <div className="border rounded-md p-4">
-                <h3 className="font-medium mb-2">Form Questions</h3>
-                
-                <div className="space-y-4 mb-4">
-                  {questions.map((q, index) => (
-                    <div key={q.id} className="border rounded-md p-3 bg-muted/20">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-medium">{index + 1}. {q.text || '[Empty Question]'}</p>
-                          <p className="text-xs text-muted-foreground mt-1">Type: {q.type}</p>
-                          
-                          {(q.type === 'multiple_choice' || q.type === 'checkbox') && q.options && (
-                            <div className="mt-2">
-                              <p className="text-xs font-medium">Options:</p>
-                              <ul className="text-xs ml-4 list-disc">
-                                {q.options.map((option, i) => (
-                                  <li key={i} className="mt-1 flex items-center gap-1">
-                                    {option}
-                                    <Button 
-                                      variant="ghost" 
-                                      size="icon" 
-                                      className="h-4 w-4 text-destructive" 
-                                      onClick={() => handleRemoveOption(q.id, i)}
-                                    >
-                                      <Trash2 className="h-3 w-3" />
-                                    </Button>
-                                  </li>
-                                ))}
-                              </ul>
+            )}
+
+            {currentStep === 2 && (
+              <div className="grid gap-4 py-4">
+                <div className="border rounded-md p-4">
+                  <h3 className="font-medium mb-2">Form Questions</h3>
+
+                  <div className="space-y-4 mb-4">
+                    {questions.map((q, index) => (
+                      <div key={q.id} className="border rounded-md p-3 bg-muted/20">
+                        <div className="flex items-start justify-between">
+                          <div className="w-full">
+                            <p className="font-medium">{index + 1}. {q.text}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="secondary">{q.type}</Badge>
+                              {(q.type.toUpperCase() === 'MULTIPLE_CHOICE' || q.type.toUpperCase() === 'CHECKBOX') && (
+                                <Badge variant="outline" className="text-xs">
+                                  {q.options?.length || 0} options
+                                </Badge>
+                              )}
                             </div>
-                          )}
-                        </div>
-                        <div className="flex gap-1">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => handleEditQuestion(q)}
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="text-destructive"
-                            onClick={() => handleRemoveQuestion(q.id)}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      {currentEditingQuestion?.id === q.id && (
-                        <div className="mt-3 border-t pt-3">
-                          <div className="grid gap-2 mb-2">
-                            <Input 
-                              placeholder="Edit question text" 
-                              value={newQuestion}
-                              onChange={(e) => setNewQuestion(e.target.value)}
-                            />
+
+                            {(q.type.toUpperCase() === 'MULTIPLE_CHOICE' || q.type.toUpperCase() === 'CHECKBOX') && q.options && (
+                              <div className="mt-2">
+                                <p className="text-xs font-medium mb-2">Options:</p>
+                                <div className="space-y-2">
+                                  {q.options.map((option, i) => (
+                                    <div key={i} className="flex items-center gap-2 bg-background rounded p-2">
+                                      <div className="w-6 h-6 flex items-center justify-center border rounded bg-muted">
+                                        {i + 1}
+                                      </div>
+                                      <span className="flex-1">{option}</span>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6 text-destructive hover:text-destructive/90"
+                                        onClick={() => handleRemoveOption(q.id, i)}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="mt-3 pl-4 border-l-2 border-muted">
+                              {q.type.toUpperCase() === 'TEXT' && (
+                                <Input disabled placeholder="Short answer text" className="max-w-sm" />
+                              )}
+                              {q.type.toUpperCase() === 'PARAGRAPH' && (
+                                <Textarea disabled placeholder="Long answer text" className="max-w-sm" />
+                              )}
+                              {q.type.toUpperCase() === 'DATE' && (
+                                <Input disabled type="date" className="max-w-sm" />
+                              )}
+                              {q.type.toUpperCase() === 'FILE' && (
+                                <div className="max-w-sm p-4 border-2 border-dashed rounded-md text-center text-sm text-muted-foreground">
+                                  File upload area
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          
-                          <div className="grid grid-cols-2 gap-2 mb-2">
-                            <Select value={questionType} onValueChange={setQuestionType}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Question type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="text">Text</SelectItem>
-                                <SelectItem value="textarea">Paragraph</SelectItem>
-                                <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
-                                <SelectItem value="checkbox">Checkbox</SelectItem>
-                                <SelectItem value="date">Date</SelectItem>
-                                <SelectItem value="file">File Upload</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            
-                            <Button onClick={handleUpdateQuestion}>Update Question</Button>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEditQuestion(q)}
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-destructive"
+                              onClick={() => handleRemoveQuestion(q.id)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
                           </div>
-                          
-                          {(questionType === 'multiple_choice' || questionType === 'checkbox') && (
-                            <div className="flex gap-2 mt-2">
-                              <Input 
-                                placeholder="Add option" 
-                                value={optionText}
-                                onChange={(e) => setOptionText(e.target.value)}
-                                className="flex-1"
+                        </div>
+
+                        {currentEditingQuestion?.id === q.id && (
+                          <div className="mt-3 border-t pt-3">
+                            <div className="grid gap-2 mb-2">
+                              <Input
+                                placeholder="Edit question text"
+                                value={newQuestion}
+                                onChange={(e) => setNewQuestion(e.target.value)}
                               />
-                              <Button 
-                                variant="outline" 
-                                onClick={() => handleAddOption(q.id)}
-                              >
-                                Add Option
-                              </Button>
                             </div>
-                          )}
-                        </div>
-                      )}
+                            <div className="grid grid-cols-2 gap-2 mb-2">
+                              <Select value={questionType} onValueChange={(value) => {
+                                setQuestionType(value);
+                                if (value === 'MULTIPLE_CHOICE' || value === 'CHECKBOX') {
+                                  toast.info('Remember to add at least 2 options');
+                                }
+                              }}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Question type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="TEXT">Text</SelectItem>
+                                  <SelectItem value="PARAGRAPH">Paragraph</SelectItem>
+                                  <SelectItem value="MULTIPLE_CHOICE">Multiple Choice</SelectItem>
+                                  <SelectItem value="CHECKBOX">Checkbox</SelectItem>
+                                  <SelectItem value="DATE">Date</SelectItem>
+                                  <SelectItem value="FILE">File Upload</SelectItem>
+                                </SelectContent>
+                              </Select>
+
+                              <Button onClick={handleUpdateQuestion}>Update Question</Button>
+                            </div>
+                            {(questionType === 'MULTIPLE_CHOICE' || questionType === 'CHECKBOX') && (
+                              <div className="mt-4 p-4 border rounded-md bg-muted/50">
+                                <div className="flex items-center justify-between mb-3">
+                                  <p className="text-sm font-medium">Question Options</p>
+                                  {(q.options?.length || 0) < 2 && (
+                                    <Badge variant="destructive" className="text-xs">
+                                      Add at least {2 - (q.options?.length || 0)} more option(s)
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="space-y-3">
+
+                                  {q.options?.map((option, i) => (
+                                    <div key={i} className="flex items-center gap-2 bg-background rounded p-2">
+                                      <div className="w-6 h-6 flex items-center justify-center border rounded bg-muted">
+                                        {i + 1}
+                                      </div>
+                                      <span className="flex-1">{option}</span>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-6 w-6 text-destructive hover:text-destructive/90"
+                                        onClick={() => handleRemoveOption(q.id, i)}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  ))}
+
+
+                                  <div className="flex gap-2 mt-2">
+                                    <Input
+                                      placeholder="Type new option and press Enter"
+                                      value={optionText}
+                                      onChange={(e) => setOptionText(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && optionText.trim()) {
+                                          handleAddOption(q.id);
+                                        }
+                                      }}
+                                      className="flex-1"
+                                    />
+                                    <Button
+                                      variant="secondary"
+                                      onClick={() => handleAddOption(q.id)}
+                                      disabled={!optionText.trim()}
+                                    >
+                                      Add
+                                    </Button>
+                                  </div>
+
+                                  <p className="text-xs text-muted-foreground mt-2">
+                                    Press Enter or click Add to insert each option
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium mb-2">Add New Question</h4>
+                    <div className="grid gap-2 mb-2">
+                      <Input
+                        placeholder="Enter question text"
+                        value={newQuestion}
+                        onChange={(e) => setNewQuestion(e.target.value)}
+                      />
                     </div>
-                  ))}
-                </div>
-                
-                <div className="border-t pt-4">
-                  <h4 className="text-sm font-medium mb-2">Add New Question</h4>
-                  <div className="grid gap-2 mb-2">
-                    <Input 
-                      placeholder="Enter question text" 
-                      value={newQuestion}
-                      onChange={(e) => setNewQuestion(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select value={questionType} onValueChange={setQuestionType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Question type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="text">Text</SelectItem>
-                        <SelectItem value="textarea">Paragraph</SelectItem>
-                        <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
-                        <SelectItem value="checkbox">Checkbox</SelectItem>
-                        <SelectItem value="date">Date</SelectItem>
-                        <SelectItem value="file">File Upload</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    <Button onClick={handleAddQuestion}>Add Question</Button>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <Select value={questionType} onValueChange={setQuestionType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Question type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="TEXT">Text</SelectItem>
+                          <SelectItem value="PARAGRAPH">Paragraph</SelectItem>
+                          <SelectItem value="MULTIPLE_CHOICE">Multiple Choice</SelectItem>
+                          <SelectItem value="CHECKBOX">Checkbox</SelectItem>
+                          <SelectItem value="DATE">Date</SelectItem>
+                          <SelectItem value="FILE">File Upload</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Button onClick={handleAddQuestion}>Add Question</Button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          
-          {currentStep === 3 && (
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label>Assign to Task (Optional)</Label>
-                <p className="text-sm text-muted-foreground mb-2">
-                  You can assign this form to a specific task or save it for later assignment.
-                </p>
-                
-                <div className="grid grid-cols-2 gap-2 mb-4">
-                  <div>
-                    <Label htmlFor="mainTask" className="text-xs mb-1 block">Main Task</Label>
-                    <Select value={selectedMainTask} onValueChange={setSelectedMainTask}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select main task" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {mainTaskCategories.map((task) => (
-                          <SelectItem key={task} value={task}>
-                            {task}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="subtask" className="text-xs mb-1 block">Subtask</Label>
-                    <Select 
-                      value={selectedSubtask} 
-                      onValueChange={setSelectedSubtask}
-                      disabled={!selectedMainTask}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select subtask" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {selectedMainTask && subtaskTemplates[selectedMainTask]?.map((subtask) => (
-                          <SelectItem key={subtask} value={subtask}>
-                            {subtask}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+            )}
+
+            {currentStep === 3 && (
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label>Assign to Task (Optional)</Label>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    You can assign this form to a specific task or save it for later assignment.
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    <div>
+                      <Label htmlFor="mainTask" className="text-xs mb-1 block">Main Task</Label>
+                      <Select value={selectedMainTask} onValueChange={setSelectedMainTask}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select main task" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {mainTaskCategories.map((task) => (
+                            <SelectItem key={task} value={task}>
+                              {task}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="subtask" className="text-xs mb-1 block">Subtask</Label>
+                      <Select
+                        value={selectedSubtask}
+                        onValueChange={setSelectedSubtask}
+                        disabled={!selectedMainTask}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select subtask" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {selectedMainTask && subtaskTemplates[selectedMainTask]?.map((subtask) => (
+                            <SelectItem key={subtask} value={subtask}>
+                              {subtask}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          
-          <DialogFooter>
+            )}
+          </div>
+
+          <DialogFooter className="flex-none mt-4 border-t pt-4">
             <div className="flex justify-between w-full">
               <div>
                 {currentStep > 1 && (
@@ -697,12 +980,12 @@ const Forms = () => {
                   </Button>
                 )}
               </div>
-              
+
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setIsCreateFormOpen(false)}>
                   Cancel
                 </Button>
-                
+
                 {currentStep < 3 ? (
                   <Button onClick={nextStep}>
                     Next
@@ -726,7 +1009,7 @@ const Forms = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </div>
   );
 };
 
