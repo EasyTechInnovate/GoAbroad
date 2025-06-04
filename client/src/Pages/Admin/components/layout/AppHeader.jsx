@@ -7,7 +7,8 @@ import {
   Calendar,
   ChevronDown,
   LogOut,
-  Settings
+  Settings,
+
 } from 'lucide-react';
 import { 
   DropdownMenu,
@@ -20,7 +21,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
-import { getUser, getUserInitials, logout } from '@/lib/auth';
+import { getUser, getUserInitials, logout, subscribeToAuth } from '@/lib/auth';
 
 export function AppHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -30,15 +31,31 @@ export function AppHeader() {
   
   useEffect(() => {
     const userData = getUser();
-    if (userData) {
-      setUser(userData);
-      setUserInitials(getUserInitials());
+    if (!userData) {
+      navigate('/login');
+      return;
     }
-  }, []);
-  
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+    setUser(userData);
+    setUserInitials(getUserInitials());
+
+
+    const unsubscribe = subscribeToAuth((isAuthenticated) => {
+      if (!isAuthenticated) {
+        navigate('/login');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+    const handleLogout = () => {
+    try {
+
+      logout();
+
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   const userEmail = user?.email || '';
@@ -97,35 +114,45 @@ export function AppHeader() {
             <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
               3
             </span>
-          </Button>
-
+          </Button>          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="" />
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar>
+                  <AvatarImage src="" alt={user?.name || userEmail} />
                   <AvatarFallback>{userInitials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>
-                <div className="flex flex-col">
-                  <span className="font-medium">{userEmail}</span>
-                  <span className="text-xs text-muted-foreground">{user?.role || 'User'}</span>
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">{user?.name || userEmail}</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {userEmail}
+                  </p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/profile')}>
+              <DropdownMenuItem 
+                className="cursor-pointer"
+                onClick={() => navigate('/admin/profile')}
+              >
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/settings')}>
+              <DropdownMenuItem 
+                className="cursor-pointer"
+                onClick={() => navigate('/admin/settings')}
+              >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem 
+                className="cursor-pointer text-red-600 focus:bg-red-50"
+                onClick={handleLogout}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>

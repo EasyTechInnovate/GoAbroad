@@ -1115,7 +1115,7 @@ const Tasks = () => {
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              After creation, you'll be redirected to set up questions for this questionnaire.
+              After creation, you&apos;ll be redirected to set up questions for this questionnaire.
             </p>
           </div>
           <DialogFooter>

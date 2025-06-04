@@ -295,7 +295,6 @@ export function UniversityProgram({ universityId, universityName, onProgramAdded
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
-                        {/* Same structure as Add Program Dialog but with values pre-filled */}
                         <div className="grid gap-2">
                             <Label htmlFor="editProgramName">Program Name</Label>
                             <Input

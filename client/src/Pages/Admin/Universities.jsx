@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent} from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Search, Filter, Plus, MapPin, GraduationCap, Building, Globe, ChevronRight, ChevronLeft, X, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -24,12 +24,14 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/sonner';
-import { getUniversities, createUniversity, updateUniversity } from '@/services/universityService';
+import { getUniversities, createUniversity, updateUniversity, deleteUniversity } from '@/services/universityService';
+import { uploadFile } from '@/services/uploadService';
 
 const Universities = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [universities, setUniversities] = useState([]);
+  const [universities, setUniversities] = useState([]);  
   const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isViewDetailsOpen, setIsViewDetailsOpen] = useState(false);
@@ -62,6 +64,7 @@ const Universities = () => {
   });
 
   const [newProgram, setNewProgram] = useState('');
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const categoryOptions = [
     { label: 'Top Tier', value: 'top-tier' },
@@ -149,22 +152,25 @@ const Universities = () => {
 
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
-    } else {      try {
+    } else {
+      try {
         setLoading(true);
-
         const universityData = {
           name: newUniversity.name,
           location: newUniversity.location || null,
-          logo: null,
-          banner: null,
+          logo: newUniversity.logo || null,
+          banner: newUniversity.banner,
           program: newUniversity.programs?.[0] || '',
           description: newUniversity.description || null,
-          website_url: newUniversity.website || null,
+          website_url: newUniversity.website_url || null,
           university_type: newUniversity.university_type || 'Private',
+          address: newUniversity.address || null,
           university_category: newUniversity.category || null,
           ranking: {
-            international: !isNaN(parseInt(newUniversity.ranking)) ? parseInt(newUniversity.ranking) : null,
-            national: null
+            international: !isNaN(parseInt(newUniversity.ranking.international)) ?
+              parseInt(newUniversity.ranking.international) : null,
+            national: !isNaN(parseInt(newUniversity.ranking.national)) ?
+              parseInt(newUniversity.ranking.national) : null
           },
           acceptance_rate: !isNaN(parseFloat(newUniversity.acceptance_rate)) ?
             Math.min(Math.max(parseFloat(newUniversity.acceptance_rate), 0), 100) : null,
@@ -212,9 +218,16 @@ const Universities = () => {
       name: '',
       location: '',
       website: '',
+      website_url: '',
+      university_type: 'Private',
+      address: '',
+      banner: null,
       description: '',
       category: 'high-chance',
-      ranking: '',
+      ranking: {
+        international: '',
+        national: ''
+      },
       acceptance_rate: '',
       tuition: '',
       application_fee: '',
@@ -223,6 +236,23 @@ const Universities = () => {
     });
     setNewProgram('');
     setCurrentStep(1);
+  };
+
+  const handleDeleteUniversity = async () => {
+    try {
+      setLoading(true);
+      await deleteUniversity(selectedUniversity._id);
+      toast.success('University deleted successfully');
+      setIsDeleteConfirmOpen(false);
+      setIsViewDetailsOpen(false);
+      setSelectedUniversity(null);
+      fetchUniversities();
+    } catch (error) {
+      console.error('Error deleting university:', error);
+      toast.error(error?.response?.data?.message || 'Failed to delete university');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const prevStep = () => {
@@ -250,12 +280,29 @@ const Universities = () => {
       max_acceptance_rate: null,
     });
   };
-
-
   const handleUpdateUniversity = async () => {
     try {
       setLoading(true);
-      await updateUniversity(selectedUniversity._id, selectedUniversity);
+
+      const updateData = {
+        name: selectedUniversity.name,
+        location: selectedUniversity.location,
+        address: selectedUniversity.address,
+        description: selectedUniversity.description,
+        website_url: selectedUniversity.website_url,
+        university_type: selectedUniversity.university_type,
+        university_category: selectedUniversity.university_category,
+        logo: selectedUniversity.logo,
+        banner: selectedUniversity.banner,
+        program: selectedUniversity.program,
+        ranking: selectedUniversity.ranking,
+        acceptance_rate: selectedUniversity.acceptance_rate,
+        tuition_fees_per_year: selectedUniversity.tuition_fees_per_year,
+        application_fee: selectedUniversity.application_fee,
+        application_deadline: selectedUniversity.application_deadline,
+      };
+
+      await updateUniversity(selectedUniversity._id, updateData);
       toast.success('University updated successfully');
       setIsEditUniversityOpen(false);
       setSelectedUniversity(null);
@@ -269,16 +316,16 @@ const Universities = () => {
   };
   const handleFilterChange = (field, value) => {
     if (field === 'min_acceptance_rate' || field === 'max_acceptance_rate') {
-
+      // Handle empty values
       if (value === '') {
         setFilters(prev => ({ ...prev, [field]: null }));
         return;
       }
 
-
+      // Parse and validate numeric value
       const numValue = parseFloat(value);
       if (isNaN(numValue) || numValue < 0 || numValue > 100) {
-        return; 
+        return; // Invalid input, don't update
       }
 
       setFilters(prev => {
@@ -299,6 +346,104 @@ const Universities = () => {
       });
     } else {
       setFilters(prev => ({ ...prev, [field]: value }));
+    }
+  };
+  const handleLogoUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
+      return;
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_SIZE) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await uploadFile(formData);
+      
+      if (selectedUniversity) {
+        setSelectedUniversity({
+          ...selectedUniversity,
+          logo: response.data.url
+        });
+      } else {
+        setNewUniversity({
+          ...newUniversity,
+          logo: response.data.url
+        });
+      }
+      toast.success('Logo uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast.error(error?.response?.data?.message || 'Failed to upload logo');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  const handleBannerUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validImageTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
+      return;
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('category', 'university');
+
+      const response = await uploadFile(formData);
+      
+      if (selectedUniversity) {
+        setSelectedUniversity({
+          ...selectedUniversity,
+          banner: response.data.url
+        });
+      } else {
+        setNewUniversity({
+          ...newUniversity,
+          banner: response.data.url
+        });
+      }
+      
+      toast.success('Banner uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading banner:', error);
+      toast.error(error?.response?.data?.message || 'Failed to upload banner');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleEditNext = () => {
+    if (currentStep === 1 && (!selectedUniversity.name || !selectedUniversity.location)) {
+      toast.error('University name and location are required');
+      return;
+    }
+
+    if (currentStep < 3) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      handleUpdateUniversity();
     }
   };
 
@@ -353,8 +498,12 @@ const Universities = () => {
                     <Card key={university._id}>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <div className="flex items-center">
-                          <Avatar className="h-8 w-8 mr-2">
-                            <AvatarFallback>{university.name.charAt(0)}</AvatarFallback>
+                          <Avatar className="h-10 w-10 mr-2">
+                {university.logo ? (
+                              <img src={university.logo} alt={university.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <AvatarFallback>{university.name ? university.name.charAt(0) : 'U'}</AvatarFallback>
+                            )}
                           </Avatar>
                           <CardTitle className="text-md font-medium">{university.name}</CardTitle>
                         </div>
@@ -451,17 +600,37 @@ const Universities = () => {
       </div>
 
       <Dialog open={isViewDetailsOpen} onOpenChange={setIsViewDetailsOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>University Details</DialogTitle>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-[600px]">          <DialogHeader>
+          <DialogTitle>University Details</DialogTitle>
+        </DialogHeader>
           {selectedUniversity && (
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <h3 className="font-semibold">Description</h3>
-                  <p className="text-sm mt-1">{selectedUniversity.description}</p>
+            <div className="grid gap-4 py-4 max-h-[80vh] overflow-y-auto">
+              {selectedUniversity.banner && (
+                <div className="relative w-full h-40 rounded-lg overflow-hidden">
+                  <img
+                    src={selectedUniversity.banner}
+                    alt={`${selectedUniversity.name} banner`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+              )}
+              <div className="flex items-center gap-4 pb-2">
+                <Avatar className="h-16 w-16">
+                  {selectedUniversity.logo ? (
+                    <img src={selectedUniversity.logo} alt={selectedUniversity.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="text-xl">{selectedUniversity.name.charAt(0)}</AvatarFallback>
+                  )}
+                </Avatar>
+                <div>
+                  <h2 className="text-2xl font-bold">{selectedUniversity.name}</h2>
+                  <p className="text-muted-foreground">{selectedUniversity.location}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4"><div>
+                <h3 className="font-semibold">Description</h3>
+                <p className="text-sm mt-1">{selectedUniversity.description}</p>
+              </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -469,8 +638,21 @@ const Universities = () => {
                     <p className="text-sm mt-1">{selectedUniversity.location}</p>
                   </div>
                   <div>
+                    <h3 className="font-semibold">Address</h3>
+                    <p className="text-sm mt-1">{selectedUniversity.address || 'Not provided'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
                     <h3 className="font-semibold">University Type</h3>
-                    <p className="text-sm mt-1">{selectedUniversity.university_type}</p>
+                    <p className="text-sm mt-1">{selectedUniversity.university_type || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Website</h3>
+                    <a href={selectedUniversity.website_url} target="_blank" rel="noopener noreferrer" className="text-sm mt-1 text-blue-600 hover:underline">
+                      {selectedUniversity.website_url || 'Not available'}
+                    </a>
                   </div>
                 </div>
 
@@ -506,6 +688,18 @@ const Universities = () => {
                 </div>
               </div>
               <DialogFooter className="gap-2">
+                <div className="mr-auto">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      setIsViewDetailsOpen(false);
+                      setIsDeleteConfirmOpen(true);
+                    }}
+                  >
+                    Delete University
+                  </Button>
+                </div>
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -528,146 +722,326 @@ const Universities = () => {
             </div>
           )}
         </DialogContent>
-      </Dialog>
-
-      <Dialog open={isEditUniversityOpen} onOpenChange={setIsEditUniversityOpen}>
+      </Dialog>      <Dialog open={isEditUniversityOpen} onOpenChange={(open) => {
+        if (!open) {
+          setCurrentStep(1);
+          setSelectedUniversity(null);
+        }
+        setIsEditUniversityOpen(open);
+      }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Edit University</DialogTitle>
+            <DialogDescription>
+              {currentStep === 1 && 'Basic university information and media.'}
+              {currentStep === 2 && 'Programs and category information.'}
+              {currentStep === 3 && 'Rankings, fees, and additional details.'}
+            </DialogDescription>
           </DialogHeader>
           {selectedUniversity && (
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-4">
-                <div className="grid gap-1.5">
-                  <Label htmlFor="edit-name">University Name</Label>
-                  <Input
-                    id="edit-name"
-                    value={selectedUniversity.name}
-                    onChange={(e) => setSelectedUniversity(prev => ({
-                      ...prev,
-                      name: e.target.value
-                    }))}
-                  />
-                </div>
-
-                <div className="grid gap-1.5">
-                  <Label htmlFor="edit-location">Location</Label>
-                  <Input
-                    id="edit-location"
-                    value={selectedUniversity.location}
-                    onChange={(e) => setSelectedUniversity(prev => ({
-                      ...prev,
-                      location: e.target.value
-                    }))}
-                  />
-                </div>
-
-                <div className="grid gap-1.5">
-                  <Label htmlFor="edit-description">Description</Label>
-                  <Textarea
-                    id="edit-description"
-                    value={selectedUniversity.description}
-                    onChange={(e) => setSelectedUniversity(prev => ({
-                      ...prev,
-                      description: e.target.value
-                    }))}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto pr-3">
+              {currentStep === 1 && (
+                <div className="grid gap-4">
                   <div className="grid gap-1.5">
-                    <Label htmlFor="edit-acceptance-rate">Acceptance Rate (%)</Label>
+                    <Label htmlFor="edit-name">University Name</Label>
                     <Input
-                      id="edit-acceptance-rate"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={selectedUniversity.acceptance_rate}
+                      id="edit-name"
+                      value={selectedUniversity.name}
                       onChange={(e) => setSelectedUniversity(prev => ({
                         ...prev,
-                        acceptance_rate: Math.min(100, Math.max(0, Number(e.target.value)))
+                        name: e.target.value
                       }))}
                     />
                   </div>
+
                   <div className="grid gap-1.5">
-                    <Label htmlFor="edit-ranking">International Ranking</Label>
+                    <Label htmlFor="edit-location">Location</Label>
                     <Input
-                      id="edit-ranking"
-                      type="number"
-                      min="1"
-                      value={selectedUniversity.ranking?.international}
+                      id="edit-location"
+                      value={selectedUniversity.location}
                       onChange={(e) => setSelectedUniversity(prev => ({
                         ...prev,
-                        ranking: {
-                          ...prev.ranking,
-                          international: Math.max(1, Number(e.target.value))
-                        }
+                        location: e.target.value
                       }))}
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-1.5">
-                    <Label htmlFor="edit-tuition">Tuition Fee (per year)</Label>
+                    <Label htmlFor="edit-address">Address</Label>
                     <Input
-                      id="edit-tuition"
-                      type="number"
-                      min="0"
-                      value={selectedUniversity.tuition_fees_per_year}
+                      id="edit-address"
+                      value={selectedUniversity.address}
                       onChange={(e) => setSelectedUniversity(prev => ({
                         ...prev,
-                        tuition_fees_per_year: Math.max(0, Number(e.target.value))
+                        address: e.target.value
                       }))}
                     />
                   </div>
+
                   <div className="grid gap-1.5">
-                    <Label htmlFor="edit-application-fee">Application Fee</Label>
+                    <Label htmlFor="edit-website">Website URL</Label>
                     <Input
-                      id="edit-application-fee"
-                      type="number"
-                      min="0"
-                      value={selectedUniversity.application_fee}
+                      id="edit-website"
+                      type="url"
+                      value={selectedUniversity.website_url}
                       onChange={(e) => setSelectedUniversity(prev => ({
                         ...prev,
-                        application_fee: Math.max(0, Number(e.target.value))
+                        website_url: e.target.value
                       }))}
                     />
                   </div>
-                </div>
 
-                <div className="grid gap-1.5">
-                  <Label htmlFor="edit-deadline">Application Deadline</Label>
-                  <Input
-                    id="edit-deadline"
-                    type="date"
-                    value={selectedUniversity.application_deadline ? new Date(selectedUniversity.application_deadline).toISOString().split('T')[0] : ''}
-                    onChange={(e) => setSelectedUniversity(prev => ({
-                      ...prev,
-                      application_deadline: e.target.value
-                    }))}
-                  />
-                </div>
-              </div>
+                  <div className="grid gap-1.5">                  <Label htmlFor="edit-logo">Logo</Label>
+                    <div className="flex items-center gap-4">
+                      {selectedUniversity.logo && (
+                        <img
+                          src={selectedUniversity.logo}
+                          alt="University logo"
+                          className="h-16 w-16 object-contain"
+                        />
+                      )}
+                      <div className="flex-1 relative">
+                        <Input
+                          id="edit-logo"
+                          type="file"
+                          accept="image/jpeg,image/png,image/gif,image/webp"
+                          onChange={handleLogoUpload}
+                          disabled={isUploading}
+                          className={isUploading ? 'opacity-50' : ''}
+                        />
+                        {isUploading && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Upload a logo image (JPEG, PNG, GIF, WebP; max 5MB)</p>
+                  </div>
 
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditUniversityOpen(false);
-                    setSelectedUniversity(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleUpdateUniversity}
-                >
-                  Save Changes
-                </Button>
-              </DialogFooter>
+                  <div className="grid gap-1.5">                  
+                  <Label htmlFor="edit-banner">Banner</Label>
+                    <div className="space-y-4">
+                      {selectedUniversity.banner && (
+                        <div className="relative h-32 w-full rounded-md overflow-hidden">
+                          <img
+                            src={selectedUniversity.banner}
+                            alt="University banner"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="relative">
+                        <Input
+                          id="edit-banner"
+                          type="file"
+                          accept="image/jpeg,image/png,image/gif,image/webp"
+                          onChange={handleBannerUpload}
+                          disabled={isUploading}
+                          className={isUploading ? 'opacity-50' : ''}
+                        />
+                        {isUploading && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Upload a banner image (JPEG, PNG, GIF, WebP; max 5MB)</p>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 2 && (
+                <div className="grid gap-4">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="edit-type">University Type</Label>
+                    <Select
+                      value={selectedUniversity.university_type || ''}
+                      onValueChange={(value) => setSelectedUniversity(prev => ({
+                        ...prev,
+                        university_type: value
+                      }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Public">Public</SelectItem>
+                        <SelectItem value="Private">Private</SelectItem>
+                        <SelectItem value="Public-Private">Public-Private</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="edit-description">Description</Label>
+                    <Textarea
+                      id="edit-description"
+                      value={selectedUniversity.description}
+                      onChange={(e) => setSelectedUniversity(prev => ({
+                        ...prev,
+                        description: e.target.value
+                      }))}
+                    />
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="edit-category">University Category</Label>
+                    <Select
+                      value={selectedUniversity.university_category || 'high-chance'}
+                      onValueChange={(value) => setSelectedUniversity(prev => ({
+                        ...prev,
+                        university_category: value
+                      }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoryOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <div className="grid gap-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="edit-national-rank">National Ranking</Label>
+                      <Input
+                        id="edit-national-rank"
+                        type="number"
+                        min="1"
+                        value={selectedUniversity.ranking?.national || ''}
+                        onChange={(e) => setSelectedUniversity(prev => ({
+                          ...prev,
+                          ranking: {
+                            ...prev.ranking,
+                            national: e.target.value ? Number(e.target.value) : null
+                          }
+                        }))}
+                      />
+                    </div>
+
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="edit-intl-rank">International Ranking</Label>
+                      <Input
+                        id="edit-intl-rank"
+                        type="number"
+                        min="1"
+                        value={selectedUniversity.ranking?.international || ''}
+                        onChange={(e) => setSelectedUniversity(prev => ({
+                          ...prev,
+                          ranking: {
+                            ...prev.ranking,
+                            international: e.target.value ? Number(e.target.value) : null
+                          }
+                        }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="edit-acceptance-rate">Acceptance Rate (%)</Label>
+                      <Input
+                        id="edit-acceptance-rate"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={selectedUniversity.acceptance_rate || ''}
+                        onChange={(e) => setSelectedUniversity(prev => ({
+                          ...prev,
+                          acceptance_rate: Math.min(100, Math.max(0, Number(e.target.value) || 0))
+                        }))}
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="edit-tuition">Tuition Fee (per year)</Label>
+                      <Input
+                        id="edit-tuition"
+                        type="number"
+                        min="0"
+                        value={selectedUniversity.tuition_fees_per_year || ''}
+                        onChange={(e) => setSelectedUniversity(prev => ({
+                          ...prev,
+                          tuition_fees_per_year: Math.max(0, Number(e.target.value) || 0)
+                        }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="edit-application-fee">Application Fee</Label>
+                      <Input
+                        id="edit-application-fee"
+                        type="number"
+                        min="0"
+                        value={selectedUniversity.application_fee || ''}
+                        onChange={(e) => setSelectedUniversity(prev => ({
+                          ...prev,
+                          application_fee: Math.max(0, Number(e.target.value) || 0)
+                        }))}
+                      />
+                    </div>
+                    <div className="grid gap-1.5">
+                      <Label htmlFor="edit-deadline">Application Deadline</Label>
+                      <Input
+                        id="edit-deadline"
+                        type="date"
+                        value={selectedUniversity.application_deadline ? new Date(selectedUniversity.application_deadline).toISOString().split('T')[0] : ''}
+                        onChange={(e) => setSelectedUniversity(prev => ({
+                          ...prev,
+                          application_deadline: e.target.value
+                        }))}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
+
+          <DialogFooter className="flex justify-between items-center w-full">
+            <div>
+              {currentStep > 1 && (
+                <Button variant="outline" onClick={() => setCurrentStep(prev => prev - 1)}>
+                  <ChevronLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsEditUniversityOpen(false);
+                  setSelectedUniversity(null);
+                  setCurrentStep(1);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleEditNext}>
+                {currentStep < 3 ? (
+                  <>
+                    Next
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+            </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -706,16 +1080,97 @@ const Universities = () => {
                     onChange={(e) => handleInputChange('location', e.target.value)}
                     placeholder="City, State, Country"
                   />
+                </div>                <div className="grid gap-1.5">
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={newUniversity.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    placeholder="Full university address"
+                  />
+                </div>                <div className="grid gap-1.5">                  <Label htmlFor="website">Website URL</Label>
+                  <Input
+                    id="website"
+                    type="url"
+                    value={newUniversity.website_url}
+                    onChange={(e) => handleInputChange('website_url', e.target.value)}
+                    placeholder="https://www.university.edu"
+                  />
+                </div>
+
+                <div className="grid gap-1.5">                  <Label htmlFor="logo">Logo</Label>
+                  <div className="flex items-center gap-4">
+                    {newUniversity.logo && (
+                      <img
+                        src={newUniversity.logo}
+                        alt="University logo"
+                        className="h-16 w-16 object-contain"
+                      />
+                    )}
+                    <div className="flex-1 relative">
+                      <Input
+                        id="logo"
+                        type="file"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
+                        onChange={handleLogoUpload}
+                        disabled={isUploading}
+                        className={isUploading ? 'opacity-50' : ''}
+                      />
+                      {isUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Upload a logo image (JPEG, PNG, GIF, WebP; max 5MB)</p>
+                </div>
+
+                <div className="grid gap-1.5">                  <Label htmlFor="banner">Banner</Label>
+                  <div className="space-y-4">
+                    {newUniversity.banner && (
+                      <div className="relative h-32 w-full rounded-md overflow-hidden">
+                        <img
+                          src={newUniversity.banner}
+                          alt="University banner"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="relative">
+                      <Input
+                        id="banner"
+                        type="file"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
+                        onChange={handleBannerUpload}
+                        disabled={isUploading}
+                        className={isUploading ? 'opacity-50' : ''}
+                      />
+                      {isUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">Upload a banner image (JPEG, PNG, GIF, WebP; max 5MB)</p>
                 </div>
 
                 <div className="grid gap-1.5">
-                  <Label htmlFor="website">Website URL</Label>
-                  <Input
-                    id="website"
-                    value={newUniversity.website}
-                    onChange={(e) => handleInputChange('website', e.target.value)}
-                    placeholder="https://www.university.edu"
-                  />
+                  <Label htmlFor="university_type">University Type</Label>
+                  <Select
+                    value={newUniversity.university_type}
+                    onValueChange={(value) => handleInputChange('university_type', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Public">Public</SelectItem>
+                      <SelectItem value="Private">Private</SelectItem>
+                      <SelectItem value="Public-Private">Public-Private</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid gap-1.5">
@@ -926,6 +1381,25 @@ const Universities = () => {
           <DialogFooter>
             <Button variant="outline" onClick={resetFilters}>Reset</Button>
             <Button onClick={handleFilter}>Apply Filters</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleteConfirmOpen} onOpenChange={setIsDeleteConfirmOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete University</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this university? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteUniversity}>
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

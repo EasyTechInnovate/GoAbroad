@@ -3,7 +3,7 @@ import { servicesAxiosInstance } from './config';
 
 export const getUniversities = async (params) => {
   try {
-    // Clean up params to only include non-null and non-empty values
+
     const cleanParams = Object.fromEntries(
       Object.entries(params).filter(([, value]) => 
         value !== null && value !== '' && value !== undefined
