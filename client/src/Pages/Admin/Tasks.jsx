@@ -554,11 +554,15 @@ const Tasks = () => {
                 Assign to Students
               </label>
               <Select 
-                value={selectedStudents[0] || ''}
-                onValueChange={(val) => setSelectedStudents([val])}
+                value=""
+                onValueChange={(val) => {
+                  if (!selectedStudents.includes(val)) {
+                    setSelectedStudents([...selectedStudents, val])
+                  }
+                }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select student" />
+                  <SelectValue placeholder="Select students" />
                 </SelectTrigger>
                 <SelectContent>
                   {students.map(student => (
@@ -571,6 +575,35 @@ const Tasks = () => {
                   ))}
                 </SelectContent>
               </Select>
+
+              {selectedStudents.length > 0 && (
+                <div className="border rounded-md p-2 mt-2">
+                  <p className="text-sm font-medium mb-2">Selected Students:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedStudents.map((studentId) => {
+                      const student = students.find(s => s.id === studentId);
+                      if (!student) return null;
+                      return (
+                        <Badge
+                          key={student.id}
+                          variant="secondary"
+                          className="pl-2 pr-1 py-1 flex items-center gap-1"
+                        >
+                          {student.name}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                            onClick={() => setSelectedStudents(selectedStudents.filter(id => id !== student.id))}
+                          >
+                            <X className="h-2 w-2" />
+                          </Button>
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -794,11 +827,15 @@ const Tasks = () => {
                 Assign to Students
               </label>
               <Select 
-                value={selectedStudents[0] || ''}
-                onValueChange={(val) => setSelectedStudents([val])}
+                value=""
+                onValueChange={(val) => {
+                  if (!selectedStudents.includes(val)) {
+                    setSelectedStudents([...selectedStudents, val])
+                  }
+                }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select student" />
+                  <SelectValue placeholder="Select students" />
                 </SelectTrigger>
                 <SelectContent>
                   {students.map(student => (
@@ -811,6 +848,35 @@ const Tasks = () => {
                   ))}
                 </SelectContent>
               </Select>
+
+              {selectedStudents.length > 0 && (
+                <div className="border rounded-md p-2 mt-2">
+                  <p className="text-sm font-medium mb-2">Selected Students:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedStudents.map((studentId) => {
+                      const student = students.find(s => s.id === studentId);
+                      if (!student) return null;
+                      return (
+                        <Badge
+                          key={student.id}
+                          variant="secondary"
+                          className="pl-2 pr-1 py-1 flex items-center gap-1"
+                        >
+                          {student.name}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                            onClick={() => setSelectedStudents(selectedStudents.filter(id => id !== student.id))}
+                          >
+                            <X className="h-2 w-2" />
+                          </Button>
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -977,11 +1043,15 @@ const Tasks = () => {
 
           <div className="grid gap-4 py-4">
             <Select
-              value={selectedStudents[0] || ''}
-              onValueChange={(val) => setSelectedStudents([val])}
+              value=""
+              onValueChange={(val) => {
+                if (!selectedStudents.includes(val)) {
+                  setSelectedStudents([...selectedStudents, val])
+                }
+              }}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select student" />
+                <SelectValue placeholder="Select students" />
               </SelectTrigger>
               <SelectContent>
                 {students.map(student => (
@@ -994,6 +1064,35 @@ const Tasks = () => {
                 ))}
               </SelectContent>
             </Select>
+
+            {selectedStudents.length > 0 && (
+              <div className="border rounded-md p-2">
+                <p className="text-sm font-medium mb-2">Selected Students:</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedStudents.map((studentId) => {
+                    const student = students.find(s => s.id === studentId);
+                    if (!student) return null;
+                    return (
+                      <Badge
+                        key={student.id}
+                        variant="secondary"
+                        className="pl-2 pr-1 py-1 flex items-center gap-1"
+                      >
+                        {student.name}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                          onClick={() => setSelectedStudents(selectedStudents.filter(id => id !== student.id))}
+                        >
+                          <X className="h-2 w-2" />
+                        </Button>
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <DialogFooter>
