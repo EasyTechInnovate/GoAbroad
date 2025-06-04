@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { servicesAxiosInstance } from '@/services/config';
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  addStudentsToTask,
+} from '@/services/taskService';
+import { getSubtasks } from '@/services/subtaskService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { 
-  CheckCircle, Circle, Clock, Filter, Plus, Search, Users, 
-  FileQuestion, Edit, X, Briefcase
-} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
+import { toast } from '@/components/ui/sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
   DialogTitle,
   DialogFooter
 } from '@/components/ui/dialog';
@@ -24,585 +27,488 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { toast } from '@/components/ui/sonner';
-import { MultipleStudentSelect } from './components/tasks/MultipleStudentSelect';
+import { Plus, Loader2, X, Briefcase } from 'lucide-react';
+
+
+const mainTaskCategories = [
+  'Application Documents',
+  'Test Preparation',
+  'Financial Documentation',
+  'Visa Application',
+  'University Selection'
+];
+
+const subtaskTemplates = {
+  'Application Documents': [
+    'Draft SOP',
+    'Review with counselor',
+    'Final submission'
+  ],
+  'Test Preparation': [
+    'Mock test',
+    'Review session',
+    'Practice questions'
+  ],
+  'Financial Documentation': [
+    'Bank statements',
+    'Affidavit preparation',
+    'Source of funds'
+  ],
+  'Visa Application': [
+    'Form filling',
+    'Document preparation',
+    'Interview preparation'
+  ],
+  'University Selection': [
+    'Research universities',
+    'Shortlist options',
+    'Compare programs'
+  ]
+};
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: 'Submit SOP for Review',
-      assignee: 'John Doe',
-      students: ['Emma Wilson', 'William Chen'],
-      dueDate: '2023-10-25',
-      status: 'completed',
-      priority: 'high',
-      questionnaire: 'Initial Student Assessment',
-      subtasks: ['Draft SOP', 'Review with counselor', 'Final submission'],
-      mainTask: 'Application Documents'
-    },
-    {
-      id: 2,
-      title: 'Complete University Application Form',
-      assignee: 'Emma Wilson',
-      students: ['Emma Wilson'],
-      dueDate: '2023-10-30',
-      status: 'in-progress',
-      priority: 'medium',
-      questionnaire: 'University Preference Form',
-      subtasks: ['Fill personal details', 'Academic information', 'Upload documents'],
-      mainTask: 'Application Documents'
-    },
-    {
-      id: 3,
-      title: 'Prepare for IELTS Test',
-      assignee: 'Michael Brown',
-      students: ['Michael Brown', 'Sophia Garcia'],
-      dueDate: '2023-11-15',
-      status: 'pending',
-      priority: 'high',
-      questionnaire: null,
-      subtasks: ['Speaking practice', 'Writing exercise', 'Mock test'],
-      mainTask: 'Test Preparation'
-    },
-    {
-      id: 4,
-      title: 'Obtain Academic Transcripts',
-      assignee: 'Sophia Garcia',
-      students: ['Sophia Garcia'],
-      dueDate: '2023-11-05',
-      status: 'in-progress',
-      priority: 'low',
-      questionnaire: null,
-      subtasks: ['Contact university', 'Pay fees', 'Verify documents'],
-      mainTask: 'Application Documents'
-    },
-    {
-      id: 5,
-      title: 'Submit Financial Documents',
-      assignee: 'William Chen',
-      students: ['William Chen', 'John Doe'],
-      dueDate: '2023-11-10',
-      status: 'pending',
-      priority: 'medium',
-      questionnaire: 'Financial Aid Application',
-      subtasks: ['Bank statements', 'Income proof', 'Affidavit'],
-      mainTask: 'Financial Documentation'
-    }
-  ]);
+  // Loading states for different operations
+  const [loading, setLoading] = useState({
+    tasks: false,
+    add: false,
+    edit: false,
+    delete: false,
+    students: false,
+    subtasks: false,
+    members: false
+  });
 
+  // States
+  const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [availableSubtasks, setAvailableSubtasks] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
+  const [newSubtask, setNewSubtask] = useState('');
+  const [selectedMainTask, setSelectedMainTask] = useState('');
+  const [newMainTask, setNewMainTask] = useState('');
+  
+  // Dialog states
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
-  const [studentFilter, setStudentFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTask, setSelectedTask] = useState(null);
   const [isAssignStudentOpen, setIsAssignStudentOpen] = useState(false);
-  const [isQuestionnaireOpen, setIsQuestionnaireOpen] = useState(false);
-  const [isCreateQuestionnaireOpen, setIsCreateQuestionnaireOpen] = useState(false);
 
-  const [currentUser, _setCurrentUser] = useState({
-    id: 1,
-    name: 'John Doe',
-    role: 'admin'
-  });
-
-  const mainTaskCategories = [
-    'Application Documents',
-    'Test Preparation',
-    'Financial Documentation',
-    'Visa Application',
-    'University Selection'
-  ];
-
-  const subtaskTemplates = {
-    'Application Documents': [
-      'Draft SOP',
-      'Review with counselor', 
-      'Final submission',
-      'Fill personal details', 
-      'Academic information', 
-      'Upload documents',
-      'Contact university', 
-      'Pay fees', 
-      'Verify documents'
-    ],
-    'Test Preparation': [
-      'Speaking practice', 
-      'Writing exercise', 
-      'Mock test',
-      'Vocabulary building',
-      'Grammar review'
-    ],
-    'Financial Documentation': [
-      'Bank statements', 
-      'Income proof', 
-      'Affidavit',
-      'Financial guarantee letter',
-      'Scholarship application'
-    ],
-    'Visa Application': [
-      'Fill visa form',
-      'Book appointment',
-      'Prepare for interview',
-      'Submit biometrics'
-    ],
-    'University Selection': [
-      'Research universities',
-      'Compare programs',
-      'Check requirements',
-      'Shortlist options'
-    ]
-  };
-
-  const questionnaires = [
-    { id: 1, title: 'Initial Student Assessment' },
-    { id: 2, title: 'University Preference Form' },
-    { id: 3, title: 'Financial Aid Application' },
-    { id: 4, title: 'Visa Documentation Checklist' },
-    { id: 5, title: 'Post-Admission Survey' }
-  ];
-
-  const students = [
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Emma Wilson' },
-    { id: 3, name: 'Michael Brown' },
-    { id: 4, name: 'Sophia Garcia' },
-    { id: 5, name: 'William Chen' }
-  ];
-
-  const teamMembers = [
-    { id: 1, name: 'John Doe', role: 'admin' },
-    { id: 2, name: 'Jane Smith', role: 'counselor' },
-    { id: 3, name: 'Robert Johnson', role: 'advisor' },
-    { id: 4, name: 'Alice Williams', role: 'counselor' },
-    { id: 5, name: 'Michael Brown', role: 'admin' }
-  ];
-
-  const statusIcon = (status) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'in-progress':
-        return <Clock className="h-4 w-4 text-amber-500" />;
-      case 'pending':
-        return <Circle className="h-4 w-4 text-gray-400" />;
-      default:
-        return null;
-    }
-  };
-
-  const priorityBadge = (priority) => {
-    switch (priority) {
-      case 'high':
-        return <Badge variant="destructive">High</Badge>;
-      case 'medium':
-        return <Badge variant="secondary">Medium</Badge>;
-      case 'low':
-        return <Badge>Low</Badge>;
-      default:
-        return null;
-    }
-  };
-  
   const [newTask, setNewTask] = useState({
     title: '',
-    mainTask: 'Application Documents',
-    subtasks: [],
-    assignee: currentUser.name,
-    students: [],
-    dueDate: '',
+    description: '',
+    priority: 'HIGH',
+    logo: '',
     status: 'pending',
-    priority: 'medium',
-    questionnaire: null
+    dueDate: '',
+    assignee: ''
   });
 
-  const [selectedMainTask, setSelectedMainTask] = useState('Application Documents');
-  const [newMainTask, setNewMainTask] = useState('');
-  const [newSubtask, setNewSubtask] = useState('');
-  const [selectedSubtasks, setSelectedSubtasks] = useState([]);
-  const [newQuestionnaire, setNewQuestionnaire] = useState('');
-  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  const validateTaskData = (data) => {
+    if (!data.title?.trim()) {
+      toast.error('Task title is required');
+      return false;
+    }
+    if (selectedMainTask === 'create_new' && !newMainTask.trim()) {
+      toast.error('Please enter a new task category name');
+      return false;
+    }
+    return true;
+  };
+
+  // Handle main task selection
+  const handleMainTaskChange = (value) => {
+    setSelectedMainTask(value);
+    if (value === 'create_new') {
+      setNewMainTask('');
+    }
+  };
+
+  const fetchTasks = async () => {
+    try {
+      setLoading(prev => ({ ...prev, tasks: true }));
+      const response = await getTasks();
+      const transformedTasks = response.data.tasks.map(task => ({
+        ...task,
+        status: task.subtasks.length > 0 ? 
+          task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
+          task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
+          : 'PENDING',
+        studentNames: task.students?.map(s => s.name || s.email).join(', '),
+        subtaskCount: task.subtasks?.length || 0
+      }));
+      setTasks(transformedTasks);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      toast.error('Failed to fetch tasks');
+    } finally {
+      setLoading(prev => ({ ...prev, tasks: false }));
+    }
+  };
+
+  const fetchTeamMembers = async () => {
+    try {
+      setLoading(prev => ({ ...prev, members: true }));
+      const response = await servicesAxiosInstance.get('/v1/admin/members');
+      if (response.data.success) {
+        setTeamMembers(response.data.data.members
+          .filter(member => member.status === 'ACTIVE')
+          .map(member => ({
+            id: member._id,
+            name: `${member.firstName} ${member.lastName}`,
+            role: member.role,
+            status: member.status
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching team members:', error);
+      toast.error(error.response?.data?.message || 'Failed to fetch team members');
+    } finally {
+      setLoading(prev => ({ ...prev, members: false }));
+    }
+  };
+
+  const fetchSubtasks = async () => {
+    try {
+      setLoading(prev => ({ ...prev, subtasks: true }));
+      const response = await getSubtasks();
+      if (response?.data?.subtasks) {
+        setAvailableSubtasks(response.data.subtasks.map(subtask => ({
+          id: subtask._id,
+          title: subtask.title,
+          description: subtask.description,
+          priority: subtask.priority
+        })));
+      }
+    } catch (error) {
+      console.error('Error fetching subtasks:', error);
+      toast.error('Failed to fetch subtasks');
+    } finally {
+      setLoading(prev => ({ ...prev, subtasks: false }));
+    }
+  };
+
+  const fetchStudents = async (searchQuery = '') => {
+    try {
+      setLoading(prev => ({ ...prev, students: true }));
+      const params = searchQuery ? { search: searchQuery } : {};
+      const response = await servicesAxiosInstance.get('/v1/admin/students', { params });
+      if (response.data.success) {
+        setStudents(response.data.data.students.map(student => ({
+          id: student._id,
+          name: student.name || student.email,
+          email: student.email
+        })));
+      }
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      toast.error('Failed to fetch students');
+    } finally {
+      setLoading(prev => ({ ...prev, students: false }));
+    }
+  };
 
   useEffect(() => {
-    setNewTask(prev => ({
-      ...prev,
-      assignee: currentUser.name
-    }));
-  }, [currentUser]);
+    let isMounted = true;
 
-  const handleAddTask = () => {
-    const taskToAdd = {
-      ...newTask,
-      id: tasks.length + 1,
-      subtasks: selectedSubtasks,
-      students: selectedStudents
+    const fetchInitialData = async () => {
+      try {
+        if (!isMounted) return;
+        await fetchTeamMembers();
+        await fetchSubtasks();
+        await fetchTasks();
+        await fetchStudents('');
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
     };
-    
-    setTasks([...tasks, taskToAdd]);
-    setIsAddTaskOpen(false);
-    resetTaskForm();
-    toast.success('Task added successfully!');
+
+    fetchInitialData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Handle delete task
+  const handleDeleteTask = async (taskId) => {
+    if (!taskId) return;
+
+    try {
+      setLoading(prev => ({ ...prev, delete: true }));
+      await deleteTask(taskId);
+      await fetchTasks();
+      toast.success('Task deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      toast.error(error?.response?.data?.message || 'Failed to delete task');
+    } finally {
+      setLoading(prev => ({ ...prev, delete: false }));
+    }
   };
+
+
   
-  const handleEditTask = () => {
-    if (!selectedTask) return;
-    
-    const updatedTasks = tasks.map(task => 
-      task.id === selectedTask.id ? {
-        ...task,
-        title: newTask.title || task.title,
-        mainTask: newTask.mainTask || task.mainTask,
-        subtasks: selectedSubtasks.length ? selectedSubtasks : task.subtasks,
-        status: newTask.status || task.status,
-        priority: newTask.priority || task.priority,
-        dueDate: newTask.dueDate || task.dueDate,
-        questionnaire: newTask.questionnaire || task.questionnaire,
-        students: selectedStudents.length ? selectedStudents : task.students
-      } : task
-    );
-    
-    setTasks(updatedTasks);
-    setIsEditTaskOpen(false);
-    resetTaskForm();
-    toast.success('Task updated successfully!');
+  // Handle subtask selection
+  const handleSubtaskSelection = (subtaskId) => {
+    // Find the subtask in available subtasks
+    const subtask = availableSubtasks.find(s => s.id === subtaskId);
+    // Only add if we found the subtask and it's not already in the list
+    if (subtask && !selectedSubtasks.includes(subtask.id)) {
+      setSelectedSubtasks([...selectedSubtasks, subtask.id]);
+    }
   };
-  
+
+  // Handle removing a subtask
+  const handleRemoveSubtask = (subtaskId) => {
+    // Remove the subtask ID from the selected list
+    setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtaskId));
+  };
+  // Reset task form
   const resetTaskForm = () => {
     setNewTask({
       title: '',
-      mainTask: 'Application Documents',
-      subtasks: [],
-      assignee: currentUser.name,
-      students: [],
-      dueDate: '',
+      description: '',
+      priority: 'HIGH',
+      logo: '',
       status: 'pending',
-      priority: 'medium',
-      questionnaire: null
+      dueDate: '',
+      assignee: ''
     });
-    setSelectedMainTask('Application Documents');
-    setNewMainTask('');
-    setNewSubtask('');
-    setSelectedSubtasks([]);
-    setNewQuestionnaire('');
     setSelectedStudents([]);
+    setSelectedSubtasks([]);
+    setNewSubtask('');
+    setSelectedMainTask('');
+    setNewMainTask('');
   };
-
   const handleOpenEditTask = (task) => {
     setSelectedTask(task);
     setNewTask({
       title: task.title,
-      mainTask: task.mainTask,
-      subtasks: task.subtasks,
-      assignee: task.assignee,
-      students: task.students,
-      dueDate: task.dueDate,
-      status: task.status,
-      priority: task.priority,
-      questionnaire: task.questionnaire
+      description: task.description || '',
+      priority: task.priority || 'HIGH',
+      logo: task.logo || '',
+      status: task.status || 'pending',
+      dueDate: task.dueDate || '',
+      assignee: task.assignee || ''
     });
+    // Update selected students and subtasks
+    setSelectedStudents(task.students?.map(s => s._id) || []);
+    setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); // Keep track of subtask IDs
     setSelectedMainTask(task.mainTask);
-    setSelectedSubtasks(task.subtasks);
-    setSelectedStudents(task.students || []);
     setIsEditTaskOpen(true);
   };
 
-  const handleAssignStudent = (taskId) => {
-    const task = tasks.find(task => task.id === taskId);
-    setSelectedTask(task);
-    setSelectedStudents(task.students || []);
-    setIsAssignStudentOpen(true);
-  };
+  // Handle save student assignment
+  const handleSaveStudentAssignment = async () => {
+    if (!selectedTask || selectedStudents.length === 0) {
+      toast.error('Please select students to assign');
+      return;
+    }
 
-  const handleAddQuestionnaire = (taskId) => {
-    setSelectedTask(tasks.find(task => task.id === taskId));
-    setIsQuestionnaireOpen(true);
+    try {
+      setLoading(prev => ({ ...prev, students: true }));
+      await addStudentsToTask(selectedTask._id, {
+        studentIds: selectedStudents
+      });
+      await fetchTasks();
+      setIsAssignStudentOpen(false);
+      toast.success('Students assigned successfully!');
+    } catch (error) {
+      console.error('Error assigning students:', error);
+      toast.error(error?.response?.data?.message || 'Failed to assign students');
+    } finally {
+      setLoading(prev => ({ ...prev, students: false }));
+    }
   };
+  const handleAddTask = async () => {
+    if (!validateTaskData(newTask)) {
+      return;
+    }
 
-  const handleSaveStudentAssignment = () => {
-    if (!selectedTask) return;
-    
-    const updatedTasks = tasks.map(task => 
-      task.id === selectedTask.id ? {
-        ...task,
-        students: selectedStudents
-      } : task
-    );
-    
-    setTasks(updatedTasks);
-    setIsAssignStudentOpen(false);
-    toast.success('Student assigned successfully!');
-  };
+      try {
+        setLoading(prev => ({ ...prev, add: true }));
+        const taskData = {
+          title: newTask.title.trim(),
+          description: newTask.description?.trim() || '',
+          priority: newTask.priority.toUpperCase(),
+          logo: newTask.logo || '',
+          studentIds: selectedStudents,
+          subtaskIds: selectedSubtasks
+        };
 
-  const handleSaveQuestionnaire = () => {
-    setIsQuestionnaireOpen(false);
-    toast.success('Questionnaire linked successfully!');
-  };
-  
-  const handleCreateQuestionnaire = () => {
-    if (newQuestionnaire.trim()) {
-      questionnaires.push({ id: questionnaires.length + 1, title: newQuestionnaire });
-      setNewQuestionnaire('');
-      setIsCreateQuestionnaireOpen(false);
-      toast.success('New questionnaire created!');
+        await createTask(taskData);
+        await fetchTasks();
+        resetTaskForm();
+        setIsAddTaskOpen(false);
+        toast.success('Task created successfully!');
+      } catch (error) {
+        console.error('Error adding task:', error);
+        toast.error(error?.response?.data?.message || 'Failed to create task');
+      } finally {
+        setLoading(prev => ({ ...prev, add: false }));
+      }
+    };
+
+  const handleEditTask = async () => {
+    if (!selectedTask || !validateTaskData(newTask)) {
+      return;
+    }
+
+    try {
+      setLoading(prev => ({ ...prev, edit: true }));
+      // Only include allowed fields, excluding studentIds and subtaskIds
+      const taskData = {
+        title: newTask.title.trim(),
+        description: newTask.description?.trim() || '',
+        priority: newTask.priority.toUpperCase(),
+        logo: newTask.logo || '',
+        status: newTask.status,
+        dueDate: newTask.dueDate,
+        assignee: newTask.assignee,
+        mainTask: selectedMainTask === 'create_new' ? newMainTask : selectedMainTask
+      };
+
+      await updateTask(selectedTask._id, taskData);
+      await fetchTasks();
+      setIsEditTaskOpen(false);
+      toast.success('Task updated successfully!');
+    } catch (error) {
+      console.error('Error updating task:', error);
+      toast.error(error?.response?.data?.message || 'Failed to update task');
+    } finally {
+      setLoading(prev => ({ ...prev, edit: false }));
     }
   };
 
-  const handleMainTaskChange = (value) => {
-    if (value === 'create_new') {
-    } else {
-      setSelectedMainTask(value);
-      setNewTask(prev => ({
-        ...prev,
-        mainTask: value
-      }));
-    }
-  };
-  
-  const handleAddSubtask = () => {
-    if (newSubtask.trim() && !selectedSubtasks.includes(newSubtask)) {
-      setSelectedSubtasks([...selectedSubtasks, newSubtask]);
-      setNewSubtask('');
-    }
-  };
-  
-  const handleRemoveSubtask = (subtask) => {
-    setSelectedSubtasks(selectedSubtasks.filter(item => item !== subtask));
-  };
-
-  const filteredTasks = tasks.filter(task => {
-    const matchesSearch = 
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.mainTask.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.assignee.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStudent = 
-      studentFilter === 'all' || 
-      (task.students && task.students.some(student => 
-        student.toLowerCase().includes(studentFilter.toLowerCase())
-      ));
-    
-    return matchesSearch && matchesStudent;
-  });
   return (
-    <>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
-          <Button onClick={() => setIsAddTaskOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add New Task
-          </Button>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search tasks..."
-              className="pl-8 w-full"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <Select value={studentFilter} onValueChange={setStudentFilter}>
-            <SelectTrigger className="w-full md:w-[220px]">
-              <SelectValue placeholder="Filter by student" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Students</SelectItem>
-              {students.map(student => (
-                <SelectItem key={student.id} value={student.name}>
-                  {student.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="icon">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <Tabs defaultValue="all">
-          <TabsList>
-            <TabsTrigger value="all">All Tasks</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="in-progress">In Progress</TabsTrigger>
-            <TabsTrigger value="completed">Completed</TabsTrigger>
-          </TabsList>
-          <TabsContent value="all">
-            <Card>
-              <CardHeader>
-                <CardTitle>All Tasks</CardTitle>
-                <CardDescription>
-                  View and manage all tasks assigned to students.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px]">Status</TableHead>
-                      <TableHead>Task</TableHead>
-                      <TableHead>Student Name</TableHead>
-                      <TableHead>Assignee</TableHead>
-                      <TableHead>Priority</TableHead>
-                      <TableHead>Questionnaire</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredTasks.map((task) => (
-                      <TableRow key={task.id}>
-                        <TableCell>{statusIcon(task.status)}</TableCell>
-                        <TableCell>
-                          <div>
-                            <span className="font-medium block">{task.mainTask}</span>
-                            <span className="text-sm">{task.title}</span>
-                            {task.subtasks && task.subtasks.length > 0 && (
-                              <div className="mt-1 text-sm text-muted-foreground">
-                                <Accordion type="single" collapsible className="w-full">
-                                  <AccordionItem value={`subtasks-${task.id}`} className="border-0">
-                                    <AccordionTrigger className="py-0 hover:no-underline">
-                                      <span className="text-xs text-muted-foreground">
-                                        {task.subtasks.length} subtasks
-                                      </span>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                      <ul className="list-disc pl-5 space-y-1 text-xs">
-                                        {task.subtasks.map((subtask, idx) => (
-                                          <li key={idx}>{subtask}</li>
-                                        ))}
-                                      </ul>
-                                    </AccordionContent>
-                                  </AccordionItem>
-                                </Accordion>
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            {task.students && task.students.length > 0 ? (
-                              <div className="flex items-center">
-                                <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-                                <span>{task.students.join(', ')}</span>
-                              </div>
-                            ) : (
-                              <span className="text-muted-foreground">No students assigned</span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>{task.assignee}</TableCell>
-                        <TableCell>{priorityBadge(task.priority)}</TableCell>
-                        <TableCell>
-                          {task.questionnaire ? (
-                            <span className="text-sm">{task.questionnaire}</span>
-                          ) : (
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => handleAddQuestionnaire(task.id)}
-                            >
-                              <FileQuestion className="h-3 w-3 mr-1" />
-                              Add
-                            </Button>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleAssignStudent(task.id)}
-                            >
-                              Assign
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => handleOpenEditTask(task)}
-                            >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Edit
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {filteredTasks.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="h-24 text-center">
-                          No tasks found.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="pending">
-            <Card>
-              <CardHeader>
-                <CardTitle>Pending Tasks</CardTitle>
-                <CardDescription>
-                  View and manage all pending tasks.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  {/* Similar structure to "all" tab but filtered for pending tasks */}
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="in-progress">
-            <Card>
-              <CardHeader>
-                <CardTitle>In Progress Tasks</CardTitle>
-                <CardDescription>
-                  View and manage all tasks currently in progress.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  {/* Similar structure to "all" tab but filtered for in-progress tasks */}
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="completed">
-            <Card>
-              <CardHeader>
-                <CardTitle>Completed Tasks</CardTitle>
-                <CardDescription>
-                  View all completed tasks.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  {/* Similar structure to "all" tab but filtered for completed tasks */}
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+    <div className="space-y-4 p-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
+        <Button onClick={() => setIsAddTaskOpen(true)} disabled={loading.add}>
+          <Plus className="mr-2 h-4 w-4" /> Add Task
+        </Button>
       </div>
 
+      <div className="text-sm text-muted-foreground">
+        View and manage all tasks assigned to students
+      </div>
+
+      <div className="rounded-md border">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b bg-muted/50">
+              <th className="px-4 py-3 text-left font-medium">Status</th>
+              <th className="px-4 py-3 text-left font-medium">Task</th>
+              <th className="px-4 py-3 text-left font-medium">Main Task</th>  
+              <th className="px-4 py-3 text-left font-medium">Student</th>
+              <th className="px-4 py-3 text-left font-medium">Assignee</th>
+              <th className="px-4 py-3 text-left font-medium">Priority</th>
+              <th className="px-4 py-3 text-center font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading.tasks ? (
+              <tr>
+                <td colSpan={7} className="px-4 py-8 text-center">
+                  <Loader2 className="mx-auto h-6 w-6 animate-spin" />
+                </td>
+              </tr>
+            ) : tasks.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                  No tasks found. Start by adding a new task.
+                </td>
+              </tr>
+            ) : (
+              tasks.map(task => (
+                <tr key={task._id} className="border-b">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      {task.status === 'COMPLETED' ? (
+                        <Badge variant="success">Completed</Badge>
+                      ) : task.status === 'IN_PROGRESS' ? (
+                        <Badge variant="warning">In Progress</Badge>
+                      ) : (
+                        <Badge variant="secondary">Pending</Badge>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div>
+                      <div className="font-medium">{task.title}</div>
+                      {task.subtasks?.length > 0 && (
+                        <div className="text-xs text-muted-foreground">
+                          {task.subtasks.length} subtasks
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">{task.mainTask || '-'}</td>
+                  <td className="px-4 py-3">
+                    {task.students?.map(student => student.email).join(', ') || '-'}
+                  </td>
+                  <td className="px-4 py-3">
+                    {task.assignee ? teamMembers.find(m => m.id === task.assignee)?.name : '-'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge 
+                      variant={task.priority === 'HIGH' ? 'destructive' : 
+                              task.priority === 'MEDIUM' ? 'warning' : 'secondary'}
+                    >
+                      {task.priority}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setIsAssignStudentOpen(true);
+                        }}
+                      >
+                        Assign
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleOpenEditTask(task)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => handleDeleteTask(task._id)}
+                        disabled={loading.delete}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Add Task Dialog */}
       <Dialog open={isAddTaskOpen} onOpenChange={setIsAddTaskOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Task</DialogTitle>
             <DialogDescription>
               Create a new task and assign it to students.
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 gap-2">
               <label htmlFor="mainTask" className="text-sm font-medium">
@@ -621,86 +527,119 @@ const Tasks = () => {
                   ))}
                 </SelectContent>
               </Select>
-              
+
               {selectedMainTask === 'create_new' && (
                 <div className="mt-2">
-                  <Input 
-                    placeholder="Enter new main task category" 
-                    value={newMainTask} 
+                  <Input
+                    placeholder="Enter new main task category"
+                    value={newMainTask}
                     onChange={(e) => setNewMainTask(e.target.value)}
                   />
                 </div>
               )}
             </div>
-            
+
             <div className="grid grid-cols-1 gap-2">
               <label htmlFor="taskTitle" className="text-sm font-medium">
                 Task Title
               </label>
-              <Input 
-                id="taskTitle" 
-                placeholder="Enter task title" 
+              <Input
+                id="taskTitle"
+                placeholder="Enter task title"
                 value={newTask.title}
-                onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
               />
-            </div>
-
-            <div className="grid grid-cols-1 gap-2">
+            </div>            <div className="grid grid-cols-1 gap-2">
               <label className="text-sm font-medium">
                 Assign to Students
               </label>
-              <MultipleStudentSelect 
-                students={students}
-                selectedStudents={selectedStudents}
-                onChange={setSelectedStudents}
-              />
+              <Select 
+                value={selectedStudents[0] || ''}
+                onValueChange={(val) => setSelectedStudents([val])}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select student" />
+                </SelectTrigger>
+                <SelectContent>
+                  {students.map(student => (
+                    <SelectItem key={student.id} value={student.id}>
+                      <div className="flex items-center">
+                        <span>{student.name}</span>
+                        <span className="ml-2 text-xs text-muted-foreground">({student.email})</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            
+
             <div className="grid grid-cols-1 gap-2">
               <label className="text-sm font-medium">Subtasks</label>
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="Add subtask" 
-                  value={newSubtask}
-                  onChange={(e) => setNewSubtask(e.target.value)}
-                />
-                <Button type="button" onClick={handleAddSubtask} className="shrink-0">
-                  Add
-                </Button>
-              </div>
-              
+              <Select
+                value={newSubtask}
+                onValueChange={handleSubtaskSelection}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select subtask" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableSubtasks.map(subtask => (
+                    <SelectItem key={subtask.id} value={subtask.id}>
+                      <div className="flex items-center justify-between w-full">
+                        <div>
+                          <span>{subtask.title}</span>
+                          <span className="text-xs text-muted-foreground block">{subtask.description}</span>
+                        </div>
+                        <Badge variant={subtask.priority.toLowerCase()}>{subtask.priority}</Badge>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               {selectedSubtasks.length > 0 && (
                 <div className="border rounded-md p-2 mt-2">
                   <p className="text-sm font-medium mb-2">Selected Subtasks:</p>
                   <ul className="space-y-1">
-                    {selectedSubtasks.map((subtask, idx) => (
-                      <li key={idx} className="flex items-center justify-between text-sm bg-muted/50 rounded-sm px-2 py-1">
-                        <span>{subtask}</span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleRemoveSubtask(subtask)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </li>
-                    ))}
+                    {selectedSubtasks.map((subtaskId) => {
+                      const subtask = availableSubtasks.find(s => s.id === subtaskId);
+                      if (!subtask) return null;
+                      return (
+                        <li key={subtask.id} className="flex items-center justify-between text-sm bg-muted/50 rounded-sm px-2 py-1">
+                          <div>
+                            <span>{subtask.title}</span>
+                            <span className="text-xs text-muted-foreground block">{subtask.description}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={subtask.priority.toLowerCase()}>{subtask.priority}</Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleRemoveSubtask(subtask.id)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}
-              
+
               {selectedMainTask !== 'create_new' && subtaskTemplates[selectedMainTask]?.length > 0 && (
                 <div className="mt-2">
                   <p className="text-sm font-medium mb-2">Suggested subtasks:</p>
                   <div className="flex flex-wrap gap-1">
                     {subtaskTemplates[selectedMainTask].map((template, idx) => (
-                      <Badge 
+                      <Badge
                         key={idx}
                         variant="outline"
                         className="cursor-pointer"
                         onClick={() => {
-                          if (!selectedSubtasks.includes(template)) {
-                            setSelectedSubtasks([...selectedSubtasks, template]);
+                          const matchedSubtask = availableSubtasks.find(s => s.title === template);
+                          if (matchedSubtask && !selectedSubtasks.includes(matchedSubtask.id)) {
+                            setSelectedSubtasks([...selectedSubtasks, matchedSubtask.id]);
                           }
                         }}
                       >
@@ -711,15 +650,15 @@ const Tasks = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <label htmlFor="status" className="text-sm font-medium">
                   Status
                 </label>
-                <Select 
-                  value={newTask.status} 
-                  onValueChange={(val) => setNewTask({...newTask, status: val})}
+                <Select
+                  value={newTask.status}
+                  onValueChange={(val) => setNewTask({ ...newTask, status: val })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
@@ -735,23 +674,23 @@ const Tasks = () => {
                 <label htmlFor="dueDate" className="text-sm font-medium">
                   Due Date
                 </label>
-                <Input 
-                  type="date" 
-                  id="dueDate" 
+                <Input
+                  type="date"
+                  id="dueDate"
                   value={newTask.dueDate}
-                  onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
+                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <label htmlFor="priority" className="text-sm font-medium">
                   Priority
                 </label>
-                <Select 
+                <Select
                   value={newTask.priority}
-                  onValueChange={(val) => setNewTask({...newTask, priority: val})}
+                  onValueChange={(val) => setNewTask({ ...newTask, priority: val })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select priority" />
@@ -764,79 +703,61 @@ const Tasks = () => {
                 </Select>
               </div>
               <div className="grid gap-2">
-                <label htmlFor="questionnaire" className="text-sm font-medium">
-                  Questionnaire (Optional)
+                <label htmlFor="assignee" className="text-sm font-medium">
+                  Assignee
                 </label>
-                <Select 
-                  value={newTask.questionnaire || 'none'}
-                  onValueChange={(val) => {
-                    if (val === 'create_new') {
-                      setIsCreateQuestionnaireOpen(true);
-                    } else if (val === 'none') {
-                      setNewTask({...newTask, questionnaire: null});
-                    } else {
-                      setNewTask({...newTask, questionnaire: val});
-                    }
-                  }}
+                <Select
+                  value={newTask.assignee}
+                  onValueChange={(val) => setNewTask({ ...newTask, assignee: val })}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select questionnaire" />
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select assignee" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="create_new">+ Create New</SelectItem>
-                    {questionnaires.map(q => (
-                      <SelectItem key={q.id} value={q.title}>
-                        {q.title}
+                    {teamMembers.map(member => (
+                      <SelectItem key={member.id} value={member.name}>
+                        <div className="flex items-center">
+                          <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
+                          <span>{member.name}</span>
+                          <span className="ml-2 text-xs text-muted-foreground">({member.role})</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
-            
-            <div className="grid gap-2">
-              <label htmlFor="assignee" className="text-sm font-medium">
-                Assignee
-              </label>
-              <Select 
-                value={newTask.assignee}
-                onValueChange={(val) => setNewTask({...newTask, assignee: val})}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select assignee" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teamMembers.map(member => (
-                    <SelectItem key={member.id} value={member.name}>
-                      <div className="flex items-center">
-                        <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>{member.name}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">({member.role})</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAddTaskOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleAddTask}>Add Task</Button>
+            <Button onClick={handleAddTask} disabled={loading.add}>
+              {loading.add ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                'Add Task'
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Edit Task Dialog */}
       <Dialog open={isEditTaskOpen} onOpenChange={setIsEditTaskOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Task</DialogTitle>
             <DialogDescription>
-              Update task details.
+              {selectedTask?.title ? `Edit "${selectedTask.title}"` : 'Edit task'}
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-1 gap-2">
               <label htmlFor="mainTask" className="text-sm font-medium">
@@ -856,16 +777,15 @@ const Tasks = () => {
                 </SelectContent>
               </Select>
             </div>
-            
             <div className="grid grid-cols-1 gap-2">
               <label htmlFor="taskTitle" className="text-sm font-medium">
                 Task Title
               </label>
-              <Input 
-                id="taskTitle" 
-                placeholder="Enter task title" 
+              <Input
+                id="taskTitle"
+                placeholder="Enter task title"
                 value={newTask.title}
-                onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
               />
             </div>
 
@@ -873,55 +793,89 @@ const Tasks = () => {
               <label className="text-sm font-medium">
                 Assign to Students
               </label>
-              <MultipleStudentSelect 
-                students={students}
-                selectedStudents={selectedStudents}
-                onChange={setSelectedStudents}
-              />
+              <Select 
+                value={selectedStudents[0] || ''}
+                onValueChange={(val) => setSelectedStudents([val])}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select student" />
+                </SelectTrigger>
+                <SelectContent>
+                  {students.map(student => (
+                    <SelectItem key={student.id} value={student.id}>
+                      <div className="flex items-center">
+                        <span>{student.name}</span>
+                        <span className="ml-2 text-xs text-muted-foreground">({student.email})</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            
+
             <div className="grid grid-cols-1 gap-2">
               <label className="text-sm font-medium">Subtasks</label>
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="Add subtask" 
-                  value={newSubtask}
-                  onChange={(e) => setNewSubtask(e.target.value)}
-                />
-                <Button type="button" onClick={handleAddSubtask} className="shrink-0">
-                  Add
-                </Button>
-              </div>
-              
+              <Select
+                value={newSubtask}
+                onValueChange={handleSubtaskSelection}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select subtask" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableSubtasks.map(subtask => (
+                    <SelectItem key={subtask.id} value={subtask.id}>
+                      <div className="flex items-center justify-between w-full">
+                        <div>
+                          <span>{subtask.title}</span>
+                          <span className="text-xs text-muted-foreground block">{subtask.description}</span>
+                        </div>
+                        <Badge variant={subtask.priority.toLowerCase()}>{subtask.priority}</Badge>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               {selectedSubtasks.length > 0 && (
                 <div className="border rounded-md p-2 mt-2">
                   <p className="text-sm font-medium mb-2">Selected Subtasks:</p>
                   <ul className="space-y-1">
-                    {selectedSubtasks.map((subtask, idx) => (
-                      <li key={idx} className="flex items-center justify-between text-sm bg-muted/50 rounded-sm px-2 py-1">
-                        <span>{subtask}</span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleRemoveSubtask(subtask)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </li>
-                    ))}
+                    {selectedSubtasks.map((subtaskId) => {
+                      const subtask = availableSubtasks.find(s => s.id === subtaskId);
+                      if (!subtask) return null;
+                      return (
+                        <li key={subtask.id} className="flex items-center justify-between text-sm bg-muted/50 rounded-sm px-2 py-1">
+                          <div>
+                            <span>{subtask.title}</span>
+                            <span className="text-xs text-muted-foreground block">{subtask.description}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={subtask.priority.toLowerCase()}>{subtask.priority}</Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleRemoveSubtask(subtask.id)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <label htmlFor="status" className="text-sm font-medium">
                   Status
                 </label>
-                <Select 
-                  value={newTask.status} 
-                  onValueChange={(val) => setNewTask({...newTask, status: val})}
+                <Select
+                  value={newTask.status}
+                  onValueChange={(val) => setNewTask({ ...newTask, status: val })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
@@ -937,23 +891,23 @@ const Tasks = () => {
                 <label htmlFor="dueDate" className="text-sm font-medium">
                   Due Date
                 </label>
-                <Input 
-                  type="date" 
-                  id="dueDate" 
+                <Input
+                  type="date"
+                  id="dueDate"
                   value={newTask.dueDate}
-                  onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})}
+                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <label htmlFor="priority" className="text-sm font-medium">
                   Priority
                 </label>
-                <Select 
+                <Select
                   value={newTask.priority}
-                  onValueChange={(val) => setNewTask({...newTask, priority: val})}
+                  onValueChange={(val) => setNewTask({ ...newTask, priority: val })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select priority" />
@@ -966,71 +920,52 @@ const Tasks = () => {
                 </Select>
               </div>
               <div className="grid gap-2">
-                <label htmlFor="questionnaire" className="text-sm font-medium">
-                  Questionnaire (Optional)
+                <label htmlFor="assignee" className="text-sm font-medium">
+                  Assignee
                 </label>
-                <Select 
-                  value={newTask.questionnaire || 'none'}
-                  onValueChange={(val) => {
-                    if (val === 'create_new') {
-                      setIsCreateQuestionnaireOpen(true);
-                    } else if (val === 'none') {
-                      setNewTask({...newTask, questionnaire: null});
-                    } else {
-                      setNewTask({...newTask, questionnaire: val});
-                    }
-                  }}
+                <Select
+                  value={newTask.assignee}
+                  onValueChange={(val) => setNewTask({ ...newTask, assignee: val })}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select questionnaire" />
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select assignee" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="create_new">+ Create New</SelectItem>
-                    {questionnaires.map(q => (
-                      <SelectItem key={q.id} value={q.title}>
-                        {q.title}
+                    {teamMembers.map(member => (
+                      <SelectItem key={member.id} value={member.name}>
+                        <div className="flex items-center">
+                          <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
+                          <span>{member.name}</span>
+                          <span className="ml-2 text-xs text-muted-foreground">({member.role})</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
-            
-            <div className="grid gap-2">
-              <label htmlFor="assignee" className="text-sm font-medium">
-                Assignee
-              </label>
-              <Select 
-                value={newTask.assignee}
-                onValueChange={(val) => setNewTask({...newTask, assignee: val})}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select assignee" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teamMembers.map(member => (
-                    <SelectItem key={member.id} value={member.name}>
-                      <div className="flex items-center">
-                        <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
-                        <span>{member.name}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">({member.role})</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditTaskOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleEditTask}>Save Changes</Button>
+            <Button onClick={handleEditTask} disabled={loading.edit}>
+              {loading.edit ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Assign Students Dialog */}
       <Dialog open={isAssignStudentOpen} onOpenChange={setIsAssignStudentOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
@@ -1039,94 +974,46 @@ const Tasks = () => {
               {selectedTask?.title ? `Select students to assign to "${selectedTask.title}"` : 'Select students to assign to this task'}
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
-            <MultipleStudentSelect 
-              students={students}
-              selectedStudents={selectedStudents}
-              onChange={setSelectedStudents}
-            />
+            <Select
+              value={selectedStudents[0] || ''}
+              onValueChange={(val) => setSelectedStudents([val])}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select student" />
+              </SelectTrigger>
+              <SelectContent>
+                {students.map(student => (
+                  <SelectItem key={student.id} value={student.id}>
+                    <div className="flex items-center">
+                      <span>{student.name}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">({student.email})</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAssignStudentOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSaveStudentAssignment}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isQuestionnaireOpen} onOpenChange={setIsQuestionnaireOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Link Questionnaire</DialogTitle>
-            <DialogDescription>
-              Select an existing questionnaire or create a new one.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label className="text-sm font-medium">Questionnaire</label>
-              <Select 
-                onValueChange={(val) => {
-                  if (val === 'create_new') {
-                    setIsQuestionnaireOpen(false);
-                    setIsCreateQuestionnaireOpen(true);
-                  }
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select questionnaire" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="create_new">+ Create New</SelectItem>
-                  {questionnaires.map(q => (
-                    <SelectItem key={q.id} value={q.title}>
-                      {q.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsQuestionnaireOpen(false)}>
-              Cancel
+            <Button onClick={handleSaveStudentAssignment} disabled={loading.students}>
+              {loading.students ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save'
+              )}
             </Button>
-            <Button onClick={handleSaveQuestionnaire}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
-      <Dialog open={isCreateQuestionnaireOpen} onOpenChange={setIsCreateQuestionnaireOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Create New Questionnaire</DialogTitle>
-            <DialogDescription>
-              Create a new questionnaire for student tasks.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <label className="text-sm font-medium">Questionnaire Title</label>
-              <Input 
-                placeholder="Enter questionnaire title" 
-                value={newQuestionnaire}
-                onChange={(e) => setNewQuestionnaire(e.target.value)}
-              />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              After creation, you&apos;ll be redirected to set up questions for this questionnaire.
-            </p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateQuestionnaireOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreateQuestionnaire}>Create & Configure</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+    </div>
   );
 };
 

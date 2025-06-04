@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import StudentDetails from './Pages/Admin/StudentDetails';
 import Tasks from './Pages/Admin/Tasks';
+import Subtasks from './Pages/Admin/Subtasks';
 import Applications from './Pages/Admin/Applications';
 import Universities from './Pages/Admin/Universities';
 import Messages from './Pages/Admin/Messages';
@@ -52,8 +53,8 @@ const App = () => {
       <Route path="/admin/*" element={<PrivateAdminRoute><Index /></PrivateAdminRoute>}>
         <Route index element={<AdminDashboard />} />
         <Route path="students" element={<Students />} />
-        <Route path="students/:id" element={<StudentDetails />} />        
-        <Route path="tasks" element={<Tasks />} />
+        <Route path="students/:id" element={<StudentDetails />} />          <Route path="tasks" element={<Tasks />} />
+        <Route path="subtasks" element={<Subtasks />} />
         <Route path="applications" element={<Applications />} />
         <Route path="universities" element={<Universities />} />
         <Route path="messages" element={<Messages />} />

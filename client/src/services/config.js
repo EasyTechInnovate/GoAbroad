@@ -8,7 +8,7 @@ if (!baseURL) {
 }
 
 const servicesAxiosInstance = axios.create({
-    baseURL: baseURL
+    baseURL: `${baseURL}`
 });
 
 servicesAxiosInstance.interceptors.request.use(
