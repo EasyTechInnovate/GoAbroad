@@ -25,9 +25,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/sonner';
 import { getUniversities, createUniversity, updateUniversity, deleteUniversity } from '@/services/universityService';
-import { assignUniversity } from '@/services/universityAssignmentService';
 import { uploadFile } from '@/services/uploadService';
-import { MultipleStudentSelect } from '@/components/tasks/MultipleStudentSelect';
 
 const Universities = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -38,8 +36,8 @@ const Universities = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isViewDetailsOpen, setIsViewDetailsOpen] = useState(false);
   const [isEditUniversityOpen, setIsEditUniversityOpen] = useState(false);
-  const [isAssignStudentsOpen, setIsAssignStudentsOpen] = useState(false);
-  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedUniversity, setSelectedUniversity] = useState(null);
+  const [filters, setFilters] = useState({
     name: '',
     program: '',
     min_acceptance_rate: null,
