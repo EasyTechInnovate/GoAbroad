@@ -1,26 +1,26 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { updateUserProfile } from "@/services/api.services";
-import { toast } from "sonner";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { updateUserProfile } from '@/services/api.services';
+import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 
 const CollegeDetailsForm = ({ data, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     collegeDetails: {
-      branch: data?.collegeDetails?.branch || "",
-      highestDegree: data?.collegeDetails?.highestDegree || "",
-      university: data?.collegeDetails?.university || "",
-      college: data?.collegeDetails?.college || "",
-      gpa: data?.collegeDetails?.gpa || "",
-      toppersGPA: data?.collegeDetails?.toppersGPA || "",
-      noOfBacklogs: data?.collegeDetails?.noOfBacklogs || "",
-      admissionTerm: data?.collegeDetails?.admissionTerm || "",
+      branch: data?.collegeDetails?.branch || '',
+      highestDegree: data?.collegeDetails?.highestDegree || '',
+      university: data?.collegeDetails?.university || '',
+      college: data?.collegeDetails?.college || '',
+      gpa: data?.collegeDetails?.gpa || '',
+      toppersGPA: data?.collegeDetails?.toppersGPA || '',
+      noOfBacklogs: data?.collegeDetails?.noOfBacklogs || '',
+      admissionTerm: data?.collegeDetails?.admissionTerm || '',
       coursesApplying: data?.collegeDetails?.coursesApplying 
-        ? data.collegeDetails.coursesApplying.join(", ") 
-        : ""
+        ? data.collegeDetails.coursesApplying.join(', ') 
+        : ''
     }
   });
   
@@ -28,7 +28,7 @@ const CollegeDetailsForm = ({ data, onClose, onSuccess }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const [parent, child] = name.split(".");
+    const [parent, child] = name.split('.');
     setFormData({
       ...formData,
       [parent]: {
@@ -47,7 +47,7 @@ const CollegeDetailsForm = ({ data, onClose, onSuccess }) => {
       collegeDetails: {
         ...formData.collegeDetails,
         coursesApplying: formData.collegeDetails.coursesApplying
-          ? formData.collegeDetails.coursesApplying.split(",").map(course => course.trim())
+          ? formData.collegeDetails.coursesApplying.split(',').map(course => course.trim())
           : []
       }
     };
@@ -63,26 +63,33 @@ const CollegeDetailsForm = ({ data, onClose, onSuccess }) => {
       submissionData.collegeDetails.noOfBacklogs = parseInt(submissionData.collegeDetails.noOfBacklogs);
     }
     
-    try {
+    try {      
       const response = await updateUserProfile(submissionData);
-      
-      if (response.status) {
-        toast.success("College details updated successfully");
+        if (response.status) {        
+        toast('College details updated successfully', {
+          style: {
+            backgroundColor: '#10B981',
+            color: 'white',
+            border: '1px solid #059669'
+          },
+          className: 'bg-green-500 text-white',
+          important: true,
+          icon: '✅'
+        });
         if (onSuccess) onSuccess();
         onClose();
       } else {
-        toast.error(response.message || "Failed to update details");
+        toast.error(response.message || 'Failed to update details');
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Something went wrong while updating your details");
+      console.error('Error updating profile:', error);
+      toast.error('Something went wrong while updating your details');
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+    <form onSubmit={handleSubmit} className="space-y-4 pr-2">
       <div className="space-y-2">
         <Label htmlFor="branch">Branch</Label>
         <Input 
@@ -193,7 +200,7 @@ const CollegeDetailsForm = ({ data, onClose, onSuccess }) => {
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save Changes"}
+          {isSubmitting ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
     </form>

@@ -67,7 +67,7 @@ const subtaskTemplates = {
 };
 
 const Tasks = () => {
-  // Loading states for different operations
+
   const [loading, setLoading] = useState({
     tasks: false,
     add: false,
@@ -78,7 +78,7 @@ const Tasks = () => {
     members: false
   });
 
-  // States
+
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [students, setStudents] = useState([]);
@@ -90,7 +90,7 @@ const Tasks = () => {
   const [selectedMainTask, setSelectedMainTask] = useState('');
   const [newMainTask, setNewMainTask] = useState('');
   
-  // Dialog states
+
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
   const [isAssignStudentOpen, setIsAssignStudentOpen] = useState(false);
@@ -118,7 +118,7 @@ const Tasks = () => {
     return true;
   };
 
-  // Handle main task selection
+
   const handleMainTaskChange = (value) => {
     setSelectedMainTask(value);
     if (value === 'create_new') {
@@ -233,7 +233,7 @@ const Tasks = () => {
     };
   }, []);
 
-  // Handle delete task
+
   const handleDeleteTask = async (taskId) => {
     if (!taskId) return;
 
@@ -252,22 +252,22 @@ const Tasks = () => {
 
 
   
-  // Handle subtask selection
+
   const handleSubtaskSelection = (subtaskId) => {
-    // Find the subtask in available subtasks
+
     const subtask = availableSubtasks.find(s => s.id === subtaskId);
-    // Only add if we found the subtask and it's not already in the list
+
     if (subtask && !selectedSubtasks.includes(subtask.id)) {
       setSelectedSubtasks([...selectedSubtasks, subtask.id]);
     }
   };
 
-  // Handle removing a subtask
+
   const handleRemoveSubtask = (subtaskId) => {
-    // Remove the subtask ID from the selected list
+
     setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtaskId));
   };
-  // Reset task form
+
   const resetTaskForm = () => {
     setNewTask({
       title: '',
@@ -295,14 +295,14 @@ const Tasks = () => {
       dueDate: task.dueDate || '',
       assignee: task.assignee || ''
     });
-    // Update selected students and subtasks
+
     setSelectedStudents(task.students?.map(s => s._id) || []);
     setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); // Keep track of subtask IDs
     setSelectedMainTask(task.mainTask);
     setIsEditTaskOpen(true);
   };
 
-  // Handle save student assignment
+
   const handleSaveStudentAssignment = async () => {
     if (!selectedTask || selectedStudents.length === 0) {
       toast.error('Please select students to assign');
@@ -360,7 +360,7 @@ const Tasks = () => {
 
     try {
       setLoading(prev => ({ ...prev, edit: true }));
-      // Only include allowed fields, excluding studentIds and subtaskIds
+
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',

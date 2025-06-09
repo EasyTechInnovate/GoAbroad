@@ -14,7 +14,7 @@ export function MultipleStudentSelect({
   const [open, setOpen] = useState(false);
   const [safeStudents, setSafeStudents] = useState([]);
 
-  // Ensure students is always a valid array on initial load and updates
+
   useEffect(() => {
     setSafeStudents(Array.isArray(students) ? students : []);
   }, [students]);
