@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/admin/login");
+    localStorage.removeItem('adminToken');
+    navigate('/admin/login');
   };
 
   return (
@@ -18,7 +18,6 @@ const AdminDashboard = () => {
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Add your dashboard content here */}
       </div>
     </div>
   );

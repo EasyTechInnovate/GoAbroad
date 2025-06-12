@@ -37,7 +37,7 @@ const ForgotPassword = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="../../../node_modules/date-fns/docs/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
           </div>
 
           {!submitted ? (

@@ -27,7 +27,7 @@ import {
   Settings,
 } from 'lucide-react';
 
-import logo from '@/assets/logo.svg';
+import logo from '/logo.svg';
 
 const sidebarItems = [
   {
@@ -39,11 +39,15 @@ const sidebarItems = [
     title: 'Student Management',
     path: '/admin/students',
     icon: Users,
-  },
-  {
-    title: 'Task Management',
+  },  {
+    title: 'Tasks',
     path: '/admin/tasks',
     icon: ClipboardList,
+  },
+  {
+    title: 'Subtasks',
+    path: '/admin/subtasks',
+    icon: FileText,
   },
   {
     title: 'Application & Essays',

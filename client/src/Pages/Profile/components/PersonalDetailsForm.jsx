@@ -1,30 +1,31 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { updateUserProfile } from "@/services/api.services";
-import { toast } from "sonner";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { updateUserProfile } from '@/services/api.services';
+import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
+import PropTypes from 'prop-types';
 
 const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    name: data?.name || "",
+    name: data?.name || '',
     personalDetails: {
-      dob: data?.personalDetails?.dob ? new Date(data.personalDetails.dob).toISOString().split("T")[0] : "",
-      gender: data?.personalDetails?.gender || "",
-      address: data?.personalDetails?.address || "",
-      profession: data?.personalDetails?.profession || ""
+      dob: data?.personalDetails?.dob ? new Date(data.personalDetails.dob).toISOString().split('T')[0] : '',
+      gender: data?.personalDetails?.gender || '',
+      address: data?.personalDetails?.address || '',
+      profession: data?.personalDetails?.profession || ''
     },
-    phoneNumber: data?.phoneNumber || ""
+    phoneNumber: data?.phoneNumber || ''
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
       setFormData({
         ...formData,
         [parent]: {
@@ -41,8 +42,8 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
   };
 
   const handleSelectChange = (value, field) => {
-    if (field.includes(".")) {
-      const [parent, child] = field.split(".");
+    if (field.includes('.')) {
+      const [parent, child] = field.split('.');
       setFormData({
         ...formData,
         [parent]: {
@@ -65,16 +66,20 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
     try {
       const response = await updateUserProfile(formData);
       
-      if (response.status) {
-        toast.success("Personal details updated successfully");
+      if (response.status) {        toast.success('Personal details updated successfully', {
+          style: {
+            backgroundColor: '#10B981',
+            color: 'white',
+          }
+        });
         if (onSuccess) onSuccess();
         onClose();
       } else {
-        toast.error(response.message || "Failed to update details");
+        toast.error(response.message || 'Failed to update details');
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error("Something went wrong while updating your details");
+      console.error('Error updating profile:', error);
+      toast.error('Something went wrong while updating your details');
     } finally {
       setIsSubmitting(false);
     }
@@ -119,7 +124,7 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
         <Label htmlFor="gender">Gender</Label>
         <Select 
           value={formData.personalDetails.gender} 
-          onValueChange={(value) => handleSelectChange(value, "personalDetails.gender")}
+          onValueChange={(value) => handleSelectChange(value, 'personalDetails.gender')}
         >
           <SelectTrigger id="gender">
             <SelectValue placeholder="Select gender" />
@@ -160,11 +165,26 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save Changes"}
+          {isSubmitting ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
     </form>
   );
+};
+
+PersonalDetailsForm.propTypes = {
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    phoneNumber: PropTypes.string,
+    personalDetails: PropTypes.shape({
+      dob: PropTypes.string,
+      gender: PropTypes.string,
+      address: PropTypes.string,
+      profession: PropTypes.string
+    })
+  }),
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired
 };
 
 export default PersonalDetailsForm;

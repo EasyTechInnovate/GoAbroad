@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow 
 } from '@/components/ui/table';
-import { MultipleStudentSelect } from './components/tasks/MultipleStudentSelect';
+import { MultipleStudentSelect } from '@/components/tasks/MultipleStudentSelect';
 
 
 const mockActivities = [

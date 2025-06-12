@@ -98,7 +98,7 @@ const Login = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="../../public/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
           </div>
 
           <h1 className="text-2xl font-semibold mb-2">Login</h1>

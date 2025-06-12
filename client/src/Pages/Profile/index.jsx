@@ -23,8 +23,8 @@ const ProfilePage = () => {
       const response = await getUserProfile();
       setUserData(response.data);
     } catch (error) {
-      console.error("Error fetching user profile:", error);
-      setError(error.message || "Failed to load profile data");
+      console.error('Error fetching user profile:', error);
+      setError(error.message || 'Failed to load profile data');
     } finally {
       setLoading(false);
     }
@@ -306,13 +306,15 @@ const ProfilePage = () => {
   const handleCloseEditMode = () => {
     setEditMode(false);
   };
-
   const handleSuccess = async () => {
     try {
       setLoading(true);
+      // Fetch fresh profile data
       const response = await getUserProfile();
       if (response.data) {
         setUserData(response.data);
+        // Close edit mode
+        setEditMode(false);
         setNameData(response.data.name || '');
         setPersonalDetails({
           dob: response.data.personalDetails?.dob ? new Date(response.data.personalDetails.dob).toISOString().split('T')[0] : '',
@@ -524,14 +526,14 @@ const ProfilePage = () => {
                           <DataField
                             icon={<PhoneIcon className="w-5 h-5" />}
                             label="Phone"
-                            value={contactDetails.phoneNumber || "Not set"}
+                            value={contactDetails.phoneNumber || 'Not set'}
                             fieldName="phoneNumber"
                             onValueChange={handleContactDetailsChange}
                           />
                           <DataField
                             icon={<MailIcon className="w-5 h-5" />}
                             label="E-mail"
-                            value={userData?.email || "Not set"}
+                            value={userData?.email || 'Not set'}
                           />
                         </ProfileDetailsCard>
                       </div>

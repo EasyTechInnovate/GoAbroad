@@ -1,5 +1,5 @@
-import { StudentsTable } from './StudentsTable';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { StudentsTable } from './StudentsTable';
 
 export default function Students() {
   return (

@@ -89,7 +89,7 @@ const SignUp = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="../../public/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
           </div>
 
 

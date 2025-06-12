@@ -66,8 +66,8 @@ export const Navbar = ({ status }) => {
     return () => unsubscribe();
   }, []);
 
-  const buttonText = isLoggedIn ? "Dashboard" : "Get Started";
-  const buttonPath = isLoggedIn ? "/dashboard" : "/signup";
+  const buttonText = isLoggedIn ? 'Dashboard' : 'Get Started';
+  const buttonPath = isLoggedIn ? '/dashboard' : '/signup';
 
   return (
     <header
@@ -81,7 +81,7 @@ export const Navbar = ({ status }) => {
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2">
-            <img src="../../public/logo.svg" alt="Logo" className="h-10 w-10" />
+            <img src="/logo.svg" alt="Logo" className="h-10 w-10" />
             <span className="text-2xl font-bold">Goupbroad</span>
             </Link>
           </div>

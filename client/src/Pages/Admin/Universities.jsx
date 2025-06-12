@@ -29,7 +29,7 @@ import { uploadFile } from '@/services/uploadService';
 
 const Universities = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [universities, setUniversities] = useState([]);  
+  const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -368,8 +368,9 @@ const Universities = () => {
       setIsUploading(true);
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('category', 'university');
       const response = await uploadFile(formData);
-      
+
       if (selectedUniversity) {
         setSelectedUniversity({
           ...selectedUniversity,
@@ -412,7 +413,7 @@ const Universities = () => {
       formData.append('category', 'university');
 
       const response = await uploadFile(formData);
-      
+
       if (selectedUniversity) {
         setSelectedUniversity({
           ...selectedUniversity,
@@ -424,7 +425,7 @@ const Universities = () => {
           banner: response.data.url
         });
       }
-      
+
       toast.success('Banner uploaded successfully');
     } catch (error) {
       console.error('Error uploading banner:', error);
@@ -499,7 +500,7 @@ const Universities = () => {
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <div className="flex items-center">
                           <Avatar className="h-10 w-10 mr-2">
-                {university.logo ? (
+                            {university.logo ? (
                               <img src={university.logo} alt={university.name} className="w-full h-full object-cover" />
                             ) : (
                               <AvatarFallback>{university.name ? university.name.charAt(0) : 'U'}</AvatarFallback>
@@ -600,448 +601,439 @@ const Universities = () => {
       </div>
 
       <Dialog open={isViewDetailsOpen} onOpenChange={setIsViewDetailsOpen}>
-        <DialogContent className="sm:max-w-[600px]">          <DialogHeader>
-          <DialogTitle>University Details</DialogTitle>
-        </DialogHeader>
+        <DialogContent className="sm:max-w-[600px] max-h-[70vh] flex flex-col">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle>University Details</DialogTitle>
+          </DialogHeader>
           {selectedUniversity && (
-            <div className="grid gap-4 py-4 max-h-[80vh] overflow-y-auto">
-              {selectedUniversity.banner && (
-                <div className="relative w-full h-40 rounded-lg overflow-hidden">
-                  <img
-                    src={selectedUniversity.banner}
-                    alt={`${selectedUniversity.name} banner`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="flex items-center gap-4 pb-2">
-                <Avatar className="h-16 w-16">
-                  {selectedUniversity.logo ? (
-                    <img src={selectedUniversity.logo} alt={selectedUniversity.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <AvatarFallback className="text-xl">{selectedUniversity.name.charAt(0)}</AvatarFallback>
-                  )}
-                </Avatar>
-                <div>
-                  <h2 className="text-2xl font-bold">{selectedUniversity.name}</h2>
-                  <p className="text-muted-foreground">{selectedUniversity.location}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-4"><div>
-                <h3 className="font-semibold">Description</h3>
-                <p className="text-sm mt-1">{selectedUniversity.description}</p>
-              </div>
-
-                <div className="grid grid-cols-2 gap-4">
+            <div className="flex-1 overflow-y-auto pr-2">
+              <div className="grid gap-4 py-4">
+                <div className="flex items-center gap-4 pb-2">
+                  <Avatar className="h-16 w-16">
+                    {selectedUniversity.logo ? (
+                      <img src={selectedUniversity.logo} alt={selectedUniversity.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <AvatarFallback className="text-xl">{selectedUniversity.name.charAt(0)}</AvatarFallback>
+                    )}
+                  </Avatar>
                   <div>
-                    <h3 className="font-semibold">Location</h3>
-                    <p className="text-sm mt-1">{selectedUniversity.location}</p>
+                    <h2 className="text-2xl font-bold">{selectedUniversity.name}</h2>
+                    <p className="text-muted-foreground">{selectedUniversity.location}</p>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Address</h3>
-                    <p className="text-sm mt-1">{selectedUniversity.address || 'Not provided'}</p>
-                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4"><div>
+                  <h3 className="font-semibold">Description</h3>
+                  <p className="text-sm mt-1">{selectedUniversity.description}</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-semibold">University Type</h3>
-                    <p className="text-sm mt-1">{selectedUniversity.university_type || 'Not specified'}</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-semibold">Location</h3>
+                      <p className="text-sm mt-1">{selectedUniversity.location}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Address</h3>
+                      <p className="text-sm mt-1">{selectedUniversity.address || 'Not provided'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Website</h3>
-                    <a href={selectedUniversity.website_url} target="_blank" rel="noopener noreferrer" className="text-sm mt-1 text-blue-600 hover:underline">
-                      {selectedUniversity.website_url || 'Not available'}
-                    </a>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-semibold">Acceptance Rate</h3>
-                    <p className="text-sm mt-1">{selectedUniversity.acceptance_rate}%</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-semibold">University Type</h3>
+                      <p className="text-sm mt-1">{selectedUniversity.university_type || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Website</h3>
+                      <a href={selectedUniversity.website_url} target="_blank" rel="noopener noreferrer" className="text-sm mt-1 text-blue-600 hover:underline">
+                        {selectedUniversity.website_url || 'Not available'}
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">International Ranking</h3>
-                    <p className="text-sm mt-1">#{selectedUniversity.ranking?.international || 'N/A'}</p>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-semibold">Tuition Fee (per year)</h3>
-                    <p className="text-sm mt-1">${selectedUniversity.tuition_fees_per_year?.toLocaleString() || 'N/A'}</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-semibold">Acceptance Rate</h3>
+                      <p className="text-sm mt-1">{selectedUniversity.acceptance_rate}%</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">International Ranking</h3>
+                      <p className="text-sm mt-1">#{selectedUniversity.ranking?.international || 'N/A'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Application Fee</h3>
-                    <p className="text-sm mt-1">${selectedUniversity.application_fee?.toLocaleString() || 'N/A'}</p>
-                  </div>
-                </div>
 
-                <div>
-                  <h3 className="font-semibold">Application Deadline</h3>
-                  <p className="text-sm mt-1">
-                    {selectedUniversity.application_deadline
-                      ? new Date(selectedUniversity.application_deadline).toLocaleDateString()
-                      : 'N/A'}
-                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h3 className="font-semibold">Tuition Fee (per year)</h3>
+                      <p className="text-sm mt-1">${selectedUniversity.tuition_fees_per_year?.toLocaleString() || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Application Fee</h3>
+                      <p className="text-sm mt-1">${selectedUniversity.application_fee?.toLocaleString() || 'N/A'}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold">Application Deadline</h3>
+                    <p className="text-sm mt-1">
+                      {selectedUniversity.application_deadline
+                        ? new Date(selectedUniversity.application_deadline).toLocaleDateString()
+                        : 'N/A'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <DialogFooter className="gap-2">
-                <div className="mr-auto">
+                <DialogFooter className="gap-2 mt-4">
+                  <div className="mr-auto">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        setIsViewDetailsOpen(false);
+                        setIsDeleteConfirmOpen(true);
+                      }}
+                    >
+                      Delete University
+                    </Button>
+                  </div>
                   <Button
-                    variant="destructive"
-                    size="sm"
+                    variant="outline"
                     onClick={() => {
                       setIsViewDetailsOpen(false);
-                      setIsDeleteConfirmOpen(true);
+                      setSelectedUniversity(null);
                     }}
                   >
-                    Delete University
+                    Close
                   </Button>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsViewDetailsOpen(false);
-                    setSelectedUniversity(null);
-                  }}
-                >
-                  Close
-                </Button>
-                <Button
-                  onClick={() => {
-                    setIsViewDetailsOpen(false);
-                    setSelectedUniversity(selectedUniversity);
-                    setIsEditUniversityOpen(true);
-                  }}
-                >
-                  Edit University
-                </Button>
-              </DialogFooter>
+                  <Button
+                    onClick={() => {
+                      setIsViewDetailsOpen(false);
+                      setSelectedUniversity(selectedUniversity);
+                      setIsEditUniversityOpen(true);
+                    }}
+                  >
+                    Edit University
+                  </Button>
+                </DialogFooter>
+              </div>
             </div>
           )}
         </DialogContent>
-      </Dialog>      <Dialog open={isEditUniversityOpen} onOpenChange={(open) => {
+      </Dialog>
+      <Dialog open={isEditUniversityOpen} onOpenChange={(open) => {
         if (!open) {
           setCurrentStep(1);
           setSelectedUniversity(null);
         }
         setIsEditUniversityOpen(open);
       }}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Edit University</DialogTitle>
-            <DialogDescription>
-              {currentStep === 1 && 'Basic university information and media.'}
-              {currentStep === 2 && 'Programs and category information.'}
-              {currentStep === 3 && 'Rankings, fees, and additional details.'}
-            </DialogDescription>
-          </DialogHeader>
-          {selectedUniversity && (
-            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto pr-3">
-              {currentStep === 1 && (
-                <div className="grid gap-4">
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-name">University Name</Label>
-                    <Input
-                      id="edit-name"
-                      value={selectedUniversity.name}
-                      onChange={(e) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        name: e.target.value
-                      }))}
-                    />
-                  </div>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh]">
+          <div className="flex flex-col h-full">
+            <DialogHeader className="border-b pb-4">
+              <DialogTitle>Edit University</DialogTitle>
+              <DialogDescription>
+                {currentStep === 1 && 'Basic university information and media.'}
+                {currentStep === 2 && 'Programs and category information.'}
+                {currentStep === 3 && 'Rankings, fees, and additional details.'}
+              </DialogDescription>
+            </DialogHeader>
 
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-location">Location</Label>
-                    <Input
-                      id="edit-location"
-                      value={selectedUniversity.location}
-                      onChange={(e) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        location: e.target.value
-                      }))}
-                    />
-                  </div>
-
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-address">Address</Label>
-                    <Input
-                      id="edit-address"
-                      value={selectedUniversity.address}
-                      onChange={(e) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        address: e.target.value
-                      }))}
-                    />
-                  </div>
-
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-website">Website URL</Label>
-                    <Input
-                      id="edit-website"
-                      type="url"
-                      value={selectedUniversity.website_url}
-                      onChange={(e) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        website_url: e.target.value
-                      }))}
-                    />
-                  </div>
-
-                  <div className="grid gap-1.5">                  <Label htmlFor="edit-logo">Logo</Label>
-                    <div className="flex items-center gap-4">
-                      {selectedUniversity.logo && (
-                        <img
-                          src={selectedUniversity.logo}
-                          alt="University logo"
-                          className="h-16 w-16 object-contain"
-                        />
-                      )}
-                      <div className="flex-1 relative">
+            {selectedUniversity && (
+              <>
+                <div className="flex-1 overflow-y-auto">
+                  {currentStep === 1 && (
+                    <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-name">University Name</Label>
                         <Input
-                          id="edit-logo"
-                          type="file"
-                          accept="image/jpeg,image/png,image/gif,image/webp"
-                          onChange={handleLogoUpload}
-                          disabled={isUploading}
-                          className={isUploading ? 'opacity-50' : ''}
-                        />
-                        {isUploading && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          </div>
-                        )}
+                          id="edit-name"
+                          value={selectedUniversity.name}
+                          onChange={(e) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            name: e.target.value
+                          }))} />
                       </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground">Upload a logo image (JPEG, PNG, GIF, WebP; max 5MB)</p>
-                  </div>
 
-                  <div className="grid gap-1.5">                  
-                  <Label htmlFor="edit-banner">Banner</Label>
-                    <div className="space-y-4">
-                      {selectedUniversity.banner && (
-                        <div className="relative h-32 w-full rounded-md overflow-hidden">
-                          <img
-                            src={selectedUniversity.banner}
-                            alt="University banner"
-                            className="w-full h-full object-cover"
-                          />
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-location">Location</Label>
+                        <Input
+                          id="edit-location"
+                          value={selectedUniversity.location}
+                          onChange={(e) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            location: e.target.value
+                          }))} />
+                      </div>
+
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-address">Address</Label>
+                        <Input
+                          id="edit-address"
+                          value={selectedUniversity.address}
+                          onChange={(e) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            address: e.target.value
+                          }))} />
+                      </div>
+
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-website">Website URL</Label>
+                        <Input
+                          id="edit-website"
+                          type="url"
+                          value={selectedUniversity.website_url}
+                          onChange={(e) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            website_url: e.target.value
+                          }))} />
+                      </div>
+
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-logo">Logo</Label>
+                        <div className="flex items-center gap-4">
+                          {selectedUniversity.logo && (
+                            <img
+                              src={selectedUniversity.logo}
+                              alt="University logo"
+                              className="h-16 w-16 object-contain" />
+                          )}
+                          <div className="flex-1 relative">
+                            <Input
+                              id="edit-logo"
+                              type="file"
+                              accept="image/jpeg,image/png,image/gif,image/webp"
+                              onChange={handleLogoUpload}
+                              disabled={isUploading}
+                              className={isUploading ? 'opacity-50' : ''} />
+                            {isUploading && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      <div className="relative">
-                        <Input
-                          id="edit-banner"
-                          type="file"
-                          accept="image/jpeg,image/png,image/gif,image/webp"
-                          onChange={handleBannerUpload}
-                          disabled={isUploading}
-                          className={isUploading ? 'opacity-50' : ''}
-                        />
-                        {isUploading && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                        <p className="text-xs text-muted-foreground">Upload a logo image (JPEG, PNG, GIF, WebP; max 5MB)</p>
+                      </div>
+
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-banner">Banner</Label>
+                        <div className="space-y-4">
+                          {selectedUniversity.banner && (
+                            <div className="relative h-32 w-full rounded-md overflow-hidden">
+                              <img
+                                src={selectedUniversity.banner}
+                                alt="University banner"
+                                className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <div className="relative">
+                            <Input
+                              id="edit-banner"
+                              type="file"
+                              accept="image/jpeg,image/png,image/gif,image/webp"
+                              onChange={handleBannerUpload}
+                              disabled={isUploading}
+                              className={isUploading ? 'opacity-50' : ''} />
+                            {isUploading && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">Upload a banner image (JPEG, PNG, GIF, WebP; max 5MB)</p>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">Upload a banner image (JPEG, PNG, GIF, WebP; max 5MB)</p>
-                  </div>
+                  )}
+
+                  {currentStep === 2 && (
+                    <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-type">University Type</Label>
+                        <Select
+                          value={selectedUniversity.university_type || ''}
+                          onValueChange={(value) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            university_type: value
+                          }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Public">Public</SelectItem>
+                            <SelectItem value="Private">Private</SelectItem>
+                            <SelectItem value="Public-Private">Public-Private</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-description">Description</Label>
+                        <Textarea
+                          id="edit-description"
+                          value={selectedUniversity.description}
+                          onChange={(e) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            description: e.target.value
+                          }))} />
+                      </div>
+
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="edit-category">University Category</Label>
+                        <Select
+                          value={selectedUniversity.university_category || 'high-chance'}
+                          onValueChange={(value) => setSelectedUniversity(prev => ({
+                            ...prev,
+                            university_category: value
+                          }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categoryOptions.map(option => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === 3 && (
+                    <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="edit-national-rank">National Ranking</Label>
+                          <Input
+                            id="edit-national-rank"
+                            type="number"
+                            min="1"
+                            value={selectedUniversity.ranking?.national || ''}
+                            onChange={(e) => setSelectedUniversity(prev => ({
+                              ...prev,
+                              ranking: {
+                                ...prev.ranking,
+                                national: e.target.value ? Number(e.target.value) : null
+                              }
+                            }))} />
+                        </div>
+
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="edit-intl-rank">International Ranking</Label>
+                          <Input
+                            id="edit-intl-rank"
+                            type="number"
+                            min="1"
+                            value={selectedUniversity.ranking?.international || ''}
+                            onChange={(e) => setSelectedUniversity(prev => ({
+                              ...prev,
+                              ranking: {
+                                ...prev.ranking,
+                                international: e.target.value ? Number(e.target.value) : null
+                              }
+                            }))} />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="edit-acceptance-rate">Acceptance Rate (%)</Label>
+                          <Input
+                            id="edit-acceptance-rate"
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={selectedUniversity.acceptance_rate || ''}
+                            onChange={(e) => setSelectedUniversity(prev => ({
+                              ...prev,
+                              acceptance_rate: Math.min(100, Math.max(0, Number(e.target.value) || 0))
+                            }))} />
+                        </div>
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="edit-tuition">Tuition Fee (per year)</Label>
+                          <Input
+                            id="edit-tuition"
+                            type="number"
+                            min="0"
+                            value={selectedUniversity.tuition_fees_per_year || ''}
+                            onChange={(e) => setSelectedUniversity(prev => ({
+                              ...prev,
+                              tuition_fees_per_year: Math.max(0, Number(e.target.value) || 0)
+                            }))} />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="edit-application-fee">Application Fee</Label>
+                          <Input
+                            id="edit-application-fee"
+                            type="number"
+                            min="0"
+                            value={selectedUniversity.application_fee || ''}
+                            onChange={(e) => setSelectedUniversity(prev => ({
+                              ...prev,
+                              application_fee: Math.max(0, Number(e.target.value) || 0)
+                            }))} />
+                        </div>
+                        <div className="grid gap-1.5">
+                          <Label htmlFor="edit-deadline">Application Deadline</Label>
+                          <Input
+                            id="edit-deadline"
+                            type="date"
+                            value={selectedUniversity.application_deadline ? new Date(selectedUniversity.application_deadline).toISOString().split('T')[0] : ''}
+                            onChange={(e) => setSelectedUniversity(prev => ({
+                              ...prev,
+                              application_deadline: e.target.value
+                            }))} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
 
-              {currentStep === 2 && (
-                <div className="grid gap-4">
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-type">University Type</Label>
-                    <Select
-                      value={selectedUniversity.university_type || ''}
-                      onValueChange={(value) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        university_type: value
-                      }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Public">Public</SelectItem>
-                        <SelectItem value="Private">Private</SelectItem>
-                        <SelectItem value="Public-Private">Public-Private</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-description">Description</Label>
-                    <Textarea
-                      id="edit-description"
-                      value={selectedUniversity.description}
-                      onChange={(e) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        description: e.target.value
-                      }))}
-                    />
-                  </div>
-
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="edit-category">University Category</Label>
-                    <Select
-                      value={selectedUniversity.university_category || 'high-chance'}
-                      onValueChange={(value) => setSelectedUniversity(prev => ({
-                        ...prev,
-                        university_category: value
-                      }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categoryOptions.map(option => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="border-t pt-4 mt-4">
+                  <DialogFooter className="flex items-center justify-between px-2">
+                    <div>
+                      {currentStep > 1 && (
+                        <Button variant="outline" onClick={() => setCurrentStep(prev => prev - 1)}>
+                          <ChevronLeft className="mr-2 h-4 w-4" />
+                          Back
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditUniversityOpen(false);
+                          setSelectedUniversity(null);
+                          setCurrentStep(1);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleEditNext}
+                        disabled={isUploading}
+                      >
+                        {currentStep < 3 ? (
+                          <>
+                            {isUploading ? 'Uploading...' : 'Next'}
+                            {!isUploading && <ChevronRight className="ml-2 h-4 w-4" />}
+                          </>
+                        ) : (
+                          'Save Changes'
+                        )}
+                      </Button>
+                    </div>
+                  </DialogFooter>
                 </div>
-              )}
-
-              {currentStep === 3 && (
-                <div className="grid gap-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="edit-national-rank">National Ranking</Label>
-                      <Input
-                        id="edit-national-rank"
-                        type="number"
-                        min="1"
-                        value={selectedUniversity.ranking?.national || ''}
-                        onChange={(e) => setSelectedUniversity(prev => ({
-                          ...prev,
-                          ranking: {
-                            ...prev.ranking,
-                            national: e.target.value ? Number(e.target.value) : null
-                          }
-                        }))}
-                      />
-                    </div>
-
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="edit-intl-rank">International Ranking</Label>
-                      <Input
-                        id="edit-intl-rank"
-                        type="number"
-                        min="1"
-                        value={selectedUniversity.ranking?.international || ''}
-                        onChange={(e) => setSelectedUniversity(prev => ({
-                          ...prev,
-                          ranking: {
-                            ...prev.ranking,
-                            international: e.target.value ? Number(e.target.value) : null
-                          }
-                        }))}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="edit-acceptance-rate">Acceptance Rate (%)</Label>
-                      <Input
-                        id="edit-acceptance-rate"
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={selectedUniversity.acceptance_rate || ''}
-                        onChange={(e) => setSelectedUniversity(prev => ({
-                          ...prev,
-                          acceptance_rate: Math.min(100, Math.max(0, Number(e.target.value) || 0))
-                        }))}
-                      />
-                    </div>
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="edit-tuition">Tuition Fee (per year)</Label>
-                      <Input
-                        id="edit-tuition"
-                        type="number"
-                        min="0"
-                        value={selectedUniversity.tuition_fees_per_year || ''}
-                        onChange={(e) => setSelectedUniversity(prev => ({
-                          ...prev,
-                          tuition_fees_per_year: Math.max(0, Number(e.target.value) || 0)
-                        }))}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="edit-application-fee">Application Fee</Label>
-                      <Input
-                        id="edit-application-fee"
-                        type="number"
-                        min="0"
-                        value={selectedUniversity.application_fee || ''}
-                        onChange={(e) => setSelectedUniversity(prev => ({
-                          ...prev,
-                          application_fee: Math.max(0, Number(e.target.value) || 0)
-                        }))}
-                      />
-                    </div>
-                    <div className="grid gap-1.5">
-                      <Label htmlFor="edit-deadline">Application Deadline</Label>
-                      <Input
-                        id="edit-deadline"
-                        type="date"
-                        value={selectedUniversity.application_deadline ? new Date(selectedUniversity.application_deadline).toISOString().split('T')[0] : ''}
-                        onChange={(e) => setSelectedUniversity(prev => ({
-                          ...prev,
-                          application_deadline: e.target.value
-                        }))}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          <DialogFooter className="flex justify-between items-center w-full">
-            <div>
-              {currentStep > 1 && (
-                <Button variant="outline" onClick={() => setCurrentStep(prev => prev - 1)}>
-                  <ChevronLeft className="mr-2 h-4 w-4" />
-                  Back
-                </Button>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsEditUniversityOpen(false);
-                  setSelectedUniversity(null);
-                  setCurrentStep(1);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleEditNext}>
-                {currentStep < 3 ? (
-                  <>
-                    Next
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </>
-                ) : (
-                  'Save Changes'
-                )}
-              </Button>
-            </div>
-          </DialogFooter>
+              </>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -1060,7 +1052,7 @@ const Universities = () => {
           </DialogHeader>
 
           {currentStep === 1 && (
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
               <div className="grid grid-cols-1 gap-3">
                 <div className="grid gap-1.5">
                   <Label htmlFor="name">University Name *</Label>
@@ -1080,7 +1072,8 @@ const Universities = () => {
                     onChange={(e) => handleInputChange('location', e.target.value)}
                     placeholder="City, State, Country"
                   />
-                </div>                <div className="grid gap-1.5">
+                </div>                
+                <div className="grid gap-1.5">
                   <Label htmlFor="address">Address</Label>
                   <Input
                     id="address"
@@ -1088,7 +1081,9 @@ const Universities = () => {
                     onChange={(e) => handleInputChange('address', e.target.value)}
                     placeholder="Full university address"
                   />
-                </div>                <div className="grid gap-1.5">                  <Label htmlFor="website">Website URL</Label>
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="website">Website URL</Label>
                   <Input
                     id="website"
                     type="url"
@@ -1260,11 +1255,40 @@ const Universities = () => {
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-1.5">
-                  <Label htmlFor="ranking">Ranking</Label>
+                  <Label htmlFor="ranking-international">International Ranking</Label>
                   <Input
-                    id="ranking"
-                    value={newUniversity.ranking}
-                    onChange={(e) => handleInputChange('ranking', e.target.value)}
+                    id="ranking-international"
+                    type="number"
+                    min="1"
+                    value={newUniversity.ranking?.international || ''}
+                    onChange={(e) => handleInputChange('ranking', {
+                      ...newUniversity.ranking,
+                      international: e.target.value ? parseInt(e.target.value, 10) : null
+                    })}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    placeholder="e.g., 15"
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="ranking-national">National Ranking</Label>
+                  <Input
+                    id="ranking-national"
+                    type="number"
+                    min="1"
+                    value={newUniversity.ranking?.national || ''}
+                    onChange={(e) => handleInputChange('ranking', {
+                      ...newUniversity.ranking,
+                      national: e.target.value ? parseInt(e.target.value, 10) : null
+                    })}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                     placeholder="e.g., 15"
                   />
                 </div>
@@ -1326,12 +1350,14 @@ const Universities = () => {
             <div>
               <Button variant="outline" onClick={() => setIsAddUniversityOpen(false)} className="mr-2">
                 Cancel
-              </Button>
-              <Button onClick={handleAddUniversity}>
+              </Button>              <Button
+                onClick={handleAddUniversity}
+                disabled={isUploading}
+              >
                 {currentStep < 3 ? (
                   <>
-                    Next
-                    <ChevronRight className="ml-2 h-4 w-4" />
+                    {isUploading ? 'Uploading...' : 'Next'}
+                    {!isUploading && <ChevronRight className="ml-2 h-4 w-4" />}
                   </>
                 ) : (
                   'Add University'
