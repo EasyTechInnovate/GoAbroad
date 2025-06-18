@@ -38,11 +38,28 @@ router.route('/auth/signup').post(authController.signup);
 router.route('/payment/initiate').post(paymentMiddleWare, paymentController.initiatePayment);
 router.route('/payment/verify').post(paymentMiddleWare, paymentController.verifyPayment);
 
-// ******************** USER ROUTES ***********************************
-// user routes
+// ******************** STUDENTS ROUTES ***********************************
+// STUDENTS ROUTES
 router.route('/student/self').get(authentication, studentController.getSelfData);
 router.route('/student/profile').put(authentication, studentController.updateProfile);
-// ******************** USER ROUTES ***********************************
+
+
+router.route('/student/tasks')
+    .get(authentication, studentController.getStudentTasks);
+
+router.route('/student/tasks/:taskId/subtasks/:subtaskId/questionnaires')
+    .get(authentication, studentController.getSubtaskQuestionnaires);
+
+router.route('/student/tasks/:taskId/subtasks/:subtaskId/questionnaires/:questionnaireId')
+    .get(authentication, studentController.getQuestionnaireQuestionsWithResponses);
+
+router.route('/student/tasks/subtasks/questionnaires/question/responses')
+    .post(authentication, studentController.submitQuestionnaireResponses);
+
+
+router.route('/student/tasks/:taskId/subtasks/:subtaskId/documents')
+    .get(authentication, documentController.getStudentDocuments);
+// ******************** STUDENTS ROUTES ***********************************
 
 
 // ******************** ADMIN ROUTES ***********************************
@@ -206,6 +223,8 @@ router.route('/student/assigned-universities/:assignmentId')
     .put(authentication, studentController.updateAssignedUniversityStatus);
 
 // ********************  STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
+
+
 
 
 

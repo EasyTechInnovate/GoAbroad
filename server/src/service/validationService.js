@@ -19,14 +19,14 @@ export const ValidateProfileUpdate = Joi.object({
         validity: Joi.date().allow(null)
     }).allow(null),
     phoneNumber: Joi.string()
-      .pattern(/^\+([1-9]{1}[0-9]{1,2})\d{10}$/)
-      .required()
-      .trim()
-      .messages({
-        'string.pattern.base': 'Phone number must start with a country code (e.g., +918388656625)',
-        'string.empty': 'Phone number is required',
-        'any.required': 'Phone number is required',
-      }),
+        .pattern(/^\+([1-9]{1}[0-9]{1,2})\d{10}$/)
+        .required()
+        .trim()
+        .messages({
+            'string.pattern.base': 'Phone number must start with a country code (e.g., +918388656625)',
+            'string.empty': 'Phone number is required',
+            'any.required': 'Phone number is required',
+        }),
     personalDetails: Joi.object({
         dob: Joi.date().allow(null),
         gender: Joi.string().valid('MALE', 'FEMALE', 'OTHER').allow(null),
@@ -34,26 +34,26 @@ export const ValidateProfileUpdate = Joi.object({
         profession: Joi.string().allow(null)
     }).allow(null),
     name: Joi.string()
-      .min(1)
-      .max(100)
-      .optional()
-      .messages({
-        'string.empty': 'Name cannot be empty',
-        'string.min': 'Name must be at least 1 character long',
-        'string.max': 'Name must be at most 100 characters long',
-      }),
+        .min(1)
+        .max(100)
+        .optional()
+        .messages({
+            'string.empty': 'Name cannot be empty',
+            'string.min': 'Name must be at least 1 character long',
+            'string.max': 'Name must be at most 100 characters long',
+        }),
     profilePicture: Joi.string()
-      .uri()
-      .optional()
-      .messages({
-        'string.uri': 'Profile picture must be a valid URL',
-      }),
+        .uri()
+        .optional()
+        .messages({
+            'string.uri': 'Profile picture must be a valid URL',
+        }),
     email: Joi.string()
-      .email()
-      .optional()
-      .messages({
-        'string.email': 'Please provide a valid email address',
-      }),
+        .email()
+        .optional()
+        .messages({
+            'string.email': 'Please provide a valid email address',
+        }),
     collegeDetails: Joi.object({
         branch: Joi.string().allow(null),
         highestDegree: Joi.string().allow(null),
@@ -554,6 +554,24 @@ export const ValidateFilterDocuments = Joi.object({
         'number.min': 'Limit must be at least 1'
     })
 });
+export const ValidateGetStudentDocuments = Joi.object({
+    taskId: Joi.string().required().messages({
+        'string.base': 'Task ID must be a valid ObjectId',
+        'any.required': 'Task ID is required'
+    }),
+    subtaskId: Joi.string().required().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId',
+        'any.required': 'Subtask ID is required'
+    }),
+    page: Joi.number().integer().min(1).optional().default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).optional().default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.min': 'Limit must be at least 1'
+    })
+});
 // ############ Admin Side Document Manager END ################
 
 // ############ Admin Side Student University Assignment ################
@@ -660,6 +678,86 @@ export const ValidateUpdateAssignedUniversityStatus = Joi.object({
         'string.base': 'University status must be a string',
     })
 });
+
+
+// ******************** STUDENT  TASK , SUBTASK , QUESTIONIORS ASSIGNEMENT ***********************
+
+export const ValidateGetStudentTasks = Joi.object({
+    page: Joi.number().integer().min(1).optional().default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).optional().default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.min': 'Limit must be at least 1'
+    }),
+    sortOrder: Joi.string().valid('asc', 'desc').optional().default('desc').messages({
+        'string.base': 'Sort order must be a string',
+        'any.only': 'Sort order must be either asc or desc'
+    })
+});
+
+export const ValidateGetSubtaskQuestionnaires = Joi.object({
+    taskId: Joi.string().required().messages({
+        'string.base': 'Task ID must be a valid ObjectId',
+        'any.required': 'Task ID is required'
+    }),
+    subtaskId: Joi.string().required().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId',
+        'any.required': 'Subtask ID is required'
+    })
+});
+
+export const ValidateGetQuestionnaireQuestions = Joi.object({
+    taskId: Joi.string().required().messages({
+        'string.base': 'Task ID must be a valid ObjectId',
+        'any.required': 'Task ID is required'
+    }),
+    subtaskId: Joi.string().required().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId',
+        'any.required': 'Subtask ID is required'
+    }),
+    questionnaireId: Joi.string().required().messages({
+        'string.base': 'Questionnaire ID must be a valid ObjectId',
+        'any.required': 'Questionnaire ID is required'
+    })
+});
+
+
+export const ValidateSubmitQuestionnaireResponse = Joi.object({
+    taskId: Joi.string().required().messages({
+        'string.base': 'Task ID must be a valid ObjectId',
+        'any.required': 'Task ID is required'
+    }),
+    subtaskId: Joi.string().required().messages({
+        'string.base': 'Subtask ID must be a valid ObjectId',
+        'any.required': 'Subtask ID is required'
+    }),
+    questionnaireId: Joi.string().required().messages({
+        'string.base': 'Questionnaire ID must be a valid ObjectId',
+        'any.required': 'Questionnaire ID is required'
+    }),
+    responses: Joi.array().items(Joi.object({
+        questionId: Joi.string().required().messages({
+            'string.base': 'Question ID must be a valid ObjectId',
+            'any.required': 'Question ID is required'
+        }),
+        answer: Joi.alternatives().try(
+            Joi.string().allow(''), // TEXT, PARAGRAPH
+            Joi.array().items(Joi.string()), // MULTIPLE_CHOICE, CHECKBOX
+            Joi.string().uri(), // FILE
+            Joi.date() // DATE
+        ).required().messages({
+            'any.required': 'Answer is required'
+        })
+    })).min(1).required().messages({
+        'array.min': 'At least one response is required',
+        'any.required': 'Responses array is required'
+    })
+});
+
+
+// ******************** STUDENT  TASK , SUBTASK , QUESTIONIORS ASSIGNEMENT  END***********************
 
 // ############ Student Assign University  ################
 export const validateJoiSchema = (schema, value) => {

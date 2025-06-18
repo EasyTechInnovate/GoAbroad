@@ -1,7 +1,7 @@
 import httpError from '../../util/httpError.js';
 import responseMessage from '../../constant/responseMessage.js';
 import httpResponse from '../../util/httpResponse.js';
-import {ValidateCreateDocument, ValidateUpdateDocument, ValidateFilterDocuments, validateJoiSchema } from '../../service/validationService.js';
+import { ValidateCreateDocument, ValidateUpdateDocument, ValidateFilterDocuments, validateJoiSchema, ValidateGetStudentDocuments } from '../../service/validationService.js';
 import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
 import Document from '../../model/documentModel.js';
 import mongoose from 'mongoose';
@@ -64,7 +64,7 @@ export default {
     updateDocument: async (req, res, next) => {
         try {
 
-            const {documentId}= req.params
+            const { documentId } = req.params
             const { value, error } = validateJoiSchema(ValidateUpdateDocument, req.body);
             if (error) return httpError(next, error, req, 422);
 
@@ -73,10 +73,10 @@ export default {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
 
-            const {  studentId, taskId, subtaskId, fileUrl, fileName, fileSize, fileType, status } = value;
+            const { studentId, taskId, subtaskId, fileUrl, fileName, fileSize, fileType, status } = value;
 
-            if(!mongoose.Types.ObjectId.isValid(documentId)){
-                 return httpError(next, new Error("Valid Document Id Required"), req, 403);
+            if (!mongoose.Types.ObjectId.isValid(documentId)) {
+                return httpError(next, new Error("Valid Document Id Required"), req, 403);
             }
             // Find document
             const document = await Document.findById(documentId);
@@ -226,6 +226,66 @@ export default {
             }
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, document);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+
+    // Get all documents for a specific task and subtask assigned to the student
+    getStudentDocuments: async (req, res, next) => {
+        try {
+            const { value, error } = validateJoiSchema(ValidateGetStudentDocuments, { ...req.params, ...req.query });
+            if (error) return httpError(next, error, req, 422);
+
+            const { taskId, subtaskId, page, limit } = value;
+            const skip = (page - 1) * limit;
+
+            // Verify that the task and subtask are assigned to the student
+            const assignment = await TaskSubtaskAssignment.findOne({
+                studentId: req.authenticatedStudent._id,
+                taskId,
+                subtaskId,
+            }).lean();
+
+            if (!assignment) {
+                return httpError(next, new Error('Task or subtask not assigned to the student or not accessible'), req, 404);
+            }
+
+            // Fetch documents for the student, task, and subtask
+            const totalDocuments = await Document.countDocuments({
+                studentId: req.authenticatedStudent._id,
+                taskId,
+                subtaskId
+            });
+
+            const documents = await Document.find({
+                studentId: req.authenticatedStudent._id,
+                taskId,
+                subtaskId
+            })
+                .skip(skip)
+                .limit(limit)
+                .sort({ uploadedAt: -1 })
+                .populate('studentId', 'name email')
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            const pagination = {
+                total: totalDocuments,
+                page,
+                limit,
+                totalPages: Math.ceil(totalDocuments / limit),
+                hasNextPage: page < Math.ceil(totalDocuments / limit),
+                hasPrevPage: page > 1
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                documents,
+                pagination
+            });
         } catch (err) {
             httpError(next, err, req, 500);
         }
