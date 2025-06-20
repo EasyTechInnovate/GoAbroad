@@ -7,12 +7,12 @@ const universitySchema = new mongoose.Schema({
         trim: true
     },
     logo: {
-        type: String, 
+        type: String,
         trim: true,
         default: null
     },
     banner: {
-        type: String, 
+        type: String,
         trim: true,
         default: null
     },

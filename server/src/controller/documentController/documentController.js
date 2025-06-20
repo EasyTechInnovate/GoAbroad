@@ -231,9 +231,8 @@ export default {
         }
     },
 
-
     // Get all documents for a specific task and subtask assigned to the student
-    getStudentDocuments: async (req, res, next) => {
+    getStudentDocumentsByTaskAndSubtaskId: async (req, res, next) => {
         try {
             const { value, error } = validateJoiSchema(ValidateGetStudentDocuments, { ...req.params, ...req.query });
             if (error) return httpError(next, error, req, 422);
@@ -289,5 +288,187 @@ export default {
         } catch (err) {
             httpError(next, err, req, 500);
         }
+    },
+
+    getStudentAllDocuments: async (req, res, next) => {
+        try {
+
+
+            const { page, limit } = req.query;
+
+            if (!page || +page <= 0 || !limit || +limit < 1) {
+                return httpError(next, new Error("All Field Are Required"), req, 400)
+            }
+            const skip = (page - 1) * limit;
+
+            const assignments = await TaskSubtaskAssignment.find({
+                studentId: req.authenticatedStudent._id,
+            })
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .lean();
+
+            const documents = await Document.find({
+                studentId: req.authenticatedStudent._id
+            })
+                .skip(skip)
+                .limit(limit)
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            const structuredResponse = assignments.reduce((acc, assignment) => {
+                const taskId = assignment.taskId._id.toString();
+                if (!acc[taskId]) {
+                    acc[taskId] = {
+                        task: {
+                            _id: assignment.taskId._id,
+                            title: assignment.taskId.title
+                        },
+                        subtasks: []
+                    };
+                }
+
+                const subtask = assignment.subtaskId;
+                const subtaskDocs = documents.filter(doc =>
+                    doc.taskId._id.toString() === taskId &&
+                    doc.subtaskId._id.toString() === subtask._id.toString()
+                );
+
+                if (subtaskDocs.length > 0) {
+                    acc[taskId].subtasks.push({
+                        _id: subtask._id,
+                        title: subtask.title,
+                        documents: subtaskDocs.map(doc => ({
+                            _id: doc._id,
+                            fileUrl: doc.fileUrl,
+                            fileName: doc.fileName,
+                            fileSize: doc.fileSize,
+                            fileType: doc.fileType,
+                            uploader: doc.uploader,
+                            status: doc.status,
+                            createdAt: doc.createdAt
+                        }))
+                    });
+                }
+
+                return acc;
+            }, {});
+
+            const totalDocuments = await Document.countDocuments({ studentId: req.authenticatedStudent._id });
+            const pagination = {
+                total: totalDocuments,
+                page: +page,
+                limit,
+                totalPages: Math.ceil(totalDocuments / limit),
+                hasNextPage: page < Math.ceil(totalDocuments / limit),
+                hasPrevPage: page > 1
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                documents: Object.values(structuredResponse),
+                pagination
+            });
+        } catch (err) {
+            console.log(err);
+
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // ************* ADMIN SIDE CONTROLLER ******************
+    getStudentAllDocumentsMembers: async (req, res, next) => {
+        try {
+
+
+            const { studentId } = req.params
+
+            const { page, limit } = req.query;
+
+            if (!page || +page <= 0 || !limit || +limit < 1) {
+                return httpError(next, new Error("All Field Are Required"), req, 400)
+            }
+            if (!studentId || !mongoose.Types.ObjectId.isValid(studentId)) {
+                return httpError(next, new Error("Student Id Required"), req, 400)
+
+            }
+            const skip = (page - 1) * limit;
+
+            const assignments = await TaskSubtaskAssignment.find({
+                studentId: studentId,
+            })
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .lean();
+
+            const documents = await Document.find({
+                studentId: studentId
+            })
+                .skip(skip)
+                .limit(limit)
+                .populate('taskId', 'title')
+                .populate('subtaskId', 'title')
+                .populate('uploader', 'name email')
+                .lean();
+
+            const structuredResponse = assignments.reduce((acc, assignment) => {
+                const taskId = assignment.taskId._id.toString();
+                if (!acc[taskId]) {
+                    acc[taskId] = {
+                        task: {
+                            _id: assignment.taskId._id,
+                            title: assignment.taskId.title
+                        },
+                        subtasks: []
+                    };
+                }
+
+                const subtask = assignment.subtaskId;
+                const subtaskDocs = documents.filter(doc =>
+                    doc.taskId._id.toString() === taskId &&
+                    doc.subtaskId._id.toString() === subtask._id.toString()
+                );
+
+                if (subtaskDocs.length > 0) {
+                    acc[taskId].subtasks.push({
+                        _id: subtask._id,
+                        title: subtask.title,
+                        documents: subtaskDocs.map(doc => ({
+                            _id: doc._id,
+                            fileUrl: doc.fileUrl,
+                            fileName: doc.fileName,
+                            fileSize: doc.fileSize,
+                            fileType: doc.fileType,
+                            uploader: doc.uploader,
+                            status: doc.status,
+                            createdAt: doc.createdAt
+                        }))
+                    });
+                }
+
+                return acc;
+            }, {});
+
+            const totalDocuments = await Document.countDocuments({ studentId: studentId });
+            const pagination = {
+                total: totalDocuments,
+                page: +page,
+                limit,
+                totalPages: Math.ceil(totalDocuments / limit),
+                hasNextPage: page < Math.ceil(totalDocuments / limit),
+                hasPrevPage: page > 1
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                documents: Object.values(structuredResponse),
+                pagination
+            });
+        } catch (err) {
+            console.log(err);
+
+            httpError(next, err, req, 500);
+        }
     }
+    // ************* ADMIN SIDE CONTROLLER ******************
 };

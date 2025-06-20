@@ -20,6 +20,7 @@ import taskController from '../controller/taskController/taskController.js'
 import taskSubtaskAssignmentController from '../controller/taskController/taskSubtaskAssignmentController.js'
 import documentController from '../controller/documentController/documentController.js'
 import studentUniversityAssignmentController from '../controller/University/studentUniversityAssignmentController.js'
+import applicationController from '../controller/applicationController/applicationController.js'
 
 const router = Router()
 
@@ -58,7 +59,9 @@ router.route('/student/tasks/subtasks/questionnaires/question/responses')
 
 
 router.route('/student/tasks/:taskId/subtasks/:subtaskId/documents')
-    .get(authentication, documentController.getStudentDocuments);
+    .get(authentication, documentController.getStudentDocumentsByTaskAndSubtaskId);
+router.route('/student/tasks/documents')
+    .get(authentication, documentController.getStudentAllDocuments);
 // ******************** STUDENTS ROUTES ***********************************
 
 
@@ -186,6 +189,9 @@ router.route('/admin/tasks/:taskId/students/remove')
 // Route for updating StudentTaskAssignment (ADMIN only)
 router.route('/admin/student-task-assignments/update')
     .put(adminOnly, studentTaskAssignmentController.updateStudentTaskAssignment);
+
+router.route('/admin/students/:studentId/task-subtask-question-details')
+    .get(memberAccess, adminController.getAdminStudentTaskSubtaskQuestionsDetails);
 // ******************** TASK ROUTES END ***********************************
 
 // ******************** DOCUMENT ROUTES ***********************************
@@ -202,6 +208,9 @@ router.route('/admin/documents/:documentId')
     .get(memberAccess, documentController.getDocumentById)
     .put(adminEditorOnly, documentController.updateDocument)
     .delete(adminEditorOnly, documentController.deleteDocument);
+
+
+router.route('/admin/documents/student/:studentId').get(memberAccess, documentController.getStudentAllDocumentsMembers)
 // ******************** DOCUMENT ROUTES END ***********************************
 
 // ******************** ADMIN Student University Assignement ***********************************
@@ -226,6 +235,15 @@ router.route('/student/assigned-universities/:assignmentId')
 
 
 
+// ********************* APPLICATION CONTROLLER ROUTES ******************
+router.route('/admin/applications')
+    .get(memberAccess, applicationController.getApplications)
+    .post(adminOnly, applicationController.createApplication);
 
+router.route('/admin/applications/:applicationId')
+    .get(memberAccess, applicationController.getApplicationById)
+    .put(adminEditorOnly, applicationController.updateApplication)
+    .delete(adminEditorOnly, applicationController.deleteApplication);
+// ********************* APPLICATION CONTROLLER ROUTES END ******************
 
 export default router

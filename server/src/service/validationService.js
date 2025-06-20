@@ -759,6 +759,75 @@ export const ValidateSubmitQuestionnaireResponse = Joi.object({
 
 // ******************** STUDENT  TASK , SUBTASK , QUESTIONIORS ASSIGNEMENT  END***********************
 
+export const ValidateGetAdminStudentTaskSubtaskQuestionsDetails = Joi.object({
+    studentId: Joi.string().required().messages({
+        'string.base': 'Student ID must be a valid ObjectId',
+        'any.required': 'Student ID is required'
+    }),
+    page: Joi.number().integer().min(1).optional().default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).optional().default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.min': 'Limit must be at least 1'
+    })
+});
+
+
+// ********************* APPLICATION VALIDATION **********************
+// Validation for creating an application
+export const ValidateCreateApplication = Joi.object({
+    studentId: Joi.string().required().messages({
+        'string.base': 'Student ID must be a valid ObjectId',
+        'any.required': 'Student ID is required'
+    }),
+    universityId: Joi.string().required().messages({
+        'string.base': 'University ID must be a valid ObjectId',
+        'any.required': 'University ID is required'
+    }),
+    taskAssignments: Joi.array().items(Joi.string().required().messages({
+        'string.base': 'Task Assignment ID must be a valid ObjectId',
+        'any.required': 'Task Assignment ID is required'
+    })).min(1).required().messages({
+        'array.min': 'At least one task assignment is required',
+        'any.required': 'Task assignments are required'
+    }),
+    assignTo: Joi.string().optional().messages({
+        'string.base': 'Assign To must be a valid ObjectId'
+    })
+});
+
+// Validation for updating an application
+export const ValidateUpdateApplication = Joi.object({
+    applicationId: Joi.string().required().messages({
+        'string.base': 'Application ID must be a valid ObjectId',
+        'any.required': 'Application ID is required'
+    }),
+    status: Joi.string().valid('UNDER_REVIEW', 'SUBMITTED', 'REVIEWED', 'APPROVED', 'DRAFT', 'REJECTED').optional(),
+    progress: Joi.number().min(0).max(100).optional(),
+    taskAssignments: Joi.array().items(Joi.string().required().messages({
+        'string.base': 'Task Assignment ID must be a valid ObjectId',
+        'any.required': 'Task Assignment ID is required'
+    })).optional(),
+    assignTo: Joi.string().optional().messages({
+        'string.base': 'Assign To must be a valid ObjectId'
+    })
+}).min(1);
+
+// Validation for filtering applications
+export const ValidateFilterApplications = Joi.object({
+    status: Joi.string().valid('UNDER_REVIEW', 'SUBMITTED', 'REVIEWED', 'APPROVED', 'DRAFT', 'REJECTED').optional(),
+    studentId: Joi.string().optional(),
+    universityId: Joi.string().optional(),
+    search: Joi.string().optional(),
+    page: Joi.number().integer().min(1).optional().default(1),
+    limit: Joi.number().integer().min(1).optional().default(10)
+});
+
+// ********************* APPLICATION VALIDATION END **********************
+//
+
 // ############ Student Assign University  ################
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });

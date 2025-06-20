@@ -24,9 +24,9 @@ const studentTaskAssignmentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    dueDate:{
-        type:Date,
-        default:null
+    dueDate: {
+        type: Date,
+        default: null
     },
 
 }, {

@@ -14,26 +14,26 @@ const applicationSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["UNDER_REVIEW", "SUBMITTED", "REVIEWED", "APPROVED", "DRAFT", "REJECTED"],
-        default: "UNDER_REVIEW"
+        default: "DRAFT"
     },
-    progress:{
-        type:Number,
-        default:0
+    progress: {
+        type: Number,
+        default: 0
     },
-    tasks: [
+    taskAssignments: [
         {
-            taskId: {
+            taskAssignmentId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Task',
+                ref: 'StudentTaskAssignment',
                 required: true
-            },
-            assignedAt: {
-                type: Date,
-                default: Date.now
             }
         }
     ],
-
+    assignTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Member',
+        required: true
+    }
 }, {
     timestamps: true,
     versionKey: false
