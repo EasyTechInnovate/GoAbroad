@@ -1,7 +1,7 @@
 import httpResponse from '../../util/httpResponse.js';
 import responseMessage from '../../constant/responseMessage.js';
 import httpError from '../../util/httpError.js';
-import { ValidateMemberCreate, ValidateMemberUpdate, ValidatePasswordUpdate, ValidateLogin, validateJoiSchema, ValidateMembersQuery, ValidateGetAdminStudentTaskSubtaskQuestionsDetails } from '../../service/validationService.js';
+import { ValidateMemberCreate, ValidateMemberUpdate, ValidatePasswordUpdate, ValidateLogin, validateJoiSchema, ValidateMembersQuery, ValidateGetAdminStudentTaskSubtaskQuestionsDetails, ValidateGetStudentActivities } from '../../service/validationService.js';
 import quicker from '../../util/quicker.js';
 import config from '../../config/config.js';
 import Member from "../../model/membersModel.js"
@@ -9,6 +9,8 @@ import Student from '../../model/studentModel.js';
 import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
 import SubtaskQuestionnaireAssignment from "../../model/subtaskQuestionnaireAssignmentModel.js"
 import Response from "../../model/responseModel.js"
+import mongoose from 'mongoose';
+import StudentActivity from '../../model/studentActivitySchema.js';
 export default {
     // All members: Login with cookie
     login: async (req, res, next) => {
@@ -389,6 +391,64 @@ export default {
         } catch (err) {
             httpError(next, err, req, 500);
         }
-    }
+    },
     // ******************* ADMIN STUDNET TASK *********************
+
+    getStudentActivities: async (req, res, next) => {
+        try {
+            const {
+                page = 1,
+                limit = 10,
+                search,
+                studentId,
+                status
+            } = req.query;
+
+
+            const { error, value } = validateJoiSchema(ValidateGetStudentActivities, req.query);
+            if (error) return httpError(next, error, req, 422);
+
+            const query = {};
+            if (studentId) query.studentId = mongoose.Types.ObjectId(studentId);
+            if (status) query.status = status;
+            if (search) {
+                query.$or = [
+                    { 'message': { $regex: search, $options: 'i' } },
+                    { 'studentId.name': { $regex: search, $options: 'i' } }
+                ];
+            }
+
+            const skip = (page - 1) * limit;
+            const total = await StudentActivity.countDocuments(query);
+
+            const activities = await StudentActivity.find(query)
+                .populate('studentId', 'name email')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(parseInt(limit))
+                .lean();
+
+            const responseData = {
+                total: total,
+                pages: Math.ceil(total / limit),
+                currentPage: parseInt(page),
+                limit: parseInt(limit),
+                activities: activities.map(activity => ({
+                    _id: activity._id,
+                    student: activity.studentId,
+                    activityType: activity.activityType,
+                    message: activity.message,
+                    status: activity.status,
+                    details: activity.details,
+
+                    createdAt: activity.createdAt,
+                    updatedAt: activity.updatedAt
+                }))
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    }
 };

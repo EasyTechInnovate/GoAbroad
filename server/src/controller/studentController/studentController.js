@@ -9,6 +9,8 @@ import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
 import SubtaskQuestionnaireAssignment from '../../model/subtaskQuestionnaireAssignmentModel.js';
 import Questionnaire from '../../model/questionnaireModel.js';
 import Response from '../../model/responseModel.js';
+import StudentActivity from '../../model/studentActivitySchema.js';
+import { ACTIVITY_STATUSES, ACTIVITY_TYPES } from '../../constant/application.js';
 
 export default {
     getSelfData: async (req, res, next) => {
@@ -136,6 +138,16 @@ export default {
                 .populate('universityId')
                 .populate('assignedBy', 'name email')
                 .lean();
+
+
+            const activity = new StudentActivity({
+                studentId: assignment.studentId,
+                activityType: ACTIVITY_TYPES.UNIVERSITY_STATUS_UPDATED,
+                message: `Student updated university status for assignment ${populatedAssignment?.universityId?.name}`,
+                status: ACTIVITY_STATUSES.UPDATED,
+                details: { assignmentId, admissionStatus, universityStatus }
+            });
+            await activity.save();
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, {
                 message: 'Assigned university status updated successfully',
@@ -496,9 +508,19 @@ export default {
                         submittedAt: new Date()
                     }).save();
                 }
+
             });
 
             await Promise.all(operations);
+
+            const activity = new StudentActivity({
+                studentId: req.authenticatedStudent._id,
+                activityType: ACTIVITY_TYPES.QUESTIONNAIRE_SUBMITTED,
+                message: `Student submitted responses for questionnaire ${questionnaire?.title}`,
+                status: ACTIVITY_STATUSES.SUBMITTED,
+                details: { taskId, subtaskId, questionnaireId }
+            });
+            await activity.save();
 
             httpResponse(req, res, 201, responseMessage.SUCCESS, {
                 message: 'Responses submitted successfully'
