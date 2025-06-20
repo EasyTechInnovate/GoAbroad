@@ -6,24 +6,53 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DatePicker } from '@/components/ui/date-picker';
+
 import { updateUserProfile, uploadFile } from '@/services/api.services';
 import { toast } from 'sonner';
 import { Upload, Loader2 } from 'lucide-react';
 
+const validatePhoneNumber = (number) => {
+
+  const phoneRegex = /^\+\d{2,3}\d{10}$/;
+  return phoneRegex.test(number);
+};
+
+const formatPhoneNumber = (number) => {
+  if (!number) return '';
+
+
+  const cleaned = number.replace(/[^\d+]/g, '');
+  
+  // If it doesn't start with +, add +91
+  if (!cleaned.startsWith('+')) {
+    return '+91' + cleaned;
+  }
+  
+  // Keep the + and the numbers
+  return cleaned;
+};
+
 const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
-  const [formData, setFormData] = useState({    name: userData?.name || '',
+
+  const createSafeDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? '' : date.toISOString().split('T')[0];
+  };
+
+  const [formData, setFormData] = useState({
+    name: userData?.name || '',
     phoneNumber: userData?.phoneNumber || '',
     profilePicture: userData?.profilePicture || '',
     personalDetails: {
-      dob: userData?.personalDetails?.dob ? new Date(userData.personalDetails.dob) : null,
+      dob: createSafeDate(userData?.personalDetails?.dob),
       gender: userData?.personalDetails?.gender || '',
       address: userData?.personalDetails?.address || '',
       profession: userData?.personalDetails?.profession || ''
     },
     programDetails: {
       program: userData?.programDetails?.program || '',
-      validity: userData?.programDetails?.validity ? new Date(userData.programDetails.validity) : null,
+      validity: createSafeDate(userData?.programDetails?.validity),
     },
     collegeDetails: {
       branch: userData?.collegeDetails?.branch || '',
@@ -35,10 +64,9 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
       noOfBacklogs: userData?.collegeDetails?.noOfBacklogs || '',
       admissionTerm: userData?.collegeDetails?.admissionTerm || '',
       coursesApplying: userData?.collegeDetails?.coursesApplying?.join(', ') || ''
-    },
-    greDetails: {
-      grePlane: userData?.greDetails?.grePlane ? new Date(userData.greDetails.grePlane) : null,
-      greDate: userData?.greDetails?.greDate ? new Date(userData.greDetails.greDate) : null,
+    },    greDetails: {
+      grePlane: createSafeDate(userData?.greDetails?.grePlane),
+      greDate: createSafeDate(userData?.greDetails?.greDate),
       greScore: {
         verbal: userData?.greDetails?.greScore?.verbal || '',
         quant: userData?.greDetails?.greScore?.quant || '',
@@ -47,8 +75,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
       retakingGRE: userData?.greDetails?.retakingGRE || ''
     },
     ieltsDetails: {
-      ieltsPlan: userData?.ieltsDetails?.ieltsPlan ? new Date(userData.ieltsDetails.ieltsPlan) : null,
-      ieltsDate: userData?.ieltsDetails?.ieltsDate ? new Date(userData.ieltsDetails.ieltsDate) : null,
+      ieltsPlan: createSafeDate(userData?.ieltsDetails?.ieltsPlan),
+      ieltsDate: createSafeDate(userData?.ieltsDetails?.ieltsDate),
       ieltsScore: {
         reading: userData?.ieltsDetails?.ieltsScore?.reading || '',
         writing: userData?.ieltsDetails?.ieltsScore?.writing || '',
@@ -56,10 +84,9 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
         listening: userData?.ieltsDetails?.ieltsScore?.listening || '',
       },
       retakingIELTS: userData?.ieltsDetails?.retakingIELTS || ''
-    },
-    toeflDetails: {
-      toeflPlan: userData?.toeflDetails?.toeflPlan ? new Date(userData.toeflDetails.toeflPlan) : null,
-      toeflDate: userData?.toeflDetails?.toeflDate ? new Date(userData.toeflDetails.toeflDate) : null,
+    },    toeflDetails: {
+      toeflPlan: createSafeDate(userData?.toeflDetails?.toeflPlan),
+      toeflDate: createSafeDate(userData?.toeflDetails?.toeflDate),
       toeflScore: {
         reading: userData?.toeflDetails?.toeflScore?.reading || '',
         writing: userData?.toeflDetails?.toeflScore?.writing || '',
@@ -69,7 +96,7 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
     },
     visa: {
       countriesPlanningToApply: userData?.visa?.countriesPlanningToApply?.join(', ') || '',
-      visaInterviewDate: userData?.visa?.visaInterviewDate ? new Date(userData.visa.visaInterviewDate) : null,
+      visaInterviewDate: createSafeDate(userData?.visa?.visaInterviewDate),
       visaInterviewLocation: userData?.visa?.visaInterviewLocation || ''
     }
   });
@@ -80,30 +107,34 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
   const handleInputChange = (section, field, value) => {
     if (section) {
       if (field.includes('.')) {
+        // Handle nested score objects (e.g., greScore.verbal)
         const [subSection, subField] = field.split('.');
-        setFormData({
-          ...formData,
+        setFormData(prev => ({
+          ...prev,
           [section]: {
-            ...formData[section],
+            ...prev[section],
             [subSection]: {
-              ...formData[section][subSection],
+              ...prev[section][subSection],
               [subField]: value
             }
           }
-        });
+        }));
       } else {
-        setFormData({
-          ...formData,
+        // Handle regular section fields
+        setFormData(prev => ({
+          ...prev,
           [section]: {
-            ...formData[section],
+            ...prev[section],
             [field]: value
           }
-        });
+        }));
       }
-    } else {      setFormData({
-        ...formData,
+    } else {
+      // Handle top-level fields
+      setFormData(prev => ({
+        ...prev,
         [field]: value
-      });
+      }));
     }
   };
 
@@ -143,12 +174,30 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
       setImageUploading(false);
     }
   };
+  const handlePhoneNumberChange = (e) => {
+    const input = e.target.value;
+    
+    // Format the phone number
+    const formattedNumber = formatPhoneNumber(input);
+    
+    // Only update if the number is valid or empty
+    if (!formattedNumber || formattedNumber === '+' || validatePhoneNumber(formattedNumber) || formattedNumber.length <= 13) {
+      handleInputChange(null, 'phoneNumber', formattedNumber);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    
+    // Validate phone number before submission
+    if (!validatePhoneNumber(formData.phoneNumber)) {
+      toast.error('Phone number must start with country code (e.g., +918388656625)');
+      return;
+    }
 
     try {
+      setLoading(true);
+      
       const safeNumber = (value) => {
         const num = Number(value);
         return isNaN(num) ? 0 : num;
@@ -162,20 +211,27 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
       
       const fallbackValue = (value, fallback = 'N/A') => {
         return value || fallback;
-      };      const processedFormData = {
+      };
+      const dateToISOString = (dateStr) => {
+        if (!dateStr) return null;
+        const date = new Date(dateStr);
+        return !isNaN(date.getTime()) ? date.toISOString() : null;
+      };
+
+      const processedFormData = {
         name: fallbackValue(formData.name),
         email: userData?.email,
         phoneNumber: fallbackValue(formData.phoneNumber),
         profilePicture: formData.profileImage,
         personalDetails: {
-          dob: formData.personalDetails.dob,
+          dob: dateToISOString(formData.personalDetails.dob),
           gender: fallbackValue(formData.personalDetails.gender),
           address: fallbackValue(formData.personalDetails.address),
           profession: fallbackValue(formData.personalDetails.profession)
         },
         programDetails: {
           program: fallbackValue(formData.programDetails.program),
-          validity: formData.programDetails.validity
+          validity: dateToISOString(formData.programDetails.validity)
         },
         collegeDetails: {
           branch: fallbackValue(formData.collegeDetails.branch),
@@ -187,10 +243,9 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
           noOfBacklogs: safeNumber(formData.collegeDetails.noOfBacklogs),
           admissionTerm: fallbackValue(formData.collegeDetails.admissionTerm),
           coursesApplying: stringToArray(formData.collegeDetails.coursesApplying)
-        },
-        greDetails: {
-          grePlane: formData.greDetails.grePlane,
-          greDate: formData.greDetails.greDate,
+        },        greDetails: {
+          grePlane: dateToISOString(formData.greDetails.grePlane),
+          greDate: dateToISOString(formData.greDetails.greDate),
           greScore: {
             verbal: safeNumber(formData.greDetails.greScore.verbal),
             quant: safeNumber(formData.greDetails.greScore.quant),
@@ -199,8 +254,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
           retakingGRE: fallbackValue(formData.greDetails.retakingGRE, 'No')
         },
         ieltsDetails: {
-          ieltsPlan: formData.ieltsDetails.ieltsPlan,
-          ieltsDate: formData.ieltsDetails.ieltsDate,
+          ieltsPlan: dateToISOString(formData.ieltsDetails.ieltsPlan),
+          ieltsDate: dateToISOString(formData.ieltsDetails.ieltsDate),
           ieltsScore: {
             reading: safeNumber(formData.ieltsDetails.ieltsScore.reading),
             writing: safeNumber(formData.ieltsDetails.ieltsScore.writing),
@@ -210,18 +265,17 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
           retakingIELTS: fallbackValue(formData.ieltsDetails.retakingIELTS, 'No')
         },
         toeflDetails: {
-          toeflPlan: formData.toeflDetails.toeflPlan,
-          toeflDate: formData.toeflDetails.toeflDate,
+          toeflPlan: dateToISOString(formData.toeflDetails.toeflPlan),
+          toeflDate: dateToISOString(formData.toeflDetails.toeflDate),
           toeflScore: {
             reading: safeNumber(formData.toeflDetails.toeflScore.reading),
             writing: safeNumber(formData.toeflDetails.toeflScore.writing),
             speaking: safeNumber(formData.toeflDetails.toeflScore.speaking)
           },
           retakingTOEFL: fallbackValue(formData.toeflDetails.retakingTOEFL, 'No')
-        },
-        visa: {
+        },        visa: {
           countriesPlanningToApply: stringToArray(formData.visa.countriesPlanningToApply),
-          visaInterviewDate: formData.visa.visaInterviewDate,
+          visaInterviewDate: dateToISOString(formData.visa.visaInterviewDate),
           visaInterviewLocation: fallbackValue(formData.visa.visaInterviewLocation)
         }
       };      
@@ -316,17 +370,22 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input 
-                id="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={(e) => handleInputChange(null, 'phoneNumber', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dob">Date of Birth</Label>
-              <DatePicker
-                date={formData.personalDetails.dob}
-                onDateChange={(date) => handleInputChange('personalDetails', 'dob', date)}
+              <div className="space-y-1">
+                <Input 
+                  id="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handlePhoneNumberChange}
+                  placeholder="+91XXXXXXXXXX"
+                />
+                <p className="text-xs text-muted-foreground">Must include country code (e.g., +918388656625)</p>
+              </div>
+            </div>            
+            <div className="space-y-2">              <Label htmlFor="dob">Date of Birth</Label>
+              <Input
+                type="date"
+                id="dob"
+                value={formData.personalDetails.dob}
+                onChange={(e) => handleInputChange('personalDetails', 'dob', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -379,11 +438,12 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 onChange={(e) => handleInputChange('programDetails', 'program', e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="validity">Validity</Label>
-              <DatePicker
-                date={formData.programDetails.validity}
-                onDateChange={(date) => handleInputChange('programDetails', 'validity', date)}
+            <div className="space-y-2">              <Label htmlFor="validity">Validity</Label>
+              <Input
+                type="date"
+                id="validity"
+                value={formData.programDetails.validity}
+                onChange={(e) => handleInputChange('programDetails', 'validity', e.target.value)}
               />
             </div>      
             </div>
@@ -482,18 +542,20 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="grePlane">GRE Plan Date</Label>
-              <DatePicker
-                date={formData.greDetails.grePlane}
-                onDateChange={(date) => handleInputChange('greDetails', 'grePlane', date)}
+            <div className="space-y-2">              <Label htmlFor="grePlane">GRE Plan Date</Label>
+              <Input
+                type="date"
+                id="grePlane"
+                value={formData.greDetails.grePlane}
+                onChange={(e) => handleInputChange('greDetails', 'grePlane', e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="greDate">GRE Exam Date</Label>
-              <DatePicker
-                date={formData.greDetails.greDate}
-                onDateChange={(date) => handleInputChange('greDetails', 'greDate', date)}
+            <div className="space-y-2">              <Label htmlFor="greDate">GRE Exam Date</Label>
+              <Input
+                type="date"
+                id="greDate"
+                value={formData.greDetails.greDate}
+                onChange={(e) => handleInputChange('greDetails', 'greDate', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -555,18 +617,20 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="ieltsPlan">IELTS Plan Date</Label>
-              <DatePicker
-                date={formData.ieltsDetails.ieltsPlan}
-                onDateChange={(date) => handleInputChange('ieltsDetails', 'ieltsPlan', date)}
+            <div className="space-y-2">                <Label htmlFor="ieltsPlan">IELTS Plan Date</Label>
+              <Input
+                type="date"
+                id="ieltsPlan"
+                value={formData.ieltsDetails.ieltsPlan}
+                onChange={(e) => handleInputChange('ieltsDetails', 'ieltsPlan', e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ieltsDate">IELTS Exam Date</Label>
-              <DatePicker
-                date={formData.ieltsDetails.ieltsDate}
-                onDateChange={(date) => handleInputChange('ieltsDetails', 'ieltsDate', date)}
+            <div className="space-y-2">                <Label htmlFor="ieltsDate">IELTS Exam Date</Label>
+              <Input
+                type="date"
+                id="ieltsDate"
+                value={formData.ieltsDetails.ieltsDate}
+                onChange={(e) => handleInputChange('ieltsDetails', 'ieltsDate', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -641,18 +705,20 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="toeflPlan">TOEFL Plan Date</Label>
-              <DatePicker
-                date={formData.toeflDetails.toeflPlan}
-                onDateChange={(date) => handleInputChange('toeflDetails', 'toeflPlan', date)}
+            <div className="space-y-2">                <Label htmlFor="toeflPlan">TOEFL Plan Date</Label>
+              <Input
+                type="date"
+                id="toeflPlan"
+                value={formData.toeflDetails.toeflPlan}
+                onChange={(e) => handleInputChange('toeflDetails', 'toeflPlan', e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="toeflDate">TOEFL Exam Date</Label>
-              <DatePicker
-                date={formData.toeflDetails.toeflDate}
-                onDateChange={(date) => handleInputChange('toeflDetails', 'toeflDate', date)}
+            <div className="space-y-2">                <Label htmlFor="toeflDate">TOEFL Exam Date</Label>
+              <Input
+                type="date"
+                id="toeflDate"
+                value={formData.toeflDetails.toeflDate}
+                onChange={(e) => handleInputChange('toeflDetails', 'toeflDate', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -715,11 +781,12 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 rows={2}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="visaInterviewDate">Visa Interview Date</Label>
-              <DatePicker
-                date={formData.visa.visaInterviewDate}
-                onDateChange={(date) => handleInputChange('visa', 'visaInterviewDate', date)}
+            <div className="space-y-2">              <Label htmlFor="visaInterviewDate">Visa Interview Date</Label>
+              <Input
+                type="date"
+                id="visaInterviewDate"
+                value={formData.visa.visaInterviewDate}
+                onChange={(e) => handleInputChange('visa', 'visaInterviewDate', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -736,7 +803,6 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
 
       <div className="flex justify-end space-x-4">
         <Button variant="outline" type="button" onClick={onClose}>Cancel</Button>
-        <Button variant="outline" type="button" onClick={()=> toast.success('hello')}>Hi</Button>
         <Button type="submit" disabled={loading} className="bg-primary-1 cursor-pointer">
           {loading && <span className="mr-2 h-4 w-4 animate-spin">⏳</span>}
           Save Changes
