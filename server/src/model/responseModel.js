@@ -23,10 +23,10 @@ const responseSchema = new mongoose.Schema({
     },
     questionId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true // Reference to the embedded question in Questionnaire
+        required: true
     },
     answer: {
-        type: mongoose.Schema.Types.Mixed, // Can be String, Array, File URL, etc.
+        type: mongoose.Schema.Types.Mixed,
         required: true
     },
     status: {
@@ -36,13 +36,23 @@ const responseSchema = new mongoose.Schema({
     },
     feedback: {
         type: String,
+        trim: true,
         default: null
     },
-
+    submittedAt: {
+        type: Date,
+        default: null
+    },
+    version: {
+        type: Number,
+        default: 1
+    }
 }, {
     timestamps: true,
     versionKey: false
 });
+
+responseSchema.index({ studentId: 1, taskId: 1, subtaskId: 1, questionnaireId: 1, questionId: 1 });
 
 const Response = mongoose.model('Response', responseSchema);
 export default Response;
