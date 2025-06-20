@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -31,6 +32,7 @@ import { ChevronLeft, ChevronRight, Search, Trash2 } from 'lucide-react';
 import { getStudents, deleteStudent } from '@/services/studentService';
 
 export function StudentsTable({ initialFilters = {} }) {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -111,7 +113,8 @@ export function StudentsTable({ initialFilters = {} }) {
           >
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Status" />
-            </SelectTrigger>            <SelectContent>
+            </SelectTrigger>
+            <SelectContent>
               <SelectItem value="ALL">All Status</SelectItem>
               <SelectItem value="ACTIVE">Active</SelectItem>
               <SelectItem value="INACTIVE">Inactive</SelectItem>
@@ -146,11 +149,19 @@ export function StudentsTable({ initialFilters = {} }) {
                 </TableCell>
               </TableRow>
             ) : (
-              students.map((student) => (
-                <TableRow key={student._id}>
+              students.map((student) => (               
+                <TableRow 
+                  key={student._id} 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={(e) => {
+
+                    if (e.target.closest('button')) return;
+                    navigate(`/admin/students/${student._id}`);
+                  }}
+                >
                   <TableCell className="font-medium">{student.name}</TableCell>
                   <TableCell>{student.email}</TableCell>
-                  <TableCell>{student.contact}</TableCell>
+                  <TableCell>{student.phoneNumber}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       student.status === 'ACTIVE' 

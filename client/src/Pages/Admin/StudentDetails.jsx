@@ -11,7 +11,7 @@ const StudentDetails = () => {
   const [activeTab, setActiveTab] = useState('profile');
   
   if (!id) {
-    return <div>Student ID not provided</div>;
+    return <div className="p-4 text-center">Student ID not provided</div>;
   }
   
   return (

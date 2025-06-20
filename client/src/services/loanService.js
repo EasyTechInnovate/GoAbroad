@@ -8,21 +8,21 @@ export const getLoans = async (params = {}) => {
   if (params.admissionTerm) queryParams.append('admissionTerm', params.admissionTerm);
   if (params.search) queryParams.append('search', params.search);
 
-  return api.get(`/v1/loans?${queryParams.toString()}`);
+  return api.get(`/loans?${queryParams.toString()}`);
 };
 
 export const getLoanById = async (id) => {
-  return api.get(`/v1/loans/${id}`);
+  return api.get(`/loans/${id}`);
 };
 
 export const createLoan = async (data) => {
-  return api.post('/v1/loans', data);
+  return api.post('/loans', data);
 };
 
 export const updateLoan = async (id, data) => {
-  return api.put(`/v1/loans/${id}`, data);
+  return api.put(`/loans/${id}`, data);
 };
 
 export const deleteLoan = async (id) => {
-  return api.delete(`/v1/loans/${id}`);
+  return api.delete(`/loans/${id}`);
 };

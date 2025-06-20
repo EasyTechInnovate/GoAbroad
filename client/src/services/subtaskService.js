@@ -2,7 +2,7 @@ import { apiService } from './api.services';
 
 export const getSubtasks = async (page = 1, limit = 10) => {
   try {
-    const response = await apiService.get(`/v1/admin/subtasks?page=${page}&limit=${limit}`);
+    const response = await apiService.get(`/admin/subtasks?page=${page}&limit=${limit}`);
     return {
       success: true,
       data: response.data || []
@@ -15,7 +15,7 @@ export const getSubtasks = async (page = 1, limit = 10) => {
 
 export const getSubtaskById = async (subtaskId) => {
   try {
-    const response = await apiService.get(`/v1/admin/subtasks/${subtaskId}`);
+    const response = await apiService.get(`/admin/subtasks/${subtaskId}`);
     return {
       success: true,
       data: response.data
@@ -28,7 +28,7 @@ export const getSubtaskById = async (subtaskId) => {
 
 export const createSubtask = async (subtaskData) => {
   try {
-    const response = await apiService.post('/v1/admin/subtasks', {
+    const response = await apiService.post('/admin/subtasks', {
       title: subtaskData.title,
       description: subtaskData.description,
       logo: subtaskData.logo,
@@ -47,7 +47,7 @@ export const createSubtask = async (subtaskData) => {
 
 export const updateSubtask = async (subtaskId, subtaskData) => {
   try {
-    const response = await apiService.put(`/v1/admin/subtasks/${subtaskId}`, {
+    const response = await apiService.put(`/admin/subtasks/${subtaskId}`, {
       title: subtaskData.title,
       description: subtaskData.description,
       logo: subtaskData.logo,
@@ -66,7 +66,7 @@ export const updateSubtask = async (subtaskId, subtaskData) => {
 
 export const deleteSubtask = async (subtaskId) => {
   try {
-    const response = await apiService.delete(`/v1/admin/subtasks/${subtaskId}`);
+    const response = await apiService.delete(`/admin/subtasks/${subtaskId}`);
     return {
       success: true,
       data: response.data
@@ -79,7 +79,7 @@ export const deleteSubtask = async (subtaskId) => {
 
 export const updateQuestionnaireAssignmentStatus = async (assignmentData) => {
   try {
-    const response = await apiService.put('/v1/admin/subtask-questionnaire-assignments/update-status', {
+    const response = await apiService.put('/admin/subtask-questionnaire-assignments/update-status', {
       assignmentId: assignmentData.assignmentId,
       status: assignmentData.status
     });
