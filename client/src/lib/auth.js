@@ -49,16 +49,30 @@ export function getToken() {
   return localStorage.getItem('authToken');
 }
 
+export function clearAuth() {
+  localStorage.removeItem('user');
+  localStorage.removeItem('authToken');
+  Cookies.remove('accessToken', COOKIE_OPTIONS);
+  notifyAuthChange(false);
+}
+
 export function getUser() {
-  const userStr = localStorage.getItem('user');
-  if (!userStr) return null;
-  
   try {
-    return JSON.parse(userStr);
-  } catch (error) {
-    console.error('Error parsing user data:', error);
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return null;
+    
+    const user = JSON.parse(userStr);
+    return user;
+  } catch {
+    clearAuth();
     return null;
   }
+}
+
+export function updateUserData(userData) {
+  if (!userData) return;
+  localStorage.setItem('user', JSON.stringify(userData));
+  notifyAuthChange(true);
 }
 
 export function isAuthenticated() {
@@ -66,12 +80,7 @@ export function isAuthenticated() {
 }
 
 export function logout() {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('user');
-  Cookies.remove('accessToken', { path: '/' });
-  
-
-  notifyAuthChange(false);
+  clearAuth();
 }
 
 export function getUserInitials() {

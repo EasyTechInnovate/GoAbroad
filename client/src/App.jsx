@@ -21,6 +21,7 @@ import Index from './Pages/Admin/Index';
 import SignUp from './Pages/Auth/SignUp';
 import Login from './Pages/Auth/Login';
 import ForgotPassword from './Pages/Auth/ForgotPassword';
+import PaymentRequired from './Pages/Auth/PaymentRequired';
 import EduLoan from './Pages/EduLoan';
 import FAQ from './Pages/FAQ';
 import DocManager from './Pages/DocManager';
@@ -31,14 +32,19 @@ import Chat from './Pages/Messages';
 import AdminLogin from './Pages/Admin/Login';
 import PrivateAdminRoute from './components/PrivateAdminRoute';
 import Students from './Pages/Admin/components/students/Students';
+import VerificationPending from './Pages/Auth/VerificationPending';
+import PaymentFailed from './Pages/Auth/PaymentFailed';
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-      <Route path="/signup" element={<ProtectedRoute><SignUp /></ProtectedRoute>} />
-      <Route path="/login" element={<ProtectedRoute><Login /></ProtectedRoute>} />
-      <Route path="/forgot-password" element={<ProtectedRoute><ForgotPassword /></ProtectedRoute>} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/auth/payment-required" element={<PaymentRequired />} />
+      <Route path="/auth/verification-pending" element={<VerificationPending />} />
+      <Route path="/auth/payment-failed" element={<PaymentFailed />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/dashboard/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />

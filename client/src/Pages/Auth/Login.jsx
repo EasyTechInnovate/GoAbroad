@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-do
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { loginUser } from '@/services/api.services';
-import { setAuth, isAuthenticated } from '@/lib/auth';
+import { setAuth, isAuthenticated, getUser, clearAuth } from '@/lib/auth';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,10 +17,16 @@ const Login = () => {
     email: '',
     password: '',
   });
+  useEffect(() => {  
+    clearAuth();
 
-  useEffect(() => {
     if (isAuthenticated()) {
-      navigate('/dashboard');
+      const user = getUser();
+      if (!user.isFeePaid || !user.isVerified) {
+        navigate('/auth/payment-required');
+      } else {
+        navigate('/dashboard');
+      }
     }
   }, [navigate]);
 
@@ -69,13 +75,18 @@ const Login = () => {
           user: response.data.user
         });
         
-        const redirectPath = location.state?.from || '/dashboard';
         const userRole = response.data.user.role;
         
         if (userRole === 'ADMIN' || userRole === 'EDITOR' || userRole === 'VIEWER') {
           navigate('/admin');
         } else {
-          navigate(redirectPath);
+
+          if (!response.data.user.isFeePaid || !response.data.user.isVerified) {
+            navigate('/auth/payment-required');
+          } else {
+            const redirectPath = location.state?.from || '/dashboard';
+            navigate(redirectPath);
+          }
         }
       }
     } catch (error) {
