@@ -222,6 +222,9 @@ router.route('/admin/student-university-assignments/:assignmentId')
     .get(memberAccess, studentUniversityAssignmentController.getStudentUniversityAssignmentById)
     .put(adminEditorOnly, studentUniversityAssignmentController.updateStudentUniversityAssignment)
     .delete(adminEditorOnly, studentUniversityAssignmentController.deleteStudentUniversityAssignment);
+
+
+router.route('/admin/student-activities').get(memberAccess, adminController.getStudentActivities);
 // ******************** ADMIN STUDENT UNIVERSITY ASSIGNMENT ROUTES END ***********************************
 
 // ********************  STUDENT UNIVERSITY ASSIGNMENT ROUTES  ***********************************

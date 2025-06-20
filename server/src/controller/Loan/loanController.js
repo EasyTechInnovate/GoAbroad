@@ -3,6 +3,8 @@ import httpError from '../../util/httpError.js';
 import responseMessage from '../../constant/responseMessage.js';
 import { ValidateLoanApplication, ValidateLoanQuery, validateJoiSchema } from '../../service/validationService.js';
 import Loan from '../../model/loanModel.js';
+import StudentActivity from '../../model/studentActivitySchema.js';
+import { ACTIVITY_STATUSES, ACTIVITY_TYPES } from '../../constant/application.js';
 
 export default {
     // Apply for a loan (Authenticated Student only)
@@ -22,6 +24,15 @@ export default {
 
             const loan = new Loan(loanData);
             await loan.save();
+
+            const activity = new StudentActivity({
+                studentId: student._id,
+                activityType: ACTIVITY_TYPES.LOAN_APPLICATION,
+                message: `Student ${student.email} applied for a loan`,
+                status: ACTIVITY_STATUSES.SUBMITTED,
+                details: { loanId: loan._id }
+            });
+            await activity.save();
 
             httpResponse(req, res, 201, responseMessage.SUCCESS, { message: 'Loan application submitted successfully', loanId: loan._id });
         } catch (err) {

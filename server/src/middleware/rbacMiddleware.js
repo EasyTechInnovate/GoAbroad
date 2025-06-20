@@ -15,6 +15,7 @@ const rbacMiddleware = (requiredRoles = []) => {
 
             const decoded = quicker.verifyToken(token, config.ACCESS_TOKEN.SECRET);
             const member = await Member.findById(decoded.id).select("-password")
+            console.log("HELLO", member);
 
             if (!member) {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 401);
@@ -23,7 +24,6 @@ const rbacMiddleware = (requiredRoles = []) => {
             if (member.status !== 'ACTIVE') {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
-
 
             if (requiredRoles.length > 0 && !requiredRoles.includes(member.role)) {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);

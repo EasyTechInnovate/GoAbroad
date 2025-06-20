@@ -7,6 +7,8 @@ import Payment from '../../model/paymentModel.js';
 import Student from '../../model/studentModel.js';
 import crypto from "crypto"
 import { razorpayInstance } from '../../config/razorpayConfig.js';
+import StudentActivity from '../../model/studentActivitySchema.js';
+import { ACTIVITY_STATUSES, ACTIVITY_TYPES } from '../../constant/application.js';
 export default {
     initiatePayment: async (req, res, next) => {
         try {
@@ -41,9 +43,9 @@ export default {
     },
 
     verifyPayment: async (req, res, next) => {
+        const studentId = req.authenticatedStudent._id;
         try {
             const { paymentId, orderId, signature } = req.body;
-            const studentId = req.authenticatedStudent._id;
 
             if (!paymentId || !orderId || !signature) {
                 return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE('Missing payment details')), req, 400);
@@ -75,8 +77,17 @@ export default {
                 return httpResponse(req, res, 404, responseMessage.NOT_FOUND('Payment'));
             }
 
-            await Student.findByIdAndUpdate(studentId, { isFeePaid: true, isVerified: true });
 
+
+            await Student.findByIdAndUpdate(studentId, { isFeePaid: true, isVerified: true });
+            const activity = new StudentActivity({
+                studentId: studentId,
+                activityType: ACTIVITY_TYPES.PAYMENT_COMPLETED,
+                message: `Pay payment of ${payment?.amount} INR`,
+                status: ACTIVITY_STATUSES.COMPLETED,
+                details: { orderId: orderId, amount: payment?.amount, currency: 'INR' }
+            });
+            await activity.save();
             httpResponse(req, res, 200, responseMessage.SUCCESS, { paymentId, status: 'success' });
         } catch (err) {
             console.log("Error during payment verification:", err);

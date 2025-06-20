@@ -5,6 +5,8 @@ import quicker from '../../util/quicker.js';
 import { validateJoiSchema, ValidateLogin, ValidateSignup } from '../../service/validationService.js';
 import config from '../../config/config.js';
 import Student from '../../model/studentModel.js';
+import StudentActivity from '../../model/studentActivitySchema.js';
+import { ACTIVITY_STATUSES, ACTIVITY_TYPES } from '../../constant/application.js';
 
 export default {
     login: async (req, res, next) => {
@@ -45,6 +47,13 @@ export default {
             });
 
             const userData = { ...student.toObject(), password: undefined };
+            const activity = new StudentActivity({
+                studentId: student._id,
+                activityType: ACTIVITY_TYPES.LOGIN,
+                message: `Student ${student.email} logged in`,
+                status: ACTIVITY_STATUSES.COMPLETED
+            });
+            await activity.save();
             httpResponse(req, res, 200, responseMessage.SUCCESS, { accessToken, user: userData });
         } catch (err) {
             httpError(next, err, req, 500);

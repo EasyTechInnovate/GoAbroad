@@ -829,6 +829,31 @@ export const ValidateFilterApplications = Joi.object({
 //
 
 // ############ Student Assign University  ################
+
+
+
+export const ValidateGetStudentActivities = Joi.object({
+    page: Joi.number().integer().min(1).default(1).messages({
+        'number.base': 'Page must be a number',
+        'number.integer': 'Page must be an integer',
+        'number.min': 'Page must be at least 1'
+    }),
+    limit: Joi.number().integer().min(1).max(100).default(10).messages({
+        'number.base': 'Limit must be a number',
+        'number.integer': 'Limit must be an integer',
+        'number.min': 'Limit must be at least 1',
+        'number.max': 'Limit cannot exceed 100'
+    }),
+    search: Joi.string().optional().allow('').messages({
+        'string.base': 'Search must be a string'
+    }),
+    studentId: Joi.string().optional().messages({
+        'string.base': 'Student ID must be a valid string'
+    }),
+    status: Joi.string().optional().messages({
+        'any.only': 'Status must be a valid value'
+    })
+}).with('page', 'limit');
 export const validateJoiSchema = (schema, value) => {
     const result = schema.validate(value, { abortEarly: false });
     return {
