@@ -27,3 +27,40 @@ export const addQuestion = async (questionnaireId, data) => {
 export const removeQuestion = async (questionnaireId, data) => {
   return await apiService.delete(`/admin/questionnaires/${questionnaireId}/questions`, { data });
 };
+
+export const getSubtaskQuestionnaires = async (taskId, subtaskId) => {
+  try {
+    const response = await apiService.get(
+      `/student/tasks/${taskId}/subtasks/${subtaskId}/questionnaires`
+    );
+    return response;
+  } catch (error) {
+    console.error('Error fetching questionnaires:', error);
+    throw error;
+  }
+};
+
+export const getQuestionnaireQuestions = async (taskId, subtaskId, questionnaireId) => {
+  try {
+    const response = await apiService.get(
+      `/student/tasks/${taskId}/subtasks/${subtaskId}/questionnaires/${questionnaireId}`
+    );
+    return response;
+  } catch (error) {
+    console.error('Error fetching questionnaire questions:', error);
+    throw error;
+  }
+};
+
+export const submitQuestionnaireResponses = async (data) => {
+  try {
+    const response = await apiService.post(
+      '/student/tasks/subtasks/questionnaires/question/responses',
+      data
+    );
+    return response;
+  } catch (error) {
+    console.error('Error submitting questionnaire responses:', error);
+    throw error;
+  }
+};

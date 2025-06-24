@@ -1,11 +1,38 @@
 import { apiService } from './api.services';
 
+/**
+ * Get all documents for admin
+ * @param {Object} params Query parameters for pagination and filtering
+ * @returns {Promise<Array>} Array of documents with studentId, taskId, and subtaskId
+ */
+export const getDocuments = async (params = {}) => {
+  const response = await apiService.get('/admin/documents', { params });
+  return response.data.map(doc => ({
+    ...doc,
+    studentId: doc.student?._id || doc.studentId,
+    taskId: doc.task?._id || doc.taskId,
+    subtaskId: doc.subtask?._id || doc.subtaskId
+  }));
+};
+
+/**
+ * Create a new document
+ * @param {Object} data Document data
+ */
 export const createDocument = async (data) => {
   return await apiService.post('/admin/documents', data);
 };
 
-export const getDocuments = async (params = {}) => {
-  return await apiService.get('/admin/documents', { params });
+export const uploadDocument = async (documentData) => {
+  return await apiService.post('/admin/documents', {
+    studentId: documentData.get('studentId'),
+    taskId: documentData.get('taskId'),
+    subtaskId: documentData.get('subtaskId'),
+    fileUrl: documentData.get('fileUrl'),
+    fileName: documentData.get('fileName'),
+    fileSize: Number(documentData.get('fileSize')),
+    fileType: documentData.get('fileType')
+  });
 };
 
 export const updateDocument = async (documentId, data) => {
@@ -18,4 +45,19 @@ export const deleteDocument = async (documentId) => {
 
 export const getDocumentById = async (documentId) => {
   return await apiService.get(`/admin/documents/${documentId}`);
+};
+
+export const getSubtaskDocuments = async (taskId, subtaskId) => {
+  return await apiService.get(`/student/tasks/${taskId}/subtasks/${subtaskId}/documents`);
+};
+
+// Export the service object as well
+export const documentService = {
+  createDocument,
+  uploadDocument,
+  getDocuments,
+  updateDocument,
+  deleteDocument,
+  getDocumentById,
+  getSubtaskDocuments
 };

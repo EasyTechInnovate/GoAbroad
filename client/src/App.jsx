@@ -34,6 +34,7 @@ import PrivateAdminRoute from './components/PrivateAdminRoute';
 import Students from './Pages/Admin/components/students/Students';
 import VerificationPending from './Pages/Auth/VerificationPending';
 import PaymentFailed from './Pages/Auth/PaymentFailed';
+import Questionnaire from './Pages/Questionnaire';
 
 const App = () => {
   return (
@@ -53,6 +54,7 @@ const App = () => {
       <Route path="/dashboard/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
       <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />      
       <Route path="/dashboard/checklist" element={<ProtectedRoute><Checklist /></ProtectedRoute>} />
+      <Route path="/questionnaire/:taskId/:subtaskId/:questionnaireId" element={<ProtectedRoute><Questionnaire /></ProtectedRoute>} />
       <Route path="/dashboard/documents" element={<ProtectedRoute><DocManager /></ProtectedRoute>} />
       <Route path="/dashboard/universities" element={<ProtectedRoute><UniversityManagement /></ProtectedRoute>} />      
       <Route path="/admin/login" element={<AdminLogin />} />

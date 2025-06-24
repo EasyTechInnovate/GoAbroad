@@ -63,3 +63,9 @@ export const addQuestionnaireToTask = async (taskId, questionnaireId) => {
 
   return subtaskResponse;
 };
+
+export const getStudentTasks = async ({ sortOrder = 'desc', page = 1, limit = 10 } = {}) => {
+  return await apiService.get('/student/tasks', {
+    params: { sortOrder, page, limit },
+  });
+};

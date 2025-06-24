@@ -359,16 +359,12 @@ const Tasks = () => {
     }
 
     try {
-      setLoading(prev => ({ ...prev, edit: true }));
-
+      setLoading(prev => ({ ...prev, edit: true }));        
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
         logo: newTask.logo || '',
-        status: newTask.status,
-        dueDate: newTask.dueDate,
-        assignee: newTask.assignee,
         mainTask: selectedMainTask === 'create_new' ? newMainTask : selectedMainTask
       };
 
@@ -788,6 +784,7 @@ const Tasks = () => {
             <DialogTitle>Edit Task</DialogTitle>
             <DialogDescription>
               {selectedTask?.title ? `Edit "${selectedTask.title}"` : 'Edit task'}
+              <p className="mt-2 text-xs text-muted-foreground">Note: Status and Due Date are managed automatically based on subtask progress.</p>
             </DialogDescription>
           </DialogHeader>
 

@@ -159,8 +159,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('category', 'profile');      
-      const response = await uploadFile(formData);      
-      if (response.data && response.data.url) {
+      const response = await uploadFile(formData);        
+      if (response.success && response.data && response.data.url) {
         setFormData(prev => ({
           ...prev,
           profilePicture: response.data.url
@@ -212,17 +212,17 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
       const fallbackValue = (value, fallback = 'N/A') => {
         return value || fallback;
       };
+
       const dateToISOString = (dateStr) => {
         if (!dateStr) return null;
         const date = new Date(dateStr);
         return !isNaN(date.getTime()) ? date.toISOString() : null;
       };
 
-      const processedFormData = {
-        name: fallbackValue(formData.name),
+      const processedFormData = {        name: fallbackValue(formData.name),
         email: userData?.email,
         phoneNumber: fallbackValue(formData.phoneNumber),
-        profilePicture: formData.profileImage,
+        profilePicture: formData.profilePicture,
         personalDetails: {
           dob: dateToISOString(formData.personalDetails.dob),
           gender: fallbackValue(formData.personalDetails.gender),
