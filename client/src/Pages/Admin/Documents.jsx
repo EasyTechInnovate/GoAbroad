@@ -1,4 +1,4 @@
-import { useState, forwardRef, useEffect, useCallback } from 'react';
+import { useState, forwardRef, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -51,7 +51,6 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  ArrowUpDown,
   Loader2
 } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
@@ -61,21 +60,6 @@ import { getSubtasks } from '@/services/subtaskService';
 import { getStudentById, getStudents } from '@/services/studentService';
 import { uploadFile } from '@/services/uploadService';
 import { DownloadIcon } from '@radix-ui/react-icons';
-
-const DOCUMENT_TYPES = [
-  'Passport Scan',
-  'University Application',
-  'Academic Transcript',
-  'Statement of Purpose',
-  'Recommendation Letter',
-  'Financial Statement',
-  'Language Proficiency',
-  'Resume/CV',
-  'Visa Application',
-  'Health Insurance',
-  'Student ID',
-  'Accommodation Contract'
-];
 
 const TEMPLATE_DOCUMENTS = [
   {
@@ -173,31 +157,24 @@ const getStatusIcon = (status) => {
 };
 
 const Documents = ({ studentId }) => {
+  const isMountedRef = useRef(true);
   const [documents, setDocuments] = useState([]);
   const [filteredDocuments, setFilteredDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState("all");
-  const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
   const [tasks, setTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(false);
   const [subtasks, setSubtasks] = useState([]);
   const [subtasksLoading, setSubtasksLoading] = useState(false);
-  const [selectedTask, setSelectedTask] = useState("");
-  const [selectedSubtask, setSelectedSubtask] = useState("");
+  const [selectedTask, setSelectedTask] = useState('');
+  const [selectedSubtask, setSelectedSubtask] = useState('');
   const [uploadLoading, setUploadLoading] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [viewDocument, setViewDocument] = useState(null);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 0
-  });
   const [templates, setTemplates] = useState(TEMPLATE_DOCUMENTS);
   const [newDocName, setNewDocName] = useState('');
-  const [newDocType, setNewDocType] = useState('');
   const [isRequired, setIsRequired] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [studentDetails, setStudentDetails] = useState(null);
@@ -205,7 +182,7 @@ const Documents = ({ studentId }) => {
   const [studentError, setStudentError] = useState(null);
   const [students, setStudents] = useState([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(studentId || "");
+  const [selectedStudent, setSelectedStudent] = useState(studentId || '');
 
   const validateFile = (file) => {
     const validFileTypes = {
@@ -216,23 +193,100 @@ const Documents = ({ studentId }) => {
       'image/png': 'PNG'
     };
 
-    if (!validFileTypes[file.type]) {
+    const fileType = validFileTypes[file.type];
+    if (!fileType) {
       toast.error(`Please upload a valid file type (${Object.values(validFileTypes).join(', ')})`);
-      return false;
+      return null;
     }
 
     const MAX_SIZE = 10 * 1024 * 1024; // 10MB
     if (file.size > MAX_SIZE) {
       toast.error('File size should be less than 10MB');
-      return false;
+      return null;
     }
 
-    return true;
+    return fileType;
   };
 
-  const filterDocuments = useCallback(() => {
-    let filtered = [...documents];
+  // Fetch documents implementation
+  const fetchDocuments = useCallback(async () => {
+    // Don't fetch if component is unmounted
+    if (!isMountedRef.current) return;
+    
+    // Avoid multiple concurrent fetches
+    setLoading(true);
+    
+    try {
+      const response = await getDocuments({ 
+        page: 1,
+        limit: 10
+      });
 
+      // Early return if component unmounted during fetch
+      if (!isMountedRef.current) return;
+
+      // Validate response structure
+      if (!response || !response.data || !Array.isArray(response.data.documents)) {
+        console.error('Invalid response structure:', response);
+        throw new Error('Invalid response from server');
+      }
+
+      const documents = response.data.documents;
+      
+      // Map the documents to our display format
+      const mappedDocs = documents.map(doc => ({
+        id: doc._id,
+        name: doc.fileName,
+        type: doc.fileType,
+        size: `${(doc.fileSize / (1024 * 1024)).toFixed(1)} MB`,
+        uploadDate: new Date(doc.uploadedAt || doc.createdAt),
+        status: doc.status.toLowerCase(),
+        student: doc.studentId?.name || 'N/A',
+        studentId: doc.studentId?._id || 'N/A',
+        studentEmail: doc.studentId?.email || 'N/A',
+        task: doc.taskId?.title || 'N/A',
+        taskId: doc.taskId?._id || 'N/A',
+        subtask: doc.subtaskId?.title || 'N/A',
+        subtaskId: doc.subtaskId?._id || 'N/A',
+        fileUrl: doc.fileUrl,
+        uploadedBy: doc.uploader?.email || 'N/A'
+      }));
+
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
+        setDocuments(mappedDocs);
+        setLoading(false); // Reset loading state on success
+      }
+    } catch (error) {
+      // Only show error if component is still mounted
+      if (isMountedRef.current) {
+        console.error('Error fetching documents:', error);
+        toast.error(error.message || 'Failed to fetch documents');
+        setLoading(false); // Reset loading state on error
+      }
+    }
+  }, []);
+
+  // Initial fetch on mount and cleanup
+  useEffect(() => {
+    console.log('Component mounted, fetching documents...');
+    
+    // Initial fetch
+    fetchDocuments();
+
+    // Cleanup function
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [fetchDocuments]); // Include fetchDocuments in dependencies since it's stable (useCallback)
+
+  // Handle filtering in one effect
+  useEffect(() => {
+    console.log('Filtering documents:', { documents, activeTab, searchQuery });
+    
+    let filtered = [...documents];
+    
+    // Filter by status
     if (activeTab === 'approved') {
       filtered = filtered.filter(doc => doc.status === 'verified');
     } else if (activeTab === 'pending') {
@@ -240,77 +294,23 @@ const Documents = ({ studentId }) => {
     } else if (activeTab === 'rejected') {
       filtered = filtered.filter(doc => doc.status === 'rejected');
     }
-
+    
+    // Filter by search query
     if (searchQuery) {
       const lowercaseQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter(doc =>
-        doc.name.toLowerCase().includes(lowercaseQuery) ||
-        doc.student?.toLowerCase().includes(lowercaseQuery) ||
-        doc.studentId?.toLowerCase().includes(lowercaseQuery)
+      filtered = filtered.filter(doc => 
+        doc.name.toLowerCase().includes(lowercaseQuery) || 
+        (doc.student && doc.student.toLowerCase().includes(lowercaseQuery)) ||
+        (doc.studentId && doc.studentId.toLowerCase().includes(lowercaseQuery))
       );
     }
-
-    if (selectedType && selectedType !== 'all') {
-      filtered = filtered.filter(doc => doc.type === selectedType);
-    }
-
+    
+    console.log('Setting filtered results:', filtered);
     setFilteredDocuments(filtered);
-  }, [documents, searchQuery, selectedType, activeTab]);
-
-  const fetchDocuments = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await getDocuments({ page: pagination.page, limit: pagination.limit });
-
-      const documentsArray = Array.isArray(response.data) ? response.data : (response.data.documents || []);
-
-      const docs = documentsArray.map(doc => ({
-        id: doc._id,
-        name: doc.fileName,
-        type: doc.fileType,
-        size: `${(doc.fileSize / (1024 * 1024)).toFixed(1)} MB`,
-        uploadDate: new Date(doc.createdAt),
-        status: doc.status.toLowerCase(),
-        student: doc.studentName || 'N/A',
-        studentId: doc.studentId || 'N/A',
-        fileUrl: doc.fileUrl
-      }));
-
-      setDocuments(docs);
-
-      if (response.data.pagination) {
-        setPagination(response.data.pagination);
-      } else {
-        setPagination({
-          page: 1,
-          limit: docs.length,
-          total: docs.length,
-          totalPages: 1
-        });
-      }
-    } catch (error) {
-      toast.error(error.message || 'Failed to fetch documents');
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.page, pagination.limit]);
-
-  // Fetch documents only when pagination changes
-  useEffect(() => {
-    fetchDocuments();
-  }, [fetchDocuments]);
-
-  // Apply filters whenever documents or filter criteria change
-  useEffect(() => {
-    filterDocuments();
-  }, [filterDocuments]);
+  }, [documents, activeTab, searchQuery]); // Only re-run when these values change
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-  };
-
-  const handleTypeFilter = (type) => {
-    setSelectedType(type);
   };
 
   const handleTabChange = (value) => {
@@ -354,14 +354,17 @@ const Documents = ({ studentId }) => {
   };
   const resetForm = () => {
     setNewDocName('');
-    setNewDocType('');
     setIsRequired(false);
     setSelectedFile(null);
     if (!studentId) {
       setSelectedStudent('');
     }
-  }; const handleUploadDocument = async () => {
-    if (!selectedFile || !newDocType ||
+  }; 
+  
+
+
+  const handleUploadDocument = async () => {
+    if (!selectedFile ||
       !selectedTask ||
       !selectedSubtask ||
       !selectedStudent) {
@@ -369,7 +372,9 @@ const Documents = ({ studentId }) => {
       return;
     }
 
-    if (!validateFile(selectedFile)) {
+    const fileType = validateFile(selectedFile);
+    if (!fileType) {
+      toast.error('Invalid file type. Please upload a PDF, DOCX, JPG, or PNG file.');
       return;
     }
 
@@ -386,25 +391,21 @@ const Documents = ({ studentId }) => {
 
       if (!uploadResponse?.data?.url) {
         throw new Error('Failed to get uploaded file URL');
-      }      // Then create the document with the file URL
-      const documentFormData = new FormData();
-      documentFormData.append('studentId', selectedStudent);
-      documentFormData.append('taskId', selectedTask);
-      documentFormData.append('subtaskId', selectedSubtask);
-      documentFormData.append('fileName', selectedFile.name);
-      documentFormData.append('fileSize', selectedFile.size.toString());
-      // Get the actual file type from the file's MIME type
-      const fileExtension = selectedFile.type === 'application/pdf' ? 'PDF' :
-        selectedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ? 'DOCX' :
-          selectedFile.type === 'application/msword' ? 'DOC' :
-            selectedFile.type === 'image/jpeg' ? 'JPG' :
-              selectedFile.type === 'image/png' ? 'PNG' : '';
-      documentFormData.append('fileType', fileExtension);
-      documentFormData.append('documentCategory', newDocType); // Add document category separately
-      documentFormData.append('fileUrl', uploadResponse.data.url);
-      documentFormData.append('status', 'PENDING');
+      }
 
-      await uploadDocument(documentFormData);
+      // Create document data as FormData
+      const documentData = new FormData();
+      documentData.append('studentId', selectedStudent);
+      documentData.append('taskId', selectedTask);
+      documentData.append('subtaskId', selectedSubtask);
+      documentData.append('fileUrl', uploadResponse.data.url);
+      documentData.append('fileName', uploadResponse.data.name);
+      documentData.append('fileSize', uploadResponse.data.size);
+      documentData.append('fileType', fileType);
+
+      // Create the document with the file data
+      await uploadDocument(documentData);
+
       await fetchDocuments();
       setIsUploadDialogOpen(false);
       toast.success('Document uploaded successfully');
@@ -433,8 +434,8 @@ const Documents = ({ studentId }) => {
   };
 
   const handleAddTemplate = () => {
-    if (!newDocName || !newDocType) {
-      toast.error('Please fill in all required fields');
+    if (!newDocName) {
+      toast.error('Please provide a template name');
       return;
     }
 
@@ -446,7 +447,6 @@ const Documents = ({ studentId }) => {
     const newTemplate = {
       id: `template-${Math.floor(Math.random() * 1000)}`,
       name: newDocName,
-      type: newDocType,
       size: `${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`,
       lastUpdated: new Date(),
       required: isRequired
@@ -621,115 +621,114 @@ const Documents = ({ studentId }) => {
               />
             </div>
 
-            <Select value={selectedType} onValueChange={handleTypeFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Document type" />
-              </SelectTrigger>              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                {DOCUMENT_TYPES.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
           </div>
         </div>
 
         <TabsContent value="all" className="space-y-4">
-          <Card>
-            <CardContent className="p-0">
-              {loading ? (
-                <div className="flex items-center justify-center p-8">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[30%]">Name</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Student</TableHead>
-                      <TableHead>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search documents..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="h-8 w-[150px] lg:w-[250px]"
+              />
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[30%]">Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Task</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {documents.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-4">
+                      No documents found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredDocuments.map((doc) => (
+                    <TableRow key={doc.id}>
+                      <TableCell className="font-medium">
                         <div className="flex items-center">
-                          Date
-                          <ArrowUpDown className="ml-2 h-4 w-4" />
+                          <FileText className="mr-2 h-4 w-4 text-muted-foreground" />
+                          {doc.name}
                         </div>
-                      </TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredDocuments.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-4">
-                          No documents found matching your criteria
-                        </TableCell>
-                      </TableRow>
-                    ) :
-                      filteredDocuments.map(doc => (
-                        <TableRow key={doc.id}>
-                          <TableCell className="font-medium">
-                            <div className="flex items-center">
-                              <FileText className="mr-2 h-4 w-4 text-muted-foreground" />
-                              {doc.name}
-                            </div>
-                            <div className="text-xs text-muted-foreground">{doc.size}</div>
-                          </TableCell>
-                          <TableCell>{doc.type}</TableCell>
-                          <TableCell>
-                            <div>{doc.student}</div>
-                            <div className="text-xs text-muted-foreground">{doc.studentId}</div>
-                          </TableCell>
-                          <TableCell>{formatDate(doc.uploadDate)}</TableCell>
-                          <TableCell>{getStatusBadge(doc.status)}</TableCell>
-                          <TableCell className="text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <MenuButton>
-                                  <span className="sr-only">Open menu</span>
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </MenuButton>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end"><DropdownMenuItem onClick={() => handleViewDocument(doc)}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View
-                              </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Download className="mr-2 h-4 w-4" />
-                                  Download
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Change status to</DropdownMenuLabel>
+                        <div className="text-xs text-muted-foreground">{doc.size}</div>
+                      </TableCell>
+                      <TableCell>{doc.type}</TableCell>
+                      <TableCell>
+                        <div>{doc.student}</div>
+                        <div className="text-xs text-muted-foreground">{doc.studentEmail}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div>{doc.task}</div>
+                        <div className="text-xs text-muted-foreground">{doc.subtask}</div>
+                      </TableCell>
+                      <TableCell>{getStatusBadge(doc.status)}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <MenuButton>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </MenuButton>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => handleViewDocument(doc)}>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download
+                              </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            {doc.status === 'pending' && (
+                              <>
                                 <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'approved')}>
                                   <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                                  Approved
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'pending')}>
-                                  <Clock className="mr-2 h-4 w-4 text-yellow-500" />
-                                  Pending Review
+                                  Approve
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'rejected')}>
                                   <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                                  Rejected
+                                  Reject
                                 </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  className="text-red-600"
-                                  onClick={() => handleDeleteDocument(doc.id)}
-                                >
-                                  <FileX className="mr-2 h-4 w-4" />
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+                              </>
+                            )}
+                            <DropdownMenuItem
+                              className="text-red-600"
+                              onClick={() => handleDeleteDocument(doc.id)}
+                            >
+                              <FileX className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          )}
         </TabsContent>
 
         <TabsContent value="pending" className="space-y-4">
@@ -809,7 +808,7 @@ const Documents = ({ studentId }) => {
               <TableRow>
                 <TableHead className="w-[30%]">Name</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead>Student</TableHead>
+                <TableCell>Student</TableCell>
                 <TableHead>Approval Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -1046,19 +1045,6 @@ const Documents = ({ studentId }) => {
               />
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="type">Document Type</Label>
-              <Select value={newDocType} onValueChange={setNewDocType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select document type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DOCUMENT_TYPES.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
 
             <div className="grid gap-2">
               <Label htmlFor="task">Task</Label>
@@ -1156,19 +1142,7 @@ const Documents = ({ studentId }) => {
               />
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="template-type">Document Type</Label>
-              <Select value={newDocType} onValueChange={setNewDocType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select document type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DOCUMENT_TYPES.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
 
             <div className="flex items-center space-x-2">
               <Checkbox

@@ -7,12 +7,8 @@ import { apiService } from './api.services';
  */
 export const getDocuments = async (params = {}) => {
   const response = await apiService.get('/admin/documents', { params });
-  return response.data.map(doc => ({
-    ...doc,
-    studentId: doc.student?._id || doc.studentId,
-    taskId: doc.task?._id || doc.taskId,
-    subtaskId: doc.subtask?._id || doc.subtaskId
-  }));
+  // Return the full response to maintain the structure
+  return response;
 };
 
 /**
