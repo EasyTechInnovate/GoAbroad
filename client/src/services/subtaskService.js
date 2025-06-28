@@ -1,14 +1,8 @@
 import { apiService } from './api.services';
 
-export const getSubtasks = async (taskId, studentId) => {
-  if (!taskId || !studentId) {
-    throw new Error('Task ID and Student ID are required');
-  }
-
+export const getSubtasks = async (page = 1, limit = 10) => {
   try {
-    const response = await apiService.get(`/admin/subtask/${taskId}`, {
-      params: { studentId }
-    });
+    const response = await apiService.get(`/admin/subtasks?page=${page}&limit=${limit}`);
     return {
       success: true,
       data: response.data || []
@@ -95,6 +89,20 @@ export const updateQuestionnaireAssignmentStatus = async (assignmentData) => {
     };
   } catch (error) {
     console.error('Error updating questionnaire assignment status:', error);
+    throw error;
+  }
+};
+
+export const getSubtasksByTaskAndStudent = async (taskId, studentId) => {
+  if (!taskId || !studentId) {
+    throw new Error('Task ID and Student ID are required');
+  }
+
+  try {
+    const response = await apiService.get(`/admin/subtask/${taskId}?studentId=${studentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching student subtasks:', error);
     throw error;
   }
 };

@@ -2,13 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Table,
@@ -36,23 +30,20 @@ import {
 import { Label } from '@/components/ui/label';
 import {
   Search,
-  MoreHorizontal,
   Eye,
   Upload,
+  Download,
   FileText,
-  FileCheck,
-  FileX,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Loader2
+  Loader2,
+  TrashIcon
 } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 import { getDocuments, updateDocument, uploadDocument, deleteDocument } from '@/services/documentService';
-import { getTasks } from '@/services/taskService';
-import { getSubtasks } from '@/services/subtaskService';
+import { getTasksByStudentId } from '@/services/taskService';
+import { getSubtasksByTaskAndStudent } from '@/services/subtaskService';
 import { getStudents } from '@/services/studentService';
 import { uploadFile } from '@/services/uploadService';
+import { createPortal } from 'react-dom';
 
 const Documents = ({ studentId }) => {
   const [documents, setDocuments] = useState([]);
@@ -69,9 +60,12 @@ const Documents = ({ studentId }) => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileType, setSelectedFileType] = useState("");
   const [students, setStudents] = useState([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(studentId || "");
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [dropdownPosition, setDropdownPosition] = useState({});
 
   const validateFile = (file) => {
     const validFileTypes = {
@@ -184,9 +178,12 @@ const Documents = ({ studentId }) => {
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      if (validateFile(file)) {
+      const validType = validateFile(file);
+      if (validType) {
         setSelectedFile(file);
+        setSelectedFileType(validType);
       } else {
+        setSelectedFileType("");
         event.target.value = null;
       }
     }
@@ -194,6 +191,7 @@ const Documents = ({ studentId }) => {
 
   const resetForm = () => {
     setSelectedFile(null);
+    setSelectedFileType("");
     setSelectedTask('');
     setSelectedSubtask('');
     if (!studentId) {
@@ -202,7 +200,7 @@ const Documents = ({ studentId }) => {
   };
 
   const handleUploadDocument = async () => {
-    if (!selectedFile || !selectedTask || !selectedSubtask || !selectedStudent) {
+    if (!selectedFile || !selectedTask || !selectedSubtask || !selectedStudent || !selectedFileType) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -227,7 +225,7 @@ const Documents = ({ studentId }) => {
       documentData.append('fileUrl', uploadResponse.data.url);
       documentData.append('fileName', selectedFile.name);
       documentData.append('fileSize', selectedFile.size);
-      documentData.append('fileType', selectedFile.type);
+      documentData.append('fileType', selectedFileType); // Use validated type (PDF, DOCX, JPG, PNG)
 
       await uploadDocument(documentData);
       await fetchDocuments();
@@ -243,7 +241,8 @@ const Documents = ({ studentId }) => {
     }
   };
 
-  const fetchTasks = async (studentId) => {
+  // Memoized fetch functions
+  const fetchTasks = useCallback(async (studentId) => {
     if (!studentId) {
       setTasks([]);
       return;
@@ -251,47 +250,83 @@ const Documents = ({ studentId }) => {
 
     try {
       setTasksLoading(true);
-      const response = await getTasks(studentId);
-      const tasksData = response.data || [];
+      console.log('Fetching tasks for student:', studentId); // Debug log
+      const response = await getTasksByStudentId(studentId);
+      const tasksData = response.data?.task || [];
       
       if (!Array.isArray(tasksData)) {
         throw new Error('Invalid tasks data received');
       }
 
-      setTasks(tasksData);
+      // Map the tasks data from the taskId object which contains the main task details
+      const mappedTasks = tasksData.map(task => ({
+        _id: task.taskId._id,
+        id: task.taskId._id,
+        title: task.taskId.title || 'Untitled Task',
+        assignedAt: task.assignedAt,
+        status: task.status,
+        dueDate: task.dueDate,
+        priority: task.taskId.priority,
+        assignmentId: task._id // Keep the assignment ID for reference
+      }));
+
+      console.log('Tasks fetched:', mappedTasks); // Debug log
+      setTasks(mappedTasks);
     } catch (err) {
       console.error('Error fetching tasks:', err);
       toast.error(err.message || 'Failed to fetch tasks');
     } finally {
       setTasksLoading(false);
     }
-  };
+  }, []);
 
-  const fetchSubtasks = async (taskId) => {
+  const fetchSubtasks = useCallback(async (taskId) => {
     if (!taskId || !selectedStudent) {
       setSubtasks([]);
       return;
     }
-    
     try {
       setSubtasksLoading(true);
-      const response = await getSubtasks(taskId, selectedStudent);
-      const subtasksData = response.data || [];
-
+      const response = await getSubtasksByTaskAndStudent(taskId, selectedStudent);
+      console.log("Subtaskssss",response)
+      const subtasksData = response.subTasks || [];
       if (!Array.isArray(subtasksData)) {
         throw new Error('Invalid subtasks data received');
       }
-
-      setSubtasks(subtasksData);
+      // Always provide a string for title (use subtaskId if nothing else)
+      const mappedSubtasks = subtasksData.map(subtask => {
+        let title = '';
+        if (subtask.title && typeof subtask.title === 'string' && subtask.title.trim()) {
+          title = subtask.title;
+        } else if (subtask.name && typeof subtask.name === 'string' && subtask.name.trim()) {
+          title = subtask.name;
+        } else if (subtask.taskId && subtask.taskId.title) {
+          title = `${subtask.taskId.title}`;
+        } else {
+          title = String(subtask.subtaskId);
+        }
+        return {
+          _id: subtask.subtaskId,
+          id: subtask.subtaskId,
+          assignmentId: subtask._id,
+          taskId: subtask.taskId?._id || subtask.taskId,
+          status: subtask.status,
+          dueDate: subtask.dueDate,
+          assignedAt: subtask.assignedAt,
+          title
+        };
+      });
+      setSubtasks(mappedSubtasks);
     } catch (err) {
+      setSubtasks([]);
       console.error('Error fetching subtasks:', err);
       toast.error(err.message || 'Failed to fetch subtasks');
     } finally {
       setSubtasksLoading(false);
     }
-  };
+  }, [selectedStudent]);
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       setStudentsLoading(true);
       const response = await getStudents();
@@ -308,26 +343,25 @@ const Documents = ({ studentId }) => {
     } finally {
       setStudentsLoading(false);
     }
-  };
+  }, []);
 
-  const memoizedFetchTasks = useCallback(fetchTasks, []);
-  const memoizedFetchStudents = useCallback(fetchStudents, []);
-
+  // Effects to handle data fetching
   useEffect(() => {
-    memoizedFetchTasks(selectedStudent);
-    if (!studentId) {
-      memoizedFetchStudents();
+    if (selectedStudent) {
+      console.log('Selected student changed, fetching tasks:', selectedStudent); // Debug log
+      fetchTasks(selectedStudent);
     }
-  }, [selectedStudent, studentId, memoizedFetchTasks, memoizedFetchStudents]);
-
-  // Memoize fetchSubtasks to prevent infinite rerenders
-  const memoizedFetchSubtasks = useCallback(fetchSubtasks, [selectedStudent]);
+    if (!studentId) {
+      fetchStudents();
+    }
+  }, [selectedStudent, studentId, fetchTasks, fetchStudents]);
 
   useEffect(() => {
     if (selectedTask) {
-      memoizedFetchSubtasks(selectedTask);
+      console.log('Selected task changed, fetching subtasks:', selectedTask); // Debug log
+      fetchSubtasks(selectedTask);
     }
-  }, [selectedTask, memoizedFetchSubtasks]);
+  }, [selectedTask, fetchSubtasks]);
 
   useEffect(() => {
     if (studentId) {
@@ -408,51 +442,68 @@ const Documents = ({ studentId }) => {
                       <TableCell>{doc.task}</TableCell>
                       <TableCell>{doc.subtask}</TableCell>
                       <TableCell>{doc.uploadDate}</TableCell>
-                      <TableCell>
-                        <div className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
+                      <TableCell className="text-center">
+                        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold
                           ${doc.status === 'verified' ? 'bg-green-100 text-green-700' :
-                          doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                          'bg-yellow-100 text-yellow-700'}`}>
-                          {doc.status === 'verified' ? (
-                            <CheckCircle2 className="mr-1 h-3 w-3" />
-                          ) : doc.status === 'rejected' ? (
-                            <XCircle className="mr-1 h-3 w-3" />
-                          ) : (
-                            <Clock className="mr-1 h-3 w-3" />
-                          )}
-                          {doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}
-                        </div>
+                            doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            'bg-gray-100 text-gray-700'}`}
+                          style={{ minWidth: 70, justifyContent: 'center' }}>
+                          {doc.status === 'verified' && 'Verified'}
+                          {doc.status === 'pending' && 'Pending'}
+                          {doc.status === 'rejected' && 'Rejected'}
+                        </span>
                       </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
+                      <TableCell className="text-center" style={{ verticalAlign: 'middle', padding: 0 }}>
+                        <div className="flex items-center gap-4 justify-center" style={{ height: '100%' }}>
+                          <Button size="icon" variant="ghost" onClick={() => window.open(doc.fileUrl, '_blank')} title="View">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = doc.fileUrl;
+                            link.download = doc.name || 'document';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }} title="Download">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <div className="relative" style={{ display: 'inline-block' }}>
+                            <Button size="icon" variant="ghost" title="More Actions" onClick={e => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              setDropdownPosition({ top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 160 });
+                              setOpenDropdownId(openDropdownId === doc.id ? null : doc.id);
+                            }}>
+                              <span style={{ fontSize: 24, fontWeight: 'bold', letterSpacing: 2 }}>⋯</span>
                             </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => window.open(doc.fileUrl, '_blank')}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'verified')}>
-                              <FileCheck className="mr-2 h-4 w-4 text-green-500" />
-                              Verify
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'rejected')}>
-                              <FileX className="mr-2 h-4 w-4 text-red-500" />
-                              Reject
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                              className="text-red-600"
-                              onClick={() => handleDeleteDocument(doc.id)}
-                            >
-                              <FileX className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                            {openDropdownId === doc.id && createPortal(
+                              <div className="fixed bg-white border rounded shadow-md min-w-[160px] mt-2" style={{ zIndex: 99999, top: dropdownPosition.top, left: dropdownPosition.left }}>
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                  onClick={() => { handleStatusChange(doc.id, 'verified'); setOpenDropdownId(null); }}
+                                >
+                                  Mark as Verified
+                                </button>
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                  onClick={() => { handleStatusChange(doc.id, 'pending'); setOpenDropdownId(null); }}
+                                >
+                                  Mark as Pending
+                                </button>
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600 cursor-pointer"
+                                  onClick={() => { handleStatusChange(doc.id, 'rejected'); setOpenDropdownId(null); }}
+                                >
+                                  Mark as Rejected
+                                </button>
+                              </div>,
+                              document.body
+                            )}
+                          </div>
+                          <Button size="icon" variant="ghost" onClick={() => handleDeleteDocument(doc.id)} title="Delete">
+                            <TrashIcon className="h-4 w-4 text-red-600 cursor-pointer" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -472,110 +523,124 @@ const Documents = ({ studentId }) => {
               Upload a document for a student&apos;s task or subtask.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="student">Student</Label>
+          
+          <div className="space-y-4">
+            {!studentId && (
+              <div>
+                <Label>Student</Label>
+                <Select
+                  value={selectedStudent || undefined}
+                  onValueChange={value => {
+                    setSelectedStudent(value);
+                    setSelectedTask("");
+                    setSelectedSubtask("");
+                  }}
+                  disabled={studentsLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Student">
+                    {(() => {
+                      const s = students.find(s => s._id === selectedStudent);
+                      if (!s) return null;
+                      if (s.firstName || s.lastName) {
+                        return `${s.firstName || ''} ${s.lastName || ''}`.trim();
+                      }
+                      return s.email;
+                    })()}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {students.length === 0 ? (
+                      <SelectItem value="__none__" disabled>
+                        {studentsLoading ? "Loading..." : "No students available"}
+                      </SelectItem>
+                    ) : (
+                      students.map(student => (
+                        <SelectItem key={student._id} value={student._id}>
+                        {student.firstName || student.lastName ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : student.email}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div>
+              <Label>Task</Label>
               <Select
-                value={selectedStudent}
-                onValueChange={setSelectedStudent}
-                disabled={studentsLoading || !!studentId}
+                value={selectedTask || undefined}
+                onValueChange={value => {
+                  setSelectedTask(value);
+                  setSelectedSubtask("");
+                }}
+                disabled={!selectedStudent || tasksLoading}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a student">
-                    {studentsLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : 'Select a student'}
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Task">
+                    {selectedTask && tasks.find(t => t._id === selectedTask)?.title}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {Array.isArray(students) && students.length > 0 ? (
-                    students.map(student => (
-                      <SelectItem
-                        key={student._id}
-                        value={student._id}
-                      >
-                        {student.firstName} {student.lastName} ({student.email})
+                  {tasks.length === 0 ? (
+                    <SelectItem value="__none__" disabled>
+                      {tasksLoading ? "Loading..." : "No tasks available"}
+                    </SelectItem>
+                  ) : (
+                    tasks.map(task => (
+                      <SelectItem key={task._id} value={task._id}>
+                        {task.title}
                       </SelectItem>
                     ))
-                  ) : (
-                    <SelectItem value="no-students" disabled>No students available</SelectItem>
                   )}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="file">Document File</Label>
-              <Input
-                id="file"
-                type="file"
-                accept=".pdf,.docx,.jpg,.jpeg,.png"
-                onChange={handleFileChange}
-              />
-            </div>
-
-
-
-            <div className="grid gap-2">
-              <Label htmlFor="task">Task</Label>
-              <Select value={selectedTask} onValueChange={(value) => {
-                setSelectedTask(value);
-                setSelectedSubtask('');
-              }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a task">
-                    {tasksLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : 'Select a task'}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>                  {Array.isArray(tasks) && tasks.length > 0 ? (
-                  tasks.map(task => (
-                    <SelectItem key={task._id || task.id} value={task._id || task.id}>
-                      {task.title || task.name || 'Untitled Task'}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="no-tasks" disabled>No tasks available</SelectItem>
-                )}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="subtask">Subtask</Label>
+            <div>
+              <Label>Subtask</Label>
               <Select
-                value={selectedSubtask}
+                value={selectedSubtask || undefined}
                 onValueChange={setSelectedSubtask}
                 disabled={!selectedTask || subtasksLoading}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a subtask">
-                    {subtasksLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : 'Select a subtask'}
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Subtask">
+                    {selectedSubtask && (subtasks.find(s => s._id === selectedSubtask)?.title || selectedSubtask)}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent>                  {Array.isArray(subtasks) && subtasks.length > 0 ? (
-                  subtasks.map(subtask => (
-                    <SelectItem key={subtask._id} value={subtask._id}>
-                      {subtask.title}
+                <SelectContent>
+                  {subtasks.length === 0 ? (
+                    <SelectItem value="__none__" disabled>
+                      {subtasksLoading ? "Loading..." : "No subtasks available"}
                     </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="no-subtasks" disabled>No subtasks available</SelectItem>
-                )}
+                  ) : (
+                    subtasks.map(subtask => (
+                      <SelectItem key={subtask._id} value={subtask._id}>
+                        {subtask.title || subtask._id}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div>
+              <Label>Document File</Label>
+              <Input 
+                type="file"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+              />
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleUploadDocument} isLoading={uploadLoading}>
-              <Upload className="mr-2 h-4 w-4" />
+            <Button
+              disabled={!selectedFile || !selectedTask || !selectedSubtask || !selectedStudent || uploadLoading}
+              onClick={handleUploadDocument}
+            >
+              {uploadLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Upload
             </Button>
           </DialogFooter>

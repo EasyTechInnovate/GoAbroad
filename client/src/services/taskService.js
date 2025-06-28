@@ -4,11 +4,8 @@ export const createTask = async (data) => {
   return await apiService.post('/admin/tasks', data);
 };
 
-export const getTasks = async (studentId) => {
-  if (!studentId) {
-    throw new Error('Student ID is required');
-  }
-  return await apiService.get(`/admin/task/${studentId}`);
+export const getTasks = async (params = {}) => {
+  return await apiService.get('/admin/tasks', { params });
 };
 
 export const getTaskById = async (taskId) => {
@@ -71,4 +68,23 @@ export const getStudentTasks = async ({ sortOrder = 'desc', page = 1, limit = 10
   return await apiService.get('/student/tasks', {
     params: { sortOrder, page, limit },
   });
+};
+
+export const getTasksByStudentId = async (studentId) => {
+  if (!studentId) {
+    throw new Error('Student ID is required');
+  }
+  try {
+    const response = await apiService.get(`/admin/task/${studentId}`);
+    // The API returns { success, message, data: { task: [...] } }
+    return {
+      success: true,
+      data: {
+        task: response.data?.task || []
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching student tasks:', error);
+    throw error;
+  }
 };
