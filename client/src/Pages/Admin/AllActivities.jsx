@@ -1,221 +1,127 @@
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useState } from 'react';
-import { 
+import { useState, useEffect } from 'react';
+import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow 
+  TableRow,
 } from '@/components/ui/table';
 import { MultipleStudentSelect } from '@/components/tasks/MultipleStudentSelect';
-
-
-const mockActivities = [
-  {
-    id: '1',
-    user: {
-      name: 'Emma Johnson',
-      initials: 'EJ',
-    },
-    action: 'submitted',
-    subject: 'IELTS score report',
-    timestamp: '10 minutes ago',
-    status: 'pending',
-    date: 'Oct 15, 2023'
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Daniel Lee',
-      initials: 'DL',
-    },
-    action: 'uploaded',
-    subject: 'SOP for Stanford University',
-    timestamp: '30 minutes ago',
-    status: 'active',
-    date: 'Oct 15, 2023'
-  },
-  {
-    id: '3',
-    user: {
-      name: 'Sophia Chen',
-      initials: 'SC',
-    },
-    action: 'completed',
-    subject: 'visa application form',
-    timestamp: '1 hour ago',
-    status: 'complete',
-    date: 'Oct 14, 2023'
-  },
-  {
-    id: '4',
-    user: {
-      name: 'James Wilson',
-      initials: 'JW',
-    },
-    action: 'received',
-    subject: 'offer from MIT',
-    timestamp: '2 hours ago',
-    status: 'active',
-    date: 'Oct 14, 2023'
-  },
-  {
-    id: '5',
-    user: {
-      name: 'Olivia Garcia',
-      initials: 'OG',
-    },
-    action: 'received',
-    subject: 'rejection from Harvard',
-    timestamp: '3 hours ago',
-    status: 'rejected',
-    date: 'Oct 13, 2023'
-  },
-  {
-    id: '6',
-    user: {
-      name: 'Michael Brown',
-      initials: 'MB',
-    },
-    action: 'updated',
-    subject: 'personal statement draft',
-    timestamp: '5 hours ago',
-    status: 'active',
-    date: 'Oct 13, 2023'
-  },
-  {
-    id: '7',
-    user: {
-      name: 'Isabella Martinez',
-      initials: 'IM',
-    },
-    action: 'scheduled',
-    subject: 'interview with UCLA admissions',
-    timestamp: '8 hours ago',
-    status: 'pending',
-    date: 'Oct 12, 2023'
-  },
-  {
-    id: '8',
-    user: {
-      name: 'Ethan Smith',
-      initials: 'ES',
-    },
-    action: 'submitted',
-    subject: 'UC Berkeley application',
-    timestamp: '1 day ago',
-    status: 'complete',
-    date: 'Oct 12, 2023'
-  },
-  {
-    id: '9',
-    user: {
-      name: 'Ava Johnson',
-      initials: 'AJ',
-    },
-    action: 'received',
-    subject: 'recommendation letter from Prof. Williams',
-    timestamp: '1 day ago',
-    status: 'active',
-    date: 'Oct 11, 2023'
-  },
-  {
-    id: '10',
-    user: {
-      name: 'Noah Thompson',
-      initials: 'NT',
-    },
-    action: 'uploaded',
-    subject: 'financial documents for NYU',
-    timestamp: '2 days ago',
-    status: 'complete',
-    date: 'Oct 11, 2023'
-  }
-];
+import { getAdminStudentActivities } from '@/services/adminActivityService';
+import { getStudents } from '@/services/studentService';
 
 const statusClasses = {
-  pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  active: 'bg-blue-100 text-blue-800 border-blue-300',
-  complete: 'bg-green-100 text-green-800 border-green-300',
-  rejected: 'bg-red-100 text-red-800 border-red-300',
+  PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+  ACTIVE: 'bg-blue-100 text-blue-800 border-blue-300',
+  COMPLETED: 'bg-green-100 text-green-800 border-green-300',
+  REJECTED: 'bg-red-100 text-red-800 border-red-300',
 };
 
-
-const students = [
-  { id: 1, name: 'Emma Johnson' },
-  { id: 2, name: 'Daniel Lee' },
-  { id: 3, name: 'Sophia Chen' },
-  { id: 4, name: 'James Wilson' },
-  { id: 5, name: 'Olivia Garcia' },
-  { id: 6, name: 'Noah Thompson' },
-  { id: 7, name: 'Ava Johnson' },
-  { id: 8, name: 'Ethan Smith' },
-  { id: 9, name: 'Michael Brown' },
-  { id: 10, name: 'Isabella Martinez' }
-];
+const PAGE_SIZE = 10;
 
 const AllActivities = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedStudents, setSelectedStudents] = useState([]);
-  
-  const filteredActivities = mockActivities.filter((activity) => {
+  const [activities, setActivities] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const matchesSearch = searchQuery === '' || 
-      activity.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      activity.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      activity.action.toLowerCase().includes(searchQuery.toLowerCase());
-    
+  // Fetch students for filter dropdown
+  useEffect(() => {
+    async function fetchStudents() {
+      try {
+        const res = await getStudents({ page: 1, limit: 100 });
+        setStudents(res.data?.students || []);
+      } catch (err) {
+        setStudents([]);
+        console.error('Failed to load students:', err);
+      }
+    }
+    fetchStudents();
+  }, []);
 
-      const matchesStatus = statusFilter === 'all' || activity.status === statusFilter;
-    
-
-      const matchesStudent = selectedStudents.length === 0 || 
-      selectedStudents.includes(activity.user.name);
-    
-    return matchesSearch && matchesStatus && matchesStudent;
-  });
+  // Fetch activities with filters and pagination
+  useEffect(() => {
+    async function fetchActivities() {
+      setLoading(true);
+      setError(null);
+      try {
+        const params = {
+          page,
+          limit: PAGE_SIZE,
+          search: searchQuery || undefined,
+          status: statusFilter !== 'ALL' ? statusFilter : undefined,
+          students: selectedStudents.length > 0 ? selectedStudents.join(',') : undefined,
+        };
+        const res = await getAdminStudentActivities(params.page, params.limit, params);
+        setActivities(res.data?.activities || []);
+        setTotalPages(res.data?.totalPages || 1);
+      } catch (err) {
+        setError(err?.message || 'Failed to load activities');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchActivities();
+  }, [searchQuery, statusFilter, selectedStudents, page]);
 
   const handleStudentsChange = (selected) => {
     setSelectedStudents(selected);
+    setPage(1);
+  };
+
+  const handleStatusChange = (value) => {
+    setStatusFilter(value);
+    setPage(1);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setPage(1);
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold tracking-tight">All Activities</h1>
-      
+
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
         <Input
           className="max-w-md"
           placeholder="Search activities..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearchChange}
         />
         <div className="flex flex-col sm:flex-row gap-4">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={handleStatusChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="complete">Complete</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="ALL">All Statuses</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="ACTIVE">Active</SelectItem>
+              <SelectItem value="COMPLETED">Completed</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
             </SelectContent>
           </Select>
-          
+
           <div className="w-[220px]">
             <MultipleStudentSelect
               students={students}
@@ -225,52 +131,94 @@ const AllActivities = () => {
           </div>
         </div>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Student Activities</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student</TableHead>
-                <TableHead>Action</TableHead>
-                <TableHead>Subject</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredActivities.map((activity) => (
-                <TableRow key={activity.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={activity.user.image} alt={activity.user.name} />
-                        <AvatarFallback>{activity.user.initials}</AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{activity.user.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{activity.action}</TableCell>
-                  <TableCell>{activity.subject}</TableCell>
-                  <TableCell>{activity.date}</TableCell>
-                  <TableCell>
-                    {activity.status && (
-                      <Badge variant="outline" className={statusClasses[activity.status]}>
-                        {activity.status}
-                      </Badge>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {error ? (
+            <div className="text-center text-red-500">{error}</div>
+          ) : loading ? (
+            <div className="text-center text-muted-foreground">Loading...</div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Action</TableHead>
+                    <TableHead>Subject</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {activities.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">No activities found.</TableCell>
+                    </TableRow>
+                  ) : (
+                    activities.map((activity) => (
+                      <TableRow
+                        key={activity._id}
+                        className="cursor-pointer hover:bg-gray-50"
+                        onClick={() => {
+                          if (activity.applicationId) {
+                            window.location.href = `/app/${activity.applicationId}`;
+                          }
+                        }}
+                        title={activity.applicationId ? 'Go to application' : ''}
+                      >
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={activity.student?.image} alt={activity.student?.name} />
+                              <AvatarFallback>{(activity.student?.name || activity.student?.email || 'U').split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium">{activity.student?.name || activity.student?.email || 'Unknown'}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>{activity.action || activity.type || '-'}</TableCell>
+                        <TableCell>{activity.subject || activity.message || '-'}</TableCell>
+                        <TableCell>{activity.createdAt ? new Date(activity.createdAt).toLocaleDateString() : '-'}</TableCell>
+                        <TableCell>
+                          {activity.status && (
+                            <Badge variant="outline" className={statusClasses[activity.status] || ''}>
+                              {activity.status.toLowerCase()}
+                            </Badge>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+
+              {/* Pagination Controls */}
+              <div className="flex justify-end items-center gap-2 mt-4">
+                <button
+                  className="px-3 py-1 rounded border disabled:opacity-50"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  Previous
+                </button>
+                <span>Page {page} of {totalPages}</span>
+                <button
+                  className="px-3 py-1 rounded border disabled:opacity-50"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
   );
-}
+};
 
 export default AllActivities;

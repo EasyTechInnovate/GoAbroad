@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getStudents } from '@/services/studentService';
+import { getUniversities } from '@/services/universityService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -58,6 +60,12 @@ import {
 } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 import { Link } from 'react-router-dom';
+import {
+  getApplications,
+  getApplicationById,
+  updateApplication,
+  createApplication,
+} from '@/services/applicationService';
 
 
 const format = (date, formatStr) => {
@@ -80,177 +88,12 @@ const format = (date, formatStr) => {
 };
 
 
-const generateRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-};
 
 
-const APPLICATIONS = [
-  {
-    id: 'APP-2023-001',
-    student: {
-      id: 'STD-1001',
-      name: 'Maria Garcia',
-      email: 'maria.garcia@example.com',
-      avatar: '',
-    },
-    university: 'University of Toronto',
-    program: 'Computer Science, Bachelor',
-    status: 'approved',
-    submissionDate: generateRandomDate(new Date(2023, 0, 1), new Date(2023, 3, 30)),
-    decisionDate: generateRandomDate(new Date(2023, 4, 1), new Date(2023, 5, 30)),
-    startDate: new Date(2023, 8, 1),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Recommendation Letter'],
-  },
-  {
-    id: 'APP-2023-002',
-    student: {
-      id: 'STD-1002',
-      name: 'James Wilson',
-      email: 'james.wilson@example.com',
-      avatar: '',
-    },
-    university: 'University of Sydney',
-    program: 'Business Administration, Master',
-    status: 'rejected',
-    submissionDate: generateRandomDate(new Date(2023, 1, 1), new Date(2023, 2, 30)),
-    decisionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 30)),
-    startDate: null,
-    documents: ['Passport', 'Transcripts', 'CV', 'Research Proposal'],
-  },
-  {
-    id: 'APP-2023-003',
-    student: {
-      id: 'STD-1003',
-      name: 'Aisha Khan',
-      email: 'aisha.khan@example.com',
-      avatar: '',
-    },
-    university: 'Ludwig Maximilian University of Munich',
-    program: 'Medicine, Bachelor',
-    status: 'pending',
-    submissionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 15)),
-    decisionDate: null,
-    startDate: new Date(2023, 9, 1),
-    documents: ['Passport', 'Transcripts', 'Medical Exam', 'Language Certificate'],
-  },
-  {
-    id: 'APP-2023-004',
-    student: {
-      id: 'STD-1004',
-      name: 'Chen Wei',
-      email: 'chen.wei@example.com',
-      avatar: '',
-    },
-    university: 'ETH Zurich',
-    program: 'Mechanical Engineering, PhD',
-    status: 'interview',
-    submissionDate: generateRandomDate(new Date(2023, 2, 1), new Date(2023, 3, 30)),
-    decisionDate: null,
-    startDate: new Date(2023, 8, 1),
-    documents: ['Passport', 'Transcripts', 'Research Proposal', 'CV', 'Publications'],
-  },
-  {
-    id: 'APP-2023-005',
-    student: {
-      id: 'STD-1005',
-      name: 'Olga Ivanova',
-      email: 'olga.ivanova@example.com',
-      avatar: '',
-    },
-    university: 'Imperial College London',
-    program: 'Data Science, Master',
-    status: 'approved',
-    submissionDate: generateRandomDate(new Date(2023, 0, 15), new Date(2023, 2, 15)),
-    decisionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 15)),
-    startDate: new Date(2023, 8, 15),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Recommendation Letter'],
-  },
-  {
-    id: 'APP-2023-006',
-    student: {
-      id: 'STD-1006',
-      name: 'Mohammed Al-Fayez',
-      email: 'mohammed.alfayez@example.com',
-      avatar: '',
-    },
-    university: 'National University of Singapore',
-    program: 'Finance, Master',
-    status: 'pending',
-    submissionDate: generateRandomDate(new Date(2023, 4, 1), new Date(2023, 5, 15)),
-    decisionDate: null,
-    startDate: new Date(2024, 0, 15),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Financial Statement'],
-  },
-  {
-    id: 'APP-2023-007',
-    student: {
-      id: 'STD-1007',
-      name: 'Sofia Martinez',
-      email: 'sofia.martinez@example.com',
-      avatar: '',
-    },
-    university: 'McGill University',
-    program: 'International Relations, Bachelor',
-    status: 'approved',
-    submissionDate: generateRandomDate(new Date(2023, 1, 1), new Date(2023, 2, 28)),
-    decisionDate: generateRandomDate(new Date(2023, 3, 15), new Date(2023, 4, 30)),
-    startDate: new Date(2023, 8, 1),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Language Certificate'],
-  },
-  {
-    id: 'APP-2023-008',
-    student: {
-      id: 'STD-1008',
-      name: 'Rajiv Patel',
-      email: 'rajiv.patel@example.com',
-      avatar: '',
-    },
-    university: 'Technical University of Munich',
-    program: 'Computer Engineering, Master',
-    status: 'rejected',
-    submissionDate: generateRandomDate(new Date(2023, 2, 1), new Date(2023, 3, 30)),
-    decisionDate: generateRandomDate(new Date(2023, 4, 15), new Date(2023, 5, 30)),
-    startDate: null,
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Projects Portfolio'],
-  },
-  {
-    id: 'APP-2023-009',
-    student: {
-      id: 'STD-1009',
-      name: 'Emma Thompson',
-      email: 'emma.thompson@example.com',
-      avatar: '',
-    },
-    university: 'University of Melbourne',
-    program: 'Psychology, PhD',
-    status: 'interview',
-    submissionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 30)),
-    decisionDate: null,
-    startDate: new Date(2023, 9, 15),
-    documents: ['Passport', 'Transcripts', 'Research Proposal', 'CV', 'Publications'],
-  },
-  {
-    id: 'APP-2023-010',
-    student: {
-      id: 'STD-1010',
-      name: 'Takashi Yamamoto',
-      email: 'takashi.yamamoto@example.com',
-      avatar: '',
-    },
-    university: 'University of British Columbia',
-    program: 'Environmental Science, Master',
-    status: 'pending',
-    submissionDate: generateRandomDate(new Date(2023, 4, 1), new Date(2023, 5, 30)),
-    decisionDate: null,
-    startDate: new Date(2024, 0, 1),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Recommendation Letter'],
-  },
-];
 
 const Applications = () => {
-  const [applications, setApplications] = useState(APPLICATIONS);
-  const [filteredApplications, setFilteredApplications] = useState(APPLICATIONS);
+  const [applications, setApplications] = useState([]);
+  const [filteredApplications, setFilteredApplications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeStatus, setActiveStatus] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState(null);
@@ -259,78 +102,62 @@ const Applications = () => {
     key: 'submissionDate',
     direction: 'desc',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    studentId: '',
+    universityId: '',
+    taskAssignments: '',
+  });
+  const [students, setStudents] = useState([]);
+  const [universities, setUniversities] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+  const [universitiesLoading, setUniversitiesLoading] = useState(false);
+  const [dropdownError, setDropdownError] = useState(null);
+
+  useEffect(() => {
+    if (!isCreateOpen) return;
+    setDropdownError(null);
+    setStudentsLoading(true);
+    setUniversitiesLoading(true);
+    getStudents({ page: 1, limit: 100 })
+      .then(res => setStudents(res.data?.students || []))
+      .catch(() => setDropdownError('Failed to load students'))
+      .finally(() => setStudentsLoading(false));
+    getUniversities({ page: 1, limit: 100 })
+      .then(res => setUniversities(res.data?.universities || res.data?.data || []))
+      .catch(() => setDropdownError('Failed to load universities'))
+      .finally(() => setUniversitiesLoading(false));
+  }, [isCreateOpen]);
 
 
-  const filterApplications = (status, query) => {
-    let filtered = [...applications];
-    
+  useEffect(() => {
+    async function fetchApplications() {
+      setLoading(true);
+      setError(null);
+      try {
+        const params = {
+          page: 1,
+          limit: 100,
+          search: searchQuery || undefined,
+          status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+        };
+        const res = await getApplications(params);
 
-    if (status !== 'all') {
-      filtered = filtered.filter(app => app.status === status);
+        setApplications(res.data?.applications || []);
+        setFilteredApplications(res.data?.applications || []);
+      } catch (err) {
+        setError(err?.message || 'Failed to load applications');
+      } finally {
+        setLoading(false);
+      }
     }
-    
+    fetchApplications();
+  }, [searchQuery, activeStatus]);
 
-    if (query) {
-      const lowercaseQuery = query.toLowerCase();
-      filtered = filtered.filter(app => 
-        app.student.name.toLowerCase().includes(lowercaseQuery) ||
-        app.university.toLowerCase().includes(lowercaseQuery) ||
-        app.program.toLowerCase().includes(lowercaseQuery) ||
-        app.id.toLowerCase().includes(lowercaseQuery)
-      );
-    }
-    
 
-    if (sortConfig.key) {
-      filtered.sort((a, b) => {
 
-        let aValue, bValue;
-        
-        if (sortConfig.key.includes('.')) {
-          const keys = sortConfig.key.split('.');
-          aValue = keys.reduce((obj, key) => obj[key], a);
-          bValue = keys.reduce((obj, key) => obj[key], b);
-        } else {
-          aValue = a[sortConfig.key];
-          bValue = b[sortConfig.key];
-        }
-        
-
-        if (aValue instanceof Date && bValue instanceof Date) {
-          return sortConfig.direction === 'asc' 
-            ? aValue.getTime() - bValue.getTime()
-            : bValue.getTime() - aValue.getTime();
-        }
-        
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortConfig.direction === 'asc' 
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        }
-        
-
-        if (aValue === null) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (bValue === null) return sortConfig.direction === 'asc' ? 1 : -1;
-        
-
-        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
-      });
-    }
-    
-    setFilteredApplications(filtered);
-  };
-
-  const handleSearch = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    filterApplications(activeStatus, query);
-  };
-
-  const handleTabChange = (value) => {
-    setActiveStatus(value);
-    filterApplications(value, searchQuery);
-  };
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -338,46 +165,68 @@ const Applications = () => {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
-    
 
-    filterApplications(activeStatus, searchQuery);
-  };
-
-  const handleStatusChange = (id, newStatus) => {
-    const updatedApplications = applications.map(app => {
-      if (app.id === id) {
-        const updatedApp = { 
-          ...app, 
-          status: newStatus,
-          decisionDate: newStatus === 'pending' ? null : new Date(),
-        };
-        
-
-        if (selectedApplication && selectedApplication.id === id) {
-          setSelectedApplication(updatedApp);
+    setFilteredApplications((prev) => {
+      const sorted = [...prev];
+      sorted.sort((a, b) => {
+        let aValue = a[key];
+        let bValue = b[key];
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
         }
-        
-        return updatedApp;
-      }
-      return app;
+        if (aValue instanceof Date && bValue instanceof Date) {
+          return direction === 'asc' ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
+        }
+        return 0;
+      });
+      return sorted;
     });
-    
-    setApplications(updatedApplications);
-    filterApplications(activeStatus, searchQuery);
-    
-    const statusMessages = {
-      approved: 'Application approved successfully',
-      rejected: 'Application rejected',
-      interview: 'Interview scheduled for this application',
-      pending: 'Application marked as pending review'
-    };
-    
-    toast.success(statusMessages[newStatus] || 'Application status updated');
   };
 
-  const handleView = (application) => {
-    setSelectedApplication(application);
-    setIsViewOpen(true);
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      setLoading(true);
+      await updateApplication(id, { status: newStatus.toUpperCase() });
+      toast.success('Application status updated');
+
+      const params = {
+        page: 1,
+        limit: 100,
+        search: searchQuery || undefined,
+        status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+      };
+      const res = await getApplications(params);
+      setApplications(res.data?.applications || []);
+      setFilteredApplications(res.data?.applications || []);
+    } catch (err) {
+      toast.error('Failed to update status');
+      console.error('Update application status error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleTabChange = (value) => {
+    setActiveStatus(value);
+  };
+
+
+  const handleView = async (application) => {
+    try {
+      setLoading(true);
+      const res = await getApplicationById(application.id || application._id);
+      setSelectedApplication(res.data?.application || application);
+      setIsViewOpen(true);
+    } catch (err) {
+      toast.error('Failed to load application details');
+      console.error('View application error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -412,12 +261,13 @@ const Applications = () => {
 
   return (
     <div className="space-y-6">
+      {error && <div className="text-center text-red-500">{error}</div>}
+      {loading && <div className="text-center text-muted-foreground">Loading...</div>}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Export
+          <Button variant="default" onClick={() => setIsCreateOpen(true)}>
+            + Create Application
           </Button>
         </div>
       </div>
@@ -433,17 +283,6 @@ const Applications = () => {
             onChange={handleSearch}
           />
         </div>
-        <Select defaultValue="recent">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">Most Recent</SelectItem>
-            <SelectItem value="oldest">Oldest First</SelectItem>
-            <SelectItem value="az">A-Z</SelectItem>
-            <SelectItem value="za">Z-A</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       <Tabs defaultValue="all" value={activeStatus} onValueChange={handleTabChange}>
@@ -456,101 +295,201 @@ const Applications = () => {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[20%]">Student</TableHead>
-                    <TableHead className="w-[25%]">
-                      <div 
-                        className="flex items-center cursor-pointer"
-                        onClick={() => handleSort('university')}
-                      >
-                        University
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[20%]">Program</TableHead>
-                    <TableHead className="w-[15%]">
-                      <div 
-                        className="flex items-center cursor-pointer"
-                        onClick={() => handleSort('submissionDate')}
-                      >
-                        Date
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[10%]">Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredApplications.map((app) => (
-                    <TableRow key={app.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={app.student.avatar} alt={app.student.name} />
-                            <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{app.student.name}</div>
-                            <div className="text-xs text-muted-foreground">{app.id}</div>
-                          </div>
+          {filteredApplications.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">No applications available</div>
+          ) : (
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[20%]">Student</TableHead>
+                      <TableHead className="w-[25%]">
+                        <div 
+                          className="flex items-center cursor-pointer"
+                          onClick={() => handleSort('university')}
+                        >
+                          University
+                          <ArrowUpDown className="ml-2 h-4 w-4" />
                         </div>
-                      </TableCell>
-                      <TableCell>{app.university}</TableCell>
-                      <TableCell>{app.program}</TableCell>
-                      <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                      <TableCell>{getStatusBadge(app.status)}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleView(app)}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Application
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link to={`/student/${app.student.id}`} className="flex items-center">
-                                <User className="mr-2 h-4 w-4" />
-                                View Student
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Set Status</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'approved')}>
-                              <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                              Approve
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'rejected')}>
-                              <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                              Reject
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'interview')}>
-                              <Calendar className="mr-2 h-4 w-4 text-blue-500" />
-                              Schedule Interview
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'pending')}>
-                              <Clock className="mr-2 h-4 w-4 text-yellow-500" />
-                              Mark Pending
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+                      </TableHead>
+                      <TableHead className="w-[20%]">Program</TableHead>
+                      <TableHead className="w-[15%]">
+                        <div 
+                          className="flex items-center cursor-pointer"
+                          onClick={() => handleSort('submissionDate')}
+                        >
+                          Date
+                          <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </div>
+                      </TableHead>
+                      <TableHead className="w-[10%]">Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredApplications.map((app) => (
+                      <TableRow key={app.id}>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={app.student.avatar} alt={app.student.name} />
+                              <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium">{app.student.name}</div>
+                              <div className="text-xs text-muted-foreground">{app.id}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{app.university}</TableCell>
+                        <TableCell>{app.program}</TableCell>
+                        <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                        <TableCell>{getStatusBadge(app.status)}</TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => handleView(app)}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View Application
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link to={`/student/${app.student.id}`} className="flex items-center">
+                                  <User className="mr-2 h-4 w-4" />
+                                  View Student
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuLabel>Set Status</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'approved')}>
+                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                                Approve
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'rejected')}>
+                                <XCircle className="mr-2 h-4 w-4 text-red-500" />
+                                Reject
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'interview')}>
+                                <Calendar className="mr-2 h-4 w-4 text-blue-500" />
+                                Schedule Interview
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'pending')}>
+                                <Clock className="mr-2 h-4 w-4 text-yellow-500" />
+                                Mark Pending
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
+      {/* Create Application Modal */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Create Application</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                setLoading(true);
+                // Remove status from payload, parse taskAssignments
+                const payload = {
+                  studentId: createForm.studentId,
+                  universityId: createForm.universityId,
+                  taskAssignments: JSON.parse(createForm.taskAssignments || '[]'),
+                };
+                await createApplication(payload);
+                toast.success('Application created');
+                setIsCreateOpen(false);
+                setCreateForm({ studentId: '', universityId: '', taskAssignments: '' });
+                // Refetch applications
+                const params = {
+                  page: 1,
+                  limit: 100,
+                  search: searchQuery || undefined,
+                  status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+                };
+                const res = await getApplications(params);
+                setApplications(res.data?.applications || []);
+                setFilteredApplications(res.data?.applications || []);
+              } catch (err) {
+                toast.error('Failed to create application');
+                console.error('Create application error:', err);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="space-y-4"
+          >
+            {/* Student Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">Student</label>
+              <Select
+                value={createForm.studentId}
+                onValueChange={val => setCreateForm(f => ({ ...f, studentId: val }))}
+                disabled={studentsLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={studentsLoading ? 'Loading students...' : 'Select Student'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {students.map(student => (
+                    <SelectItem key={student._id} value={student._id}>
+                      {student.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* University Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">University</label>
+              <Select
+                value={createForm.universityId}
+                onValueChange={val => setCreateForm(f => ({ ...f, universityId: val }))}
+                disabled={universitiesLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={universitiesLoading ? 'Loading universities...' : 'Select University'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {universities.map(university => (
+                    <SelectItem key={university._id} value={university._id}>
+                      {university.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {dropdownError && <div className="text-red-500 text-sm">{dropdownError}</div>}
+
+            {/* Task Assignments (JSON for now) */}
+            <Input
+              placeholder='Task Assignments (JSON array, e.g. ["taskId1", "taskId2"])'
+              value={createForm.taskAssignments}
+              onChange={e => setCreateForm(f => ({ ...f, taskAssignments: e.target.value }))}
+              required
+            />
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+              <Button type="submit" variant="default" disabled={loading}>Create</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
         <TabsContent value="pending" className="space-y-4">
           <Card>
@@ -566,7 +505,7 @@ const Applications = () => {
                   <TableRow>
                     <TableHead className="w-[25%]">Student</TableHead>
                     <TableHead className="w-[20%]">University</TableHead>
-                    <TableHead className="w-[20%]">Program</TableHead>
+        {/* <TableHead className="w-[20%]">Program</TableHead> */}
                     <TableHead className="w-[15%]">Submission Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -587,7 +526,7 @@ const Applications = () => {
                           </div>
                         </TableCell>
                         <TableCell>{app.university}</TableCell>
-                        <TableCell>{app.program}</TableCell>
+        {/* <TableCell>{app.program}</TableCell> */}
                         <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end space-x-2">
@@ -624,7 +563,7 @@ const Applications = () => {
               <TableRow>
                 <TableHead className="w-[25%]">Student</TableHead>
                 <TableHead className="w-[20%]">University</TableHead>
-                <TableHead className="w-[20%]">Program</TableHead>
+        {/* <TableHead className="w-[20%]">Program</TableHead> */}
                 <TableHead className="w-[15%]">Approval Date</TableHead>
                 <TableHead className="w-[10%]">Start Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -646,7 +585,7 @@ const Applications = () => {
                       </div>
                     </TableCell>
                     <TableCell>{app.university}</TableCell>
-                    <TableCell>{app.program}</TableCell>
+        {/* <TableCell>{app.program}</TableCell> */}
                     <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
                     <TableCell>{app.startDate ? format(app.startDate, 'MMM yyyy') : 'N/A'}</TableCell>
                     <TableCell className="text-right">
@@ -673,7 +612,7 @@ const Applications = () => {
               <TableRow>
                 <TableHead className="w-[25%]">Student</TableHead>
                 <TableHead className="w-[20%]">University</TableHead>
-                <TableHead className="w-[20%]">Program</TableHead>
+        {/* <TableHead className="w-[20%]">Program</TableHead> */}
                 <TableHead className="w-[15%]">Rejection Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -694,7 +633,7 @@ const Applications = () => {
                       </div>
                     </TableCell>
                     <TableCell>{app.university}</TableCell>
-                    <TableCell>{app.program}</TableCell>
+        {/* <TableCell>{app.program}</TableCell> */}
                     <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end space-x-2">
@@ -725,7 +664,7 @@ const Applications = () => {
               <TableRow>
                 <TableHead className="w-[25%]">Student</TableHead>
                 <TableHead className="w-[20%]">University</TableHead>
-                <TableHead className="w-[20%]">Program</TableHead>
+        {/* <TableHead className="w-[20%]">Program</TableHead> */}
                 <TableHead className="w-[15%]">Submission Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -746,7 +685,7 @@ const Applications = () => {
                       </div>
                     </TableCell>
                     <TableCell>{app.university}</TableCell>
-                    <TableCell>{app.program}</TableCell>
+        {/* <TableCell>{app.program}</TableCell> */}
                     <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end space-x-2">
@@ -818,13 +757,7 @@ const Applications = () => {
                         <p>{selectedApplication.university}</p>
                       </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Program</p>
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                        <p>{selectedApplication.program}</p>
-                      </div>
-                    </div>
+
                     <div className="space-y-1">
                       <p className="text-sm font-medium text-muted-foreground">Status</p>
                       <div className="flex items-center gap-2">

@@ -70,7 +70,7 @@ const App = () => {
         <Route path="forms" element={<Forms />} />
         <Route path="documents" element={<Documents />} />
         <Route path="faqs" element={<FAQs />} />
-        <Route path="activities" element={<AllActivities />} />
+        <Route path="all-activities" element={<AllActivities />} />
         <Route path="settings" element={<Settings />} />
       </Route>
       
