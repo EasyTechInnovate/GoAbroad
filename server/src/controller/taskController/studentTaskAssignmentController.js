@@ -220,5 +220,30 @@ export default {
         } catch (err) {
             httpError(next, err, req, 500);
         }
+    },
+
+
+    getTaskByStudentId: async (req, res, next) => {
+        try {
+            const { studentId } = req.params
+
+            const isStudentExist = await Student.findById(studentId)
+            if (!isStudentExist) {
+                return httpError(next, new Error(responseMessage.CUSTOM_MESSAGE("Student Not Found")), req, 400)
+            }
+
+            const task = await StudentTaskAssignment.find({
+                studentId
+            }).populate("taskId").sort({ createdAt: -1 })
+
+
+            httpResponse(req, res, 200, responseMessage.CUSTOM_MESSAGE("Student Assigned Task"), {
+                task
+            })
+
+
+        } catch (error) {
+            httpError(next, err, req, 500);
+        }
     }
 };

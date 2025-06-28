@@ -24,7 +24,7 @@ export default {
 
             const student = await Student.findOne({ email });
             if (!student || !await quicker.comparePassword(password, student.password)) {
-                return httpResponse(req, res, 401, responseMessage.NOT_FOUND('User'));
+                return httpResponse(req, res, 401, responseMessage.CUSTOM_MESSAGE("Invalid Credentials"));
             }
 
             // if (!student.isFeePaid) {

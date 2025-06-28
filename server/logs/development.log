@@ -6696,3 +6696,178 @@
         }
     }
 }
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-06-28T06:11:43.671Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-06-28T06:11:43.679Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-06-28T06:11:43.681Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-06-28T06:12:55.465Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-06-28T06:12:55.474Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-06-28T06:12:55.475Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-28T06:14:16.655Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/subtask/681cb182628976c60536a4a0?studentId=68107d4d1fbc5724e46a9b55"
+        },
+        "message": "Subtask Fetch SuccessFully",
+        "data": {
+            "subTasks": [
+                {
+                    "_id": "681cb28b628976c60536a4cf",
+                    "studentId": "68107d4d1fbc5724e46a9b55",
+                    "taskId": {
+                        "_id": "681cb182628976c60536a4a0",
+                        "title": "Complete Registration Process",
+                        "description": "Handle registration steps",
+                        "logo": "http://local.png",
+                        "priority": "HIGH",
+                        "assignee": "68013a01d2da4661a44bb909",
+                        "isDefault": false,
+                        "createdDate": "2025-05-08T13:28:34.779Z",
+                        "createdAt": "2025-05-08T13:28:34.791Z",
+                        "updatedAt": "2025-05-08T13:28:34.791Z"
+                    },
+                    "subtaskId": "681c5a5ea34ea39b0bc5b1e0",
+                    "assignedAt": "2025-05-08T13:32:59.324Z",
+                    "status": "PENDING",
+                    "isLocked": false,
+                    "dueDate": null,
+                    "createdAt": "2025-05-08T13:32:59.326Z",
+                    "updatedAt": "2025-05-08T13:32:59.326Z"
+                }
+            ]
+        }
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-06-28T06:14:36.451Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-06-28T06:14:36.459Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-06-28T06:14:36.459Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "DATABASE_CONNECTION",
+    "timestamp": "2025-06-28T06:14:55.824Z",
+    "meta": {
+        "CONNECTION_NAME": "goupbroad"
+    }
+}
+{
+    "level": "INFO",
+    "message": "RATE_LIMITER_INITIATED",
+    "timestamp": "2025-06-28T06:14:55.832Z",
+    "meta": {}
+}
+{
+    "level": "INFO",
+    "message": "APPLICATION_STARTED",
+    "timestamp": "2025-06-28T06:14:55.834Z",
+    "meta": {
+        "PORT": "5000",
+        "SERVER_URL": "http://localhost:5000"
+    }
+}
+{
+    "level": "INFO",
+    "message": "CONTROLLER_RESPONSE",
+    "timestamp": "2025-06-28T06:15:12.165Z",
+    "meta": {
+        "success": true,
+        "statusCode": 200,
+        "request": {
+            "ip": "::1",
+            "method": "GET",
+            "url": "/v1/admin/task/68107d4d1fbc5724e46a9b55"
+        },
+        "message": "Student Assigned Task",
+        "data": {
+            "task": [
+                {
+                    "_id": "681cb182628976c60536a4a2",
+                    "studentId": "68107d4d1fbc5724e46a9b55",
+                    "taskId": {
+                        "_id": "681cb182628976c60536a4a0",
+                        "title": "Complete Registration Process",
+                        "description": "Handle registration steps",
+                        "logo": "http://local.png",
+                        "priority": "HIGH",
+                        "assignee": "68013a01d2da4661a44bb909",
+                        "isDefault": false,
+                        "createdDate": "2025-05-08T13:28:34.779Z",
+                        "createdAt": "2025-05-08T13:28:34.791Z",
+                        "updatedAt": "2025-05-08T13:28:34.791Z"
+                    },
+                    "assignedAt": "2025-05-08T13:28:34.795Z",
+                    "status": "IN_PROGRESS",
+                    "isLocked": true,
+                    "dueDate": "2025-05-15T00:00:00.000Z",
+                    "createdAt": "2025-05-08T13:28:34.797Z",
+                    "updatedAt": "2025-05-08T13:42:45.834Z"
+                }
+            ]
+        }
+    }
+}
