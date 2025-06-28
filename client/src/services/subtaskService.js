@@ -1,8 +1,14 @@
 import { apiService } from './api.services';
 
-export const getSubtasks = async (page = 1, limit = 10) => {
+export const getSubtasks = async (taskId, studentId) => {
+  if (!taskId || !studentId) {
+    throw new Error('Task ID and Student ID are required');
+  }
+
   try {
-    const response = await apiService.get(`/admin/subtasks?page=${page}&limit=${limit}`);
+    const response = await apiService.get(`/admin/subtask/${taskId}`, {
+      params: { studentId }
+    });
     return {
       success: true,
       data: response.data || []

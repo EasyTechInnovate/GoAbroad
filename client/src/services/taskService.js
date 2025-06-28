@@ -4,8 +4,11 @@ export const createTask = async (data) => {
   return await apiService.post('/admin/tasks', data);
 };
 
-export const getTasks = async (params = {}) => {
-  return await apiService.get('/admin/tasks', { params });
+export const getTasks = async (studentId) => {
+  if (!studentId) {
+    throw new Error('Student ID is required');
+  }
+  return await apiService.get(`/admin/task/${studentId}`);
 };
 
 export const getTaskById = async (taskId) => {
