@@ -3,7 +3,7 @@ import { ChevronDown, ChevronUp, Download } from 'lucide-react';
 import { SidebarProvider, SidebarInset } from '../../components/ui/sidebar';
 import AppSidebar from '../../components/AppSidebar';
 import SidebarHeader from '../../components/SidebarHeader';
-import { getDocuments, getSubtaskDocuments } from '@/services/documentService';
+import { getStudentDocuments } from '@/services/studentDocumentService';
 import { toast } from 'sonner';
 
 const DocManager = () => {
@@ -23,8 +23,30 @@ const DocManager = () => {
     const fetchDocuments = async () => {
       try {
         setIsLoading(true);
-        const response = await getDocuments(pagination.page, pagination.limit);
-        
+        // Try to get studentId from localStorage, session, or user context
+        let studentId = null;
+        // Example: if you store user info in localStorage
+        try {
+          const user = JSON.parse(localStorage.getItem('user'));
+          if (user && user._id) studentId = user._id;
+        } catch (e) {
+          console.error('Error parsing user from localStorage:', e);
+        }
+        // Optionally, fallback to sessionStorage or other auth context
+        // If studentId is still not found, show error and return
+        if (!studentId) {
+          toast.error('Student ID not found. Please log in again.');
+          setIsLoading(false);
+          return;
+        }
+        const response = await getStudentDocuments({ studentId, page: pagination.page, limit: pagination.limit });
+        console.log('API response:', response);
+        // Check for unauthorized or forbidden
+        if (response.status === 401 || response.status === 403) {
+          toast.error('Session expired. Please log in again.');
+          // Optionally, redirect to login or clear auth here
+          return;
+        }
         if (response.success) {
           setDocuments(response.data.documents);
           setPagination(response.data.pagination);
@@ -32,7 +54,16 @@ const DocManager = () => {
           toast.error(response.message || 'Failed to fetch documents');
         }
       } catch (error) {
+        // Log the error and the error response if available
         console.error('Error fetching documents:', error);
+        if (error?.response) {
+          console.error('Error response:', error.response);
+          if (error.response.status === 401 || error.response.status === 403) {
+            toast.error('Session expired. Please log in again.');
+            // Optionally, redirect to login or clear auth here
+            return;
+          }
+        }
         toast.error('Failed to fetch documents');
       } finally {
         setIsLoading(false);
@@ -48,20 +79,7 @@ const DocManager = () => {
       [taskId]: !prev[taskId]
     }));
   };
-  const handleDownload = async (taskId, subtaskId) => {
-    try {
-      const response = await getSubtaskDocuments(taskId, subtaskId);
-      if (response.success && response.data?.documents?.length > 0) {
-        // For now, just open the document in a new tab
-        window.open(response.data.documents[0].url, '_blank');
-      } else {
-        toast.error('No documents available for download');
-      }
-    } catch (error) {
-      console.error('Error downloading document:', error);
-      toast.error('Failed to download document');
-    }
-  };
+
 
   const formatDocuments = documents.map(doc => ({
     id: doc.task._id,
@@ -138,12 +156,23 @@ const DocManager = () => {
                                   <tr key={subtask.id} className="border-b">
                                     <td className="py-2 px-4 text-sm text-gray-800">{subtask.title}</td>
                                     <td className="py-2 px-4 text-right">
-                                      <button 
-                                        className="text-primary-1 hover:text-primary-2"
-                                        onClick={() => handleDownload(doc.id, subtask.id)}
-                                      >
-                                        <Download className="h-5 w-5" />
-                                      </button>
+                                      {subtask.documents && subtask.documents.length > 0 ? (
+                                        <button
+                                          className="text-primary-1 hover:text-primary-2"
+                                          onClick={() => {
+                                            const file = subtask.documents[0];
+                                            if (file && file.fileUrl) {
+                                              window.open(file.fileUrl, '_blank');
+                                            } else {
+                                              toast.error('No file available for download');
+                                            }
+                                          }}
+                                        >
+                                          <Download className="h-5 w-5 cursor-pointer" />
+                                        </button>
+                                      ) : (
+                                        <span className="text-gray-400">No file</span>
+                                      )}
                                     </td>
                                   </tr>
                                 ))}
