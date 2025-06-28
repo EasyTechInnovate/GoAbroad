@@ -92,10 +92,10 @@ export default {
             // Fetch the task with associated students and subtasks
             const populatedTask = await Task.findById(task._id).lean();
             const studentAssignments = await StudentTaskAssignment.find({ taskId: task._id })
-                .populate('studentId',"-password")
+                .populate('studentId', "-password")
                 .lean();
             const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId: task._id })
-                .populate('studentId',"-password")
+                .populate('studentId', "-password")
                 .populate('subtaskId')
                 .lean();
 
@@ -157,10 +157,10 @@ export default {
             // Fetch updated task with associations
             const populatedTask = await Task.findById(task._id).lean();
             const studentAssignments = await StudentTaskAssignment.find({ taskId: task._id })
-                .populate('studentId',"-password")
+                .populate('studentId', "-password")
                 .lean();
             const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId: task._id })
-                .populate('studentId',"-password")
+                .populate('studentId', "-password")
                 .populate('subtaskId')
                 .lean();
 
@@ -199,8 +199,8 @@ export default {
             }
 
             // Delete associated StudentTaskAssignment and TaskSubtaskAssignment records
-            await StudentTaskAssignment.deleteMany({ taskId:task._id });
-            await TaskSubtaskAssignment.deleteMany({ taskId:task._id });
+            await StudentTaskAssignment.deleteMany({ taskId: task._id });
+            await TaskSubtaskAssignment.deleteMany({ taskId: task._id });
 
             // Delete task
             await Task.findByIdAndDelete(task._id);
@@ -288,10 +288,10 @@ export default {
 
             // Fetch associated assignments
             const studentAssignments = await StudentTaskAssignment.find({ taskId })
-                .populate('studentId',"-password")
+                .populate('studentId', "-password")
                 .lean();
             const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId })
-                .populate('studentId',"-password")
+                .populate('studentId', "-password")
                 .populate('subtaskId')
                 .lean();
 
@@ -308,5 +308,7 @@ export default {
         } catch (err) {
             httpError(next, err, req, 500);
         }
-    }
+    },
+
+
 };

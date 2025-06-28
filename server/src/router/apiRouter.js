@@ -149,6 +149,9 @@ router.route('/admin/subtasks/:subtaskId')
 // Update Stautus 
 router.route('/admin/subtask-questionnaire-assignments/update-status')
     .put(adminOnly, subtaskQuestionnaireAssignmentController.updateAssignmentStatus);
+
+router.route("/admin/subtask/:taskId").get(memberAccess, taskSubtaskAssignmentController.getSubTaskByTaskId)
+
 // ******************** SUBTASK ROUTES END ***********************************
 
 
@@ -177,6 +180,8 @@ router.route('/admin/tasks/:taskId/subtasks/remove')
 // Route for updating TaskSubtaskAssignment (ADMIN only)
 router.route('/admin/task-subtask-assignments/update')
     .put(adminOnly, taskSubtaskAssignmentController.updateTaskSubtaskAssignment);
+
+router.route("/admin/task/:studentId").get(studentTaskAssignmentController.getTaskByStudentId)
 
 
 // Routes for ADMIN only
