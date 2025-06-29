@@ -46,6 +46,7 @@ import {
   getApplicationById,
   updateApplication,
   createApplication,
+  deleteApplication,
 } from '@/services/applicationService';
 
 
@@ -109,6 +110,17 @@ const Applications = () => {
 
   const handleUpdate = async (app) => {
     setUpdatingAppId(app.id || app._id);
+
+    // Always fetch members for update modal (like create modal)
+    setMembersLoading(true);
+    try {
+      const res = await getTeamMembers({ page: 1, limit: 100 });
+      setMembers(res.data?.members || res.members || []);
+    } catch {
+      setMembers([]);
+    } finally {
+      setMembersLoading(false);
+    }
 
     let studentId = app.student?._id || app.studentId?._id || app.studentId || app.student;
     if (studentId) {
@@ -186,9 +198,8 @@ const Applications = () => {
   const handleDelete = async (app) => {
     if (!window.confirm('Are you sure you want to delete this application?')) return;
     try {
-      await updateApplication(app.id || app._id, { status: 'DELETED' });
+      await deleteApplication(app.id || app._id);
       toast.success('Application deleted');
-
       const params = {
         page: 1,
         limit: 100,
@@ -200,8 +211,6 @@ const Applications = () => {
     } catch (err) {
       toast.error('Failed to delete application');
       console.error('Delete application error:', err);
-    } finally {
-      // No-op
     }
   };
 
