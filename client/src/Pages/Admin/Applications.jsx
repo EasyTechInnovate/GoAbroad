@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getStudents } from '@/services/studentService';
 import { getUniversities } from '@/services/universityService';
+import { getTeamMembers } from '@/services/teamService';
+import { getTasksByStudentId } from '@/services/taskService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -50,10 +52,8 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  Download,
   User,
   FileText,
-  GraduationCap,
   Building,
   Calendar,
   ArrowUpDown,
@@ -92,7 +92,7 @@ const format = (date, formatStr) => {
 
 
 const Applications = () => {
-  const [applications, setApplications] = useState([]);
+  // const [applications, setApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeStatus, setActiveStatus] = useState('all');
@@ -108,12 +108,17 @@ const Applications = () => {
   const [createForm, setCreateForm] = useState({
     studentId: '',
     universityId: '',
-    taskAssignments: '',
+    taskAssignments: [],
+    assignTo: '',
   });
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [universities, setUniversities] = useState([]);
+  const [members, setMembers] = useState([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
   const [universitiesLoading, setUniversitiesLoading] = useState(false);
+  const [membersLoading, setMembersLoading] = useState(false);
   const [dropdownError, setDropdownError] = useState(null);
 
   useEffect(() => {
@@ -121,6 +126,7 @@ const Applications = () => {
     setDropdownError(null);
     setStudentsLoading(true);
     setUniversitiesLoading(true);
+    setMembersLoading(true);
     getStudents({ page: 1, limit: 100 })
       .then(res => setStudents(res.data?.students || []))
       .catch(() => setDropdownError('Failed to load students'))
@@ -129,7 +135,27 @@ const Applications = () => {
       .then(res => setUniversities(res.data?.universities || res.data?.data || []))
       .catch(() => setDropdownError('Failed to load universities'))
       .finally(() => setUniversitiesLoading(false));
+    // Fetch members for assignTo using teamService
+    getTeamMembers({ page: 1, limit: 100 })
+      .then(res => setMembers(res.data?.members || res.members || []))
+      .catch(() => setDropdownError('Failed to load members'))
+      .finally(() => setMembersLoading(false));
+    // Reset tasks when opening modal
+    setTasks([]);
+    setTasksLoading(false);
   }, [isCreateOpen]);
+
+  useEffect(() => {
+    if (!isCreateOpen || !createForm.studentId) {
+      setTasks([]);
+      return;
+    }
+    setTasksLoading(true);
+    getTasksByStudentId(createForm.studentId)
+      .then(res => setTasks(res.data?.task || []))
+      .catch(() => setTasks([]))
+      .finally(() => setTasksLoading(false));
+  }, [isCreateOpen, createForm.studentId]);
 
 
   useEffect(() => {
@@ -145,7 +171,7 @@ const Applications = () => {
         };
         const res = await getApplications(params);
 
-        setApplications(res.data?.applications || []);
+        // setApplications(res.data?.applications || []);
         setFilteredApplications(res.data?.applications || []);
       } catch (err) {
         setError(err?.message || 'Failed to load applications');
@@ -196,7 +222,7 @@ const Applications = () => {
         status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
       };
       const res = await getApplications(params);
-      setApplications(res.data?.applications || []);
+      // setApplications(res.data?.applications || []);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
       toast.error('Failed to update status');
@@ -405,16 +431,17 @@ const Applications = () => {
               e.preventDefault();
               try {
                 setLoading(true);
-                // Remove status from payload, parse taskAssignments
+                // Use the array directly for taskAssignments
                 const payload = {
                   studentId: createForm.studentId,
                   universityId: createForm.universityId,
-                  taskAssignments: JSON.parse(createForm.taskAssignments || '[]'),
+                  taskAssignments: createForm.taskAssignments,
+                  assignTo: createForm.assignTo,
                 };
                 await createApplication(payload);
                 toast.success('Application created');
                 setIsCreateOpen(false);
-                setCreateForm({ studentId: '', universityId: '', taskAssignments: '' });
+                setCreateForm({ studentId: '', universityId: '', taskAssignments: [], assignTo: '' });
                 // Refetch applications
                 const params = {
                   page: 1,
@@ -423,7 +450,7 @@ const Applications = () => {
                   status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
                 };
                 const res = await getApplications(params);
-                setApplications(res.data?.applications || []);
+                // setApplications(res.data?.applications || []);
                 setFilteredApplications(res.data?.applications || []);
               } catch (err) {
                 toast.error('Failed to create application');
@@ -474,15 +501,48 @@ const Applications = () => {
                 </SelectContent>
               </Select>
             </div>
+            {/* Assign To Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">Assign To</label>
+              <Select
+                value={createForm.assignTo}
+                onValueChange={val => setCreateForm(f => ({ ...f, assignTo: val }))}
+                disabled={membersLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={membersLoading ? 'Loading members...' : 'Select Member'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {members.map(member => (
+                    <SelectItem key={member._id} value={member._id}>
+                      {member.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {dropdownError && <div className="text-red-500 text-sm">{dropdownError}</div>}
 
-            {/* Task Assignments (JSON for now) */}
-            <Input
-              placeholder='Task Assignments (JSON array, e.g. ["taskId1", "taskId2"])'
-              value={createForm.taskAssignments}
-              onChange={e => setCreateForm(f => ({ ...f, taskAssignments: e.target.value }))}
-              required
-            />
+            {/* Task Assignments Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">Task Assignments</label>
+              <Select
+                value={createForm.taskAssignments.length > 0 ? createForm.taskAssignments[0] : ''}
+                onValueChange={val => setCreateForm(f => ({ ...f, taskAssignments: val ? [val] : [] }))}
+                disabled={tasksLoading || !createForm.studentId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={tasksLoading ? 'Loading tasks...' : (!createForm.studentId ? 'Select Student first' : 'Select Task')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {tasks.map(task => (
+                    <SelectItem key={task.taskId?._id || task._id} value={task.taskId?._id || task._id}>
+                      {task.taskId?.title || task.title || task.taskId?._id || task._id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
               <Button type="submit" variant="default" disabled={loading}>Create</Button>
@@ -511,46 +571,46 @@ const Applications = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredApplications.length > 0 ? (
-                    filteredApplications.map((app) => (
-                      <TableRow key={app.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium">{app.student.name}</div>
-                              <div className="text-xs text-muted-foreground">{app.id}</div>
+                  {filteredApplications.length > 0
+                    ? filteredApplications.map((app) => (
+                        <TableRow key={app.id}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-medium">{app.student.name}</div>
+                                <div className="text-xs text-muted-foreground">{app.id}</div>
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{app.university}</TableCell>
+                          </TableCell>
+                          <TableCell>{app.university}</TableCell>
         {/* <TableCell>{app.program}</TableCell> */}
-                        <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end space-x-2">
-                            <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
-                              <CheckCircle2 className="mr-2 h-4 w-4" />
-                              Approve
-                            </Button>
-                            <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
-                              Schedule Interview
-                            </Button>
-                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center py-4">
-                        No pending applications found
-                      </TableCell>
-                    </TableRow>
-                  )}
+                          <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end space-x-2">
+                              <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
+                                <CheckCircle2 className="mr-2 h-4 w-4" />
+                                Approve
+                              </Button>
+                              <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
+                                Schedule Interview
+                              </Button>
+                              <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    : (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center py-4">
+                            No pending applications found
+                          </TableCell>
+                        </TableRow>
+                      )}
                 </TableBody>
               </Table>
             </CardContent>
