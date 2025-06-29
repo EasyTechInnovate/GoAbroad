@@ -41,7 +41,7 @@ export default {
             }
 
             const taskAssignmentIds = taskAssignments;
-            const validAssignments = await StudentTaskAssignment.find({ _id: { $in: taskAssignmentIds }, studentId }).lean();
+            const validAssignments = await StudentTaskAssignment.find({ taskId: { $in: taskAssignmentIds }, studentId }).lean();
             if (validAssignments.length !== taskAssignmentIds.length) {
                 return httpError(next, new Error('One or more task assignments are invalid or not assigned to the student'), req, 400);
             }
@@ -96,7 +96,7 @@ export default {
             if (progress !== undefined) application.progress = progress;
             if (taskAssignments) {
                 const taskAssignmentIds = taskAssignments;
-                const validAssignments = await StudentTaskAssignment.find({ _id: { $in: taskAssignmentIds }, studentId: application.studentId }).lean();
+                const validAssignments = await StudentTaskAssignment.find({ taskId: { $in: taskAssignmentIds }, studentId: application.studentId }).lean();
                 if (validAssignments.length !== taskAssignmentIds.length) {
                     return httpError(next, new Error('One or more task assignments are invalid or not assigned to the student'), req, 400);
                 }
