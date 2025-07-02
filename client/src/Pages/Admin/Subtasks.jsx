@@ -233,7 +233,7 @@ const Subtasks = () => {
             } catch (err) {
                 console.error('Error uploading logo:', err);
                 toast.error(err.message || 'Failed to upload logo');
-                // Reset file input
+
                 e.target.value = '';
             } finally {
                 setFileUploading(false);

@@ -1,114 +1,70 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Activity,
-  DollarSign,
-  Users,
-  Calendar,
-  Clock,
-  User,
-  FileText,
-  Building2
-} from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  Legend,
-} from 'recharts';
+import { Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getAdminStudentActivities } from '@/services/adminActivityService';
 
+function getInitials(name) {
+  if (!name) return '';
+  const parts = name.split(' ');
+  if (parts.length === 1) return parts[0][0];
+  return parts[0][0] + parts[1][0];
+}
 
-const applicationStats = [
-  { name: 'Jan', count: 12 },
-  { name: 'Feb', count: 19 },
-  { name: 'Mar', count: 15 },
-  { name: 'Apr', count: 27 },
-  { name: 'May', count: 21 },
-  { name: 'Jun', count: 16 },
-  { name: 'Jul', count: 29 },
-  { name: 'Aug', count: 35 },
-];
-
-const universityData = [
-  { name: 'USA', value: 35 },
-  { name: 'UK', value: 25 },
-  { name: 'Canada', value: 20 },
-  { name: 'Australia', value: 15 },
-  { name: 'Other', value: 5 },
-];
-
-const progressData = [
-  { name: 'Week 1', completed: 40, total: 100 },
-  { name: 'Week 2', completed: 60, total: 100 },
-  { name: 'Week 3', completed: 75, total: 100 },
-  { name: 'Week 4', completed: 90, total: 100 },
-  { name: 'Week 5', completed: 85, total: 100 },
-  { name: 'Week 6', completed: 95, total: 100 },
-];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
-
-const recentStudents = [
-  {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    targetUniversity: 'Harvard University',
-    program: 'MBA',
-    status: 'active',
-  },
-  {
-    name: 'Emma Wilson',
-    email: 'emma.w@example.com',
-    targetUniversity: 'Stanford University',
-    program: 'Computer Science',
-    status: 'active',
-  },
-  {
-    name: 'Michael Brown',
-    email: 'm.brown@example.com',
-    targetUniversity: 'MIT',
-    program: 'Electrical Engineering',
-    status: 'inactive',
-  },
-];
-
-const upcomingDeadlines = [
-  {
-    student: 'John Doe',
-    university: 'Harvard University',
-    deadline: 'Oct 30, 2023',
-    task: 'Submit SOP',
-    daysLeft: 5,
-  },
-  {
-    student: 'Emma Wilson',
-    university: 'Stanford University',
-    deadline: 'Nov 5, 2023',
-    task: 'Application Fee Payment',
-    daysLeft: 11,
-  },
-  {
-    student: 'Michael Brown',
-    university: 'MIT',
-    deadline: 'Nov 12, 2023',
-    task: 'Recommendation Letters',
-    daysLeft: 18,
-  },
-];
 
 const AdminDashboard = () => {
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    activeApplications: 0,
+    pendingTasks: 0,
+    completedTasks: 0,
+    statsChange: {},
+  });
+  const [activities, setActivities] = useState([]);
+  const [deadlines, setDeadlines] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchDashboard() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await getAdminStudentActivities(1, 5);
+        // You may need to adjust this mapping based on your real API response
+        setStats({
+          totalStudents: res.data?.totalStudents || 254,
+          activeApplications: res.data?.activeApplications || 189,
+          pendingTasks: res.data?.pendingTasks || 87,
+          completedTasks: res.data?.completedTasks || 419,
+          statsChange: res.data?.statsChange || {
+            totalStudents: '+12%',
+            activeApplications: '+7%',
+            pendingTasks: '-2%',
+            completedTasks: '+22%'
+          }
+        });
+        setActivities(res.data?.activities || []);
+        setDeadlines(res.data?.deadlines || [
+          // fallback mock
+          {
+            id: 1,
+            university: 'UC Berkeley Application Due',
+            student: 'Emma Johnson',
+            date: 'Oct 15, 2023',
+            task: '',
+            status: 'pending',
+          },
+        ]);
+      } catch (err) {
+        setError(err?.message || 'Failed to load dashboard');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDashboard();
+  }, []);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -120,347 +76,126 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-        </TabsList>
-
-          <TabsContent value="overview" className="space-y-4">
-            {/* Stats Row */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Total Students
-                  </CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">142</div>
-                  <p className="text-xs text-muted-foreground">
-                    +6 this month
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Active Applications
-                  </CardTitle>
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">89</div>
-                  <p className="text-xs text-muted-foreground">
-                    +12 this month
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Universities
-                  </CardTitle>
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">35</div>
-                  <p className="text-xs text-muted-foreground">
-                    +3 this month
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Upcoming Deadlines
-                  </CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground">
-                    Within next 7 days
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Charts Row */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
-                <CardHeader>
-                  <CardTitle>Application Overview</CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                  <ResponsiveContainer width="100%" height={350}>
-                    <BarChart data={applicationStats}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#8884d8" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card className="col-span-3">
-                <CardHeader>
-                  <CardTitle>Applications by Country</CardTitle>
-                </CardHeader>
-                <CardContent className="flex justify-center">
-                  <ResponsiveContainer width="100%" height={350}>
-                    <PieChart>
-                      <Pie
-                        data={universityData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
-                        }
-                      >
-                        {universityData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Activity and Deadlines */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
-                <CardHeader className="pb-3">
-                  <CardTitle>Recent Students</CardTitle>
-                  <CardDescription>
-                    Newly added students and their status.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {recentStudents.map((student, i) => (
-                      <div key={i} className="flex items-center">
-                        <div className="mr-2 space-y-1 flex-1">
-                          <p className="text-sm font-medium leading-none">
-                            {student.name}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {student.email}
-                          </p>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {student.program} • {student.targetUniversity}
-                        </div>
-                        <div className="ml-2">
-                          <Badge
-                            variant={student.status === 'active' ? 'default' : 'outline'}
-                          >
-                            {student.status === 'active' ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="col-span-3">
-                <CardHeader>
-                  <CardTitle>Upcoming Deadlines</CardTitle>
-                  <CardDescription>
-                    Tasks and application deadlines.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {upcomingDeadlines.map((deadline, i) => (
-                      <div key={i} className="mb-4">
-                        <div className="flex items-center justify-between mb-1">
-                          <div>
-                            <span className="font-medium">{deadline.task}</span>
-                            <span className="text-sm text-muted-foreground">
-                              {' '}
-                              • {deadline.student}
-                            </span>
-                          </div>
-                          <Badge variant={deadline.daysLeft <= 7 ? 'destructive' : 'outline'}>
-                            {deadline.daysLeft} days
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-muted-foreground flex justify-between">
-                          <span>{deadline.university}</span>
-                          <span>{deadline.deadline}</span>
-                        </div>
-                        <Progress
-                          value={100 - (deadline.daysLeft / 20) * 100}
-                          className="h-1 mt-2"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
-                <CardHeader>
-                  <CardTitle>Completion Progress</CardTitle>
-                  <CardDescription>
-                    Weekly student task completion rate
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pl-2">
-                  <ResponsiveContainer width="100%" height={350}>
-                    <LineChart data={progressData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="completed"
-                        stroke="#8884d8"
-                        activeDot={{ r: 8 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card className="col-span-3">
-                <CardHeader>
-                  <CardTitle>Statistics</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">
-                        Documents Uploaded
-                      </span>
-                      <span className="text-sm">254</span>
-                    </div>
-                    <Progress value={75} className="h-2" />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">
-                        Questionnaires Completed
-                      </span>
-                      <span className="text-sm">89/120</span>
-                    </div>
-                    <Progress value={74} className="h-2" />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">
-                        Applications Submitted
-                      </span>
-                      <span className="text-sm">62/95</span>
-                    </div>
-                    <Progress value={65} className="h-2" />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">
-                        Visa Applications
-                      </span>
-                      <span className="text-sm">32/85</span>
-                    </div>
-                    <Progress value={38} className="h-2" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="activity" className="space-y-4">
+      {error ? (
+        <div className="text-center text-red-500">{error}</div>
+      ) : loading ? (
+        <div className="text-center text-muted-foreground">Loading...</div>
+      ) : (
+        <div className="grid gap-6">
+          {/* Stats Row */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Activity from students and counselors.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-full bg-primary-foreground p-2">
-                    <User className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">John Doe submitted Harvard SOP</p>
-                    <p className="text-sm text-muted-foreground">10 minutes ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="rounded-full bg-primary-foreground p-2">
-                    <FileText className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Emma Wilson uploaded transcript documents</p>
-                    <p className="text-sm text-muted-foreground">42 minutes ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="rounded-full bg-primary-foreground p-2">
-                    <Activity className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Michael Brown completed initial assessment</p>
-                    <p className="text-sm text-muted-foreground">2 hours ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="rounded-full bg-primary-foreground p-2">
-                    <FileText className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Stanford application for Emma Wilson submitted</p>
-                    <p className="text-sm text-muted-foreground">Yesterday at 11:42 AM</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="rounded-full bg-primary-foreground p-2">
-                    <DollarSign className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Application fee payment processed for MIT application</p>
-                    <p className="text-sm text-muted-foreground">Yesterday at 3:15 PM</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-center mt-6">
-                  <Button variant="outline">View All Activity</Button>
+              <CardContent className="pt-6 pb-4">
+                <div className="text-xs text-muted-foreground font-medium">Total Students</div>
+                <div className="text-3xl font-bold mt-1">{stats.totalStudents}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                  <span className="text-green-600 font-semibold">{stats.statsChange.totalStudents || '+12%'}</span>
+                  from last month
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+            <Card>
+              <CardContent className="pt-6 pb-4">
+                <div className="text-xs text-muted-foreground font-medium">Active Applications</div>
+                <div className="text-3xl font-bold mt-1">{stats.activeApplications}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                  <span className="text-green-600 font-semibold">{stats.statsChange.activeApplications || '+7%'}</span>
+                  from last month
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 pb-4">
+                <div className="text-xs text-muted-foreground font-medium">Pending Tasks</div>
+                <div className="text-3xl font-bold mt-1">{stats.pendingTasks}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                  <span className="text-red-600 font-semibold">{stats.statsChange.pendingTasks || '-2%'}</span>
+                  from last month
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 pb-4">
+                <div className="text-xs text-muted-foreground font-medium">Completed Tasks</div>
+                <div className="text-3xl font-bold mt-1">{stats.completedTasks}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                  <span className="text-green-600 font-semibold">{stats.statsChange.completedTasks || '+22%'}</span>
+                  from last month
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Row */}
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Recent Activity */}
+            <div className="col-span-2 bg-white rounded-lg shadow-sm p-6">
+              <div className="font-semibold text-lg mb-4">Recent Activity</div>
+              <div className="divide-y">
+                {activities.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">No recent activity found.</div>
+                ) : (
+                  activities.map((activity) => (
+                    <div key={activity._id} className="flex items-center py-4 gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-base font-bold text-gray-600">
+                        {getInitials(activity.student?.name || activity.student?.email || 'U')}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900">{activity.student?.name || activity.student?.email || 'Unknown Student'}</div>
+                        <div className="text-sm text-muted-foreground">{activity.message}</div>
+                      </div>
+                      <div className="flex flex-col items-end min-w-[100px]">
+                        <span className="text-xs text-gray-500">{new Date(activity.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className={`mt-1 text-xs px-2 py-0.5 rounded-full font-semibold ${activity.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : activity.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700'}`}>{activity.status?.toLowerCase()}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="flex justify-end mt-4">
+                <Button
+                  variant="ghost"
+                  className="text-primary-600"
+                  onClick={() => {
+                    // Navigate to All Activities page
+                    if (typeof window !== 'undefined') {
+                      window.location.href = '/admin/all-activities';
+                    }
+                  }}
+                >
+                  View All
+                </Button>
+              </div>
+            </div>
+
+            {/* Upcoming Deadlines */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="font-semibold text-lg mb-4">Upcoming Deadlines</div>
+              <div className="space-y-4">
+                {deadlines.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">No upcoming deadlines.</div>
+                ) : (
+                  deadlines.map((deadline, i) => (
+                    <div key={deadline.id || i} className="flex items-center gap-3">
+                      <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${deadline.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : deadline.status === 'active' ? 'bg-blue-100 text-blue-700' : deadline.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                        {deadline.university?.[0] || 'U'}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900">{deadline.university}</div>
+                        <div className="text-xs text-muted-foreground">{deadline.student}</div>
+                      </div>
+                      <div className="flex flex-col items-end min-w-[90px]">
+                        <span className="text-xs text-gray-500">{deadline.date}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

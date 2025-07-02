@@ -1,11 +1,16 @@
 import httpResponse from '../../util/httpResponse.js';
 import responseMessage from '../../constant/responseMessage.js';
 import httpError from '../../util/httpError.js';
-import { ValidateMemberCreate, ValidateMemberUpdate, ValidatePasswordUpdate, ValidateLogin, validateJoiSchema, ValidateMembersQuery } from '../../service/validationService.js';
+import { ValidateMemberCreate, ValidateMemberUpdate, ValidatePasswordUpdate, ValidateLogin, validateJoiSchema, ValidateMembersQuery, ValidateGetAdminStudentTaskSubtaskQuestionsDetails, ValidateGetStudentActivities } from '../../service/validationService.js';
 import quicker from '../../util/quicker.js';
 import config from '../../config/config.js';
 import Member from "../../model/membersModel.js"
-
+import Student from '../../model/studentModel.js';
+import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
+import SubtaskQuestionnaireAssignment from "../../model/subtaskQuestionnaireAssignmentModel.js"
+import Response from "../../model/responseModel.js"
+import mongoose from 'mongoose';
+import StudentActivity from '../../model/studentActivitySchema.js';
 export default {
     // All members: Login with cookie
     login: async (req, res, next) => {
@@ -276,11 +281,174 @@ export default {
         } catch (err) {
             httpError(next, err, req, 500);
         }
-    }
+    },
 
     /**
     * **************************************************
     *                      ALL MEMBERS ROUTES END
     * **************************************************
     */
+
+
+    // ******************* ADMIN STUDNET TASK SUBTASK , QUESTIONNIORS *********************
+    getAdminStudentTaskSubtaskQuestionsDetails: async (req, res, next) => {
+        try {
+            const { value, error } = validateJoiSchema(ValidateGetAdminStudentTaskSubtaskQuestionsDetails, { ...req.params, ...req.query });
+            if (error) return httpError(next, error, req, 422);
+
+            const { studentId, page, limit } = value;
+            const skip = (page - 1) * limit;
+
+
+
+            const student = await Student.findById(studentId)
+
+            console.log(studentId, student);
+
+            if (!student) {
+                return httpError(next, new Error('Student not found'), req, 404);
+            }
+
+            const assignments = await TaskSubtaskAssignment.find({
+                studentId
+            })
+                .populate('taskId', '')
+                .populate('subtaskId', '')
+                .lean();
+
+            const taskSubtaskMap = assignments.reduce((acc, assignment) => {
+                const taskId = assignment.taskId._id.toString();
+                if (!acc[taskId]) {
+                    acc[taskId] = { task: assignment.taskId, subtasks: [] };
+                }
+                acc[taskId].subtasks.push({ ...assignment.subtaskId, assignmentId: assignment._id });
+                return acc;
+            }, {});
+
+            for (const taskId in taskSubtaskMap) {
+                for (const subtask of taskSubtaskMap[taskId].subtasks) {
+                    const questionnaires = await SubtaskQuestionnaireAssignment.find({
+                        subtaskId: subtask._id
+                    })
+                        .populate({
+                            path: 'questionnaireId',
+                            populate: {
+                                path: 'questions',
+                                model: 'Question' // Assuming questions are in a separate model or embedded
+                            }
+                        })
+                        .lean();
+
+                    const responses = await Response.find({
+                        studentId,
+                        taskId: taskSubtaskMap[taskId].task._id,
+                        subtaskId: subtask._id
+                    }).lean();
+
+                    subtask.questionnaires = questionnaires.map(q => {
+                        const questionsWithResponses = q.questionnaireId.questions.map(question => {
+                            const response = responses.find(r => r.questionId.toString() === question._id.toString());
+                            return {
+                                _id: question._id,
+                                question: question.question,
+                                ansType: question.ansType,
+                                options: question.options || [],
+                                answer: response ? response.answer : null,
+                                status: response ? response.status : 'PENDING',
+                                feedback: response ? response.feedback : null
+                            };
+                        });
+                        return {
+                            _id: q.questionnaireId._id,
+                            title: q.questionnaireId.title,
+                            description: q.questionnaireId.description,
+                            status: q.questionnaireId.status,
+                            questions: questionsWithResponses
+                        };
+                    });
+                }
+            }
+
+            const totalAssignments = await TaskSubtaskAssignment.countDocuments({ studentId });
+            const pagination = {
+                total: totalAssignments,
+                page,
+                limit,
+                totalPages: Math.ceil(totalAssignments / limit),
+                hasNextPage: page < Math.ceil(totalAssignments / limit),
+                hasPrevPage: page > 1
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                student: {
+                    _id: student._id,
+                    name: student.name,
+                    email: student.email,
+                    tasks: Object.values(taskSubtaskMap)
+                },
+                pagination
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+    // ******************* ADMIN STUDNET TASK *********************
+
+    getStudentActivities: async (req, res, next) => {
+        try {
+            const {
+                page = 1,
+                limit = 10,
+                search,
+                studentId,
+                status
+            } = req.query;
+
+
+            const { error, value } = validateJoiSchema(ValidateGetStudentActivities, req.query);
+            if (error) return httpError(next, error, req, 422);
+
+            const query = {};
+            if (studentId) query.studentId = mongoose.Types.ObjectId(studentId);
+            if (status) query.status = status;
+            if (search) {
+                query.$or = [
+                    { 'message': { $regex: search, $options: 'i' } },
+                    { 'studentId.name': { $regex: search, $options: 'i' } }
+                ];
+            }
+
+            const skip = (page - 1) * limit;
+            const total = await StudentActivity.countDocuments(query);
+
+            const activities = await StudentActivity.find(query)
+                .populate('studentId', 'name email')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(parseInt(limit))
+                .lean();
+
+            const responseData = {
+                total: total,
+                pages: Math.ceil(total / limit),
+                currentPage: parseInt(page),
+                limit: parseInt(limit),
+                activities: activities.map(activity => ({
+                    _id: activity._id,
+                    student: activity.studentId,
+                    activityType: activity.activityType,
+                    message: activity.message,
+                    status: activity.status,
+                    details: activity.details,
+
+                    createdAt: activity.createdAt,
+                    updatedAt: activity.updatedAt
+                }))
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    }
 };

@@ -8,28 +8,28 @@ export const getStudents = async (params = { page: 1, limit: 10 }) => {
     )
   );
 
-  const response = await servicesAxiosInstance.get('/v1/admin/students', {
+  const response = await servicesAxiosInstance.get('/admin/students', {
     params: cleanParams
   });
   return response.data;
 };
 
 export const getStudentById = async (studentId) => {
-  const response = await servicesAxiosInstance.get(`/v1/admin/students/${studentId}`);
+  const response = await servicesAxiosInstance.get(`/admin/students/${studentId}`);
   return response.data;
 };
 
 export const createStudent = async (data) => {
-  const response = await servicesAxiosInstance.post('/v1/admin/students', data);
+  const response = await servicesAxiosInstance.post('/admin/students', data);
   return response.data;
 };
 
 export const updateStudent = async (studentId, data) => {
-  const response = await servicesAxiosInstance.put(`/v1/admin/students/${studentId}`, data);
+  const response = await servicesAxiosInstance.put(`/admin/students/${studentId}`, data);
   return response.data;
 };
 
 export const deleteStudent = async (studentId) => {
-  const response = await servicesAxiosInstance.delete(`/v1/admin/students/${studentId}`);
+  const response = await servicesAxiosInstance.delete(`/admin/students/${studentId}`);
   return response.data;
 };

@@ -8,6 +8,19 @@ import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 import PropTypes from 'prop-types';
 
+const validatePhoneNumber = (number) => {
+  const phoneRegex = /^\+\d{1,3}\d{10}$/;
+  return phoneRegex.test(number);
+};
+
+const formatPhoneNumber = (number) => {
+  if (!number) return '';
+  if (!number.startsWith('+')) {
+    return '+91' + number.replace(/\D/g, '');
+  }
+  return number;
+};
+
 const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     name: data?.name || '',
@@ -19,59 +32,70 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
     },
     phoneNumber: data?.phoneNumber || ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         [parent]: {
-          ...formData[parent],
+          ...prev[parent],
           [child]: value
         }
-      });
+      }));
     } else {
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         [name]: value
-      });
+      }));
     }
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    const input = e.target.value;
+    // Only allow digits and +
+    const sanitizedInput = input.replace(/[^\d+]/g, '');
+    const formattedNumber = formatPhoneNumber(sanitizedInput);
+    setFormData(prev => ({
+      ...prev,
+      phoneNumber: formattedNumber
+    }));
   };
 
   const handleSelectChange = (value, field) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         [parent]: {
-          ...formData[parent],
+          ...prev[parent],
           [child]: value
         }
-      });
+      }));
     } else {
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         [field]: value
-      });
+      }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
+    if (!validatePhoneNumber(formData.phoneNumber)) {
+      toast.error('Phone number must start with country code (e.g., +918388656625)');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       const response = await updateUserProfile(formData);
-      
-      if (response.status) {        toast.success('Personal details updated successfully', {
-          style: {
-            backgroundColor: '#10B981',
-            color: 'white',
-          }
-        });
+      if (response.success) {
+        toast.success('Personal details updated successfully');
         if (onSuccess) onSuccess();
         onClose();
       } else {
@@ -79,7 +103,7 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Something went wrong while updating your details');
+      toast.error(error.message || 'Something went wrong while updating your details');
     } finally {
       setIsSubmitting(false);
     }
@@ -100,13 +124,16 @@ const PersonalDetailsForm = ({ data, onClose, onSuccess }) => {
 
       <div className="space-y-2">
         <Label htmlFor="phoneNumber">Phone Number</Label>
-        <Input 
-          id="phoneNumber" 
-          name="phoneNumber" 
-          value={formData.phoneNumber} 
-          onChange={handleChange} 
-          placeholder="Enter your phone number"
-        />
+        <div className="space-y-1">
+          <Input 
+            id="phoneNumber" 
+            name="phoneNumber" 
+            value={formData.phoneNumber} 
+            onChange={handlePhoneNumberChange}
+            placeholder="+91XXXXXXXXXX"
+          />
+          <p className="text-xs text-muted-foreground">Must include country code (e.g., +918388656625)</p>
+        </div>
       </div>
 
       <div className="space-y-2">

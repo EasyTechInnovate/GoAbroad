@@ -6,6 +6,7 @@ import Task from '../../model/taskModel.js';
 import StudentTaskAssignment from '../../model/studentTaskAssignmentModel.js';
 import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
 import Subtask from '../../model/subtaskModel.js';
+import Student from '../../model/studentModel.js';
 
 export default {
     // Add subtasks to a task (ADMIN only)
@@ -211,6 +212,43 @@ export default {
                 assignment
             });
         } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    getSubTaskByTaskId: async (req, res, next) => {
+        try {
+            const { taskId } = req.params
+
+            const { studentId } = req.query
+
+            const isTaskExist = await Task.findById(taskId)
+            if (!isTaskExist) {
+                return httpError(next, new Error(responseMessage.NOT_FOUND("Task")), req, 400)
+            }
+
+            const query = {
+                taskId
+            }
+
+            if (studentId) {
+                const isStudentExist = await Student.findById(studentId)
+                if (!isStudentExist) {
+                    return httpError(next, new Error(responseMessage.NOT_FOUND("Student")), req, 400)
+                }
+                query.studentId = isStudentExist?._id
+
+            }
+
+            const subTasks = await TaskSubtaskAssignment.find(query).populate("taskId").sort({ createdAt: -1 })
+
+
+            httpResponse(req, res, 200, responseMessage.CUSTOM_MESSAGE("Subtask Fetch SuccessFully"), {
+                subTasks
+            })
+
+
+        } catch (error) {
             httpError(next, err, req, 500);
         }
     }

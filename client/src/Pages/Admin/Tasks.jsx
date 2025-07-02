@@ -151,7 +151,7 @@ const Tasks = () => {
   const fetchTeamMembers = async () => {
     try {
       setLoading(prev => ({ ...prev, members: true }));
-      const response = await servicesAxiosInstance.get('/v1/admin/members');
+      const response = await servicesAxiosInstance.get('/admin/members');
       if (response.data.success) {
         setTeamMembers(response.data.data.members
           .filter(member => member.status === 'ACTIVE')
@@ -195,7 +195,7 @@ const Tasks = () => {
     try {
       setLoading(prev => ({ ...prev, students: true }));
       const params = searchQuery ? { search: searchQuery } : {};
-      const response = await servicesAxiosInstance.get('/v1/admin/students', { params });
+      const response = await servicesAxiosInstance.get('/admin/students', { params });
       if (response.data.success) {
         setStudents(response.data.data.students.map(student => ({
           id: student._id,
@@ -359,16 +359,12 @@ const Tasks = () => {
     }
 
     try {
-      setLoading(prev => ({ ...prev, edit: true }));
-
+      setLoading(prev => ({ ...prev, edit: true }));        
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
         logo: newTask.logo || '',
-        status: newTask.status,
-        dueDate: newTask.dueDate,
-        assignee: newTask.assignee,
         mainTask: selectedMainTask === 'create_new' ? newMainTask : selectedMainTask
       };
 
@@ -788,6 +784,7 @@ const Tasks = () => {
             <DialogTitle>Edit Task</DialogTitle>
             <DialogDescription>
               {selectedTask?.title ? `Edit "${selectedTask.title}"` : 'Edit task'}
+              <p className="mt-2 text-xs text-muted-foreground">Note: Status and Due Date are managed automatically based on subtask progress.</p>
             </DialogDescription>
           </DialogHeader>
 

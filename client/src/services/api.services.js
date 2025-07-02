@@ -23,52 +23,52 @@ export const apiService = {
 };
 
 export const getServerStatus = async () => {
-  return apiService.get('/v1/self');
+  return apiService.get('/self');
 };
 
 export const getServerHealth = async () => {
-  return apiService.get('/v1/health');
+  return apiService.get('/health');
 };
 
 export const registerUser = async (userData) => {
-  return apiService.post('/v1/auth/signup', userData);
+  return apiService.post('/auth/signup', userData);
 };
 
 export const loginUser = async (userData) => {
-  return apiService.post('/v1/auth/login', userData);
+  return apiService.post('/auth/login', userData);
 };
 
 export const getUserProfile = async () => {
-  return apiService.get('/v1/student/self');
+  return apiService.get('/student/self');
 };
 
 export const updateUserProfile = async (profileData) => {
-  return apiService.put('/v1/student/profile', profileData);
+  return apiService.put('/student/profile', profileData);
 };
 
 export const uploadFile = async (formData) => {
-  return apiService.post('/v1/upload-file', formData);
+  return apiService.post('/upload-file', formData);
 };
 
 export const adminLogin = async (data) => {
-  return apiService.post('/v1/admin/auth/login', data);
+  return apiService.post('/admin/auth/login', data);
 };
 
 export const updatePassword = async (passwordData) => {
-  return apiService.post('/v1/admin/auth/update-password', passwordData);
+  return apiService.post('/admin/auth/update-password', passwordData);
 };
 
 export const getCurrentUser = async () => {
-  return apiService.get('/v1/admin/self');
+  return apiService.get('/admin/self');
 };
 
 export const updateProfile = async (profileData) => {
-  return apiService.put('/v1/admin/profile', profileData);
+  return apiService.put('/admin/profile', profileData);
 };
 
 export const getCategories = async () => {
   try {
-    const response = await apiService.get('/v1/categories');
+    const response = await apiService.get('/categories');
     return {
       success: true,
       data: response.data || []
@@ -84,7 +84,7 @@ export const getCategories = async () => {
 
 export const createCategory = async (categoryData) => {
   try {
-    const response = await apiService.post('/v1/admin/categories', categoryData);
+    const response = await apiService.post('/admin/categories', categoryData);
     return {
       success: true,
       data: response.data
@@ -100,7 +100,7 @@ export const createCategory = async (categoryData) => {
 
 export const updateCategory = async (id, data) => {
   try {
-    const response = await apiService.put(`/v1/admin/categories/${id}`, data);
+    const response = await apiService.put(`/admin/categories/${id}`, data);
     return {
       success: true,
       data: response.data
@@ -116,7 +116,7 @@ export const updateCategory = async (id, data) => {
 
 export const deleteCategory = async (id) => {
   try {
-    const response = await apiService.delete(`/v1/admin/categories/${id}`);
+    const response = await apiService.delete(`/admin/categories/${id}`);
     return {
       success: true,
       data: response.data
@@ -132,7 +132,7 @@ export const deleteCategory = async (id) => {
 
 export const getFaqs = async (categoryId = null) => {
   try {
-    const url = categoryId ? `/v1/faqs?categoryId=${categoryId}` : '/v1/faqs';
+    const url = categoryId ? `/faqs?categoryId=${categoryId}` : '/faqs';
     const response = await apiService.get(url);
     return {
       success: true,
@@ -149,7 +149,7 @@ export const getFaqs = async (categoryId = null) => {
 
 export const createFaq = async (faqData) => {
   try {
-    const response = await apiService.post('/v1/admin/faqs', faqData);
+    const response = await apiService.post('/admin/faqs', faqData);
     return {
       success: true,
       data: response.data
@@ -165,7 +165,7 @@ export const createFaq = async (faqData) => {
 
 export const updateFaq = async (id, data) => {
   try {
-    const response = await apiService.put(`/v1/admin/faqs/${id}`, data);
+    const response = await apiService.put(`/admin/faqs/${id}`, data);
     return {
       success: true,
       data: response.data
@@ -181,7 +181,7 @@ export const updateFaq = async (id, data) => {
 
 export const deleteFaq = async (id) => {
   try {
-    const response = await apiService.delete(`/v1/admin/faqs/${id}`);
+    const response = await apiService.delete(`/admin/faqs/${id}`);
     return {
       success: true,
       data: response.data
@@ -193,4 +193,8 @@ export const deleteFaq = async (id) => {
       error: error.response?.data?.message || 'Failed to delete FAQ'
     };
   }
+};
+
+export const getStudentById = async (studentId) => {
+  return apiService.get(`/admin/students/${studentId}`);
 };

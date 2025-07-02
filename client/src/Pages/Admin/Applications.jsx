@@ -1,14 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getStudents } from '@/services/studentService';
+import { getUniversities } from '@/services/universityService';
+import { getTeamMembers } from '@/services/teamService';
+import { getTasksByStudentId } from '@/services/taskService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import {
   Card,
   CardContent,
@@ -33,7 +30,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Select,
   SelectContent,
@@ -41,23 +38,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Search,
-  MoreHorizontal,
-  Eye,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Download,
-  User,
-  FileText,
-  GraduationCap,
-  Building,
-  Calendar,
-  ArrowUpDown,
-} from 'lucide-react';
+import { Search, CheckCircle2, Clock, XCircle, Eye, Building, Calendar, FileText, EditIcon, TrashIcon } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
-import { Link } from 'react-router-dom';
+// Removed unused Link import
+import {
+  getApplications,
+  getApplicationById,
+  updateApplication,
+  createApplication,
+  deleteApplication,
+} from '@/services/applicationService';
 
 
 const format = (date, formatStr) => {
@@ -79,305 +69,258 @@ const format = (date, formatStr) => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
 
-
-const generateRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-};
-
-
-const APPLICATIONS = [
-  {
-    id: 'APP-2023-001',
-    student: {
-      id: 'STD-1001',
-      name: 'Maria Garcia',
-      email: 'maria.garcia@example.com',
-      avatar: '',
-    },
-    university: 'University of Toronto',
-    program: 'Computer Science, Bachelor',
-    status: 'approved',
-    submissionDate: generateRandomDate(new Date(2023, 0, 1), new Date(2023, 3, 30)),
-    decisionDate: generateRandomDate(new Date(2023, 4, 1), new Date(2023, 5, 30)),
-    startDate: new Date(2023, 8, 1),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Recommendation Letter'],
-  },
-  {
-    id: 'APP-2023-002',
-    student: {
-      id: 'STD-1002',
-      name: 'James Wilson',
-      email: 'james.wilson@example.com',
-      avatar: '',
-    },
-    university: 'University of Sydney',
-    program: 'Business Administration, Master',
-    status: 'rejected',
-    submissionDate: generateRandomDate(new Date(2023, 1, 1), new Date(2023, 2, 30)),
-    decisionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 30)),
-    startDate: null,
-    documents: ['Passport', 'Transcripts', 'CV', 'Research Proposal'],
-  },
-  {
-    id: 'APP-2023-003',
-    student: {
-      id: 'STD-1003',
-      name: 'Aisha Khan',
-      email: 'aisha.khan@example.com',
-      avatar: '',
-    },
-    university: 'Ludwig Maximilian University of Munich',
-    program: 'Medicine, Bachelor',
-    status: 'pending',
-    submissionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 15)),
-    decisionDate: null,
-    startDate: new Date(2023, 9, 1),
-    documents: ['Passport', 'Transcripts', 'Medical Exam', 'Language Certificate'],
-  },
-  {
-    id: 'APP-2023-004',
-    student: {
-      id: 'STD-1004',
-      name: 'Chen Wei',
-      email: 'chen.wei@example.com',
-      avatar: '',
-    },
-    university: 'ETH Zurich',
-    program: 'Mechanical Engineering, PhD',
-    status: 'interview',
-    submissionDate: generateRandomDate(new Date(2023, 2, 1), new Date(2023, 3, 30)),
-    decisionDate: null,
-    startDate: new Date(2023, 8, 1),
-    documents: ['Passport', 'Transcripts', 'Research Proposal', 'CV', 'Publications'],
-  },
-  {
-    id: 'APP-2023-005',
-    student: {
-      id: 'STD-1005',
-      name: 'Olga Ivanova',
-      email: 'olga.ivanova@example.com',
-      avatar: '',
-    },
-    university: 'Imperial College London',
-    program: 'Data Science, Master',
-    status: 'approved',
-    submissionDate: generateRandomDate(new Date(2023, 0, 15), new Date(2023, 2, 15)),
-    decisionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 15)),
-    startDate: new Date(2023, 8, 15),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Recommendation Letter'],
-  },
-  {
-    id: 'APP-2023-006',
-    student: {
-      id: 'STD-1006',
-      name: 'Mohammed Al-Fayez',
-      email: 'mohammed.alfayez@example.com',
-      avatar: '',
-    },
-    university: 'National University of Singapore',
-    program: 'Finance, Master',
-    status: 'pending',
-    submissionDate: generateRandomDate(new Date(2023, 4, 1), new Date(2023, 5, 15)),
-    decisionDate: null,
-    startDate: new Date(2024, 0, 15),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Financial Statement'],
-  },
-  {
-    id: 'APP-2023-007',
-    student: {
-      id: 'STD-1007',
-      name: 'Sofia Martinez',
-      email: 'sofia.martinez@example.com',
-      avatar: '',
-    },
-    university: 'McGill University',
-    program: 'International Relations, Bachelor',
-    status: 'approved',
-    submissionDate: generateRandomDate(new Date(2023, 1, 1), new Date(2023, 2, 28)),
-    decisionDate: generateRandomDate(new Date(2023, 3, 15), new Date(2023, 4, 30)),
-    startDate: new Date(2023, 8, 1),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Language Certificate'],
-  },
-  {
-    id: 'APP-2023-008',
-    student: {
-      id: 'STD-1008',
-      name: 'Rajiv Patel',
-      email: 'rajiv.patel@example.com',
-      avatar: '',
-    },
-    university: 'Technical University of Munich',
-    program: 'Computer Engineering, Master',
-    status: 'rejected',
-    submissionDate: generateRandomDate(new Date(2023, 2, 1), new Date(2023, 3, 30)),
-    decisionDate: generateRandomDate(new Date(2023, 4, 15), new Date(2023, 5, 30)),
-    startDate: null,
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Projects Portfolio'],
-  },
-  {
-    id: 'APP-2023-009',
-    student: {
-      id: 'STD-1009',
-      name: 'Emma Thompson',
-      email: 'emma.thompson@example.com',
-      avatar: '',
-    },
-    university: 'University of Melbourne',
-    program: 'Psychology, PhD',
-    status: 'interview',
-    submissionDate: generateRandomDate(new Date(2023, 3, 1), new Date(2023, 4, 30)),
-    decisionDate: null,
-    startDate: new Date(2023, 9, 15),
-    documents: ['Passport', 'Transcripts', 'Research Proposal', 'CV', 'Publications'],
-  },
-  {
-    id: 'APP-2023-010',
-    student: {
-      id: 'STD-1010',
-      name: 'Takashi Yamamoto',
-      email: 'takashi.yamamoto@example.com',
-      avatar: '',
-    },
-    university: 'University of British Columbia',
-    program: 'Environmental Science, Master',
-    status: 'pending',
-    submissionDate: generateRandomDate(new Date(2023, 4, 1), new Date(2023, 5, 30)),
-    decisionDate: null,
-    startDate: new Date(2024, 0, 1),
-    documents: ['Passport', 'Transcripts', 'Statement of Purpose', 'Recommendation Letter'],
-  },
-];
-
 const Applications = () => {
-  const [applications, setApplications] = useState(APPLICATIONS);
-  const [filteredApplications, setFilteredApplications] = useState(APPLICATIONS);
+  // const [applications, setApplications] = useState([]);
+  const [filteredApplications, setFilteredApplications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeStatus, setActiveStatus] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [sortConfig, setSortConfig] = useState({
-    key: 'submissionDate',
-    direction: 'desc',
+  // Removed unused sortConfig state
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    studentId: '',
+    universityId: '',
+    taskAssignments: [],
+    assignTo: '',
   });
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [universities, setUniversities] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+  const [universitiesLoading, setUniversitiesLoading] = useState(false);
+  const [membersLoading, setMembersLoading] = useState(false);
+  const [dropdownError, setDropdownError] = useState(null);
 
+  // State for update modal
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [updateForm, setUpdateForm] = useState({
+    status: '',
+    progress: '',
+    taskAssignments: [],
+    assignTo: '',
+  });
+  const [updatingAppId, setUpdatingAppId] = useState(null);
 
-  const filterApplications = (status, query) => {
-    let filtered = [...applications];
-    
+  
 
-    if (status !== 'all') {
-      filtered = filtered.filter(app => app.status === status);
+  const handleUpdate = async (app) => {
+    setUpdatingAppId(app.id || app._id);
+
+    // Always fetch members for update modal (like create modal)
+    setMembersLoading(true);
+    try {
+      const res = await getTeamMembers({ page: 1, limit: 100 });
+      setMembers(res.data?.members || res.members || []);
+    } catch {
+      setMembers([]);
+    } finally {
+      setMembersLoading(false);
     }
-    
 
-    if (query) {
-      const lowercaseQuery = query.toLowerCase();
-      filtered = filtered.filter(app => 
-        app.student.name.toLowerCase().includes(lowercaseQuery) ||
-        app.university.toLowerCase().includes(lowercaseQuery) ||
-        app.program.toLowerCase().includes(lowercaseQuery) ||
-        app.id.toLowerCase().includes(lowercaseQuery)
-      );
+    let studentId = app.student?._id || app.studentId?._id || app.studentId || app.student;
+    if (studentId) {
+      setTasksLoading(true);
+      try {
+        const res = await getTasksByStudentId(studentId);
+        setTasks(res.data?.task || []);
+      } catch {
+        setTasks([]);
+      } finally {
+        setTasksLoading(false);
+      }
+    } else {
+      setTasks([]);
     }
-    
 
-    if (sortConfig.key) {
-      filtered.sort((a, b) => {
-
-        let aValue, bValue;
-        
-        if (sortConfig.key.includes('.')) {
-          const keys = sortConfig.key.split('.');
-          aValue = keys.reduce((obj, key) => obj[key], a);
-          bValue = keys.reduce((obj, key) => obj[key], b);
-        } else {
-          aValue = a[sortConfig.key];
-          bValue = b[sortConfig.key];
-        }
-        
-
-        if (aValue instanceof Date && bValue instanceof Date) {
-          return sortConfig.direction === 'asc' 
-            ? aValue.getTime() - bValue.getTime()
-            : bValue.getTime() - aValue.getTime();
-        }
-        
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortConfig.direction === 'asc' 
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        }
-        
-
-        if (aValue === null) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (bValue === null) return sortConfig.direction === 'asc' ? 1 : -1;
-        
-
-        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
-      });
+    let taskAssignments = [];
+    if (Array.isArray(app.taskAssignments) && app.taskAssignments.length > 0) {
+      taskAssignments = app.taskAssignments.map(t => t.taskAssignmentId || t._id || t);
     }
-    
-    setFilteredApplications(filtered);
+
+    let assignTo = '';
+    if (app.assignTo && typeof app.assignTo === 'object') {
+      assignTo = app.assignTo._id || '';
+    } else if (typeof app.assignTo === 'string') {
+      assignTo = app.assignTo;
+    }
+    setUpdateForm({
+      status: app.status || '',
+      progress: app.progress || '',
+      taskAssignments,
+      assignTo,
+    });
+    setIsUpdateOpen(true);
+  };
+
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+
+      const payload = {};
+      if (updateForm.status) payload.status = updateForm.status;
+      if (updateForm.progress !== '' && updateForm.progress !== null && updateForm.progress !== undefined) payload.progress = Number(updateForm.progress);
+
+      if (Array.isArray(updateForm.taskAssignments) && updateForm.taskAssignments.length > 0 && updateForm.taskAssignments[0]) {
+        const validTaskIds = tasks.map(t => t.taskId?._id || t._id);
+        const filteredTaskAssignments = updateForm.taskAssignments.filter(id => validTaskIds.includes(id));
+        if (filteredTaskAssignments.length > 0) payload.taskAssignments = filteredTaskAssignments;
+      }
+      if (updateForm.assignTo) payload.assignTo = updateForm.assignTo;
+      await updateApplication(updatingAppId, payload);
+      toast.success('Application updated');
+      setIsUpdateOpen(false);
+      setUpdatingAppId(null);
+      // Refetch applications
+      const params = {
+        page: 1,
+        limit: 100,
+        search: searchQuery || undefined,
+        status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+      };
+      const res = await getApplications(params);
+      setFilteredApplications(res.data?.applications || []);
+    } catch (err) {
+      toast.error('Failed to update application');
+      console.error('Update application error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleDelete = async (app) => {
+    if (!window.confirm('Are you sure you want to delete this application?')) return;
+    try {
+      await deleteApplication(app.id || app._id);
+      toast.success('Application deleted');
+      const params = {
+        page: 1,
+        limit: 100,
+        search: searchQuery || undefined,
+        status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+      };
+      const res = await getApplications(params);
+      setFilteredApplications(res.data?.applications || []);
+    } catch (err) {
+      toast.error('Failed to delete application');
+      console.error('Delete application error:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreateOpen) return;
+    setDropdownError(null);
+    setStudentsLoading(true);
+    setUniversitiesLoading(true);
+    setMembersLoading(true);
+    getStudents({ page: 1, limit: 100 })
+      .then(res => setStudents(res.data?.students || []))
+      .catch(() => setDropdownError('Failed to load students'))
+      .finally(() => setStudentsLoading(false));
+    getUniversities({ page: 1, limit: 100 })
+      .then(res => setUniversities(res.data?.universities || res.data?.data || []))
+      .catch(() => setDropdownError('Failed to load universities'))
+      .finally(() => setUniversitiesLoading(false));
+
+      getTeamMembers({ page: 1, limit: 100 })
+      .then(res => setMembers(res.data?.members || res.members || []))
+      .catch(() => setDropdownError('Failed to load members'))
+      .finally(() => setMembersLoading(false));
+
+      setTasks([]);
+    setTasksLoading(false);
+  }, [isCreateOpen]);
+
+  useEffect(() => {
+    if (!isCreateOpen || !createForm.studentId) {
+      setTasks([]);
+      return;
+    }
+    setTasksLoading(true);
+    getTasksByStudentId(createForm.studentId)
+      .then(res => setTasks(res.data?.task || []))
+      .catch(() => setTasks([]))
+      .finally(() => setTasksLoading(false));
+  }, [isCreateOpen, createForm.studentId]);
+
+
+  useEffect(() => {
+    async function fetchApplications() {
+      setLoading(true);
+      setError(null);
+      try {
+        const params = {
+          page: 1,
+          limit: 100,
+          search: searchQuery || undefined,
+          status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+        };
+        const res = await getApplications(params);
+
+
+        setFilteredApplications(res.data?.applications || []);
+      } catch (err) {
+        setError(err?.message || 'Failed to load applications');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchApplications();
+  }, [searchQuery, activeStatus]);
+
+
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      setLoading(true);
+      await updateApplication(id, { status: newStatus.toUpperCase() });
+      toast.success('Application status updated');
+
+      const params = {
+        page: 1,
+        limit: 100,
+        search: searchQuery || undefined,
+        status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+      };
+      const res = await getApplications(params);
+      // setApplications(res.data?.applications || []);
+      setFilteredApplications(res.data?.applications || []);
+    } catch (err) {
+      toast.error('Failed to update status');
+      console.error('Update application status error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSearch = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    filterApplications(activeStatus, query);
+    setSearchQuery(e.target.value);
   };
 
   const handleTabChange = (value) => {
     setActiveStatus(value);
-    filterApplications(value, searchQuery);
   };
 
-  const handleSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+
+  const handleView = async (application) => {
+    try {
+      setLoading(true);
+      const res = await getApplicationById(application.id || application._id);
+      setSelectedApplication(res.data?.application || application);
+      setIsViewOpen(true);
+    } catch (err) {
+      toast.error('Failed to load application details');
+      console.error('View application error:', err);
+    } finally {
+      setLoading(false);
     }
-    setSortConfig({ key, direction });
-    
-
-    filterApplications(activeStatus, searchQuery);
-  };
-
-  const handleStatusChange = (id, newStatus) => {
-    const updatedApplications = applications.map(app => {
-      if (app.id === id) {
-        const updatedApp = { 
-          ...app, 
-          status: newStatus,
-          decisionDate: newStatus === 'pending' ? null : new Date(),
-        };
-        
-
-        if (selectedApplication && selectedApplication.id === id) {
-          setSelectedApplication(updatedApp);
-        }
-        
-        return updatedApp;
-      }
-      return app;
-    });
-    
-    setApplications(updatedApplications);
-    filterApplications(activeStatus, searchQuery);
-    
-    const statusMessages = {
-      approved: 'Application approved successfully',
-      rejected: 'Application rejected',
-      interview: 'Interview scheduled for this application',
-      pending: 'Application marked as pending review'
-    };
-    
-    toast.success(statusMessages[newStatus] || 'Application status updated');
-  };
-
-  const handleView = (application) => {
-    setSelectedApplication(application);
-    setIsViewOpen(true);
   };
 
   const getStatusBadge = (status) => {
@@ -410,14 +353,16 @@ const Applications = () => {
     }
   };
 
+  // console.log('Filtered Applications:', filteredApplications);
   return (
     <div className="space-y-6">
+      {error && <div className="text-center text-red-500">{error}</div>}
+      {loading && <div className="text-center text-muted-foreground">Loading...</div>}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Export
+          <Button variant="default" onClick={() => setIsCreateOpen(true)}>
+            + Create Application
           </Button>
         </div>
       </div>
@@ -433,17 +378,6 @@ const Applications = () => {
             onChange={handleSearch}
           />
         </div>
-        <Select defaultValue="recent">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">Most Recent</SelectItem>
-            <SelectItem value="oldest">Oldest First</SelectItem>
-            <SelectItem value="az">A-Z</SelectItem>
-            <SelectItem value="za">Z-A</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       <Tabs defaultValue="all" value={activeStatus} onValueChange={handleTabChange}>
@@ -456,101 +390,209 @@ const Applications = () => {
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[20%]">Student</TableHead>
-                    <TableHead className="w-[25%]">
-                      <div 
-                        className="flex items-center cursor-pointer"
-                        onClick={() => handleSort('university')}
-                      >
-                        University
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[20%]">Program</TableHead>
-                    <TableHead className="w-[15%]">
-                      <div 
-                        className="flex items-center cursor-pointer"
-                        onClick={() => handleSort('submissionDate')}
-                      >
-                        Date
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[10%]">Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredApplications.map((app) => (
-                    <TableRow key={app.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={app.student.avatar} alt={app.student.name} />
-                            <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{app.student.name}</div>
-                            <div className="text-xs text-muted-foreground">{app.id}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{app.university}</TableCell>
-                      <TableCell>{app.program}</TableCell>
-                      <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                      <TableCell>{getStatusBadge(app.status)}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleView(app)}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Application
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link to={`/student/${app.student.id}`} className="flex items-center">
-                                <User className="mr-2 h-4 w-4" />
-                                View Student
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Set Status</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'approved')}>
-                              <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                              Approve
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'rejected')}>
-                              <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                              Reject
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'interview')}>
-                              <Calendar className="mr-2 h-4 w-4 text-blue-500" />
-                              Schedule Interview
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(app.id, 'pending')}>
-                              <Clock className="mr-2 h-4 w-4 text-yellow-500" />
-                              Mark Pending
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+          {filteredApplications.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">No applications available</div>
+          ) : (
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[20%]">Student</TableHead>
+                      <TableHead className="w-[20%]">University</TableHead>
+                      <TableHead className="w-[20%]">Program</TableHead>
+                      <TableHead className="w-[12%]">Status</TableHead>
+                      <TableHead className="w-[13%]">Progress</TableHead>
+                      <TableHead className="w-[10%]">Last Updated</TableHead>
+                      <TableHead className="w-[10%] text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredApplications.map((app) => {
+                      const student = app.student || app.studentId || {};
+                      const university = app.university || app.universityId || {};
+                      const program = university.program || app.program || '';
+                      const status = app.status || '';
+                      const progress = typeof app.progress === 'number' ? app.progress : 0;
+                      const lastUpdated = app.updatedAt || app.lastUpdated || app.submissionDate || app.createdAt || '';
+                      // Status badge color
+                      let badgeClass = '';
+                      let badgeText = '';
+                      switch (status.toUpperCase()) {
+                        case 'SUBMITTED': badgeClass = 'bg-green-500 text-white'; badgeText = 'Submitted'; break;
+                        case 'IN PROGRESS': badgeClass = 'bg-blue-500 text-white'; badgeText = 'In Progress'; break;
+                        case 'UNDER REVIEW': badgeClass = 'bg-yellow-500 text-white'; badgeText = 'Under Review'; break;
+                        case 'DRAFT': badgeClass = 'bg-gray-200 text-gray-700'; badgeText = 'Draft'; break;
+                        case 'REJECTED': badgeClass = 'bg-red-500 text-white'; badgeText = 'Rejected'; break;
+                        case 'APPROVED': badgeClass = 'bg-green-500 text-white'; badgeText = 'Approved'; break;
+                        case 'PENDING': badgeClass = 'bg-yellow-500 text-white'; badgeText = 'Pending'; break;
+                        case 'INTERVIEW': badgeClass = 'bg-blue-500 text-white'; badgeText = 'Interview'; break;
+                        default: badgeClass = 'bg-gray-200 text-gray-700'; badgeText = status; break;
+                      }
+                      return (
+                        <TableRow key={app.id || app._id}>
+                          <TableCell className="font-bold">{student.name || ''}</TableCell>
+                          <TableCell>{university.name || ''}</TableCell>
+                          <TableCell>{program}</TableCell>
+                          <TableCell>
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeClass}`}>{badgeText}</span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div className="h-2 rounded-full" style={{ width: `${progress}%`, background: progress === 100 ? '#22c55e' : '#3b82f6' }}></div>
+                              </div>
+                              <span className="text-xs font-medium ml-2">{progress}%</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{lastUpdated ? format(lastUpdated, 'yyyy-MM-dd') : ''}</TableCell>
+                          <TableCell className="text-right flex gap-2 justify-end">
+                            <Button size="sm" variant="outline" onClick={() => handleUpdate(app)}>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3zm0 0v3h3" /></svg>
+                            </Button>
+                            <Button size="sm" variant="destructive" onClick={() => handleDelete(app)}>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Create Application</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                setLoading(true);
+
+                const payload = {
+                  studentId: createForm.studentId,
+                  universityId: createForm.universityId,
+                  taskAssignments: createForm.taskAssignments,
+                  assignTo: createForm.assignTo,
+                };
+                await createApplication(payload);
+                toast.success('Application created');
+                setIsCreateOpen(false);
+                setCreateForm({ studentId: '', universityId: '', taskAssignments: [], assignTo: '' });
+                // Refetch applications
+                const params = {
+                  page: 1,
+                  limit: 100,
+                  search: searchQuery || undefined,
+                  status: activeStatus !== 'all' ? activeStatus.toUpperCase() : undefined,
+                };
+                const res = await getApplications(params);
+                // setApplications(res.data?.applications || []);
+                setFilteredApplications(res.data?.applications || []);
+              } catch (err) {
+                toast.error('Failed to create application');
+                console.error('Create application error:', err);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="space-y-4"
+          >
+
+            <div>
+              <label className="block mb-1 font-medium">Student</label>
+              <Select
+                value={createForm.studentId}
+                onValueChange={val => setCreateForm(f => ({ ...f, studentId: val }))}
+                disabled={studentsLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={studentsLoading ? 'Loading students...' : 'Select Student'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {students.map(student => (
+                    <SelectItem key={student._id} value={student._id}>
+                      {student.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* University Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">University</label>
+              <Select
+                value={createForm.universityId}
+                onValueChange={val => setCreateForm(f => ({ ...f, universityId: val }))}
+                disabled={universitiesLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={universitiesLoading ? 'Loading universities...' : 'Select University'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {universities.map(university => (
+                    <SelectItem key={university._id} value={university._id}>
+                      {university.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Assign To Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">Assign To</label>
+              <Select
+                value={createForm.assignTo}
+                onValueChange={val => setCreateForm(f => ({ ...f, assignTo: val }))}
+                disabled={membersLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={membersLoading ? 'Loading members...' : 'Select Member'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {members.map(member => (
+                    <SelectItem key={member._id} value={member._id}>
+                      {member.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {dropdownError && <div className="text-red-500 text-sm">{dropdownError}</div>}
+
+            {/* Task Assignments Dropdown */}
+            <div>
+              <label className="block mb-1 font-medium">Task Assignments</label>
+              <Select
+                value={createForm.taskAssignments.length > 0 ? createForm.taskAssignments[0] : ''}
+                onValueChange={val => setCreateForm(f => ({ ...f, taskAssignments: val ? [val] : [] }))}
+                disabled={tasksLoading || !createForm.studentId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={tasksLoading ? 'Loading tasks...' : (!createForm.studentId ? 'Select Student first' : 'Select Task')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {tasks.map(task => (
+                    <SelectItem key={task.taskId?._id || task._id} value={task.taskId?._id || task._id}>
+                      {task.taskId?.title || task.title || task.taskId?._id || task._id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+              <Button type="submit" variant="default" disabled={loading}>Create</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
         <TabsContent value="pending" className="space-y-4">
           <Card>
@@ -566,52 +608,58 @@ const Applications = () => {
                   <TableRow>
                     <TableHead className="w-[25%]">Student</TableHead>
                     <TableHead className="w-[20%]">University</TableHead>
-                    <TableHead className="w-[20%]">Program</TableHead>
+                    {/* <TableHead className="w-[20%]">Program</TableHead> */}
                     <TableHead className="w-[15%]">Submission Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredApplications.length > 0 ? (
-                    filteredApplications.map((app) => (
-                      <TableRow key={app.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="font-medium">{app.student.name}</div>
-                              <div className="text-xs text-muted-foreground">{app.id}</div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{app.university}</TableCell>
-                        <TableCell>{app.program}</TableCell>
-                        <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end space-x-2">
-                            <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
-                              <CheckCircle2 className="mr-2 h-4 w-4" />
-                              Approve
-                            </Button>
-                            <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
-                              Schedule Interview
-                            </Button>
-                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center py-4">
-                        No pending applications found
-                      </TableCell>
-                    </TableRow>
-                  )}
+                  {filteredApplications.length > 0
+                    ? filteredApplications.map((app) => {
+                        // Normalize for both old and new API shapes
+                        const student = app.student || app.studentId || {};
+                        const university = app.university || app.universityId || {};
+                        const studentName = student && student.name ? student.name : '';
+                        return (
+                          <TableRow key={app.id || app._id}>
+                            <TableCell className="font-medium">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-8 w-8">
+                                  <AvatarFallback>{studentName ? studentName.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="font-medium">{studentName}</div>
+                                  <div className="text-xs text-muted-foreground">{app.id || app._id}</div>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>{university && university.name ? university.name : ''}</TableCell>
+                            {/* <TableCell>{app.program}</TableCell> */}
+                            <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end space-x-2">
+                                <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
+                                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                                  Approve
+                                </Button>
+                                <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
+                                  Schedule Interview
+                                </Button>
+                                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    : (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center py-4">
+                            No pending applications found
+                          </TableCell>
+                        </TableRow>
+                      )}
                 </TableBody>
               </Table>
             </CardContent>
@@ -624,38 +672,56 @@ const Applications = () => {
               <TableRow>
                 <TableHead className="w-[25%]">Student</TableHead>
                 <TableHead className="w-[20%]">University</TableHead>
-                <TableHead className="w-[20%]">Program</TableHead>
+                {/* <TableHead className="w-[20%]">Program</TableHead> */}
                 <TableHead className="w-[15%]">Approval Date</TableHead>
                 <TableHead className="w-[10%]">Start Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="w-[10%]">Update</TableHead>
+                <TableHead className="w-[10%]">Delete</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredApplications.length > 0 ? (
-                filteredApplications.map((app) => (
-                  <TableRow key={app.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{app.student.name}</div>
-                          <div className="text-xs text-muted-foreground">{app.id}</div>
+                filteredApplications.map((app) => {
+                  // Normalize for both old and new API shapes
+                  const student = app.student || app.studentId || {};
+                  const university = app.university || app.universityId || {};
+                  const studentName = student && student.name ? student.name : '';
+                  return (
+                    <TableRow key={app.id || app._id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback>{studentName ? studentName.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{studentName}</div>
+                            <div className="text-xs text-muted-foreground">{app.id || app._id}</div>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{app.university}</TableCell>
-                    <TableCell>{app.program}</TableCell>
-                    <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
-                    <TableCell>{app.startDate ? format(app.startDate, 'MMM yyyy') : 'N/A'}</TableCell>
-                    <TableCell className="text-right">
-                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>{university && university.name ? university.name : ''}</TableCell>
+                      {/* <TableCell>{university && university.program ? university.program : ''}</TableCell> */}
+                      <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
+                      <TableCell>{app.startDate ? format(app.startDate, 'MMM yyyy') : 'N/A'}</TableCell>
+                      <TableCell className="text-right">
+                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => handleUpdate(app)}>
+                          <EditIcon/>
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button size="icon" variant="destructive" className="h-8 w-8" onClick={() => handleDelete(app)}>
+                        <TrashIcon/>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-4">
@@ -673,41 +739,47 @@ const Applications = () => {
               <TableRow>
                 <TableHead className="w-[25%]">Student</TableHead>
                 <TableHead className="w-[20%]">University</TableHead>
-                <TableHead className="w-[20%]">Program</TableHead>
+                {/* <TableHead className="w-[20%]">Program</TableHead> */}
                 <TableHead className="w-[15%]">Rejection Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredApplications.length > 0 ? (
-                filteredApplications.map((app) => (
-                  <TableRow key={app.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{app.student.name}</div>
-                          <div className="text-xs text-muted-foreground">{app.id}</div>
+                filteredApplications.map((app) => {
+
+                  const student = app.student || app.studentId || {};
+                  const university = app.university || app.universityId || {};
+                  const studentName = student && student.name ? student.name : '';
+                  return (
+                    <TableRow key={app.id || app._id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback>{studentName ? studentName.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{studentName}</div>
+                            <div className="text-xs text-muted-foreground">{app.id || app._id}</div>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{app.university}</TableCell>
-                    <TableCell>{app.program}</TableCell>
-                    <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => handleStatusChange(app.id, 'pending')}>
-                          Reconsider
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>{university && university.name ? university.name : ''}</TableCell>
+                      {/* <TableCell>{university && university.program ? university.program : ''}</TableCell> */}
+                      <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => handleStatusChange(app.id, 'pending')}>
+                            Reconsider
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-4">
@@ -725,46 +797,52 @@ const Applications = () => {
               <TableRow>
                 <TableHead className="w-[25%]">Student</TableHead>
                 <TableHead className="w-[20%]">University</TableHead>
-                <TableHead className="w-[20%]">Program</TableHead>
+                {/* <TableHead className="w-[20%]">Program</TableHead> */}
                 <TableHead className="w-[15%]">Submission Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredApplications.length > 0 ? (
-                filteredApplications.map((app) => (
-                  <TableRow key={app.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback>{app.student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{app.student.name}</div>
-                          <div className="text-xs text-muted-foreground">{app.id}</div>
+                filteredApplications.map((app) => {
+                  // Normalize for both old and new API shapes
+                  const student = app.student || app.studentId || {};
+                  const university = app.university || app.universityId || {};
+                  const studentName = student && student.name ? student.name : '';
+                  return (
+                    <TableRow key={app.id || app._id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback>{studentName ? studentName.split(' ').map(n => n[0]).join('') : ''}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{studentName}</div>
+                            <div className="text-xs text-muted-foreground">{app.id || app._id}</div>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{app.university}</TableCell>
-                    <TableCell>{app.program}</TableCell>
-                    <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end space-x-2">
-                        <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
-                          <CheckCircle2 className="mr-2 h-4 w-4" />
-                          Approve
-                        </Button>
-                        <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'rejected')}>
-                          <XCircle className="mr-2 h-4 w-4" />
-                          Reject
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>{university && university.name ? university.name : ''}</TableCell>
+                      {/* <TableCell>{university && university.program ? university.program : ''}</TableCell> */}
+                      <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end space-x-2">
+                          <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Approve
+                          </Button>
+                          <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'rejected')}>
+                            <XCircle className="mr-2 h-4 w-4" />
+                            Reject
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-4">
@@ -818,13 +896,7 @@ const Applications = () => {
                         <p>{selectedApplication.university}</p>
                       </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Program</p>
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                        <p>{selectedApplication.program}</p>
-                      </div>
-                    </div>
+
                     <div className="space-y-1">
                       <p className="text-sm font-medium text-muted-foreground">Status</p>
                       <div className="flex items-center gap-2">
@@ -893,6 +965,86 @@ const Applications = () => {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Update Application Modal */}
+      <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Update Application</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateSubmit} className="space-y-4">
+            <div>
+              <label className="block mb-1 font-medium">Status</label>
+              <Select
+                value={updateForm.status}
+                onValueChange={val => setUpdateForm(f => ({ ...f, status: val }))}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SUBMITTED">Submitted</SelectItem>
+                  <SelectItem value="PENDING">Pending</SelectItem>
+                  <SelectItem value="APPROVED">Approved</SelectItem>
+                  <SelectItem value="REJECTED">Rejected</SelectItem>
+                  <SelectItem value="INTERVIEW">Interview</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Progress (%)</label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={updateForm.progress}
+                onChange={e => setUpdateForm(f => ({ ...f, progress: e.target.value }))}
+                placeholder="Enter progress (0-100)"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Assign To</label>
+              <Select
+                value={updateForm.assignTo}
+                onValueChange={val => setUpdateForm(f => ({ ...f, assignTo: val }))}
+                disabled={membersLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={membersLoading ? 'Loading members...' : 'Select Member'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {members.map(member => (
+                    <SelectItem key={member._id} value={member._id}>{member.email}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Task Assignments</label>
+              <Select
+                value={updateForm.taskAssignments[0] || ''}
+                onValueChange={val => setUpdateForm(f => ({ ...f, taskAssignments: val ? [val] : [] }))}
+                disabled={tasksLoading || !updateForm.assignTo}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={tasksLoading ? 'Loading tasks...' : (!updateForm.assignTo ? 'Select Member first' : 'Select Task')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {tasks.map(task => (
+                    <SelectItem key={task.taskId?._id || task._id} value={task.taskId?._id || task._id}>
+                      {task.taskId?.title || task.title || task.taskId?._id || task._id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsUpdateOpen(false)}>Cancel</Button>
+              <Button type="submit" variant="default" disabled={loading}>Update</Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

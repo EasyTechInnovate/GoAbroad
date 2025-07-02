@@ -10,7 +10,7 @@ export const getUniversities = async (params) => {
       )
     );
 
-    const response = await servicesAxiosInstance.get(`/v1/admin/universities`, {
+    const response = await servicesAxiosInstance.get(`/admin/universities`, {
       params: cleanParams
     });
     return response.data;
@@ -23,21 +23,21 @@ export const getUniversities = async (params) => {
 };
 
 export const getUniversityById = async (id) => {
-  const response = await servicesAxiosInstance.get(`/v1/admin/universities/${id}`);
+  const response = await servicesAxiosInstance.get(`/admin/universities/${id}`);
   return response.data;
 };
 
 export const createUniversity = async (data) => {
-  const response = await servicesAxiosInstance.post('/v1/admin/universities', data);
+  const response = await servicesAxiosInstance.post('/admin/universities', data);
   return response.data;
 };
 
 export const updateUniversity = async (id, data) => {
-  const response = await servicesAxiosInstance.put(`/v1/admin/universities/${id}`, data);
+  const response = await servicesAxiosInstance.put(`/admin/universities/${id}`, data);
   return response.data;
 };
 
 export const deleteUniversity = async (id) => {
-  const response = await servicesAxiosInstance.delete(`/v1/admin/universities/${id}`);
+  const response = await servicesAxiosInstance.delete(`/admin/universities/${id}`);
   return response.data;
 };

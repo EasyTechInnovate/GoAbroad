@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, isPublicRoute, getUser } from '@/lib/auth';
 import PropTypes from 'prop-types';
+import { canAccessDashboard } from '@/lib/paymentGuard';
 
 const ProtectedRoute = ({ children }) => {
   const location = useLocation();
@@ -19,7 +20,13 @@ const ProtectedRoute = ({ children }) => {
     if (user?.role !== 'STUDENT') {
       return <Navigate to="/login" replace />;
     }
+
+    // Check payment and verification status for student dashboard access
+    if (!canAccessDashboard()) {
+      return <Navigate to="/auth/payment-required" replace />;
+    }
   }
+
   return children;
 };
 

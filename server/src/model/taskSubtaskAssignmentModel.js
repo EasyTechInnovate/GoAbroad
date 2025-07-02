@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const taskSubtaskAssignmentSchema = new mongoose.Schema({
-    studentId:{
+    studentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student',
         required: true
@@ -29,9 +29,9 @@ const taskSubtaskAssignmentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    dueDate:{
-        type:Date,
-        default:null
+    dueDate: {
+        type: Date,
+        default: null
     },
 
 }, {

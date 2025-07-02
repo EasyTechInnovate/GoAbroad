@@ -26,4 +26,5 @@ const subtaskQuestionnaireAssignmentSchema = new mongoose.Schema({
 });
 
 const SubtaskQuestionnaireAssignment = mongoose.model('SubtaskQuestionnaireAssignment', subtaskQuestionnaireAssignmentSchema);
+
 export default SubtaskQuestionnaireAssignment;

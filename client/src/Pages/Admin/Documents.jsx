@@ -1,17 +1,9 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -36,962 +28,634 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Search,
-  MoreHorizontal,
   Eye,
-  Download,
   Upload,
+  Download,
   FileText,
-  FileCheck,
-  FilePlus,
-  FileX,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  ArrowUpDown,
+  Loader2,
+  TrashIcon
 } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
+import { getDocuments, updateDocument, uploadDocument, deleteDocument } from '@/services/documentService';
+import { getTasksByStudentId } from '@/services/taskService';
+import { getSubtasksByTaskAndStudent } from '@/services/subtaskService';
+import { getStudents } from '@/services/studentService';
+import { uploadFile } from '@/services/uploadService';
+import { createPortal } from 'react-dom';
 
-// Custom date formatter function instead of using date-fns
-const formatDate = (date) => {
-  if (!date) return '';
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const d = new Date(date);
-  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-};
-
-const generateRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-};
-
-const DOCUMENT_TYPES = [
-  'Passport Scan',
-  'University Application',
-  'Academic Transcript',
-  'Statement of Purpose',
-  'Recommendation Letter',
-  'Financial Statement',
-  'Language Proficiency',
-  'Resume/CV',
-  'Visa Application',
-  'Health Insurance',
-  'Student ID',
-  'Accommodation Contract'
-];
-
-const DOCUMENT_DATA = [
-  {
-    id: 'doc-001',
-    name: 'Wang_Li_Passport.pdf',
-    type: 'Passport Scan',
-    size: '1.2 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'approved',
-    student: 'Wang Li',
-    studentId: 'ST20455'
-  },
-  {
-    id: 'doc-002',
-    name: 'Garcia_Maria_UniversityApplication.pdf',
-    type: 'University Application',
-    size: '3.4 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'pending',
-    student: 'Maria Garcia',
-    studentId: 'ST20231'
-  },
-  {
-    id: 'doc-003',
-    name: 'Smith_John_AcademicTranscript.pdf',
-    type: 'Academic Transcript',
-    size: '0.8 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'approved',
-    student: 'John Smith',
-    studentId: 'ST19876'
-  },
-  {
-    id: 'doc-004',
-    name: 'Kumar_Ananya_SOP.docx',
-    type: 'Statement of Purpose',
-    size: '0.4 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'rejected',
-    student: 'Ananya Kumar',
-    studentId: 'ST21334'
-  },
-  {
-    id: 'doc-005',
-    name: 'Schneider_Eva_FinancialStatement.pdf',
-    type: 'Financial Statement',
-    size: '2.1 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'approved',
-    student: 'Eva Schneider',
-    studentId: 'ST20887'
-  },
-  {
-    id: 'doc-006',
-    name: 'Tanaka_Hiro_IELTS_Certificate.pdf',
-    type: 'Language Proficiency',
-    size: '1.5 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'pending',
-    student: 'Hiro Tanaka',
-    studentId: 'ST21009'
-  },
-  {
-    id: 'doc-007',
-    name: 'Nkosi_Thabo_RecommendationLetter.pdf',
-    type: 'Recommendation Letter',
-    size: '0.7 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'approved',
-    student: 'Thabo Nkosi',
-    studentId: 'ST20765'
-  },
-  {
-    id: 'doc-008',
-    name: 'Oliveira_Sofia_Resume.pdf',
-    type: 'Resume/CV',
-    size: '0.9 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'pending',
-    student: 'Sofia Oliveira',
-    studentId: 'ST21442'
-  },
-  {
-    id: 'doc-009',
-    name: 'Davis_Emma_VisaApplication.pdf',
-    type: 'Visa Application',
-    size: '2.7 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'rejected',
-    student: 'Emma Davis',
-    studentId: 'ST20123'
-  },
-  {
-    id: 'doc-010',
-    name: 'Kovalev_Alexei_HealthInsurance.pdf',
-    type: 'Health Insurance',
-    size: '1.1 MB',
-    uploadDate: generateRandomDate(new Date(2023, 0, 1), new Date()),
-    status: 'approved',
-    student: 'Alexei Kovalev',
-    studentId: 'ST21567'
-  }
-];
-
-const TEMPLATE_DOCUMENTS = [
-  {
-    id: 'template-001',
-    name: 'University_Application_Form.pdf',
-    type: 'University Application',
-    size: '0.3 MB',
-    lastUpdated: new Date(2023, 5, 15),
-    required: true
-  },
-  {
-    id: 'template-002',
-    name: 'Financial_Declaration_Form.pdf',
-    type: 'Financial Statement',
-    size: '0.2 MB',
-    lastUpdated: new Date(2023, 8, 3),
-    required: true
-  },
-  {
-    id: 'template-003',
-    name: 'Visa_Application_Checklist.pdf',
-    type: 'Visa Application',
-    size: '0.1 MB',
-    lastUpdated: new Date(2023, 6, 22),
-    required: true
-  },
-  {
-    id: 'template-004',
-    name: 'Accommodation_Request_Form.pdf',
-    type: 'Accommodation Contract',
-    size: '0.2 MB',
-    lastUpdated: new Date(2023, 7, 10),
-    required: false
-  },
-  {
-    id: 'template-005',
-    name: 'SOP_Guidelines.pdf',
-    type: 'Statement of Purpose',
-    size: '0.4 MB',
-    lastUpdated: new Date(2023, 9, 5),
-    required: false
-  },
-  {
-    id: 'template-006',
-    name: 'Recommendation_Letter_Template.docx',
-    type: 'Recommendation Letter',
-    size: '0.1 MB',
-    lastUpdated: new Date(2023, 4, 28),
-    required: false
-  }
-];
-
-const Documents = () => {
-  const [documents, setDocuments] = useState(DOCUMENT_DATA);
-  const [templates, setTemplates] = useState(TEMPLATE_DOCUMENTS);
-  const [filteredDocuments, setFilteredDocuments] = useState(DOCUMENT_DATA);
-  const [activeTab, setActiveTab] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+const Documents = ({ studentId }) => {
+  const [documents, setDocuments] = useState([]);
+  const [filteredDocuments, setFilteredDocuments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
+  const [subtasks, setSubtasks] = useState([]);
+  const [subtasksLoading, setSubtasksLoading] = useState(false);
+  const [selectedTask, setSelectedTask] = useState("");
+  const [selectedSubtask, setSelectedSubtask] = useState("");
+  const [uploadLoading, setUploadLoading] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
-  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
-  const [viewDocument, setViewDocument] = useState(null);
-  
-  // New document/template form state
-  const [newDocName, setNewDocName] = useState('');
-  const [newDocType, setNewDocType] = useState('');
-  const [isRequired, setIsRequired] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileType, setSelectedFileType] = useState("");
+  const [students, setStudents] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(studentId || "");
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [dropdownPosition, setDropdownPosition] = useState({});
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    filterDocuments(query, selectedType, activeTab);
+  const validateFile = (file) => {
+    const validFileTypes = {
+      'application/pdf': 'PDF',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+      'application/msword': 'DOC',
+      'image/jpeg': 'JPG',
+      'image/png': 'PNG'
+    };
+
+    const fileType = validFileTypes[file.type];
+    if (!fileType) {
+      toast.error(`Please upload a valid file type (${Object.values(validFileTypes).join(', ')})`);
+      return null;
+    }
+
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_SIZE) {
+      toast.error('File size should be less than 10MB');
+      return null;
+    }
+
+    return fileType;
   };
 
-  const handleTypeFilter = (type) => {
-    setSelectedType(type);
-    filterDocuments(searchQuery, type, activeTab);
-  };
+  const fetchDocuments = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await getDocuments({ page: 1, limit: 10 });
+      
+      if (!response?.data?.documents) {
+        throw new Error('Invalid response from server');
+      }
 
-  const filterDocuments = (query, type, status) => {
-    let filtered = documents;
+      const mappedDocs = response.data.documents.map(doc => ({
+        id: doc._id,
+        name: doc.fileName,
+        size: `${(doc.fileSize / (1024 * 1024)).toFixed(1)} MB`,
+        student: doc.studentId?.name || 'N/A',
+        task: doc.taskId?.title || 'N/A',
+        subtask: doc.subtaskId?.title || 'N/A',
+        uploadDate: new Date(doc.uploadedAt || doc.createdAt).toLocaleDateString(),
+        status: doc.status.toLowerCase(),
+        fileUrl: doc.fileUrl
+      }));
+
+      setDocuments(mappedDocs);
+      setFilteredDocuments(mappedDocs);
+    } catch (err) {
+      console.error('Error fetching documents:', err);
+      toast.error(err.message || 'Failed to fetch documents');
+    } finally {
+      setLoading(false);
+    }
+  }, []); // No dependencies needed as it only uses stable functions
+
+  useEffect(() => {
+    fetchDocuments();
+  }, [fetchDocuments]);
+
+  // Filtering effect
+  useEffect(() => {
+    let filtered = [...documents];
     
-    if (status === 'approved') {
-      filtered = filtered.filter(doc => doc.status === 'approved');
-    } else if (status === 'pending') {
-      filtered = filtered.filter(doc => doc.status === 'pending');
-    } else if (status === 'rejected') {
-      filtered = filtered.filter(doc => doc.status === 'rejected');
+    // Filter by status
+    if (activeTab !== 'all') {
+      filtered = filtered.filter(doc => doc.status === activeTab);
     }
     
-    if (query) {
-      const lowercaseQuery = query.toLowerCase();
-      filtered = filtered.filter(doc => 
-        doc.name.toLowerCase().includes(lowercaseQuery) || 
-        doc.student.toLowerCase().includes(lowercaseQuery) ||
-        doc.studentId.toLowerCase().includes(lowercaseQuery)
-      );
-    }
-    
-    if (type) {
-      filtered = filtered.filter(doc => doc.type === type);
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(doc => (
+        doc.name.toLowerCase().includes(query) ||
+        doc.student.toLowerCase().includes(query) ||
+        doc.task.toLowerCase().includes(query) ||
+        doc.subtask.toLowerCase().includes(query)
+      ));
     }
     
     setFilteredDocuments(filtered);
+  }, [documents, activeTab, searchQuery]);
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  const handleTabChange = (value) => {
-    setActiveTab(value);
-    filterDocuments(searchQuery, selectedType, value);
+  const handleStatusChange = async (docId, newStatus) => {
+    try {
+      await updateDocument(docId, { status: newStatus.toUpperCase() });
+      await fetchDocuments();
+      toast.success(`Document marked as ${newStatus}`);
+    } catch (err) {
+      console.error('Error updating status:', err);
+      toast.error(err.message || 'Failed to update document status');
+    }
   };
 
-  const handleStatusChange = (docId, newStatus) => {
-    const updatedDocs = documents.map(doc => {
-      if (doc.id === docId) {
-        return { ...doc, status: newStatus };
+  const handleDeleteDocument = async (docId) => {
+    try {
+      await deleteDocument(docId);
+      await fetchDocuments();
+      toast.success('Document deleted successfully');
+    } catch (err) {
+      console.error('Error deleting document:', err);
+      toast.error(err.message || 'Failed to delete document');
+    }
+  };
+
+  const handleFileChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const validType = validateFile(file);
+      if (validType) {
+        setSelectedFile(file);
+        setSelectedFileType(validType);
+      } else {
+        setSelectedFileType("");
+        event.target.value = null;
       }
-      return doc;
-    });
-    setDocuments(updatedDocs);
-    filterDocuments(searchQuery, selectedType, activeTab);
-    
-    const statusMessages = {
-      approved: 'Document approved successfully',
-      rejected: 'Document rejected',
-      pending: 'Document marked as pending review'
-    };
-    
-    toast.success(statusMessages[newStatus] || 'Document status updated');
-  };
-
-  const handleDeleteDocument = (docId) => {
-    const updatedDocs = documents.filter(doc => doc.id !== docId);
-    setDocuments(updatedDocs);
-    filterDocuments(searchQuery, selectedType, activeTab);
-    toast.success('Document deleted successfully');
-  };
-
-  const handleDeleteTemplate = (templateId) => {
-    const updatedTemplates = templates.filter(template => template.id !== templateId);
-    setTemplates(updatedTemplates);
-    toast.success('Template deleted successfully');
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setNewDocName(e.target.files[0].name);
     }
-  };
-
-  const handleUploadDocument = () => {
-    if (!newDocName || !newDocType) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    if (!selectedFile) {
-      toast.error('Please select a file to upload');
-      return;
-    }
-
-    const newDoc = {
-      id: `doc-${Math.floor(Math.random() * 1000)}`,
-      name: newDocName,
-      type: newDocType,
-      size: `${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`,
-      uploadDate: new Date(),
-      status: 'pending',
-      student: 'Admin Upload', // This would typically come from a form
-      studentId: 'ADMIN'
-    };
-
-    setDocuments([newDoc, ...documents]);
-    setIsUploadDialogOpen(false);
-    toast.success('Document uploaded successfully');
-    resetForm();
-  };
-
-  const handleAddTemplate = () => {
-    if (!newDocName || !newDocType) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    if (!selectedFile) {
-      toast.error('Please select a file to upload');
-      return;
-    }
-
-    const newTemplate = {
-      id: `template-${Math.floor(Math.random() * 1000)}`,
-      name: newDocName,
-      type: newDocType,
-      size: `${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`,
-      lastUpdated: new Date(),
-      required: isRequired
-    };
-
-    setTemplates([newTemplate, ...templates]);
-    setIsTemplateDialogOpen(false);
-    toast.success('Template added successfully');
-    resetForm();
   };
 
   const resetForm = () => {
-    setNewDocName('');
-    setNewDocType('');
-    setIsRequired(false);
     setSelectedFile(null);
-  };
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'approved':
-        return <Badge className="bg-green-500">Approved</Badge>;
-      case 'pending':
-        return <Badge variant="outline" className="border-yellow-500 text-yellow-500">Pending</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive">Rejected</Badge>;
-      default:
-        return null;
+    setSelectedFileType("");
+    setSelectedTask('');
+    setSelectedSubtask('');
+    if (!studentId) {
+      setSelectedStudent('');
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'approved':
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-      case 'pending':
-        return <Clock className="h-5 w-5 text-yellow-500" />;
-      case 'rejected':
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      default:
-        return null;
+  const handleUploadDocument = async () => {
+    if (!selectedFile || !selectedTask || !selectedSubtask || !selectedStudent || !selectedFileType) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setUploadLoading(true);
+
+      const fileFormData = new FormData();
+      fileFormData.append('file', selectedFile);
+      fileFormData.append('category', 'documents');
+
+      const uploadResponse = await uploadFile(fileFormData);
+
+      if (!uploadResponse?.data?.url) {
+        throw new Error('Failed to get uploaded file URL');
+      }
+
+      const documentData = new FormData();
+      documentData.append('studentId', selectedStudent);
+      documentData.append('taskId', selectedTask);
+      documentData.append('subtaskId', selectedSubtask);
+      documentData.append('fileUrl', uploadResponse.data.url);
+      documentData.append('fileName', selectedFile.name);
+      documentData.append('fileSize', selectedFile.size);
+      documentData.append('fileType', selectedFileType); // Use validated type (PDF, DOCX, JPG, PNG)
+
+      await uploadDocument(documentData);
+      await fetchDocuments();
+      
+      setIsUploadDialogOpen(false);
+      toast.success('Document uploaded successfully');
+      resetForm();
+    } catch (err) {
+      console.error('Upload error:', err);
+      toast.error(err.message || 'Failed to upload document');
+    } finally {
+      setUploadLoading(false);
     }
   };
+
+  // Memoized fetch functions
+  const fetchTasks = useCallback(async (studentId) => {
+    if (!studentId) {
+      setTasks([]);
+      return;
+    }
+
+    try {
+      setTasksLoading(true);
+      console.log('Fetching tasks for student:', studentId); // Debug log
+      const response = await getTasksByStudentId(studentId);
+      const tasksData = response.data?.task || [];
+      
+      if (!Array.isArray(tasksData)) {
+        throw new Error('Invalid tasks data received');
+      }
+
+      // Map the tasks data from the taskId object which contains the main task details
+      const mappedTasks = tasksData.map(task => ({
+        _id: task.taskId._id,
+        id: task.taskId._id,
+        title: task.taskId.title || 'Untitled Task',
+        assignedAt: task.assignedAt,
+        status: task.status,
+        dueDate: task.dueDate,
+        priority: task.taskId.priority,
+        assignmentId: task._id // Keep the assignment ID for reference
+      }));
+
+      console.log('Tasks fetched:', mappedTasks); // Debug log
+      setTasks(mappedTasks);
+    } catch (err) {
+      console.error('Error fetching tasks:', err);
+      toast.error(err.message || 'Failed to fetch tasks');
+    } finally {
+      setTasksLoading(false);
+    }
+  }, []);
+
+  const fetchSubtasks = useCallback(async (taskId) => {
+    if (!taskId || !selectedStudent) {
+      setSubtasks([]);
+      return;
+    }
+    try {
+      setSubtasksLoading(true);
+      const response = await getSubtasksByTaskAndStudent(taskId, selectedStudent);
+      console.log("Subtaskssss",response)
+      const subtasksData = response.subTasks || [];
+      if (!Array.isArray(subtasksData)) {
+        throw new Error('Invalid subtasks data received');
+      }
+      // Always provide a string for title (use subtaskId if nothing else)
+      const mappedSubtasks = subtasksData.map(subtask => {
+        let title = '';
+        if (subtask.title && typeof subtask.title === 'string' && subtask.title.trim()) {
+          title = subtask.title;
+        } else if (subtask.name && typeof subtask.name === 'string' && subtask.name.trim()) {
+          title = subtask.name;
+        } else if (subtask.taskId && subtask.taskId.title) {
+          title = `${subtask.taskId.title}`;
+        } else {
+          title = String(subtask.subtaskId);
+        }
+        return {
+          _id: subtask.subtaskId,
+          id: subtask.subtaskId,
+          assignmentId: subtask._id,
+          taskId: subtask.taskId?._id || subtask.taskId,
+          status: subtask.status,
+          dueDate: subtask.dueDate,
+          assignedAt: subtask.assignedAt,
+          title
+        };
+      });
+      setSubtasks(mappedSubtasks);
+    } catch (err) {
+      setSubtasks([]);
+      console.error('Error fetching subtasks:', err);
+      toast.error(err.message || 'Failed to fetch subtasks');
+    } finally {
+      setSubtasksLoading(false);
+    }
+  }, [selectedStudent]);
+
+  const fetchStudents = useCallback(async () => {
+    try {
+      setStudentsLoading(true);
+      const response = await getStudents();
+      const studentsData = response.data?.students || [];
+
+      if (!Array.isArray(studentsData)) {
+        throw new Error('Invalid students data received');
+      }
+
+      setStudents(studentsData);
+    } catch (err) {
+      console.error('Error fetching students:', err);
+      toast.error(err.message || 'Failed to fetch students');
+    } finally {
+      setStudentsLoading(false);
+    }
+  }, []);
+
+  // Effects to handle data fetching
+  useEffect(() => {
+    if (selectedStudent) {
+      console.log('Selected student changed, fetching tasks:', selectedStudent); // Debug log
+      fetchTasks(selectedStudent);
+    }
+    if (!studentId) {
+      fetchStudents();
+    }
+  }, [selectedStudent, studentId, fetchTasks, fetchStudents]);
+
+  useEffect(() => {
+    if (selectedTask) {
+      console.log('Selected task changed, fetching subtasks:', selectedTask); // Debug log
+      fetchSubtasks(selectedTask);
+    }
+  }, [selectedTask, fetchSubtasks]);
+
+  useEffect(() => {
+    if (studentId) {
+      setSelectedStudent(studentId);
+    }
+  }, [studentId]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Documents</h1>
-        <div className="flex space-x-2">
-          <Button onClick={() => setIsUploadDialogOpen(true)}>
-            <Upload className="mr-2 h-4 w-4" /> Upload Document
-          </Button>
-          <Button variant="outline" onClick={() => setIsTemplateDialogOpen(true)}>
-            <FilePlus className="mr-2 h-4 w-4" /> Add Template
-          </Button>
+    <div className="space-y-4">
+      <h1 className="text-xl font-semibold">Document Manager</h1>
+      
+      <div className="flex justify-between items-center">
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search documents..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="pl-8 w-[300px]"
+          />
         </div>
+        <Button
+          onClick={() => setIsUploadDialogOpen(true)}
+          className="bg-primary text-white"
+        >
+          <Upload className="mr-2 h-4 w-4" />
+          Upload Document
+        </Button>
       </div>
 
-      <Tabs defaultValue="all" value={activeTab} onValueChange={handleTabChange}>
-        <div className="flex items-center justify-between">
-          <TabsList>
-            <TabsTrigger value="all">All Documents</TabsTrigger>
-            <TabsTrigger value="pending">Pending Review</TabsTrigger>
-            <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-          </TabsList>
-          
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search documents..."
-                className="pl-8 w-[250px]"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-              />
-            </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="all">All Documents</TabsTrigger>
+          <TabsTrigger value="verified">Verified</TabsTrigger>
+          <TabsTrigger value="pending">Pending Review</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected</TabsTrigger>
+        </TabsList>
 
-            <Select value={selectedType} onValueChange={handleTypeFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Document type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
-                {DOCUMENT_TYPES.map(type => (
-                  <SelectItem key={type} value={type}>{type}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <TabsContent value="all" className="space-y-4">
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
+        <TabsContent value={activeTab} className="mt-4">
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Size</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Task</TableHead>
+                  <TableHead>Subtask</TableHead>
+                  <TableHead>Upload Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
                   <TableRow>
-                    <TableHead className="w-[30%]">Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Student</TableHead>
-                    <TableHead>
-                      <div className="flex items-center">
-                        Date
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </div>
-                    </TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredDocuments.map((doc) => (
+                ) : filteredDocuments.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                      No documents found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredDocuments.map((doc) => (
                     <TableRow key={doc.id}>
-                      <TableCell className="font-medium">
+                      <TableCell>
                         <div className="flex items-center">
-                          <FileText className="mr-2 h-4 w-4 text-muted-foreground" />
+                          <FileText className="mr-2 h-4 w-4 text-blue-500" />
                           {doc.name}
                         </div>
-                        <div className="text-xs text-muted-foreground">{doc.size}</div>
                       </TableCell>
-                      <TableCell>{doc.type}</TableCell>
-                      <TableCell>
-                        <div>{doc.student}</div>
-                        <div className="text-xs text-muted-foreground">{doc.studentId}</div>
+                      <TableCell>{doc.size}</TableCell>
+                      <TableCell>{doc.student}</TableCell>
+                      <TableCell>{doc.task}</TableCell>
+                      <TableCell>{doc.subtask}</TableCell>
+                      <TableCell>{doc.uploadDate}</TableCell>
+                      <TableCell className="text-center">
+                        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold
+                          ${doc.status === 'verified' ? 'bg-green-100 text-green-700' :
+                            doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            'bg-gray-100 text-gray-700'}`}
+                          style={{ minWidth: 70, justifyContent: 'center' }}>
+                          {doc.status === 'verified' && 'Verified'}
+                          {doc.status === 'pending' && 'Pending'}
+                          {doc.status === 'rejected' && 'Rejected'}
+                        </span>
                       </TableCell>
-                      <TableCell>{formatDate(doc.uploadDate)}</TableCell>
-                      <TableCell>{getStatusBadge(doc.status)}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setViewDocument(doc)}>
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Download className="mr-2 h-4 w-4" />
-                              Download
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Change status to</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'approved')}>
-                              <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                              Approved
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'pending')}>
-                              <Clock className="mr-2 h-4 w-4 text-yellow-500" />
-                              Pending Review
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'rejected')}>
-                              <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                              Rejected
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                              className="text-red-600"
-                              onClick={() => handleDeleteDocument(doc.id)}
-                            >
-                              <FileX className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {filteredDocuments.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-4">
-                        No documents found matching your criteria
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="pending" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Pending Review</CardTitle>
-              <CardDescription>Documents that need your evaluation</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[30%]">Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Student</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredDocuments.map((doc) => (
-                    <TableRow key={doc.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center">
-                          <FileText className="mr-2 h-4 w-4 text-muted-foreground" />
-                          {doc.name}
-                        </div>
-                        <div className="text-xs text-muted-foreground">{doc.size}</div>
-                      </TableCell>
-                      <TableCell>{doc.type}</TableCell>
-                      <TableCell>
-                        <div>{doc.student}</div>
-                        <div className="text-xs text-muted-foreground">{doc.studentId}</div>
-                      </TableCell>
-                      <TableCell>{formatDate(doc.uploadDate)}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end space-x-1">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="h-8"
-                            onClick={() => handleStatusChange(doc.id, 'approved')}
-                          >
-                            <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                            Approve
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="h-8"
-                            onClick={() => handleStatusChange(doc.id, 'rejected')}
-                          >
-                            <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                            Reject
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setViewDocument(doc)}>
+                      <TableCell className="text-center" style={{ verticalAlign: 'middle', padding: 0 }}>
+                        <div className="flex items-center gap-4 justify-center" style={{ height: '100%' }}>
+                          <Button size="icon" variant="ghost" onClick={() => window.open(doc.fileUrl, '_blank')} title="View">
                             <Eye className="h-4 w-4" />
                           </Button>
+                          <Button size="icon" variant="ghost" onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = doc.fileUrl;
+                            link.download = doc.name || 'document';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }} title="Download">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <div className="relative" style={{ display: 'inline-block' }}>
+                            <Button size="icon" variant="ghost" title="More Actions" onClick={e => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              setDropdownPosition({ top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 160 });
+                              setOpenDropdownId(openDropdownId === doc.id ? null : doc.id);
+                            }}>
+                              <span style={{ fontSize: 24, fontWeight: 'bold', letterSpacing: 2 }}>⋯</span>
+                            </Button>
+                            {openDropdownId === doc.id && createPortal(
+                              <div className="fixed bg-white border rounded shadow-md min-w-[160px] mt-2" style={{ zIndex: 99999, top: dropdownPosition.top, left: dropdownPosition.left }}>
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                  onClick={() => { handleStatusChange(doc.id, 'verified'); setOpenDropdownId(null); }}
+                                >
+                                  Mark as Verified
+                                </button>
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                  onClick={() => { handleStatusChange(doc.id, 'pending'); setOpenDropdownId(null); }}
+                                >
+                                  Mark as Pending
+                                </button>
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600 cursor-pointer"
+                                  onClick={() => { handleStatusChange(doc.id, 'rejected'); setOpenDropdownId(null); }}
+                                >
+                                  Mark as Rejected
+                                </button>
+                              </div>,
+                              document.body
+                            )}
+                          </div>
+                          <Button size="icon" variant="ghost" onClick={() => handleDeleteDocument(doc.id)} title="Delete">
+                            <TrashIcon className="h-4 w-4 text-red-600 cursor-pointer" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
-                  {filteredDocuments.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center py-4">
-                        No pending documents found
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="approved" className="space-y-4">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[30%]">Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead>Approval Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredDocuments.map((doc) => (
-                <TableRow key={doc.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      <FileCheck className="mr-2 h-4 w-4 text-green-500" />
-                      {doc.name}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{doc.size}</div>
-                  </TableCell>
-                  <TableCell>{doc.type}</TableCell>
-                  <TableCell>
-                    <div>{doc.student}</div>
-                    <div className="text-xs text-muted-foreground">{doc.studentId}</div>
-                  </TableCell>
-                  <TableCell>{formatDate(doc.uploadDate)}</TableCell>
-                  <TableCell className="text-right">
-                    <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setViewDocument(doc)}>
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filteredDocuments.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-4">
-                    No approved documents found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TabsContent>
-        
-        <TabsContent value="rejected" className="space-y-4">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[30%]">Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead>Rejection Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredDocuments.map((doc) => (
-                <TableRow key={doc.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      <FileX className="mr-2 h-4 w-4 text-red-500" />
-                      {doc.name}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{doc.size}</div>
-                  </TableCell>
-                  <TableCell>{doc.type}</TableCell>
-                  <TableCell>
-                    <div>{doc.student}</div>
-                    <div className="text-xs text-muted-foreground">{doc.studentId}</div>
-                  </TableCell>
-                  <TableCell>{formatDate(doc.uploadDate)}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setViewDocument(doc)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusChange(doc.id, 'pending')}>
-                          <Clock className="mr-2 h-4 w-4 text-yellow-500" />
-                          Move to Pending
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          className="text-red-600"
-                          onClick={() => handleDeleteDocument(doc.id)}
-                        >
-                          <FileX className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filteredDocuments.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-4">
-                    No rejected documents found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </TabsContent>
       </Tabs>
 
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Document Templates</CardTitle>
-          <CardDescription>
-            Standard forms and templates for students to use
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[40%]">Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Last Updated</TableHead>
-                <TableHead>Required</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {templates.map((template) => (
-                <TableRow key={template.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      <FileText className="mr-2 h-4 w-4 text-blue-500" />
-                      {template.name}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{template.size}</div>
-                  </TableCell>
-                  <TableCell>{template.type}</TableCell>
-                  <TableCell>{formatDate(template.lastUpdated)}</TableCell>
-                  <TableCell>
-                    {template.required ? (
-                      <Badge>Required</Badge>
-                    ) : (
-                      <Badge variant="outline">Optional</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Upload className="mr-2 h-4 w-4" />
-                          Update
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          className="text-red-600"
-                          onClick={() => handleDeleteTemplate(template.id)}
-                        >
-                          <FileX className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Upload Document Dialog */}
+      {/* Upload Dialog */}
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>Upload New Document</DialogTitle>
+            <DialogTitle>Upload Document</DialogTitle>
             <DialogDescription>
-              Upload a document to the system. It will be marked as pending for review.
+              Upload a document for a student&apos;s task or subtask.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="file">Document File</Label>
-              <Input
-                id="file"
-                type="file"
-                onChange={handleFileChange}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="name">Document Name</Label>
-              <Input
-                id="name"
-                placeholder="Enter document name"
-                value={newDocName}
-                onChange={(e) => setNewDocName(e.target.value)}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="type">Document Type</Label>
-              <Select value={newDocType} onValueChange={setNewDocType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select document type" />
+          <div className="space-y-4">
+            {!studentId && (
+              <div>
+                <Label>Student</Label>
+                <Select
+                  value={selectedStudent || undefined}
+                  onValueChange={value => {
+                    setSelectedStudent(value);
+                    setSelectedTask("");
+                    setSelectedSubtask("");
+                  }}
+                  disabled={studentsLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Student">
+                    {(() => {
+                      const s = students.find(s => s._id === selectedStudent);
+                      if (!s) return null;
+                      if (s.firstName || s.lastName) {
+                        return `${s.firstName || ''} ${s.lastName || ''}`.trim();
+                      }
+                      return s.email;
+                    })()}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {students.length === 0 ? (
+                      <SelectItem value="__none__" disabled>
+                        {studentsLoading ? "Loading..." : "No students available"}
+                      </SelectItem>
+                    ) : (
+                      students.map(student => (
+                        <SelectItem key={student._id} value={student._id}>
+                        {student.firstName || student.lastName ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : student.email}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div>
+              <Label>Task</Label>
+              <Select
+                value={selectedTask || undefined}
+                onValueChange={value => {
+                  setSelectedTask(value);
+                  setSelectedSubtask("");
+                }}
+                disabled={!selectedStudent || tasksLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Task">
+                    {selectedTask && tasks.find(t => t._id === selectedTask)?.title}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {DOCUMENT_TYPES.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
+                  {tasks.length === 0 ? (
+                    <SelectItem value="__none__" disabled>
+                      {tasksLoading ? "Loading..." : "No tasks available"}
+                    </SelectItem>
+                  ) : (
+                    tasks.map(task => (
+                      <SelectItem key={task._id} value={task._id}>
+                        {task.title}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
+
+            <div>
+              <Label>Subtask</Label>
+              <Select
+                value={selectedSubtask || undefined}
+                onValueChange={setSelectedSubtask}
+                disabled={!selectedTask || subtasksLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Subtask">
+                    {selectedSubtask && (subtasks.find(s => s._id === selectedSubtask)?.title || selectedSubtask)}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {subtasks.length === 0 ? (
+                    <SelectItem value="__none__" disabled>
+                      {subtasksLoading ? "Loading..." : "No subtasks available"}
+                    </SelectItem>
+                  ) : (
+                    subtasks.map(subtask => (
+                      <SelectItem key={subtask._id} value={subtask._id}>
+                        {subtask.title || subtask._id}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Document File</Label>
+              <Input 
+                type="file"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+              />
+            </div>
           </div>
-          
+
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleUploadDocument}>
-              <Upload className="mr-2 h-4 w-4" />
+            <Button
+              disabled={!selectedFile || !selectedTask || !selectedSubtask || !selectedStudent || uploadLoading}
+              onClick={handleUploadDocument}
+            >
+              {uploadLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Upload
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Add Template Dialog */}
-      <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Add Document Template</DialogTitle>
-            <DialogDescription>
-              Add a new template that students can download and fill out.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="template-file">Template File</Label>
-              <Input
-                id="template-file"
-                type="file"
-                onChange={handleFileChange}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="template-name">Template Name</Label>
-              <Input
-                id="template-name"
-                placeholder="Enter template name"
-                value={newDocName}
-                onChange={(e) => setNewDocName(e.target.value)}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="template-type">Document Type</Label>
-              <Select value={newDocType} onValueChange={setNewDocType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select document type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DOCUMENT_TYPES.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="required"
-                checked={isRequired}
-                onCheckedChange={setIsRequired}
-              />
-              <label
-                htmlFor="required"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Mark as required document
-              </label>
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleAddTemplate}>
-              <FilePlus className="mr-2 h-4 w-4" />
-              Add Template
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* View Document Dialog */}
-      {viewDocument && (
-        <Dialog open={!!viewDocument} onOpenChange={() => setViewDocument(null)}>
-          <DialogContent className="sm:max-w-[700px]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center">
-                {getStatusIcon(viewDocument.status)}
-                <span className="ml-2">{viewDocument.name}</span>
-              </DialogTitle>
-              <DialogDescription>
-                Uploaded by {viewDocument.student} ({viewDocument.studentId}) on {formatDate(viewDocument.uploadDate)}
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="border rounded-md p-6 flex items-center justify-center h-[400px]">
-              <div className="text-center">
-                <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-sm text-muted-foreground">
-                  Document preview would appear here in a real application.
-                </p>
-              </div>
-            </div>
-            
-            <DialogFooter>
-              <Button variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Download
-              </Button>
-              {viewDocument.status !== 'approved' && (
-                <Button onClick={() => {
-                  handleStatusChange(viewDocument.id, 'approved');
-                  setViewDocument(null);
-                }}>
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Approve Document
-                </Button>
-              )}
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
+};
+
+Documents.propTypes = {
+  studentId: PropTypes.string
+};
+
+Documents.defaultProps = {
+  studentId: ''
 };
 
 export default Documents;

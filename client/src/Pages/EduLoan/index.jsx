@@ -59,7 +59,7 @@ const EduLoan = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await apiService.post('v1/loans/apply', {
+      const response = await apiService.post('/loans/apply', {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,

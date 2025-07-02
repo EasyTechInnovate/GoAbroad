@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
    User, Home,
    MessageSquare, Settings, LogOut,
@@ -7,6 +7,7 @@ import {
    CheckSquare, BriefcaseBusiness
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { logout } from '@/lib/auth';
 import {
   Sidebar,
   SidebarContent,
@@ -15,17 +16,24 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { toast } from 'sonner';
 
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 const AppSidebar = ({ isSidebarOpen }) => {
   const location = useLocation();
-
-  console.log(location);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log('User logged out');
+    try {
+      logout();
+      toast.success('Logged out successfully');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to log out');
+    }
   };
 
   const menuItems = [
