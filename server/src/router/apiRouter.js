@@ -21,6 +21,7 @@ import taskSubtaskAssignmentController from '../controller/taskController/taskSu
 import documentController from '../controller/documentController/documentController.js'
 import studentUniversityAssignmentController from '../controller/University/studentUniversityAssignmentController.js'
 import applicationController from '../controller/applicationController/applicationController.js'
+import taskCategoryController from '../controller/taslCategoryController/taskCategoryController.js'
 
 const router = Router()
 
@@ -154,6 +155,17 @@ router.route("/admin/subtask/:taskId").get(memberAccess, taskSubtaskAssignmentCo
 
 // ******************** SUBTASK ROUTES END ***********************************
 
+// 
+// ******************** TASK CATEGORY ROUTES ***********************************
+router.route('/admin/task-categories')
+    .post(memberAccess, taskCategoryController.createTaskCategory)
+    .get(memberAccess, taskCategoryController.getAllTaskCategories);
+
+router.route('/admin/task-categories/:categoryId')
+    .put(memberAccess, taskCategoryController.updateTaskCategory)
+    .delete(adminOnly, taskCategoryController.deleteTaskCategory)
+    .get(memberAccess, taskCategoryController.getTaskCategoryById);
+// ******************** TASK CATEGORY ROUTES ***********************************
 
 // ******************** TASK ROUTES ***********************************
 

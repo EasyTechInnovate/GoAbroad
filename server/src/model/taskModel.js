@@ -29,9 +29,14 @@ const taskSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    createdDate:{
+    createdDate: {
         type: Date,
         default: Date.now
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TaskCategory',
+        default: null
     }
 }, {
     timestamps: true,

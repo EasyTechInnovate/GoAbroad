@@ -13,89 +13,64 @@ export default {
     // Create a new task with associated students and subtasks (ADMIN only)
     createTask: async (req, res, next) => {
         try {
-            // Validate input
             const { value, error } = validateJoiSchema(ValidateCreateTask, req.body);
             if (error) return httpError(next, error, req, 422);
 
-            // Check role
             if (req.authenticatedMember.role !== 'ADMIN') {
                 return httpError(next, new Error(responseMessage.UNAUTHORIZED), req, 403);
             }
 
-            const { studentIds, subtaskIds, assignee, ...taskData } = value;
-
-            // Set assignee to authenticated member if not provided
+            const { studentIds, subtaskIds, assignee, category, ...taskData } = value;
             taskData.assignee = assignee ? assignee : req.authenticatedMember._id;
 
-            // Validate assignee exists
             const assigneeExists = await Member.findById(taskData.assignee).lean();
-            if (!assigneeExists) {
-                return httpError(next, new Error('Assignee not found'), req, 404);
+            if (!assigneeExists) return httpError(next, new Error('Assignee not found'), req, 404);
+
+            if (category) {
+                const categoryExists = await TaskCategory.findById(category).lean();
+                if (!categoryExists) return httpError(next, new Error('Category not found'), req, 404);
             }
 
-            // Validate studentIds exist
-            if (studentIds && studentIds.length > 0) {
+            if (studentIds?.length > 0) {
                 const students = await Student.find({ _id: { $in: studentIds } }).lean();
-                if (students.length !== studentIds.length) {
-                    return httpError(next, new Error('One or more studentIds are invalid'), req, 400);
-                }
+                if (students.length !== studentIds.length) return httpError(next, new Error('One or more studentIds are invalid'), req, 400);
             }
 
-            // Validate subtaskIds exist
-            if (subtaskIds && subtaskIds.length > 0) {
+            if (subtaskIds?.length > 0) {
                 const subtasks = await Subtask.find({ _id: { $in: subtaskIds } }).lean();
-                if (subtasks.length !== subtaskIds.length) {
-                    return httpError(next, new Error('One or more subtaskIds are invalid'), req, 400);
-                }
+                if (subtasks.length !== subtaskIds.length) return httpError(next, new Error('One or more subtaskIds are invalid'), req, 400);
             }
 
-            // Create new task
-            const task = new Task(taskData);
+            const task = new Task({ ...taskData, category });
             await task.save();
 
-            // Create StudentTaskAssignment records
-            if (studentIds && studentIds.length > 0) {
-                const studentAssignmentPromises = studentIds.map(async (studentId) => {
-                    const assignment = new StudentTaskAssignment({
-                        studentId,
-                        taskId: task._id,
-                        assignedAt: new Date(),
-                        status: "PENDING",
-                        isLocked: false,
-                        dueDate: null
-                    });
-                    return assignment.save();
-                });
-                await Promise.all(studentAssignmentPromises);
+            if (studentIds?.length > 0) {
+                await Promise.all(studentIds.map(studentId => new StudentTaskAssignment({
+                    studentId,
+                    taskId: task._id,
+                    assignedAt: new Date(),
+                    status: "PENDING",
+                    isLocked: false,
+                    dueDate: null
+                }).save()));
             }
 
-            // Create TaskSubtaskAssignment records for each student-subtask combination
-            if (subtaskIds && subtaskIds.length > 0 && studentIds && studentIds.length > 0) {
-                const assignmentPromises = [];
-                studentIds.forEach(studentId => {
-                    subtaskIds.forEach(subtaskId => {
-                        const assignment = new TaskSubtaskAssignment({
-                            studentId,
-                            taskId: task._id,
-                            subtaskId,
-                            assignedAt: new Date(),
-                            status: "PENDING",
-                            isLocked: false,
-                            dueDate: null
-                        });
-                        assignmentPromises.push(assignment.save());
-                    });
-                });
-                await Promise.all(assignmentPromises);
+            if (subtaskIds?.length > 0 && studentIds?.length > 0) {
+                await Promise.all(studentIds.flatMap(studentId => subtaskIds.map(subtaskId => new TaskSubtaskAssignment({
+                    studentId,
+                    taskId: task._id,
+                    subtaskId,
+                    assignedAt: new Date(),
+                    status: "PENDING",
+                    isLocked: false,
+                    dueDate: null
+                }).save())));
             }
 
-            // Fetch the task with associated students and subtasks
-            const populatedTask = await Task.findById(task._id).lean();
-            const studentAssignments = await StudentTaskAssignment.find({ taskId: task._id })
-                .populate('studentId', "-password")
-                .lean();
+            const populatedTask = await Task.findById(task._id).populate('category', 'name description').lean();
+            const studentAssignments = await StudentTaskAssignment.find({ taskId: task._id }).populate('studentId', '-password').lean();
             const taskSubtaskAssignments = await TaskSubtaskAssignment.find({ taskId: task._id })
-                .populate('studentId', "-password")
+                .populate('studentId', '-password')
                 .populate('subtaskId')
                 .lean();
 
@@ -108,10 +83,7 @@ export default {
                 dueDate: assignment.dueDate
             }));
 
-            httpResponse(req, res, 201, responseMessage.SUCCESS, {
-                message: 'Task created successfully',
-                task: populatedTask
-            });
+            httpResponse(req, res, 201, responseMessage.SUCCESS, { message: 'Task created successfully', task: populatedTask });
         } catch (err) {
             httpError(next, err, req, 500);
         }
@@ -143,6 +115,12 @@ export default {
                 }
             }
 
+
+            if (value.category) {
+                const categoryExists = await TaskCategory.findById(value.category);
+                if (!categoryExists) return httpError(next, new Error('Category not found'), req, 404);
+            }
+
             // Update task fields
             if (value.title) task.title = value.title;
             if (value.description !== undefined) task.description = value.description;
@@ -151,7 +129,7 @@ export default {
             if (value.assignee) task.assignee = value.assignee;
             if (value.isDefault !== undefined) task.isDefault = value.isDefault;
             if (value.createdDate) task.createdDate = value.createdDate;
-
+            if (value.category) task.category = value.category
             await task.save();
 
             // Fetch updated task with associations
