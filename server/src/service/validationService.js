@@ -415,7 +415,8 @@ export const ValidateCreateTask = Joi.object({
     isDefault: Joi.boolean().default(false),
     createdDate: Joi.date().default(Date.now),
     studentIds: Joi.array().items(Joi.string()).default([]).optional(),
-    subtaskIds: Joi.array().items(Joi.string()).default([]).optional()
+    subtaskIds: Joi.array().items(Joi.string()).default([]).optional(),
+    category: Joi.string().optional() // Optional category ID
 });
 
 export const ValidateUpdateTask = Joi.object({
@@ -425,7 +426,18 @@ export const ValidateUpdateTask = Joi.object({
     priority: Joi.string().valid("LOW", "MEDIUM", "HIGH").optional(),
     assignee: Joi.string().optional(),
     isDefault: Joi.boolean().optional(),
-    createdDate: Joi.date().optional()
+    createdDate: Joi.date().optional(),
+    category: Joi.string().optional() // Optional category ID
+});
+
+export const ValidateCreateTaskCategory = Joi.object({
+    name: Joi.string().trim().required(),
+    description: Joi.string().trim().allow(null, '')
+});
+
+export const ValidateUpdateTaskCategory = Joi.object({
+    name: Joi.string().trim().optional(),
+    description: Joi.string().trim().allow(null, '').optional()
 });
 
 export const ValidateAddSubtasksToTask = Joi.object({
