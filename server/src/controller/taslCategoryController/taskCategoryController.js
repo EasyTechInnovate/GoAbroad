@@ -4,7 +4,8 @@ import responseMessage from '../../constant/responseMessage.js';
 import httpError from '../../util/httpError.js';
 import Task from '../../model/taskModel.js';
 import TaskCategory from '../../model/taskCategoryModel.js';
-import { ValidateCreateTaskCategory, validateJoiSchema, ValidateUpdateTaskCategory } from '../../service/validationService';
+import { ValidateCreateTaskCategory, validateJoiSchema, ValidateUpdateTaskCategory } from '../../service/validationService.js';
+import mongoose from 'mongoose';
 export default {
 
 
