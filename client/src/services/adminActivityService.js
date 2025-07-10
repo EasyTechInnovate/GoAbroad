@@ -10,3 +10,12 @@ export const getAdminStudentActivities = async (page = 1, limit = 5) => {
     throw err.response?.data || err;
   }
 };
+
+export const getAdminDashboardStats = async () => {
+  try {
+    const response = await servicesAxiosInstance.get('/admin/dashboard-stats');
+    return response.data;
+  } catch (err) {
+    throw err.response?.data || err;
+  }
+};

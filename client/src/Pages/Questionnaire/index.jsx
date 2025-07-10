@@ -16,6 +16,7 @@ const Questionnaire = () => {
     const [responses, setResponses] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [uploadingFiles, setUploadingFiles] = useState({});
     const [openQuestions, setOpenQuestions] = useState({});
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -278,6 +279,11 @@ const Questionnaire = () => {
                                                             View uploaded file
                                                         </a>
                                                     </div>
+                                                ) : uploadingFiles[question._id] ? (
+                                                    <div className="flex flex-col items-center justify-center py-4">
+                                                        <div className="w-8 h-8 border-4 border-t-transparent border-primary-1 rounded-full animate-spin mb-2"></div>
+                                                        <p className="text-sm text-gray-600">Uploading file...</p>
+                                                    </div>
                                                 ) : (
                                                     <div>
                                                         <label className="flex flex-col items-center gap-2 cursor-pointer">
@@ -306,6 +312,12 @@ const Questionnaire = () => {
                                                                     }
 
                                                                     try {
+                                                                        // Set uploading state for this question
+                                                                        setUploadingFiles(prev => ({
+                                                                            ...prev,
+                                                                            [question._id]: true
+                                                                        }));
+                                                                        
                                                                         const formData = new FormData();
                                                                         formData.append('file', file);
                                                                         formData.append('category', 'resume');
@@ -320,6 +332,12 @@ const Questionnaire = () => {
                                                                     } catch (error) {
                                                                         console.error('Error uploading file:', error);
                                                                         toast.error(error.message || 'Failed to upload file');
+                                                                    } finally {
+                                                                        // Clear uploading state
+                                                                        setUploadingFiles(prev => ({
+                                                                            ...prev,
+                                                                            [question._id]: false
+                                                                        }));
                                                                     }
                                                                 }}
                                                             />
@@ -388,10 +406,10 @@ const Questionnaire = () => {
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={isSaving}
+                        disabled={isSaving || Object.values(uploadingFiles).some(Boolean)}
                         className="px-6 py-2.5 cursor-pointer bg-primary-1 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
                     >
-                        {isSaving ? 'Saving...' : 'Submit Answers'}
+                        {isSaving ? 'Saving...' : Object.values(uploadingFiles).some(Boolean) ? 'File Upload in Progress...' : 'Submit Answers'}
                     </button>
                 </div>
             </div>

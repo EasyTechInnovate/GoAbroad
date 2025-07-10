@@ -1,19 +1,51 @@
 import { BarChart3, FileText, MessageSquare, Users } from 'lucide-react';
-
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import StatCard from '@/components/StackCard';
 import TasksList from '@/components/TaskList';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SidebarHeader from '@/components/SidebarHeader';
+import { getStudentDashboardStats } from '@/services/dashboardService';
 
 const Dashboard = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [dashboardStats, setDashboardStats] = useState({
+    totalPendingTasks: 0,
+    totalCompletedTasks: 0,
+    totalUniversityAssigned: 0,
+    totalNewMessages: 0
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getStudentDashboardStats();
+        if (response.success) {
+          setDashboardStats({
+            totalPendingTasks: response.data.totalPendingTasks || 0,
+            totalCompletedTasks: response.data.totalCompletedTasks || 0,
+            totalUniversityAssigned: response.data.totalUniversityAssigned || 0,
+            totalNewMessages: 0 // This isn't provided by the API, so we'll keep it at 0
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardStats();
+  }, []);
+
   const stats = [
     {
       id: 1,
       icon: <BarChart3 className="text-white" />,
       iconBg: 'bg-[#FA5A7D]',
-      count: '11',
+      count: isLoading ? '...' : String(dashboardStats.totalPendingTasks),
       title: 'My Pending Tasks',
       bgColor: 'bg-[#FFE2E5]',
     },
@@ -21,7 +53,7 @@ const Dashboard = () => {
       id: 2,
       icon: <FileText className="text-white" />,
       iconBg: 'bg-[#FF947A]',
-      count: '63',
+      count: isLoading ? '...' : String(dashboardStats.totalCompletedTasks),
       title: 'Completed Tasks',
       bgColor: 'bg-[#FFF4DE]',
     },
@@ -29,7 +61,7 @@ const Dashboard = () => {
       id: 3,
       icon: <MessageSquare className="text-white" />,
       iconBg: 'bg-[#3CD856]',
-      count: '0',
+      count: isLoading ? '...' : String(dashboardStats.totalNewMessages),
       title: 'New Messages',
       bgColor: 'bg-[#DCFCE7]',
     },
@@ -37,13 +69,11 @@ const Dashboard = () => {
       id: 4,
       icon: <Users className="text-white" />,
       iconBg: 'bg-[#BF83FF]',
-      count: '46',
+      count: isLoading ? '...' : String(dashboardStats.totalUniversityAssigned),
       title: 'Universities Shortlisted',
       bgColor: 'bg-[#F3E8FF]',
     },
   ];
-
-  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <SidebarProvider>

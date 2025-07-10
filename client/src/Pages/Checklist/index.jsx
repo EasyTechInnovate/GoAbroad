@@ -4,7 +4,6 @@ import AppSidebar from '../../components/AppSidebar';
 import SidebarHeader from '../../components/SidebarHeader';
 import { Check, LockKeyhole, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getStudentTasks } from '@/services/taskService';
-import { getSubtaskQuestionnaires } from '@/services/questionnaireService';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -61,20 +60,9 @@ const Checklist = () => {
     setSelectedTaskId(taskId);
   };
 
-  const handleQuestionnaireClick = async (taskId, subtaskId) => {
-    try {
-      const response = await getSubtaskQuestionnaires(taskId, subtaskId);
-      if (response.success && response.data.questionnaires.length > 0) {
-        // Navigate to the first questionnaire
-        const firstQuestionnaire = response.data.questionnaires[0];
-        navigate(`/questionnaire/${taskId}/${subtaskId}/${firstQuestionnaire.questionnaireId}`);
-      } else {
-        toast.error('No questionnaires available for this subtask');
-      }
-    } catch (error) {
-      console.error('Error fetching questionnaires:', error);
-      toast.error('Failed to load questionnaires');
-    }
+  const handleQuestionnaireClick = (taskId, subtaskId) => {
+    // Navigate to the questionnaires list page
+    navigate(`/questionnaires/${taskId}/${subtaskId}`);
   };
 
   const checklistItems = tasks.map(task => ({

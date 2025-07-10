@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { getAdminStudentActivities } from '@/services/adminActivityService';
+import { getAdminStudentActivities, getAdminDashboardStats } from '@/services/adminActivityService';
 
 function getInitials(name) {
   if (!name) return '';
@@ -15,9 +15,9 @@ function getInitials(name) {
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalStudents: 0,
-    activeApplications: 0,
-    pendingTasks: 0,
-    completedTasks: 0,
+    totalActiveApplications: 0,
+    totalPendingTasks: 0,
+    totalCompletedTasks: 0,
     statsChange: {},
   });
   const [activities, setActivities] = useState([]);
@@ -30,22 +30,30 @@ const AdminDashboard = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await getAdminStudentActivities(1, 5);
-        // You may need to adjust this mapping based on your real API response
+        // Fetch dashboard stats from the new endpoint
+        const statsRes = await getAdminDashboardStats();
+        // Fetch activities separately 
+        const activitiesRes = await getAdminStudentActivities(1, 5);
+        
+        // Set stats from the new endpoint
         setStats({
-          totalStudents: res.data?.totalStudents || 254,
-          activeApplications: res.data?.activeApplications || 189,
-          pendingTasks: res.data?.pendingTasks || 87,
-          completedTasks: res.data?.completedTasks || 419,
-          statsChange: res.data?.statsChange || {
+          totalStudents: statsRes.data?.totalStudents || 0,
+          totalActiveApplications: statsRes.data?.totalActiveApplications || 0,
+          totalPendingTasks: statsRes.data?.totalPendingTasks || 0,
+          totalCompletedTasks: statsRes.data?.totalCompletedTasks || 0,
+          statsChange: {
             totalStudents: '+12%',
-            activeApplications: '+7%',
-            pendingTasks: '-2%',
-            completedTasks: '+22%'
+            totalActiveApplications: '+7%',
+            totalPendingTasks: '-2%',
+            totalCompletedTasks: '+22%'
           }
         });
-        setActivities(res.data?.activities || []);
-        setDeadlines(res.data?.deadlines || [
+        
+        // Set activities from the activities endpoint
+        setActivities(activitiesRes.data?.activities || []);
+        
+        // Set deadlines (this could come from another endpoint in the future)
+        setDeadlines(activitiesRes.data?.deadlines || [
           // fallback mock
           {
             id: 1,
@@ -97,9 +105,9 @@ const AdminDashboard = () => {
             <Card>
               <CardContent className="pt-6 pb-4">
                 <div className="text-xs text-muted-foreground font-medium">Active Applications</div>
-                <div className="text-3xl font-bold mt-1">{stats.activeApplications}</div>
+                <div className="text-3xl font-bold mt-1">{stats.totalActiveApplications}</div>
                 <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-green-600 font-semibold">{stats.statsChange.activeApplications || '+7%'}</span>
+                  <span className="text-green-600 font-semibold">{stats.statsChange.totalActiveApplications || '+7%'}</span>
                   from last month
                 </div>
               </CardContent>
@@ -107,9 +115,9 @@ const AdminDashboard = () => {
             <Card>
               <CardContent className="pt-6 pb-4">
                 <div className="text-xs text-muted-foreground font-medium">Pending Tasks</div>
-                <div className="text-3xl font-bold mt-1">{stats.pendingTasks}</div>
+                <div className="text-3xl font-bold mt-1">{stats.totalPendingTasks}</div>
                 <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-red-600 font-semibold">{stats.statsChange.pendingTasks || '-2%'}</span>
+                  <span className="text-red-600 font-semibold">{stats.statsChange.totalPendingTasks || '-2%'}</span>
                   from last month
                 </div>
               </CardContent>
@@ -117,9 +125,9 @@ const AdminDashboard = () => {
             <Card>
               <CardContent className="pt-6 pb-4">
                 <div className="text-xs text-muted-foreground font-medium">Completed Tasks</div>
-                <div className="text-3xl font-bold mt-1">{stats.completedTasks}</div>
+                <div className="text-3xl font-bold mt-1">{stats.totalCompletedTasks}</div>
                 <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-green-600 font-semibold">{stats.statsChange.completedTasks || '+22%'}</span>
+                  <span className="text-green-600 font-semibold">{stats.statsChange.totalCompletedTasks || '+22%'}</span>
                   from last month
                 </div>
               </CardContent>
