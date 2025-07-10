@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { getToken, logout } from '@/lib/auth';
 
-// const baseURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000/v1';
-const baseURL = 'http://localhost:5000/v1';
+const baseURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000/v1';
 
 if (!baseURL) {
     console.warn('VITE_SERVER_URL is not defined in the environment variables, using default localhost.');

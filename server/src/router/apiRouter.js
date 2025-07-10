@@ -63,6 +63,13 @@ router.route('/student/tasks/:taskId/subtasks/:subtaskId/documents')
     .get(authentication, documentController.getStudentDocumentsByTaskAndSubtaskId);
 router.route('/student/tasks/documents')
     .get(authentication, documentController.getStudentAllDocuments);
+
+router.route('/student/timeline')
+    .get(authentication, studentController.getStudentTimeline);
+router.route('/student/dashboard-stats')
+    .get(authentication, studentController.getStudentDashboardStats);
+router.route('/student/upcoming-task')
+    .get(authentication, studentTaskAssignmentController.getStudentUpcomingTasks)
 // ******************** STUDENTS ROUTES ***********************************
 
 
@@ -264,6 +271,8 @@ router.route('/admin/applications/:applicationId')
     .get(memberAccess, applicationController.getApplicationById)
     .put(adminEditorOnly, applicationController.updateApplication)
     .delete(adminEditorOnly, applicationController.deleteApplication);
+
+router.route('/admin/dashboard-stats').get(memberAccess, adminController.getAdminDashboardStats)
 // ********************* APPLICATION CONTROLLER ROUTES END ******************
 
 export default router

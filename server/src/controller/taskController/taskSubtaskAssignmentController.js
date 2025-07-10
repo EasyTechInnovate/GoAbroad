@@ -228,7 +228,7 @@ export default {
             }
 
             const query = {
-                taskId
+                taskId,
             }
 
             if (studentId) {
