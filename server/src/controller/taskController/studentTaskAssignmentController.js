@@ -375,4 +375,74 @@ export default {
         }
     },
 
+    // Admin side
+    getUpcomingDeadlines: async (req, res, next) => {
+        try {
+
+
+            const { page = 1, limit = 10 } = req.query;
+            const skip = (page - 1) * limit;
+            const currentDate = new Date();
+
+            const taskAssignments = await TaskSubtaskAssignment.find({
+                status: { $in: ['PENDING', 'IN_PROGRESS'] },
+                $or: [
+                    { dueDate: { $lt: currentDate } },
+                    { dueDate: { $gte: currentDate } },
+                    { dueDate: null }
+                ]
+            })
+                .populate({
+                    path: 'taskId',
+                    select: 'title description logo priority assignee createdDate category',
+                    populate: {
+                        path: 'category',
+                        select: 'name description'
+                    }
+                })
+                .populate({
+                    path: 'studentId',
+                    select: 'name email profilePicture phoneNumber status'
+                })
+                .sort({ dueDate: 1, assignedAt: 1 })
+                .skip(skip)
+                .limit(parseInt(limit))
+                .lean();
+
+            const total = await TaskSubtaskAssignment.countDocuments({
+                status: { $in: ['PENDING', 'IN_PROGRESS'] },
+                $or: [
+                    { dueDate: { $lt: currentDate } },
+                    { dueDate: { $gte: currentDate } },
+                    { dueDate: null }
+                ]
+            });
+
+            const upcomingDeadlines = taskAssignments.map(ta => ({
+                ...ta.taskId,
+                student: ta.studentId,
+                assignedAt: ta.assignedAt,
+                dueDate: ta.dueDate,
+                status: ta.status,
+                isLocked: ta.isLocked,
+                isOverdue: ta.dueDate && ta.dueDate < currentDate,
+                isUpcoming: ta.dueDate && ta.dueDate >= currentDate,
+                createdAt: ta.createdAt,
+                updatedAt: ta.updatedAt
+            }));
+
+            const responseData = {
+                total: total,
+                pages: Math.ceil(total / limit),
+                currentPage: parseInt(page),
+                limit: parseInt(limit),
+                upcomingDeadlines: upcomingDeadlines
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    }
+
 };

@@ -116,6 +116,7 @@ router.route('/admin/universities/:id').delete(adminOnly, universityController.d
 router.route('/admin/students').get(memberAccess, adminStudentManagementController.getStudents);
 router.route('/admin/students/:studentId')
     .get(memberAccess, adminStudentManagementController.getStudentById)
+    .put(adminEditorOnly, adminStudentManagementController.updateStudentDetails)
     .delete(adminOnly, adminStudentManagementController.deleteStudent);
 // ******************** ADMIN ROUTES ***********************************
 
@@ -273,6 +274,7 @@ router.route('/admin/applications/:applicationId')
     .delete(adminEditorOnly, applicationController.deleteApplication);
 
 router.route('/admin/dashboard-stats').get(memberAccess, adminController.getAdminDashboardStats)
+router.route('/admin/upcoming-deadlines').get(memberAccess, studentTaskAssignmentController.getUpcomingDeadlines)
 // ********************* APPLICATION CONTROLLER ROUTES END ******************
 
 export default router

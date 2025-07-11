@@ -477,9 +477,9 @@ export default {
                         }
                         break;
                     case 'DATE':
-                        if (!(validatedAnswer instanceof Date) || isNaN(validatedAnswer)) {
-                            throw new Error(`Answer for ${question.question} must be a valid date`);
-                        }
+                        // if (!(validatedAnswer instanceof Date) || isNaN(validatedAnswer)) {
+                        //     throw new Error(`Answer for ${question.question} must be a valid date`);
+                        // }
                         break;
                 }
 
