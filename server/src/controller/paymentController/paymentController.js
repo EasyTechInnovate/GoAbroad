@@ -66,15 +66,28 @@ export default {
                 return httpError(next, new Error('Payment not captured or invalid'), req, 400);
             }
 
+
+            const UpdateStudent = await Student.findByIdAndUpdate(studentId, {
+                isFeePaid: true,
+                isVerified: true
+            })
+
+            if (!UpdateStudent) {
+                return httpResponse(req, res, 404, responseMessage.NOT_FOUND('Student'));
+            }
+
             const payment = await Payment.findOneAndUpdate(
                 { orderId, studentId, status: 'PENDING' },
                 { paymentId, status: 'SUCCESS' },
                 { new: true }
             );
 
+
+
             if (!payment) {
                 return httpResponse(req, res, 404, responseMessage.NOT_FOUND('Payment'));
             }
+
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, { paymentId, status: 'success' });
         } catch (err) {
