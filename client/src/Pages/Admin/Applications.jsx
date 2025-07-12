@@ -24,11 +24,9 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -38,12 +36,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, CheckCircle2, Clock, XCircle, Eye, Building, Calendar, FileText, EditIcon, TrashIcon } from 'lucide-react';
+import { Search, CheckCircle2, XCircle, EditIcon, TrashIcon } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 // Removed unused Link import
+import { getUser } from '@/lib/auth';
 import {
   getApplications,
-  getApplicationById,
   updateApplication,
   createApplication,
   deleteApplication,
@@ -69,13 +67,18 @@ const format = (date, formatStr) => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 };
 
+
+
+const hasEditPermission = () => {
+  const currentUser = getUser();
+  return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+};
+
 const Applications = () => {
   // const [applications, setApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeStatus, setActiveStatus] = useState('all');
-  const [selectedApplication, setSelectedApplication] = useState(null);
-  const [isViewOpen, setIsViewOpen] = useState(false);
   // Removed unused sortConfig state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -109,6 +112,12 @@ const Applications = () => {
   
 
   const handleUpdate = async (app) => {
+    // Check if user has permission to update applications
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update applications");
+      return;
+    }
+
     setUpdatingAppId(app.id || app._id);
 
     // Always fetch members for update modal (like create modal)
@@ -160,6 +169,13 @@ const Applications = () => {
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if user has permission to update applications
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update applications");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -196,6 +212,12 @@ const Applications = () => {
 
 
   const handleDelete = async (app) => {
+    // Check if user has permission to delete applications
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete applications");
+      return;
+    }
+
     if (!window.confirm('Are you sure you want to delete this application?')) return;
     try {
       await deleteApplication(app.id || app._id);
@@ -278,6 +300,12 @@ const Applications = () => {
 
 
   const handleStatusChange = async (id, newStatus) => {
+    // Check if user has permission to change application status
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to change application status");
+      return;
+    }
+
     try {
       setLoading(true);
       await updateApplication(id, { status: newStatus.toUpperCase() });
@@ -308,51 +336,6 @@ const Applications = () => {
     setActiveStatus(value);
   };
 
-
-  const handleView = async (application) => {
-    try {
-      setLoading(true);
-      const res = await getApplicationById(application.id || application._id);
-      setSelectedApplication(res.data?.application || application);
-      setIsViewOpen(true);
-    } catch (err) {
-      toast.error('Failed to load application details');
-      console.error('View application error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'approved':
-        return <Badge className="bg-green-500">Approved</Badge>;
-      case 'pending':
-        return <Badge variant="outline" className="border-yellow-500 text-yellow-500">Pending</Badge>;
-      case 'rejected':
-        return <Badge variant="destructive">Rejected</Badge>;
-      case 'interview':
-        return <Badge className="bg-blue-500">Interview</Badge>;
-      default:
-        return null;
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'approved':
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-      case 'pending':
-        return <Clock className="h-5 w-5 text-yellow-500" />;
-      case 'rejected':
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      case 'interview':
-        return <Calendar className="h-5 w-5 text-blue-500" />;
-      default:
-        return null;
-    }
-  };
-
   // console.log('Filtered Applications:', filteredApplications);
   return (
     <div className="space-y-6">
@@ -361,9 +344,11 @@ const Applications = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
         <div className="flex items-center gap-2">
-          <Button variant="default" onClick={() => setIsCreateOpen(true)}>
-            + Create Application
-          </Button>
+          {hasEditPermission() && (
+            <Button variant="default" onClick={() => setIsCreateOpen(true)}>
+              + Create Application
+            </Button>
+          )}
         </div>
       </div>
 
@@ -447,12 +432,16 @@ const Applications = () => {
                           </TableCell>
                           <TableCell>{lastUpdated ? format(lastUpdated, 'yyyy-MM-dd') : ''}</TableCell>
                           <TableCell className="text-right flex gap-2 justify-end">
-                            <Button size="sm" variant="outline" onClick={() => handleUpdate(app)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3zm0 0v3h3" /></svg>
-                            </Button>
-                            <Button size="sm" variant="destructive" onClick={() => handleDelete(app)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                            </Button>
+                            {hasEditPermission() && (
+                              <>
+                                <Button size="sm" variant="outline" onClick={() => handleUpdate(app)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3zm0 0v3h3" /></svg>
+                                </Button>
+                                <Button size="sm" variant="destructive" onClick={() => handleDelete(app)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                </Button>
+                              </>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
@@ -472,6 +461,13 @@ const Applications = () => {
           <form
             onSubmit={async (e) => {
               e.preventDefault();
+
+              // Check if user has permission to create applications
+              if (!hasEditPermission()) {
+                toast.error("You don't have permission to create applications");
+                return;
+              }
+              
               try {
                 setLoading(true);
 
@@ -638,16 +634,17 @@ const Applications = () => {
                             <TableCell>{format(app.submissionDate, 'MMM d, yyyy')}</TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end space-x-2">
-                                <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
-                                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                                  Approve
-                                </Button>
-                                <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
-                                  Schedule Interview
-                                </Button>
-                                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                                  <Eye className="h-4 w-4" />
-                                </Button>
+                                {hasEditPermission() && (
+                                  <>
+                                    <Button size="sm" variant="default" className="h-8" onClick={() => handleStatusChange(app.id, 'approved')}>
+                                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                                      Approve
+                                    </Button>
+                                    <Button size="sm" variant="outline" className="h-8" onClick={() => handleStatusChange(app.id, 'interview')}>
+                                      Schedule Interview
+                                    </Button>
+                                  </>
+                                )}
                               </div>
                             </TableCell>
                           </TableRow>
@@ -705,20 +702,28 @@ const Applications = () => {
                       <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
                       <TableCell>{app.startDate ? format(app.startDate, 'MMM yyyy') : 'N/A'}</TableCell>
                       <TableCell className="text-right">
-                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
+                        {/* View button removed */}
                       </TableCell>
-                      <TableCell>
-                        <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => handleUpdate(app)}>
-                          <EditIcon/>
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <Button size="icon" variant="destructive" className="h-8 w-8" onClick={() => handleDelete(app)}>
-                        <TrashIcon/>
-                        </Button>
-                      </TableCell>
+                      {hasEditPermission() && (
+                        <>
+                          <TableCell>
+                            <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => handleUpdate(app)}>
+                              <EditIcon/>
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <Button size="icon" variant="destructive" className="h-8 w-8" onClick={() => handleDelete(app)}>
+                            <TrashIcon/>
+                            </Button>
+                          </TableCell>
+                        </>
+                      )}
+                      {!hasEditPermission() && (
+                        <>
+                          <TableCell></TableCell>
+                          <TableCell></TableCell>
+                        </>
+                      )}
                     </TableRow>
                   );
                 })
@@ -769,12 +774,11 @@ const Applications = () => {
                       <TableCell>{app.decisionDate ? format(app.decisionDate, 'MMM d, yyyy') : 'N/A'}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => handleStatusChange(app.id, 'pending')}>
-                            Reconsider
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          {hasEditPermission() && (
+                            <Button size="sm" variant="outline" onClick={() => handleStatusChange(app.id, 'pending')}>
+                              Reconsider
+                            </Button>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -835,8 +839,8 @@ const Applications = () => {
                             <XCircle className="mr-2 h-4 w-4" />
                             Reject
                           </Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => handleView(app)}>
-                            <Eye className="h-4 w-4" />
+                          <Button size="icon" variant="outline" className="h-8 w-8" onClick={() => console.log("View interview details")}>
+                            {/* Replace with appropriate action */}
                           </Button>
                         </div>
                       </TableCell>
@@ -854,119 +858,6 @@ const Applications = () => {
           </Table>
         </TabsContent>
       </Tabs>
-
-      {/* Application Detail Dialog */}
-      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        <DialogContent className="sm:max-w-[700px]">
-          {selectedApplication && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <span>Application {selectedApplication.id}</span>
-                  {getStatusBadge(selectedApplication.status)}
-                </DialogTitle>
-                <DialogDescription>
-                  Submitted on {format(selectedApplication.submissionDate, 'MMMM d, yyyy')}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-6 py-4">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarFallback className="text-xl">
-                      {selectedApplication.student.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className="text-xl font-semibold">{selectedApplication.student.name}</h2>
-                    <p className="text-muted-foreground">{selectedApplication.student.email}</p>
-                    <p className="text-sm text-muted-foreground">Student ID: {selectedApplication.student.id}</p>
-                  </div>
-                </div>
-
-                <Card className="border-t">
-                  <CardHeader>
-                    <CardTitle className="text-base">Application Details</CardTitle>
-                  </CardHeader>
-                  <CardContent className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">University</p>
-                      <div className="flex items-center gap-2">
-                        <Building className="h-4 w-4 text-muted-foreground" />
-                        <p>{selectedApplication.university}</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Status</p>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(selectedApplication.status)}
-                        <p className="capitalize">{selectedApplication.status}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium text-muted-foreground">Start Date</p>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <p>{selectedApplication.startDate ? format(selectedApplication.startDate, 'MMMM yyyy') : 'Not set'}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-t">
-                  <CardHeader>
-                    <CardTitle className="text-base">Documents</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="grid gap-2 sm:grid-cols-2">
-                      {selectedApplication.documents.map((doc, index) => (
-                        <li key={index} className="flex items-center gap-2 p-2 border rounded-md">
-                          <FileText className="h-4 w-4 text-blue-500" />
-                          <span>{doc}</span>
-                          <Button variant="ghost" size="icon" className="ml-auto h-8 w-8">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                <div className="flex items-center gap-2 justify-end">
-                  {selectedApplication.status !== 'approved' && (
-                    <Button variant="default" onClick={() => {
-                      handleStatusChange(selectedApplication.id, 'approved');
-                      setIsViewOpen(false);
-                    }}>
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Approve
-                    </Button>
-                  )}
-                  {selectedApplication.status !== 'rejected' && (
-                    <Button variant="outline" onClick={() => {
-                      handleStatusChange(selectedApplication.id, 'rejected');
-                      setIsViewOpen(false);
-                    }}>
-                      <XCircle className="mr-2 h-4 w-4" />
-                      Reject
-                    </Button>
-                  )}
-                  {selectedApplication.status !== 'interview' && (
-                    <Button variant="outline" onClick={() => {
-                      handleStatusChange(selectedApplication.id, 'interview');
-                      setIsViewOpen(false);
-                    }}>
-                      <Calendar className="mr-2 h-4 w-4" />
-                      Schedule Interview
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
 
       {/* Update Application Modal */}
       <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>

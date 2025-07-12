@@ -19,7 +19,7 @@ const StudentDetails = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <Button variant="ghost" size="icon" asChild className="mr-2">
-            <Link to="/students">
+            <Link to="/admin/students">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>

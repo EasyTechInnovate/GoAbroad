@@ -19,3 +19,19 @@ export const getAdminDashboardStats = async () => {
     throw err.response?.data || err;
   }
 };
+
+export const getAdminUpcomingDeadlines = async (page = 1, limit = 10) => {
+  try {
+    const response = await servicesAxiosInstance.get('/admin/upcoming-deadlines', {
+      params: { page, limit }
+    });
+    return response.data;
+  } catch (err) {
+    console.warn('Upcoming deadlines endpoint not available:', err.response?.status);
+    // If it's a 404, return an empty data structure instead of throwing
+    if (err.response?.status === 404) {
+      return { success: true, data: { upcomingDeadlines: [] } };
+    }
+    throw err.response?.data || err;
+  }
+};

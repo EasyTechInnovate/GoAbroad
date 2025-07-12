@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { getUser } from '@/lib/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -227,20 +228,28 @@ const FAQs = () => {
     }
   ];
 
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">FAQs & Knowledge Base</h1>
-        <div className="flex gap-2">          <Button variant="outline" className="cursor-pointer" onClick={() => setIsNewCategoryModalOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add Category
-          </Button>
-          <Button className="cursor-pointer" onClick={() => setIsAddModalOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add FAQ
-          </Button>
-          <Button className="cursor-pointer">
-            <FilePlus className="mr-2 h-4 w-4" /> New Article
-          </Button>
-        </div>
+        {hasEditPermission() && (
+          <div className="flex gap-2">
+            <Button variant="outline" className="cursor-pointer" onClick={() => setIsNewCategoryModalOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" /> Add Category
+            </Button>
+            <Button className="cursor-pointer" onClick={() => setIsAddModalOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" /> Add FAQ
+            </Button>
+            <Button className="cursor-pointer">
+              <FilePlus className="mr-2 h-4 w-4" /> New Article
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="relative">
@@ -287,32 +296,37 @@ const FAQs = () => {
                         <span>{category.name}</span>                        <div className="flex items-center gap-2">
                           <Badge variant="outline">
                             {faqCategories.find(c => c.id === category._id)?.count || 0}
-                          </Badge>              <Button
-                variant="ghost"
-                size="icon"
-                className="cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditingCategory(category);
-                  setEditCategoryForm({
-                    name: category.name,
-                    description: category.description || ''
-                  });
-                  setIsEditCategoryModalOpen(true);
-                }}
-              >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteCategory(category._id);
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
+                          </Badge>
+                          {hasEditPermission() && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingCategory(category);
+                                  setEditCategoryForm({
+                                    name: category.name,
+                                    description: category.description || ''
+                                  });
+                                  setIsEditCategoryModalOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCategory(category._id);
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -341,35 +355,38 @@ const FAQs = () => {
                           <AccordionTrigger className="text-left flex-1">
                             {faq.question}
                           </AccordionTrigger>
-                          <div className="flex gap-2 mr-4">                              <Button
-                              variant="ghost"
-                              size="icon"
-                              className="cursor-pointer"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingFaq(faq);
-                                setFormData({
-                                  question: faq.question,
-                                  answer: faq.answer,
-                                  categoryId: faq.categoryId
-                                });
-                                setIsEditModalOpen(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="cursor-pointer"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteFaq(faq._id);
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4 text-red-500" />
-                            </Button>
-                          </div>
+                          {hasEditPermission() && (
+                            <div className="flex gap-2 mr-4">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingFaq(faq);
+                                  setFormData({
+                                    question: faq.question,
+                                    answer: faq.answer,
+                                    categoryId: faq.categoryId
+                                  });
+                                  setIsEditModalOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteFaq(faq._id);
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </div>
+                          )}
                         </div>
                         <AccordionContent className="text-muted-foreground">
                           {faq.answer}

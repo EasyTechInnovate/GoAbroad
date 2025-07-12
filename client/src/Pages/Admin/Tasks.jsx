@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { servicesAxiosInstance } from '@/services/config';
+import { getUser } from '@/lib/auth';
 import {
   getTasks,
   createTask,
@@ -29,7 +30,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
+  SelectTrigger,      
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Loader2, X, Briefcase } from 'lucide-react';
@@ -38,6 +39,18 @@ import { Plus, Loader2, X, Briefcase } from 'lucide-react';
 const Tasks = () => {
   const [mainTaskCategories, setMainTaskCategories] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
+  const [selectedMainTask, setSelectedMainTask] = useState('');
+  
+  // Permission check functions
+  const hasAdminPermission = () => {
+    const currentUser = getUser();
+    return currentUser && currentUser.role === 'ADMIN';
+  };
+  
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+  };
   
   const subtaskTemplates = {
     'Application Documents': [
@@ -87,7 +100,6 @@ const Tasks = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [selectedSubtasks, setSelectedSubtasks] = useState([]);
   const [newSubtask, setNewSubtask] = useState('');
-  const [selectedMainTask, setSelectedMainTask] = useState('');
   
 
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -151,6 +163,11 @@ const Tasks = () => {
   };
 
   const fetchTeamMembers = async () => {
+    // Only fetch team members if user is an admin
+    if (!hasAdminPermission()) {
+      return;
+    }
+    
     try {
       setLoading(prev => ({ ...prev, members: true }));
       const response = await servicesAxiosInstance.get('/admin/members');
@@ -218,14 +235,8 @@ const Tasks = () => {
       setLoading(prev => ({ ...prev, categories: true }));
       const response = await getCategories();
       if (response.success) {
-        // The categories are nested in data.categories as per API response
         const categories = response.data.categories || [];
-        
-        // Store category names for dropdown selection
-        setMainTaskCategories(categories.map(category => category.name));
-        
-        // Store the full category data for edit/delete operations
-        setCategoryData(categories);
+        setMainTaskCategories(categories);
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -263,6 +274,12 @@ const Tasks = () => {
   const handleDeleteTask = async (taskId) => {
     if (!taskId) return;
 
+    // Check if user has permission to delete tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete tasks");
+      return;
+    }
+
     try {
       setLoading(prev => ({ ...prev, delete: true }));
       await deleteTask(taskId);
@@ -285,7 +302,6 @@ const Tasks = () => {
     if (subtask && !selectedSubtasks.includes(subtask.id)) {
       setSelectedSubtasks([...selectedSubtasks, subtask.id]);
       
-      // If we're in edit mode, add the subtask to the task immediately
       if (isEditTaskOpen && selectedTask) {
         try {
           setLoading(prev => ({ ...prev, subtasks: true }));
@@ -296,7 +312,6 @@ const Tasks = () => {
         } catch (error) {
           console.error('Error adding subtask:', error);
           toast.error('Failed to add subtask');
-          // Revert the UI change if the API call fails
           setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtask.id));
         } finally {
           setLoading(prev => ({ ...prev, subtasks: false }));
@@ -344,6 +359,12 @@ const Tasks = () => {
     setSelectedMainTask('');
   };
   const handleOpenEditTask = (task) => {
+    // Check if user has permission to edit tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to edit tasks");
+      return;
+    }
+    
     setSelectedTask(task);
     setNewTask({
       title: task.title,
@@ -361,8 +382,8 @@ const Tasks = () => {
     // Set current subtasks
     setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); 
     
-    // Set main task category
-    setSelectedMainTask(task.mainTask);
+    // Set main task category - use the category ID directly
+    setSelectedMainTask(task.category || '');
     
     setIsEditTaskOpen(true);
   };
@@ -371,6 +392,12 @@ const Tasks = () => {
   const handleSaveStudentAssignment = async () => {
     if (!selectedTask || selectedStudents.length === 0) {
       toast.error('Please select students to assign');
+      return;
+    }
+
+    // Check if user has permission to assign students
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to assign students to tasks");
       return;
     }
 
@@ -409,30 +436,26 @@ const Tasks = () => {
       return;
     }
 
+    // Check if user has permission to create tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to create tasks");
+      return;
+    }
+
     try {
       setLoading(prev => ({ ...prev, add: true }));
-      // First create the task with basic info
+      // Create the task with all required data
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
         logo: newTask.logo || '',
-        mainTask: selectedMainTask
+        category: selectedMainTask, // This is already the category ID
+        studentIds: selectedStudents,
+        subtaskIds: selectedSubtasks
       };
 
-      const taskResponse = await createTask(taskData);
-      const taskId = taskResponse.data.task._id;
-      
-      // Then add students if any are selected
-      if (selectedStudents.length > 0) {
-        await addStudentsToTask(taskId, { studentIds: selectedStudents });
-      }
-      
-      // Then add subtasks if any are selected
-      if (selectedSubtasks.length > 0) {
-        await addSubtasksToTask(taskId, { subtaskIds: selectedSubtasks });
-      }
-      
+      await createTask(taskData);
       await fetchTasks();
       resetTaskForm();
       setIsAddTaskOpen(false);
@@ -450,6 +473,12 @@ const Tasks = () => {
       return;
     }
 
+    // Check if user has permission to edit tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to edit tasks");
+      return;
+    }
+
     try {
       setLoading(prev => ({ ...prev, edit: true }));        
       const taskData = {
@@ -457,7 +486,9 @@ const Tasks = () => {
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
         logo: newTask.logo || '',
-        mainTask: selectedMainTask
+        category: selectedMainTask, // Send the selected category ID
+        studentIds: selectedStudents,
+        subtaskIds: selectedSubtasks
       };
 
       await updateTask(selectedTask._id, taskData);
@@ -503,6 +534,11 @@ const Tasks = () => {
 
   // Function to update a subtask assignment status
   const handleUpdateSubtaskStatus = async (assignmentId, status, isLocked = false) => {
+    // Check if user has permission to update subtask status
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update subtask status");
+      return;
+    }
 
     const currentSubtask = studentSubtasks.find(st => st.assignmentId === assignmentId);
     const isStatusChange = currentSubtask && currentSubtask.status !== status;
@@ -541,6 +577,12 @@ const Tasks = () => {
 
   // Functions for category management
   const handleOpenCategoryManage = (category = null) => {
+    // Check if user has permission to manage categories
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to manage categories");
+      return;
+    }
+    
     if (category) {
       setCategoryToEdit(category);
       setNewCategoryData({ name: category.name, description: category.description || '' });
@@ -554,6 +596,12 @@ const Tasks = () => {
   const handleSaveCategory = async () => {
     if (!newCategoryData.name.trim()) {
       toast.error('Category name is required');
+      return;
+    }
+
+    // Check if user has permission to manage categories
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to create or edit categories");
       return;
     }
 
@@ -584,6 +632,12 @@ const Tasks = () => {
   const handleDeleteCategory = async (categoryId) => {
     if (!categoryId) return;
     
+    // Check if user has permission to delete categories
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete categories");
+      return;
+    }
+    
     try {
       setLoading(prev => ({ ...prev, categories: true }));
       await deleteCategory(categoryId);
@@ -606,7 +660,8 @@ const Tasks = () => {
           <Button 
             variant="outline" 
             onClick={() => handleOpenCategoryManage()}
-            disabled={loading.categories}
+            disabled={loading.categories || !hasEditPermission()}
+            title={hasEditPermission() ? "Manage task categories" : "You don't have permission to manage categories"}
           >
             {loading.categories ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -615,7 +670,11 @@ const Tasks = () => {
             )}
             Manage Categories
           </Button>
-          <Button onClick={() => setIsAddTaskOpen(true)} disabled={loading.add}>
+          <Button 
+            onClick={() => setIsAddTaskOpen(true)} 
+            disabled={loading.add || !hasEditPermission()}
+            title={hasEditPermission() ? "Add a new task" : "You don't have permission to add tasks"}
+          >
             <Plus className="mr-2 h-4 w-4" /> Add Task
           </Button>
         </div>
@@ -692,34 +751,50 @@ const Tasks = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedTask(task);
-                          // Make sure to load the current students assigned to this task
-                          setSelectedStudents(task.students?.map(s => s._id) || []);
-                          setIsAssignStudentOpen(true);
-                        }}
-                      >
-                        Assign
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleOpenEditTask(task)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => handleDeleteTask(task._id)}
-                        disabled={loading.delete}
-                      >
-                        Delete
-                      </Button>
+                      {hasEditPermission() && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTask(task);
+                              // Make sure to load the current students assigned to this task
+                              setSelectedStudents(task.students?.map(s => s._id) || []);
+                              setIsAssignStudentOpen(true);
+                            }}
+                          >
+                            Assign
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleOpenEditTask(task)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => handleDeleteTask(task._id)}
+                            disabled={loading.delete}
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      )}
+                      {/* {!hasEditPermission() && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setIsTaskDetailOpen(true);
+                          }}
+                        >
+                          View
+                        </Button>
+                      )} */}
                     </div>
                   </td>
                 </tr>
@@ -744,14 +819,17 @@ const Tasks = () => {
               <label htmlFor="mainTask" className="text-sm font-medium">
                 Main Task Category
               </label>
-              <Select value={selectedMainTask} onValueChange={handleMainTaskChange}>
+              <Select
+                value={selectedMainTask}
+                onValueChange={handleMainTaskChange}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select main task category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mainTaskCategories.map((category, idx) => (
-                    <SelectItem key={idx} value={category}>
-                      {category}
+                  {mainTaskCategories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -1034,14 +1112,17 @@ const Tasks = () => {
               <label htmlFor="mainTask" className="text-sm font-medium">
                 Main Task Category
               </label>
-              <Select value={selectedMainTask} onValueChange={handleMainTaskChange}>
+              <Select
+                value={selectedMainTask}
+                onValueChange={handleMainTaskChange}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select main task category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mainTaskCategories.map((category, idx) => (
-                    <SelectItem key={idx} value={category}>
-                      {category}
+                  {mainTaskCategories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

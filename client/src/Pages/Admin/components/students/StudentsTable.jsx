@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { ChevronLeft, ChevronRight, Search, Trash2 } from 'lucide-react';
 import { getStudents, deleteStudent } from '@/services/studentService';
+import { getUser } from '@/lib/auth';
 
 export function StudentsTable({ initialFilters = {} }) {
   const navigate = useNavigate();
@@ -37,7 +38,8 @@ export function StudentsTable({ initialFilters = {} }) {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');  const [filters, setFilters] = useState({
+  const [searchTerm, setSearchTerm] = useState('');  
+  const [filters, setFilters] = useState({
     status: 'ALL',
     isVerified: initialFilters.isVerified || '',
     sortBy: 'createdAt',
@@ -45,6 +47,13 @@ export function StudentsTable({ initialFilters = {} }) {
   });
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  
+  // Function to check if the current user has edit permissions
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    // Return true if user is ADMIN or EDITOR, false for VIEWER
+    return currentUser && currentUser.role !== 'VIEWER';
+  };
 
   const fetchStudents = useCallback(async () => {
     try {
@@ -77,6 +86,13 @@ export function StudentsTable({ initialFilters = {} }) {
 
   const handleDelete = async () => {
     if (!selectedStudent) return;
+    
+    // Check permissions before deleting
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete students");
+      setShowDeleteDialog(false);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -181,17 +197,21 @@ export function StudentsTable({ initialFilters = {} }) {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                      onClick={() => {
-                        setSelectedStudent(student);
-                        setShowDeleteDialog(true);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    {hasEditPermission() && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedStudent(student);
+                          setShowDeleteDialog(true);
+                        }}
+                        title="Delete student"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
@@ -240,7 +260,7 @@ export function StudentsTable({ initialFilters = {} }) {
             <Button
               variant="destructive"
               onClick={handleDelete}
-              disabled={loading}
+              disabled={loading || !hasEditPermission()}
             >
               Delete
             </Button>
