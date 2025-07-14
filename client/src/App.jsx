@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Home from './Pages/LandingPage';
 import Dashboard from './Pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import './App.css'
 import StudentDetails from './Pages/Admin/StudentDetails';
 import Tasks from './Pages/Admin/Tasks';
 import Subtasks from './Pages/Admin/Subtasks';
@@ -36,34 +36,36 @@ import VerificationPending from './Pages/Auth/VerificationPending';
 import PaymentFailed from './Pages/Auth/PaymentFailed';
 import Questionnaire from './Pages/Questionnaire';
 import QuestionnaireList from './Pages/Questionnaire/List';
+import HomePage from './Pages/Static/HomePage';
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+      <Route path="/server-health" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/payment-required" element={<PaymentRequired />} />
       <Route path="/auth/verification-pending" element={<VerificationPending />} />
       <Route path="/auth/payment-failed" element={<PaymentFailed />} />
-      
+
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/dashboard/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/dashboard/timeline" element={<ProtectedRoute><StudentTasks /></ProtectedRoute>} />
       <Route path="/dashboard/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
       <Route path="/dashboard/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
-      <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />      
+      <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />
       <Route path="/dashboard/checklist" element={<ProtectedRoute><Checklist /></ProtectedRoute>} />
       <Route path="/questionnaires/:taskId/:subtaskId" element={<ProtectedRoute><QuestionnaireList /></ProtectedRoute>} />
       <Route path="/questionnaire/:taskId/:subtaskId/:questionnaireId" element={<ProtectedRoute><Questionnaire /></ProtectedRoute>} />
       <Route path="/dashboard/documents" element={<ProtectedRoute><DocManager /></ProtectedRoute>} />
-      <Route path="/dashboard/universities" element={<ProtectedRoute><UniversityManagement /></ProtectedRoute>} />      
+      <Route path="/dashboard/universities" element={<ProtectedRoute><UniversityManagement /></ProtectedRoute>} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/*" element={<PrivateAdminRoute><Index /></PrivateAdminRoute>}>
         <Route index element={<AdminDashboard />} />
         <Route path="students" element={<Students />} />
-        <Route path="students/:id" element={<StudentDetails />} />          
+        <Route path="students/:id" element={<StudentDetails />} />
         <Route path="tasks" element={<Tasks />} />
         <Route path="tasks/student/:studentId" element={<Tasks />} />
         <Route path="subtasks" element={<Subtasks />} />
@@ -76,7 +78,7 @@ const App = () => {
         <Route path="all-activities" element={<AllActivities />} />
         <Route path="settings" element={<Settings />} />
       </Route>
-      
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
