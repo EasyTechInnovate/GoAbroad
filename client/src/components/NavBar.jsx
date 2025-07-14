@@ -1,4 +1,3 @@
-'use client'
 import { useState, useEffect } from 'react';
 import { Menu, MonitorCheck, MonitorX, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
