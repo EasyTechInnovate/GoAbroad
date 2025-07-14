@@ -1,23 +1,97 @@
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { loginUser } from '@/services/api.services';
+import { setAuth, isAuthenticated, getUser, clearAuth } from '@/lib/auth';
 
 const SignIn = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  useEffect(() => {  
+    clearAuth();
+
+    if (isAuthenticated()) {
+      const user = getUser();
+      if (!user.isFeePaid || !user.isVerified) {
+        navigate('/auth/payment-required');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      window.history.replaceState({}, document.title);
+    }
+    
+    const tokenExpired = searchParams.get('expired');
+    if (tokenExpired === 'true') {
+      setApiError('Your session has expired. Please log in again.');
+    }
+  }, [location.state, searchParams]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle sign in logic here
-    console.log('Sign in attempt:', { email, password, rememberMe });
+    
+    setApiError('');
+    
+    try {
+      setIsLoading(true);
+      
+      const userData = {
+        email: email,
+        password: password
+      };
+      
+      const response = await loginUser(userData);
+      
+      if (response.success) {
+        setAuth({
+          accessToken: response.data.accessToken,
+          user: response.data.user
+        });
+        
+        const userRole = response.data.user.role;
+        
+        if (userRole === 'ADMIN' || userRole === 'EDITOR' || userRole === 'VIEWER') {
+          navigate('/admin/dashboard');
+        } else {
+          if (!response.data.user.isFeePaid || !response.data.user.isVerified) {
+            navigate('/auth/payment-required');
+          } else {
+            const redirectPath = location.state?.from || '/dashboard';
+            navigate(redirectPath);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      
+      if (error.response && error.response.data) {
+        setApiError(error.response.data.message || 'Invalid email or password. Please try again.');
+      } else {
+        setApiError('Network error. Please check your connection and try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,6 +157,18 @@ const SignIn = () => {
             </CardHeader>
 
             <CardContent className="space-y-6">
+              {successMessage && (
+                <div className="p-3 bg-green-50 border border-green-200 text-green-600 rounded-md text-sm">
+                  {successMessage}
+                </div>
+              )}
+
+              {apiError && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+                  {apiError}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Email Field */}
                 <div className="space-y-2">
@@ -96,7 +182,10 @@ const SignIn = () => {
                       type="email"
                       placeholder="Enter your email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (apiError) setApiError('');
+                      }}
                       className="pl-10 h-12 border-gray-200 focus:border-primary"
                       required
                     />
@@ -115,7 +204,10 @@ const SignIn = () => {
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (apiError) setApiError('');
+                      }}
                       className="pl-10 pr-10 h-12 border-gray-200 focus:border-primary"
                       required
                     />
@@ -150,8 +242,9 @@ const SignIn = () => {
                 <Button
                   type="submit"
                   className="w-full h-12 bg-primary hover:bg-primary-600 text-white font-semibold"
+                  disabled={isLoading}
                 >
-                  Sign In
+                  {isLoading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
 

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -77,7 +76,7 @@ const Hero = () => {
               <Link to="/signin">
                 <Button 
                   size="lg" 
-                  className="bg-primary-1-1 hover:bg-primary-1-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
+                  className="bg-primary-1 hover:bg-primary-1-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

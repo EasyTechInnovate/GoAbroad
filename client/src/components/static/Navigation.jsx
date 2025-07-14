@@ -1,11 +1,23 @@
 
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { isAuthenticated, subscribeToAuth } from '@/lib/auth';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated());
+
+    const unsubscribe = subscribeToAuth((authenticated) => {
+      setIsLoggedIn(authenticated);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const navItems = [
     { name: 'University Finder', href: '/college-finder' },
@@ -13,6 +25,9 @@ const Navigation = () => {
     { name: 'Community', href: '/community' },
     { name: 'About', href: '/about' }
   ];
+
+  const buttonText = isLoggedIn ? 'Dashboard' : 'Get Started';
+  const buttonPath = isLoggedIn ? '/dashboard' : '/signin';
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
@@ -50,9 +65,9 @@ const Navigation = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Link to="/signin">
+            <Link to={buttonPath}>
               <Button className="bg-primary hover:bg-primary-700 text-white">
-                Get Started
+                {buttonText}
               </Button>
             </Link>
           </div>
@@ -94,9 +109,9 @@ const Navigation = () => {
                 )
               ))}
               <div className="pt-2">
-                <Link to="/signin">
+                <Link to={buttonPath}>
                   <Button className="w-full bg-primary hover:bg-primary-700 text-white">
-                    Get Started
+                    {buttonText}
                   </Button>
                 </Link>
               </div>

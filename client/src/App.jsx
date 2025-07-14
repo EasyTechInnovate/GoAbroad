@@ -38,7 +38,6 @@ import Questionnaire from './Pages/Questionnaire';
 import QuestionnaireList from './Pages/Questionnaire/List';
 import HomePage from './Pages/Static/HomePage';
 
-// import SignIn from './Pages/Auth/SignIn';
 import Community from './Pages/Static/Community';
 import About from './Pages/Static/About';
 import PremiumAccess from './Pages/Static/PremiumAccess';
@@ -53,6 +52,7 @@ import CollegeFinderResults from './Pages/Static/CollegeFinder/CollegeFinderResu
 import OrderConfirmation from './Pages/Static/OrderConfirmation';
 import Checkout from './Pages/Static/Checkout';
 import TestOrderConfirmation from './Pages/Static/components/TestOrderConfirmation';
+import SignIn from './Pages/Static/SignIn';
 
 const App = () => {
   return (
@@ -60,7 +60,7 @@ const App = () => {
       <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
       <Route path="/server-health" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/signup" element={<SignUp />} />
-      {/* <Route path="/signin" element={<SignIn />} /> */}
+      <Route path="/signin" element={<SignIn />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/payment-required" element={<PaymentRequired />} />
