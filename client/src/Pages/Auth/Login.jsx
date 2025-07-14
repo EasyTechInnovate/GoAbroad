@@ -78,7 +78,7 @@ const Login = () => {
         const userRole = response.data.user.role;
         
         if (userRole === 'ADMIN' || userRole === 'EDITOR' || userRole === 'VIEWER') {
-          navigate('/admin');
+          navigate('/admin/dashboard');
         } else {
 
           if (!response.data.user.isFeePaid || !response.data.user.isVerified) {

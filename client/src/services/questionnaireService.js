@@ -64,3 +64,67 @@ export const submitQuestionnaireResponses = async (data) => {
     throw error;
   }
 };
+
+
+export const getTaskSubtaskQuestionDetails = async (studentId) => {
+  try {
+    const response = await apiService.get(`/admin/students/${studentId}/task-subtask-question-details`);
+    
+
+    if (response && response.data) {
+      const data = response.data;
+      if (data.student && data.student.tasks) {
+
+        const directQuestionnaireMap = {};
+        
+        data.student.tasks.forEach(taskData => {
+          const subtasks = taskData.subtasks || [];
+          
+          subtasks.forEach(subtask => {
+            const questionnaires = subtask.questionnaires || [];
+            
+
+            if (questionnaires.length > 0) {
+
+              if (subtask._id) {
+                directQuestionnaireMap[subtask._id] = questionnaires;
+              }
+              
+
+              if (subtask.assignmentId) {
+                directQuestionnaireMap[subtask.assignmentId] = questionnaires;
+              }
+              
+
+              if (typeof subtask.subtaskId === 'object' && subtask.subtaskId?._id) {
+                directQuestionnaireMap[subtask.subtaskId._id] = questionnaires;
+              }
+              
+
+              if (typeof subtask.subtaskId === 'string') {
+                directQuestionnaireMap[subtask.subtaskId] = questionnaires;
+              }
+            }
+          });
+        });
+        
+
+        return {
+          ...response.data,
+          success: true,
+          questionnaireMap: directQuestionnaireMap
+        };
+      } else {
+        console.warn('API response is missing expected structure (student.tasks)');
+      }
+    }
+    
+    return {
+      ...response.data,
+      success: true
+    };
+  } catch (error) {
+    console.error('Error fetching task-subtask-question details:', error);
+    throw error;
+  }
+};

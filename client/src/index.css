@@ -188,3 +188,58 @@ html {
 .dark .rdp-day_selected:hover {
   background-color: var(--rdp-accent-color-dark);
 }
+
+/* Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+.spinner-sm {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Status Pills */
+.status-pill {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.status-pending {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.status-active {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
+.status-complete {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.status-rejected {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+}

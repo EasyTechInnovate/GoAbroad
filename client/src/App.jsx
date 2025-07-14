@@ -35,6 +35,7 @@ import Students from './Pages/Admin/components/students/Students';
 import VerificationPending from './Pages/Auth/VerificationPending';
 import PaymentFailed from './Pages/Auth/PaymentFailed';
 import Questionnaire from './Pages/Questionnaire';
+import QuestionnaireList from './Pages/Questionnaire/List';
 
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
       <Route path="/dashboard/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
       <Route path="/dashboard/edu-loan" element={<ProtectedRoute><EduLoan /></ProtectedRoute>} />      
       <Route path="/dashboard/checklist" element={<ProtectedRoute><Checklist /></ProtectedRoute>} />
+      <Route path="/questionnaires/:taskId/:subtaskId" element={<ProtectedRoute><QuestionnaireList /></ProtectedRoute>} />
       <Route path="/questionnaire/:taskId/:subtaskId/:questionnaireId" element={<ProtectedRoute><Questionnaire /></ProtectedRoute>} />
       <Route path="/dashboard/documents" element={<ProtectedRoute><DocManager /></ProtectedRoute>} />
       <Route path="/dashboard/universities" element={<ProtectedRoute><UniversityManagement /></ProtectedRoute>} />      
@@ -63,6 +65,7 @@ const App = () => {
         <Route path="students" element={<Students />} />
         <Route path="students/:id" element={<StudentDetails />} />          
         <Route path="tasks" element={<Tasks />} />
+        <Route path="tasks/student/:studentId" element={<Tasks />} />
         <Route path="subtasks" element={<Subtasks />} />
         <Route path="applications" element={<Applications />} />
         <Route path="universities" element={<Universities />} />

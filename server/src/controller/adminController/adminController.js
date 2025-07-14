@@ -11,6 +11,8 @@ import SubtaskQuestionnaireAssignment from "../../model/subtaskQuestionnaireAssi
 import Response from "../../model/responseModel.js"
 import mongoose from 'mongoose';
 import StudentActivity from '../../model/studentActivitySchema.js';
+import Application from '../../model/applicationModel.js';
+import StudentTaskAssignment from '../../model/studentTaskAssignmentModel.js';
 export default {
     // All members: Login with cookie
     login: async (req, res, next) => {
@@ -444,6 +446,45 @@ export default {
                     createdAt: activity.createdAt,
                     updatedAt: activity.updatedAt
                 }))
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    // Get admin dashboard stats
+    getAdminDashboardStats: async (req, res, next) => {
+        try {
+
+            const totalStudents = await Student.countDocuments();
+
+            const totalActiveApplications = await Application.countDocuments({
+                status: { $nin: ["APPROVED", "REJECTED"] }
+            });
+
+            const taskStats = await StudentTaskAssignment.aggregate([
+                {
+                    $group: {
+                        _id: '$status',
+                        count: { $sum: 1 }
+                    }
+                }
+            ]);
+
+            const statsMap = taskStats.reduce((acc, curr) => {
+                acc[curr._id] = curr.count;
+                return acc;
+            }, {});
+            const totalPendingTasks = (statsMap['PENDING'] || 0) + (statsMap['IN_PROGRESS'] || 0);
+            const totalCompletedTasks = statsMap['COMPLETED'] || 0;
+
+            const responseData = {
+                totalStudents: totalStudents,
+                totalActiveApplications: totalActiveApplications,
+                totalPendingTasks: totalPendingTasks,
+                totalCompletedTasks: totalCompletedTasks
             };
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);

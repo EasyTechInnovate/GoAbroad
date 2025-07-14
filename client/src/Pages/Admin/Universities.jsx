@@ -24,6 +24,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/sonner';
+import { getUser } from '@/lib/auth';
 import { getUniversities, createUniversity, updateUniversity, deleteUniversity } from '@/services/universityService';
 import { uploadFile } from '@/services/uploadService';
 
@@ -31,6 +32,12 @@ const Universities = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(false);
+  
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+  };
+  
   const [isUploading, setIsUploading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -140,6 +147,12 @@ const Universities = () => {
   }, [fetchUniversities]);
 
   const handleAddUniversity = async () => {
+    // Check if user has permission to add universities
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to add universities");
+      return;
+    }
+    
     if (currentStep === 1 && (!newUniversity.name || !newUniversity.location)) {
       toast.error('University name and location are required');
       return;
@@ -239,6 +252,12 @@ const Universities = () => {
   };
 
   const handleDeleteUniversity = async () => {
+    // Check if user has permission to delete universities
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete universities");
+      return;
+    }
+    
     try {
       setLoading(true);
       await deleteUniversity(selectedUniversity._id);
@@ -281,6 +300,12 @@ const Universities = () => {
     });
   };
   const handleUpdateUniversity = async () => {
+    // Check if user has permission to update universities
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update universities");
+      return;
+    }
+    
     try {
       setLoading(true);
 
@@ -349,6 +374,12 @@ const Universities = () => {
     }
   };
   const handleLogoUpload = async (event) => {
+    // Check if user has permission to upload files
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to upload files");
+      return;
+    }
+    
     const file = event.target.files[0];
     if (!file) return;
 
@@ -391,6 +422,12 @@ const Universities = () => {
     }
   };
   const handleBannerUpload = async (event) => {
+    // Check if user has permission to upload files
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to upload files");
+      return;
+    }
+    
     const file = event.target.files[0];
     if (!file) return;
 
@@ -453,9 +490,11 @@ const Universities = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">University Management</h1>
-          <Button onClick={() => setIsAddUniversityOpen(true)} disabled={loading}>
-            <Plus className="mr-2 h-4 w-4" /> Add University
-          </Button>
+          {hasEditPermission() && (
+            <Button onClick={() => setIsAddUniversityOpen(true)} disabled={loading}>
+              <Plus className="mr-2 h-4 w-4" /> Add University
+            </Button>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -607,9 +646,19 @@ const Universities = () => {
           </DialogHeader>
           {selectedUniversity && (
             <div className="flex-1 overflow-y-auto pr-2">
+              {selectedUniversity.banner && (
+                <div className="relative h-48 w-[calc(100%+2rem)] -ml-6 -mr-6 mb-4 -mt-4">
+                  <img 
+                    src={selectedUniversity.banner} 
+                    alt={`${selectedUniversity.name} banner`} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+                </div>
+              )}
               <div className="grid gap-4 py-4">
                 <div className="flex items-center gap-4 pb-2">
-                  <Avatar className="h-16 w-16">
+                  <Avatar className="h-16 w-16 border">
                     {selectedUniversity.logo ? (
                       <img src={selectedUniversity.logo} alt={selectedUniversity.name} className="w-full h-full object-cover" />
                     ) : (
@@ -682,18 +731,20 @@ const Universities = () => {
                   </div>
                 </div>
                 <DialogFooter className="gap-2 mt-4">
-                  <div className="mr-auto">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setIsViewDetailsOpen(false);
-                        setIsDeleteConfirmOpen(true);
-                      }}
-                    >
-                      Delete University
-                    </Button>
-                  </div>
+                  {hasEditPermission() && (
+                    <div className="mr-auto">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setIsViewDetailsOpen(false);
+                          setIsDeleteConfirmOpen(true);
+                        }}
+                      >
+                        Delete University
+                      </Button>
+                    </div>
+                  )}
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -703,15 +754,17 @@ const Universities = () => {
                   >
                     Close
                   </Button>
-                  <Button
-                    onClick={() => {
-                      setIsViewDetailsOpen(false);
-                      setSelectedUniversity(selectedUniversity);
-                      setIsEditUniversityOpen(true);
-                    }}
-                  >
-                    Edit University
-                  </Button>
+                  {hasEditPermission() && (
+                    <Button
+                      onClick={() => {
+                        setIsViewDetailsOpen(false);
+                        setSelectedUniversity(selectedUniversity);
+                        setIsEditUniversityOpen(true);
+                      }}
+                    >
+                      Edit University
+                    </Button>
+                  )}
                 </DialogFooter>
               </div>
             </div>
@@ -746,6 +799,7 @@ const Universities = () => {
                         <Input
                           id="edit-name"
                           value={selectedUniversity.name}
+                          disabled={!hasEditPermission()}
                           onChange={(e) => setSelectedUniversity(prev => ({
                             ...prev,
                             name: e.target.value
@@ -757,6 +811,7 @@ const Universities = () => {
                         <Input
                           id="edit-location"
                           value={selectedUniversity.location}
+                          disabled={!hasEditPermission()}
                           onChange={(e) => setSelectedUniversity(prev => ({
                             ...prev,
                             location: e.target.value
@@ -768,6 +823,7 @@ const Universities = () => {
                         <Input
                           id="edit-address"
                           value={selectedUniversity.address}
+                          disabled={!hasEditPermission()}
                           onChange={(e) => setSelectedUniversity(prev => ({
                             ...prev,
                             address: e.target.value
@@ -780,6 +836,7 @@ const Universities = () => {
                           id="edit-website"
                           type="url"
                           value={selectedUniversity.website_url}
+                          disabled={!hasEditPermission()}
                           onChange={(e) => setSelectedUniversity(prev => ({
                             ...prev,
                             website_url: e.target.value
@@ -795,20 +852,24 @@ const Universities = () => {
                               alt="University logo"
                               className="h-16 w-16 object-contain" />
                           )}
-                          <div className="flex-1 relative">
-                            <Input
-                              id="edit-logo"
-                              type="file"
-                              accept="image/jpeg,image/png,image/gif,image/webp"
-                              onChange={handleLogoUpload}
-                              disabled={isUploading}
-                              className={isUploading ? 'opacity-50' : ''} />
-                            {isUploading && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              </div>
-                            )}
-                          </div>
+                          {hasEditPermission() ? (
+                            <div className="flex-1 relative">
+                              <Input
+                                id="edit-logo"
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                onChange={handleLogoUpload}
+                                disabled={isUploading}
+                                className={isUploading ? 'opacity-50' : ''} />
+                              {isUploading && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Viewing mode: Upload disabled</p>
+                          )}
                         </div>
                         <p className="text-xs text-muted-foreground">Upload a logo image (JPEG, PNG, GIF, WebP; max 5MB)</p>
                       </div>
@@ -824,20 +885,24 @@ const Universities = () => {
                                 className="w-full h-full object-cover" />
                             </div>
                           )}
-                          <div className="relative">
-                            <Input
-                              id="edit-banner"
-                              type="file"
-                              accept="image/jpeg,image/png,image/gif,image/webp"
-                              onChange={handleBannerUpload}
-                              disabled={isUploading}
-                              className={isUploading ? 'opacity-50' : ''} />
-                            {isUploading && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              </div>
-                            )}
-                          </div>
+                          {hasEditPermission() ? (
+                            <div className="relative">
+                              <Input
+                                id="edit-banner"
+                                type="file"
+                                accept="image/jpeg,image/png,image/gif,image/webp"
+                                onChange={handleBannerUpload}
+                                disabled={isUploading}
+                                className={isUploading ? 'opacity-50' : ''} />
+                              {isUploading && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Viewing mode: Upload disabled</p>
+                          )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">Upload a banner image (JPEG, PNG, GIF, WebP; max 5MB)</p>
                       </div>
@@ -854,6 +919,7 @@ const Universities = () => {
                             ...prev,
                             university_type: value
                           }))}
+                          disabled={!hasEditPermission()}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select type" />
@@ -871,6 +937,7 @@ const Universities = () => {
                         <Textarea
                           id="edit-description"
                           value={selectedUniversity.description}
+                          disabled={!hasEditPermission()}
                           onChange={(e) => setSelectedUniversity(prev => ({
                             ...prev,
                             description: e.target.value
@@ -885,6 +952,7 @@ const Universities = () => {
                             ...prev,
                             university_category: value
                           }))}
+                          disabled={!hasEditPermission()}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select category" />
@@ -911,6 +979,7 @@ const Universities = () => {
                             type="number"
                             min="1"
                             value={selectedUniversity.ranking?.national || ''}
+                            disabled={!hasEditPermission()}
                             onChange={(e) => setSelectedUniversity(prev => ({
                               ...prev,
                               ranking: {
@@ -927,6 +996,7 @@ const Universities = () => {
                             type="number"
                             min="1"
                             value={selectedUniversity.ranking?.international || ''}
+                            disabled={!hasEditPermission()}
                             onChange={(e) => setSelectedUniversity(prev => ({
                               ...prev,
                               ranking: {
@@ -946,6 +1016,7 @@ const Universities = () => {
                             min="0"
                             max="100"
                             value={selectedUniversity.acceptance_rate || ''}
+                            disabled={!hasEditPermission()}
                             onChange={(e) => setSelectedUniversity(prev => ({
                               ...prev,
                               acceptance_rate: Math.min(100, Math.max(0, Number(e.target.value) || 0))
@@ -958,6 +1029,7 @@ const Universities = () => {
                             type="number"
                             min="0"
                             value={selectedUniversity.tuition_fees_per_year || ''}
+                            disabled={!hasEditPermission()}
                             onChange={(e) => setSelectedUniversity(prev => ({
                               ...prev,
                               tuition_fees_per_year: Math.max(0, Number(e.target.value) || 0)
@@ -973,6 +1045,7 @@ const Universities = () => {
                             type="number"
                             min="0"
                             value={selectedUniversity.application_fee || ''}
+                            disabled={!hasEditPermission()}
                             onChange={(e) => setSelectedUniversity(prev => ({
                               ...prev,
                               application_fee: Math.max(0, Number(e.target.value) || 0)
@@ -984,6 +1057,7 @@ const Universities = () => {
                             id="edit-deadline"
                             type="date"
                             value={selectedUniversity.application_deadline ? new Date(selectedUniversity.application_deadline).toISOString().split('T')[0] : ''}
+                            disabled={!hasEditPermission()}
                             onChange={(e) => setSelectedUniversity(prev => ({
                               ...prev,
                               application_deadline: e.target.value

@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react';
 import { servicesAxiosInstance } from '@/services/config';
+import { getUser } from '@/lib/auth';
 import {
   getTasks,
   createTask,
   updateTask,
   deleteTask,
   addStudentsToTask,
+  removeStudentFromTask,
+  addSubtasksToTask,
+  removeSubtaskFromTask,
+  updateTaskSubtaskAssignment
 } from '@/services/taskService';
-import { getSubtasks } from '@/services/subtaskService';
+import { getSubtasks, getSubtasksByTaskAndStudent } from '@/services/subtaskService';
+import { getCategories, createCategory, updateCategory, deleteCategory } from '@/services/taskCategoryService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -24,49 +30,55 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
+  SelectTrigger,      
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Loader2, X, Briefcase } from 'lucide-react';
 
 
-const mainTaskCategories = [
-  'Application Documents',
-  'Test Preparation',
-  'Financial Documentation',
-  'Visa Application',
-  'University Selection'
-];
-
-const subtaskTemplates = {
-  'Application Documents': [
-    'Draft SOP',
-    'Review with counselor',
-    'Final submission'
-  ],
-  'Test Preparation': [
-    'Mock test',
-    'Review session',
-    'Practice questions'
-  ],
-  'Financial Documentation': [
-    'Bank statements',
-    'Affidavit preparation',
-    'Source of funds'
-  ],
-  'Visa Application': [
-    'Form filling',
-    'Document preparation',
-    'Interview preparation'
-  ],
-  'University Selection': [
-    'Research universities',
-    'Shortlist options',
-    'Compare programs'
-  ]
-};
-
 const Tasks = () => {
+  const [mainTaskCategories, setMainTaskCategories] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [selectedMainTask, setSelectedMainTask] = useState('');
+  
+  // Permission check functions
+  const hasAdminPermission = () => {
+    const currentUser = getUser();
+    return currentUser && currentUser.role === 'ADMIN';
+  };
+  
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+  };
+  
+  const subtaskTemplates = {
+    'Application Documents': [
+      'Draft SOP',
+      'Review with counselor',
+      'Final submission'
+    ],
+    'Test Preparation': [
+      'Mock test',
+      'Review session',
+      'Practice questions'
+    ],
+    'Financial Documentation': [
+      'Bank statements',
+      'Affidavit preparation',
+      'Source of funds'
+    ],
+    'Visa Application': [
+      'Form filling',
+      'Document preparation',
+      'Interview preparation'
+    ],
+    'University Selection': [
+      'Research universities',
+      'Shortlist options',
+      'Compare programs'
+    ]
+  };
 
   const [loading, setLoading] = useState({
     tasks: false,
@@ -75,7 +87,8 @@ const Tasks = () => {
     delete: false,
     students: false,
     subtasks: false,
-    members: false
+    members: false,
+    categories: false
   });
 
 
@@ -87,8 +100,6 @@ const Tasks = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [selectedSubtasks, setSelectedSubtasks] = useState([]);
   const [newSubtask, setNewSubtask] = useState('');
-  const [selectedMainTask, setSelectedMainTask] = useState('');
-  const [newMainTask, setNewMainTask] = useState('');
   
 
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -105,14 +116,20 @@ const Tasks = () => {
     assignee: ''
   });
 
+  // State for task details dialog
+  const [isTaskDetailOpen, setIsTaskDetailOpen] = useState(false);
+  const [selectedStudentForTask, setSelectedStudentForTask] = useState(null);
+  const [studentSubtasks, setStudentSubtasks] = useState([]);
+
+  // State for category management dialog
+  const [isCategoryManageOpen, setIsCategoryManageOpen] = useState(false);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [newCategoryData, setNewCategoryData] = useState({ name: '', description: '' });
+
 
   const validateTaskData = (data) => {
     if (!data.title?.trim()) {
       toast.error('Task title is required');
-      return false;
-    }
-    if (selectedMainTask === 'create_new' && !newMainTask.trim()) {
-      toast.error('Please enter a new task category name');
       return false;
     }
     return true;
@@ -121,9 +138,6 @@ const Tasks = () => {
 
   const handleMainTaskChange = (value) => {
     setSelectedMainTask(value);
-    if (value === 'create_new') {
-      setNewMainTask('');
-    }
   };
 
   const fetchTasks = async () => {
@@ -149,6 +163,11 @@ const Tasks = () => {
   };
 
   const fetchTeamMembers = async () => {
+    // Only fetch team members if user is an admin
+    if (!hasAdminPermission()) {
+      return;
+    }
+    
     try {
       setLoading(prev => ({ ...prev, members: true }));
       const response = await servicesAxiosInstance.get('/admin/members');
@@ -211,6 +230,23 @@ const Tasks = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      setLoading(prev => ({ ...prev, categories: true }));
+      const response = await getCategories();
+      if (response.success) {
+        const categories = response.data.categories || [];
+        setMainTaskCategories(categories);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      toast.error('Failed to fetch categories');
+    } finally {
+      setLoading(prev => ({ ...prev, categories: false }));
+    }
+  };
+
+
   useEffect(() => {
     let isMounted = true;
 
@@ -221,6 +257,7 @@ const Tasks = () => {
         await fetchSubtasks();
         await fetchTasks();
         await fetchStudents('');
+        await fetchCategories();
       } catch (error) {
         console.error('Error fetching initial data:', error);
       }
@@ -236,6 +273,12 @@ const Tasks = () => {
 
   const handleDeleteTask = async (taskId) => {
     if (!taskId) return;
+
+    // Check if user has permission to delete tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete tasks");
+      return;
+    }
 
     try {
       setLoading(prev => ({ ...prev, delete: true }));
@@ -253,19 +296,51 @@ const Tasks = () => {
 
   
 
-  const handleSubtaskSelection = (subtaskId) => {
-
+  const handleSubtaskSelection = async (subtaskId) => {
     const subtask = availableSubtasks.find(s => s.id === subtaskId);
 
     if (subtask && !selectedSubtasks.includes(subtask.id)) {
       setSelectedSubtasks([...selectedSubtasks, subtask.id]);
+      
+      if (isEditTaskOpen && selectedTask) {
+        try {
+          setLoading(prev => ({ ...prev, subtasks: true }));
+          await addSubtasksToTask(selectedTask._id, {
+            subtaskIds: [subtask.id]
+          });
+          toast.success(`Added subtask "${subtask.title}" to task`);
+        } catch (error) {
+          console.error('Error adding subtask:', error);
+          toast.error('Failed to add subtask');
+          setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtask.id));
+        } finally {
+          setLoading(prev => ({ ...prev, subtasks: false }));
+        }
+      }
     }
   };
 
 
-  const handleRemoveSubtask = (subtaskId) => {
-
+  const handleRemoveSubtask = async (subtaskId) => {
     setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtaskId));
+    
+    // If we're in edit mode, remove the subtask from the task immediately
+    if (isEditTaskOpen && selectedTask) {
+      try {
+        setLoading(prev => ({ ...prev, subtasks: true }));
+        await removeSubtaskFromTask(selectedTask._id, {
+          subtaskIds: [subtaskId]
+        });
+        toast.success('Removed subtask from task');
+      } catch (error) {
+        console.error('Error removing subtask:', error);
+        toast.error('Failed to remove subtask');
+        // Revert the UI change if the API call fails
+        setSelectedSubtasks([...selectedSubtasks, subtaskId]);
+      } finally {
+        setLoading(prev => ({ ...prev, subtasks: false }));
+      }
+    }
   };
 
   const resetTaskForm = () => {
@@ -282,9 +357,14 @@ const Tasks = () => {
     setSelectedSubtasks([]);
     setNewSubtask('');
     setSelectedMainTask('');
-    setNewMainTask('');
   };
   const handleOpenEditTask = (task) => {
+    // Check if user has permission to edit tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to edit tasks");
+      return;
+    }
+    
     setSelectedTask(task);
     setNewTask({
       title: task.title,
@@ -296,9 +376,15 @@ const Tasks = () => {
       assignee: task.assignee || ''
     });
 
+    // Set current students
     setSelectedStudents(task.students?.map(s => s._id) || []);
-    setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); // Keep track of subtask IDs
-    setSelectedMainTask(task.mainTask);
+    
+    // Set current subtasks
+    setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); 
+    
+    // Set main task category - use the category ID directly
+    setSelectedMainTask(task.category || '');
+    
     setIsEditTaskOpen(true);
   };
 
@@ -309,11 +395,32 @@ const Tasks = () => {
       return;
     }
 
+    // Check if user has permission to assign students
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to assign students to tasks");
+      return;
+    }
+
     try {
       setLoading(prev => ({ ...prev, students: true }));
-      await addStudentsToTask(selectedTask._id, {
-        studentIds: selectedStudents
-      });
+      
+      // Get current students assigned to this task
+      const currentStudentIds = selectedTask.students?.map(s => s._id) || [];
+      
+      // Add newly selected students
+      const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
+      if (studentsToAdd.length > 0) {
+        await addStudentsToTask(selectedTask._id, {
+          studentIds: studentsToAdd
+        });
+      }
+      
+      // Remove deselected students
+      const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
+      for (const studentId of studentsToRemove) {
+        await removeStudentFromTask(selectedTask._id, { studentId });
+      }
+      
       await fetchTasks();
       setIsAssignStudentOpen(false);
       toast.success('Students assigned successfully!');
@@ -329,32 +436,46 @@ const Tasks = () => {
       return;
     }
 
-      try {
-        setLoading(prev => ({ ...prev, add: true }));
-        const taskData = {
-          title: newTask.title.trim(),
-          description: newTask.description?.trim() || '',
-          priority: newTask.priority.toUpperCase(),
-          logo: newTask.logo || '',
-          studentIds: selectedStudents,
-          subtaskIds: selectedSubtasks
-        };
+    // Check if user has permission to create tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to create tasks");
+      return;
+    }
 
-        await createTask(taskData);
-        await fetchTasks();
-        resetTaskForm();
-        setIsAddTaskOpen(false);
-        toast.success('Task created successfully!');
-      } catch (error) {
-        console.error('Error adding task:', error);
-        toast.error(error?.response?.data?.message || 'Failed to create task');
-      } finally {
-        setLoading(prev => ({ ...prev, add: false }));
-      }
-    };
+    try {
+      setLoading(prev => ({ ...prev, add: true }));
+      // Create the task with all required data
+      const taskData = {
+        title: newTask.title.trim(),
+        description: newTask.description?.trim() || '',
+        priority: newTask.priority.toUpperCase(),
+        logo: newTask.logo || '',
+        category: selectedMainTask, // This is already the category ID
+        studentIds: selectedStudents,
+        subtaskIds: selectedSubtasks
+      };
+
+      await createTask(taskData);
+      await fetchTasks();
+      resetTaskForm();
+      setIsAddTaskOpen(false);
+      toast.success('Task created successfully!');
+    } catch (error) {
+      console.error('Error adding task:', error);
+      toast.error(error?.response?.data?.message || 'Failed to create task');
+    } finally {
+      setLoading(prev => ({ ...prev, add: false }));
+    }
+  };
 
   const handleEditTask = async () => {
     if (!selectedTask || !validateTaskData(newTask)) {
+      return;
+    }
+
+    // Check if user has permission to edit tasks
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to edit tasks");
       return;
     }
 
@@ -365,7 +486,9 @@ const Tasks = () => {
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
         logo: newTask.logo || '',
-        mainTask: selectedMainTask === 'create_new' ? newMainTask : selectedMainTask
+        category: selectedMainTask, // Send the selected category ID
+        studentIds: selectedStudents,
+        subtaskIds: selectedSubtasks
       };
 
       await updateTask(selectedTask._id, taskData);
@@ -380,13 +503,181 @@ const Tasks = () => {
     }
   };
 
+  // Function to fetch subtasks for a specific student and task
+  const fetchStudentTaskDetails = async (taskId, studentId) => {
+    if (!taskId || !studentId) return;
+    
+    try {
+      setLoading(prev => ({ ...prev, subtasks: true }));
+      const response = await getSubtasksByTaskAndStudent(taskId, studentId);
+      if (response?.success) {
+        setStudentSubtasks(response.data.subtasks || []);
+      }
+    } catch (error) {
+      console.error('Error fetching student task details:', error);
+      toast.error('Failed to fetch task details');
+    } finally {
+      setLoading(prev => ({ ...prev, subtasks: false }));
+    }
+  };
+
+  // Function to open task details for a specific student
+  const handleOpenTaskDetails = (task, studentId) => {
+    const student = students.find(s => s.id === studentId);
+    if (!student) return;
+    
+    setSelectedTask(task);
+    setSelectedStudentForTask(student);
+    fetchStudentTaskDetails(task._id, studentId);
+    setIsTaskDetailOpen(true);
+  };
+
+  // Function to update a subtask assignment status
+  const handleUpdateSubtaskStatus = async (assignmentId, status, isLocked = false) => {
+    // Check if user has permission to update subtask status
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update subtask status");
+      return;
+    }
+
+    const currentSubtask = studentSubtasks.find(st => st.assignmentId === assignmentId);
+    const isStatusChange = currentSubtask && currentSubtask.status !== status;
+    const isLockChange = currentSubtask && currentSubtask.isLocked !== isLocked;
+    
+    try {
+      setLoading(prev => ({ ...prev, subtasks: true }));
+      await updateTaskSubtaskAssignment({
+        assignmentId,
+        status,
+        isLocked
+      });
+      
+      // Refresh the task details
+      if (selectedTask && selectedStudentForTask) {
+        await fetchStudentTaskDetails(selectedTask._id, selectedStudentForTask.id);
+      }
+      
+      // Provide appropriate success message
+      if (isStatusChange && isLockChange) {
+        toast.success(`Subtask status updated and ${isLocked ? 'locked' : 'unlocked'}`);
+      } else if (isStatusChange) {
+        toast.success('Subtask status updated');
+      } else if (isLockChange) {
+        toast.success(`Subtask ${isLocked ? 'locked' : 'unlocked'}`);
+      } else {
+        toast.success('Subtask updated');
+      }
+    } catch (error) {
+      console.error('Error updating subtask status:', error);
+      toast.error('Failed to update subtask status');
+    } finally {
+      setLoading(prev => ({ ...prev, subtasks: false }));
+    }
+  };
+
+  // Functions for category management
+  const handleOpenCategoryManage = (category = null) => {
+    // Check if user has permission to manage categories
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to manage categories");
+      return;
+    }
+    
+    if (category) {
+      setCategoryToEdit(category);
+      setNewCategoryData({ name: category.name, description: category.description || '' });
+    } else {
+      setCategoryToEdit(null);
+      setNewCategoryData({ name: '', description: '' });
+    }
+    setIsCategoryManageOpen(true);
+  };
+
+  const handleSaveCategory = async () => {
+    if (!newCategoryData.name.trim()) {
+      toast.error('Category name is required');
+      return;
+    }
+
+    // Check if user has permission to manage categories
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to create or edit categories");
+      return;
+    }
+
+    try {
+      setLoading(prev => ({ ...prev, categories: true }));
+      
+      if (categoryToEdit) {
+        // Update existing category
+        await updateCategory(categoryToEdit._id, newCategoryData);
+        toast.success('Category updated successfully');
+      } else {
+        // Create new category
+        await createCategory(newCategoryData);
+        toast.success('Category created successfully');
+      }
+      
+      // Refresh categories
+      await fetchCategories();
+      setIsCategoryManageOpen(false);
+    } catch (error) {
+      console.error('Error saving category:', error);
+      toast.error(error?.response?.data?.message || 'Failed to save category');
+    } finally {
+      setLoading(prev => ({ ...prev, categories: false }));
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    if (!categoryId) return;
+    
+    // Check if user has permission to delete categories
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to delete categories");
+      return;
+    }
+    
+    try {
+      setLoading(prev => ({ ...prev, categories: true }));
+      await deleteCategory(categoryId);
+      await fetchCategories();
+      toast.success('Category deleted successfully');
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      toast.error(error?.response?.data?.message || 'Failed to delete category');
+    } finally {
+      setLoading(prev => ({ ...prev, categories: false }));
+    }
+  };
+
+
   return (
     <div className="space-y-4 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
-        <Button onClick={() => setIsAddTaskOpen(true)} disabled={loading.add}>
-          <Plus className="mr-2 h-4 w-4" /> Add Task
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => handleOpenCategoryManage()}
+            disabled={loading.categories || !hasEditPermission()}
+            title={hasEditPermission() ? "Manage task categories" : "You don't have permission to manage categories"}
+          >
+            {loading.categories ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m7 20.66 1-1.73"/></svg>
+            )}
+            Manage Categories
+          </Button>
+          <Button 
+            onClick={() => setIsAddTaskOpen(true)} 
+            disabled={loading.add || !hasEditPermission()}
+            title={hasEditPermission() ? "Add a new task" : "You don't have permission to add tasks"}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Add Task
+          </Button>
+        </div>
       </div>
 
       <div className="text-sm text-muted-foreground">
@@ -460,32 +751,50 @@ const Tasks = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setIsAssignStudentOpen(true);
-                        }}
-                      >
-                        Assign
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleOpenEditTask(task)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => handleDeleteTask(task._id)}
-                        disabled={loading.delete}
-                      >
-                        Delete
-                      </Button>
+                      {hasEditPermission() && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTask(task);
+                              // Make sure to load the current students assigned to this task
+                              setSelectedStudents(task.students?.map(s => s._id) || []);
+                              setIsAssignStudentOpen(true);
+                            }}
+                          >
+                            Assign
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleOpenEditTask(task)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => handleDeleteTask(task._id)}
+                            disabled={loading.delete}
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      )}
+                      {/* {!hasEditPermission() && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setIsTaskDetailOpen(true);
+                          }}
+                        >
+                          View
+                        </Button>
+                      )} */}
                     </div>
                   </td>
                 </tr>
@@ -510,29 +819,21 @@ const Tasks = () => {
               <label htmlFor="mainTask" className="text-sm font-medium">
                 Main Task Category
               </label>
-              <Select value={selectedMainTask} onValueChange={handleMainTaskChange}>
+              <Select
+                value={selectedMainTask}
+                onValueChange={handleMainTaskChange}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select main task category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="create_new">+ Create New Category</SelectItem>
-                  {mainTaskCategories.map((category, idx) => (
-                    <SelectItem key={idx} value={category}>
-                      {category}
+                  {mainTaskCategories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-
-              {selectedMainTask === 'create_new' && (
-                <div className="mt-2">
-                  <Input
-                    placeholder="Enter new main task category"
-                    value={newMainTask}
-                    onChange={(e) => setNewMainTask(e.target.value)}
-                  />
-                </div>
-              )}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -586,14 +887,32 @@ const Tasks = () => {
                           className="pl-2 pr-1 py-1 flex items-center gap-1"
                         >
                           {student.name}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
-                            onClick={() => setSelectedStudents(selectedStudents.filter(id => id !== student.id))}
-                          >
-                            <X className="h-2 w-2" />
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-4 w-4 ml-1 hover:bg-blue-100 hover:text-blue-700 rounded-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenTaskDetails(selectedTask, student.id);
+                              }}
+                              title="View subtasks"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedStudents(selectedStudents.filter(id => id !== student.id));
+                              }}
+                              title="Remove student"
+                            >
+                              <X className="h-2 w-2" />
+                            </Button>
+                          </div>
                         </Badge>
                       );
                     })}
@@ -793,15 +1112,17 @@ const Tasks = () => {
               <label htmlFor="mainTask" className="text-sm font-medium">
                 Main Task Category
               </label>
-              <Select value={selectedMainTask} onValueChange={handleMainTaskChange}>
+              <Select
+                value={selectedMainTask}
+                onValueChange={handleMainTaskChange}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select main task category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="create_new">+ Create New Category</SelectItem>
-                  {mainTaskCategories.map((category, idx) => (
-                    <SelectItem key={idx} value={category}>
-                      {category}
+                  {mainTaskCategories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -819,62 +1140,7 @@ const Tasks = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-2">
-              <label className="text-sm font-medium">
-                Assign to Students
-              </label>
-              <Select 
-                value=""
-                onValueChange={(val) => {
-                  if (!selectedStudents.includes(val)) {
-                    setSelectedStudents([...selectedStudents, val])
-                  }
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select students" />
-                </SelectTrigger>
-                <SelectContent>
-                  {students.map(student => (
-                    <SelectItem key={student.id} value={student.id}>
-                      <div className="flex items-center">
-                        <span>{student.name}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">({student.email})</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {selectedStudents.length > 0 && (
-                <div className="border rounded-md p-2 mt-2">
-                  <p className="text-sm font-medium mb-2">Selected Students:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedStudents.map((studentId) => {
-                      const student = students.find(s => s.id === studentId);
-                      if (!student) return null;
-                      return (
-                        <Badge
-                          key={student.id}
-                          variant="secondary"
-                          className="pl-2 pr-1 py-1 flex items-center gap-1"
-                        >
-                          {student.name}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
-                            onClick={() => setSelectedStudents(selectedStudents.filter(id => id !== student.id))}
-                          >
-                            <X className="h-2 w-2" />
-                          </Button>
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Student assignment removed from edit dialog as it's handled by the Assign button */}
 
             <div className="grid grid-cols-1 gap-2">
               <label className="text-sm font-medium">Subtasks</label>
@@ -1104,6 +1370,200 @@ const Tasks = () => {
                 </>
               ) : (
                 'Save'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Task Details Dialog */}
+      <Dialog open={isTaskDetailOpen} onOpenChange={setIsTaskDetailOpen}>
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Task Details</DialogTitle>
+            <DialogDescription>
+              {selectedTask?.title && selectedStudentForTask?.name 
+                ? `Subtasks for "${selectedTask.title}" assigned to ${selectedStudentForTask.name}` 
+                : 'Task details'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            {loading.subtasks ? (
+              <div className="flex justify-center p-4">
+                <Loader2 className="animate-spin h-6 w-6" />
+              </div>
+            ) : studentSubtasks.length === 0 ? (
+              <div className="text-sm text-muted-foreground py-4">
+                No subtasks found for this task and student.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="text-xs text-muted-foreground mb-2 bg-blue-50 p-2 rounded-md">
+                  <span className="font-medium">Note:</span> Locking a subtask prevents students from updating its status. Use this for completed subtasks that should not be modified.
+                </div>
+                {studentSubtasks.map((subtask) => (
+                  <div key={subtask._id} className="border rounded-md p-3 bg-muted/30">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium flex items-center">
+                        {subtask.title}
+                        {subtask.isLocked && (
+                          <span className="ml-2 text-blue-700" title="This subtask is locked">🔒</span>
+                        )}
+                      </div>
+                      <Badge variant={subtask.priority.toLowerCase()}>{subtask.priority}</Badge>
+                    </div>
+                    
+                    {subtask.description && (
+                      <div className="text-sm text-muted-foreground mt-1">{subtask.description}</div>
+                    )}
+                    
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="text-sm">
+                        Status: 
+                        <Badge variant={
+                          subtask.status === 'COMPLETED' ? 'success' : 
+                          subtask.status === 'IN_PROGRESS' ? 'warning' : 
+                          'secondary'
+                        } className="ml-2">
+                          {subtask.status.replace('_', ' ')}
+                        </Badge>
+                        {subtask.isLocked && (
+                          <Badge variant="outline" className="ml-1">🔒 Locked</Badge>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Select 
+                          value={subtask.status}
+                          onValueChange={(value) => handleUpdateSubtaskStatus(subtask.assignmentId, value, subtask.isLocked)}
+                          disabled={subtask.isLocked}
+                        >
+                          <SelectTrigger className={`w-[140px] ${subtask.isLocked ? "opacity-70" : ""}`}>
+                            <SelectValue placeholder="Change status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PENDING">Pending</SelectItem>
+                            <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                            <SelectItem value="COMPLETED">Completed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        
+                        <Button
+                          variant={subtask.isLocked ? "secondary" : "outline"}
+                          size="sm"
+                          className={`gap-1 ${subtask.isLocked ? "bg-blue-100 hover:bg-blue-200 text-blue-700" : ""}`}
+                          onClick={() => handleUpdateSubtaskStatus(subtask.assignmentId, subtask.status, !subtask.isLocked)}
+                          title={subtask.isLocked ? "Unlock subtask" : "Lock subtask"}
+                        >
+                          {subtask.isLocked ? "🔓 Unlock" : "🔒 Lock"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsTaskDetailOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Manage Categories Dialog */}
+      <Dialog open={isCategoryManageOpen} onOpenChange={setIsCategoryManageOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{categoryToEdit ? 'Edit Category' : 'Add Category'}</DialogTitle>
+            <DialogDescription>
+              {categoryToEdit 
+                ? `Edit details for "${categoryToEdit.name}" category` 
+                : 'Create a new task category'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-1 gap-2">
+              <label htmlFor="categoryName" className="text-sm font-medium">
+                Category Name
+              </label>
+              <Input
+                id="categoryName"
+                placeholder="Enter category name"
+                value={newCategoryData.name}
+                onChange={(e) => setNewCategoryData({ ...newCategoryData, name: e.target.value })}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-2">
+              <label htmlFor="categoryDescription" className="text-sm font-medium">
+                Description (optional)
+              </label>
+              <Input
+                id="categoryDescription"
+                placeholder="Enter category description"
+                value={newCategoryData.description}
+                onChange={(e) => setNewCategoryData({ ...newCategoryData, description: e.target.value })}
+              />
+            </div>
+
+            {mainTaskCategories.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm font-medium mb-2">Current Categories:</p>
+                <div className="border rounded-md p-3 max-h-[200px] overflow-y-auto">
+                  <ul className="space-y-2">
+                    {categoryData.map((category) => (
+                      <li key={category._id} className="flex justify-between items-center p-2 rounded hover:bg-muted/50">
+                        <span>{category.name}</span>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleOpenCategoryManage(category)}
+                            className="h-7 w-7 p-0"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete the "${category.name}" category? This action cannot be undone.`)) {
+                                handleDeleteCategory(category._id);
+                              }
+                            }}
+                            className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsCategoryManageOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveCategory} 
+              disabled={loading.categories || !newCategoryData.name.trim()}
+            >
+              {loading.categories ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Category'
               )}
             </Button>
           </DialogFooter>

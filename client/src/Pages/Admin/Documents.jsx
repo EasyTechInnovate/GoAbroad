@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { getUser } from '@/lib/auth';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -49,6 +50,11 @@ const Documents = ({ studentId }) => {
   const [documents, setDocuments] = useState([]);
   const [filteredDocuments, setFilteredDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
+  
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [tasks, setTasks] = useState([]);
@@ -370,7 +376,7 @@ const Documents = ({ studentId }) => {
   }, [studentId]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-[1200px] mx-auto p-4">
       <h1 className="text-xl font-semibold">Document Manager</h1>
       
       <div className="flex justify-between items-center">
@@ -383,13 +389,15 @@ const Documents = ({ studentId }) => {
             className="pl-8 w-[300px]"
           />
         </div>
-        <Button
-          onClick={() => setIsUploadDialogOpen(true)}
-          className="bg-primary text-white"
-        >
-          <Upload className="mr-2 h-4 w-4" />
-          Upload Document
-        </Button>
+        {hasEditPermission() && (
+          <Button
+            onClick={() => setIsUploadDialogOpen(true)}
+            className="bg-primary text-white"
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Document
+          </Button>
+        )}
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -468,41 +476,45 @@ const Documents = ({ studentId }) => {
                           }} title="Download">
                             <Download className="h-4 w-4" />
                           </Button>
-                          <div className="relative" style={{ display: 'inline-block' }}>
-                            <Button size="icon" variant="ghost" title="More Actions" onClick={e => {
-                              const rect = e.currentTarget.getBoundingClientRect();
-                              setDropdownPosition({ top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 160 });
-                              setOpenDropdownId(openDropdownId === doc.id ? null : doc.id);
-                            }}>
-                              <span style={{ fontSize: 24, fontWeight: 'bold', letterSpacing: 2 }}>⋯</span>
-                            </Button>
-                            {openDropdownId === doc.id && createPortal(
-                              <div className="fixed bg-white border rounded shadow-md min-w-[160px] mt-2" style={{ zIndex: 99999, top: dropdownPosition.top, left: dropdownPosition.left }}>
-                                <button
-                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                                  onClick={() => { handleStatusChange(doc.id, 'verified'); setOpenDropdownId(null); }}
-                                >
-                                  Mark as Verified
-                                </button>
-                                <button
-                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                                  onClick={() => { handleStatusChange(doc.id, 'pending'); setOpenDropdownId(null); }}
-                                >
-                                  Mark as Pending
-                                </button>
-                                <button
-                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600 cursor-pointer"
-                                  onClick={() => { handleStatusChange(doc.id, 'rejected'); setOpenDropdownId(null); }}
-                                >
-                                  Mark as Rejected
-                                </button>
-                              </div>,
-                              document.body
-                            )}
-                          </div>
-                          <Button size="icon" variant="ghost" onClick={() => handleDeleteDocument(doc.id)} title="Delete">
-                            <TrashIcon className="h-4 w-4 text-red-600 cursor-pointer" />
-                          </Button>
+                          {hasEditPermission() && (
+                            <>
+                              <div className="relative" style={{ display: 'inline-block' }}>
+                                <Button size="icon" variant="ghost" title="More Actions" onClick={e => {
+                                  const rect = e.currentTarget.getBoundingClientRect();
+                                  setDropdownPosition({ top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 160 });
+                                  setOpenDropdownId(openDropdownId === doc.id ? null : doc.id);
+                                }}>
+                                  <span style={{ fontSize: 24, fontWeight: 'bold', letterSpacing: 2 }}>⋯</span>
+                                </Button>
+                                {openDropdownId === doc.id && createPortal(
+                                  <div className="fixed bg-white border rounded shadow-md min-w-[160px] mt-2" style={{ zIndex: 99999, top: dropdownPosition.top, left: dropdownPosition.left }}>
+                                    <button
+                                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                      onClick={() => { handleStatusChange(doc.id, 'verified'); setOpenDropdownId(null); }}
+                                    >
+                                      Mark as Verified
+                                    </button>
+                                    <button
+                                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                      onClick={() => { handleStatusChange(doc.id, 'pending'); setOpenDropdownId(null); }}
+                                    >
+                                      Mark as Pending
+                                    </button>
+                                    <button
+                                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600 cursor-pointer"
+                                      onClick={() => { handleStatusChange(doc.id, 'rejected'); setOpenDropdownId(null); }}
+                                    >
+                                      Mark as Rejected
+                                    </button>
+                                  </div>,
+                                  document.body
+                                )}
+                              </div>
+                              <Button size="icon" variant="ghost" onClick={() => handleDeleteDocument(doc.id)} title="Delete">
+                                <TrashIcon className="h-4 w-4 text-red-600 cursor-pointer" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

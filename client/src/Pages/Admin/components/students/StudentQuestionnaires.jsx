@@ -1,56 +1,71 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Eye } from 'lucide-react';
+import { FileText, Eye, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getTaskSubtaskQuestionDetails } from '@/services/questionnaireService';
+import { toast } from 'sonner';
 
-const mockQuestionnaires = [
-  {
-    id: 1,
-    title: 'Initial Student Assessment',
-    status: 'completed',
-    submittedDate: '2023-09-15',
-    responses: [
-      { question: 'What are your top 3 university choices?', answer: 'Stanford, MIT, Harvard' },
-      { question: 'What is your preferred study location?', answer: 'United States, United Kingdom' },
-      { question: 'What majors are you interested in?', answer: 'Computer Science, Data Science' },
-      { question: 'Do you require financial aid?', answer: 'Yes, partial scholarship' }
-    ]
-  },
-  {
-    id: 2,
-    title: 'University Preference Form',
-    status: 'completed',
-    submittedDate: '2023-10-02',
-    responses: [
-      { question: 'Preferred university size?', answer: 'Large (15,000+ students)' },
-      { question: 'Urban or rural campus preference?', answer: 'Urban' },
-      { question: 'Importance of university ranking (1-10)', answer: '8' },
-      { question: 'Interested in research opportunities?', answer: 'Yes, especially in AI and machine learning' }
-    ]
-  },
-  {
-    id: 3,
-    title: 'Financial Aid Application',
-    status: 'pending',
-    submittedDate: null,
-    responses: []
-  },
-  {
-    id: 4,
-    title: 'Post-Admission Survey',
-    status: 'not-started',
-    submittedDate: null,
-  }
-];
-
-
-export function StudentQuestionnaires() {
+export function StudentQuestionnaires({ studentId }) {
+  const [questionnaires, setQuestionnaires] = useState([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const fetchQuestionnaireData = async () => {
+      if (!studentId) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const response = await getTaskSubtaskQuestionDetails(studentId);
+        
+        if (response && response.success) {
+          // Extract all questionnaires from all subtasks
+          const allQuestionnaires = [];
+          
+          if (response.student && response.student.tasks) {
+            response.student.tasks.forEach(task => {
+              if (task.subtasks && Array.isArray(task.subtasks)) {
+                task.subtasks.forEach(subtask => {
+                  if (subtask.questionnaires && Array.isArray(subtask.questionnaires) && subtask.questionnaires.length > 0) {
+                    // Add task/subtask context to each questionnaire
+                    const enhancedQuestionnaires = subtask.questionnaires.map(q => ({
+                      ...q,
+                      taskName: task.name || 'Unknown Task',
+                      subtaskName: subtask.name || (subtask.subtaskId?.name) || 'Unknown Subtask',
+                      taskId: task._id,
+                      subtaskId: subtask._id || subtask.assignmentId
+                    }));
+                    
+                    allQuestionnaires.push(...enhancedQuestionnaires);
+                  }
+                });
+              }
+            });
+          }
+          
+          setQuestionnaires(allQuestionnaires);
+        } else {
+          setError('Failed to fetch questionnaire data');
+        }
+      } catch (err) {
+        console.error('Error fetching questionnaire data:', err);
+        setError(err.message || 'An error occurred while fetching questionnaires');
+        toast.error('Failed to load questionnaire data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchQuestionnaireData();
+  }, [studentId]);
   
   const handleViewQuestionnaire = (questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
@@ -58,15 +73,23 @@ export function StudentQuestionnaires() {
   };
 
   const getStatusBadge = (status) => {
-    switch (status) {
+    const normalizedStatus = status ? status.toLowerCase() : 'pending';
+    
+    switch (normalizedStatus) {
       case 'completed':
+      case 'done':
+      case 'finished':
         return <Badge className="bg-green-100 text-green-800 border-green-300">Completed</Badge>;
       case 'pending':
+      case 'in progress':
+      case 'in-progress':
         return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">Pending</Badge>;
       case 'not-started':
+      case 'not started':
+      case 'new':
         return <Badge className="bg-gray-100 text-gray-800 border-gray-300">Not Started</Badge>;
       default:
-        return null;
+        return <Badge className="bg-gray-100 text-gray-800 border-gray-300">{status || 'Unknown'}</Badge>;
     }
   };
 
@@ -79,29 +102,56 @@ export function StudentQuestionnaires() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {mockQuestionnaires.map((questionnaire) => (
-            <div 
-              key={questionnaire.id} 
-              className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0"
-            >
-              <div className="flex items-center gap-3">
-                <FileText className="h-5 w-5 text-muted-foreground" />
-                <div>
-                  <h3 className="font-medium">{questionnaire.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {questionnaire.submittedDate 
-                      ? `Submitted on ${questionnaire.submittedDate}` 
-                      : questionnaire.status === 'pending' 
-                        ? 'Not submitted yet' 
-                        : 'Not started'
-                    }
-                  </p>
+        {isLoading && (
+          <div className="flex justify-center py-8">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+        
+        {error && (
+          <div className="rounded-md bg-red-50 p-4 my-4">
+            <div className="flex">
+              <AlertCircle className="h-5 w-5 text-red-400" />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Error loading questionnaires</h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{error}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {getStatusBadge(questionnaire.status)}
-                {questionnaire.status === 'completed' && (
+            </div>
+          </div>
+        )}
+        
+        {!isLoading && !error && questionnaires.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No questionnaires found for this student.</p>
+          </div>
+        )}
+        
+        {!isLoading && !error && questionnaires.length > 0 && (
+          <div className="space-y-4">
+            {questionnaires.map((questionnaire) => (
+              <div 
+                key={questionnaire._id} 
+                className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0"
+              >
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <h3 className="font-medium">{questionnaire.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {questionnaire.taskName} &gt; {questionnaire.subtaskName}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {questionnaire.updatedAt 
+                        ? `Last updated: ${new Date(questionnaire.updatedAt).toLocaleDateString()}` 
+                        : 'No submission date available'
+                      }
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {getStatusBadge(questionnaire.status)}
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -109,11 +159,11 @@ export function StudentQuestionnaires() {
                   >
                     <Eye className="h-4 w-4 mr-1" /> View
                   </Button>
-                )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CardContent>
 
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
@@ -121,34 +171,57 @@ export function StudentQuestionnaires() {
           <DialogHeader>
             <DialogTitle>{selectedQuestionnaire?.title}</DialogTitle>
             <DialogDescription>
-              Submitted on {selectedQuestionnaire?.submittedDate}
+              {selectedQuestionnaire?.taskName} &gt; {selectedQuestionnaire?.subtaskName}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <Tabs defaultValue="responses">
+            <Tabs defaultValue="questions">
               <TabsList className="w-full">
-                <TabsTrigger value="responses" className="flex-1">Responses</TabsTrigger>
-                <TabsTrigger value="summary" className="flex-1">Summary</TabsTrigger>
+                <TabsTrigger value="questions" className="flex-1">Questions</TabsTrigger>
+                <TabsTrigger value="details" className="flex-1">Details</TabsTrigger>
               </TabsList>
-              <TabsContent value="responses" className="mt-4">
+              <TabsContent value="questions" className="mt-4">
                 <div className="space-y-4">
-                  {selectedQuestionnaire?.responses.map((response, index) => (
-                    <div key={index} className="border-b pb-3 last:border-0">
-                      <h3 className="font-medium text-sm">{response.question}</h3>
-                      <p className="text-sm mt-1">{response.answer}</p>
-                    </div>
-                  ))}
+                  {selectedQuestionnaire?.questions?.length > 0 ? (
+                    selectedQuestionnaire.questions.map((question, index) => (
+                      <div key={question._id || index} className="border-b pb-3 last:border-0">
+                        <h3 className="font-medium text-sm">{question.question}</h3>
+                        {question.answer ? (
+                          <div className="mt-2">
+                            <p className="text-xs text-muted-foreground">Answer:</p>
+                            <p className="text-sm mt-1">{question.answer}</p>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-muted-foreground italic mt-1">No answer provided</p>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground italic text-sm">No questions available for this questionnaire.</p>
+                  )}
                 </div>
               </TabsContent>
-              <TabsContent value="summary" className="mt-4">
-                <div className="text-sm">
-                  <p>Questionnaire completed on {selectedQuestionnaire?.submittedDate}</p>
-                  <p className="mt-2">Total questions: {selectedQuestionnaire?.responses.length}</p>
-                  <p className="mt-2">Key insights:</p>
-                  <ul className="list-disc pl-5 mt-1 space-y-1">
-                    <li>Student is interested in {selectedQuestionnaire?.responses.find(r => r.question.includes('majors'))?.answer}</li>
-                    <li>Preferred universities: {selectedQuestionnaire?.responses.find(r => r.question.includes('university choices'))?.answer}</li>
-                  </ul>
+              <TabsContent value="details" className="mt-4">
+                <div className="text-sm space-y-3">
+                  <div>
+                    <p className="text-muted-foreground text-xs">Status:</p>
+                    <p>{selectedQuestionnaire?.status || 'Unknown'}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-muted-foreground text-xs">Last Updated:</p>
+                    <p>{selectedQuestionnaire?.updatedAt ? new Date(selectedQuestionnaire.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-muted-foreground text-xs">Description:</p>
+                    <p>{selectedQuestionnaire?.description || 'No description available'}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-muted-foreground text-xs">Total Questions:</p>
+                    <p>{selectedQuestionnaire?.questions?.length || 0} questions</p>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
@@ -164,8 +237,6 @@ export function StudentQuestionnaires() {
   );
 }
 
-
-  
 StudentQuestionnaires.propTypes = {
   studentId: PropTypes.string.isRequired,
 };

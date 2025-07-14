@@ -11,6 +11,7 @@ import Questionnaire from '../../model/questionnaireModel.js';
 import Response from '../../model/responseModel.js';
 import StudentActivity from '../../model/studentActivitySchema.js';
 import { ACTIVITY_STATUSES, ACTIVITY_TYPES } from '../../constant/application.js';
+import StudentTaskAssignment from '../../model/studentTaskAssignmentModel.js';
 
 export default {
     getSelfData: async (req, res, next) => {
@@ -476,9 +477,9 @@ export default {
                         }
                         break;
                     case 'DATE':
-                        if (!(validatedAnswer instanceof Date) || isNaN(validatedAnswer)) {
-                            throw new Error(`Answer for ${question.question} must be a valid date`);
-                        }
+                        // if (!(validatedAnswer instanceof Date) || isNaN(validatedAnswer)) {
+                        //     throw new Error(`Answer for ${question.question} must be a valid date`);
+                        // }
                         break;
                 }
 
@@ -528,5 +529,114 @@ export default {
         } catch (err) {
             httpError(next, err, req, 400);
         }
+    },
+
+
+    getStudentTimeline: async (req, res, next) => {
+        try {
+            const studentId = req.authenticatedStudent._id.toString();
+            const { page = 1, limit = 10 } = req.query;
+
+            const skip = (page - 1) * limit;
+
+            const taskAssignments = await StudentTaskAssignment.find({ studentId })
+                .populate({
+                    path: 'taskId',
+                    select: 'title description logo priority assignee createdDate category',
+
+                })
+                .sort({ assignedAt: 1 })
+                .skip(skip)
+                .limit(parseInt(limit))
+                .lean();
+
+            const total = await StudentTaskAssignment.countDocuments({ studentId });
+
+            const taskIds = taskAssignments.map(ta => ta.taskId._id);
+            const subtaskAssignments = await TaskSubtaskAssignment.find({ studentId, taskId: { $in: taskIds } })
+                .populate({
+                    path: 'subtaskId',
+                    select: 'title description logo priority',
+                })
+
+                .sort({ assignedAt: 1 })
+                .lean();
+
+            const timeline = taskAssignments.map(ta => ({
+                task: {
+                    ...ta.taskId,
+                    assignedAt: ta.assignedAt,
+                    status: ta.status,
+                    isLocked: ta.isLocked,
+                    dueDate: ta.dueDate,
+                    createdAt: ta.createdAt,
+                    updatedAt: ta.updatedAt
+                },
+                subtasks: subtaskAssignments
+                    .filter(sa => sa.taskId.toString() === ta.taskId._id.toString())
+                    .map(sa => ({
+                        ...sa.subtaskId,
+                        assignedAt: sa.assignedAt,
+                        status: sa.status,
+                        isLocked: sa.isLocked,
+                        dueDate: sa.dueDate,
+                        createdAt: sa.createdAt,
+                        updatedAt: sa.updatedAt
+                    }))
+            }));
+
+            const responseData = {
+                total: total,
+                pages: Math.ceil(total / limit),
+                currentPage: parseInt(page),
+                limit: parseInt(limit),
+                timeline: timeline
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+    // Get student dashboard stats
+    getStudentDashboardStats: async (req, res, next) => {
+        try {
+            const studentId = req.authenticatedStudent._id
+
+            const taskStats = await StudentTaskAssignment.aggregate([
+                { $match: { studentId: studentId } },
+                {
+                    $group: {
+                        _id: '$status',
+                        count: { $sum: 1 }
+                    }
+                }
+            ]);
+
+            const universityStats = await StudentUniversityAssignment.countDocuments({
+                studentId: studentId
+            });
+
+            const statsMap = taskStats.reduce((acc, curr) => {
+                acc[curr._id] = curr.count;
+                return acc;
+            }, {});
+
+            const totalAssignedTasks = taskStats.reduce((sum, curr) => sum + curr.count, 0);
+            const totalCompleted = statsMap['COMPLETED'] || 0;
+            const totalPending = (statsMap['PENDING'] || 0) + (statsMap['IN_PROGRESS'] || 0);
+            const totalUniversityAssigned = universityStats;
+
+            const responseData = {
+                totalAssignedTasks: totalAssignedTasks,
+                totalCompletedTasks: totalCompleted,
+                totalPendingTasks: totalPending,
+                totalUniversityAssigned: totalUniversityAssigned
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, responseData);
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
     }
-};
+}

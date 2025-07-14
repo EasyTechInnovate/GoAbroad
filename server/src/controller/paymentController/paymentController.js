@@ -7,8 +7,7 @@ import Payment from '../../model/paymentModel.js';
 import Student from '../../model/studentModel.js';
 import crypto from "crypto"
 import { razorpayInstance } from '../../config/razorpayConfig.js';
-import StudentActivity from '../../model/studentActivitySchema.js';
-import { ACTIVITY_STATUSES, ACTIVITY_TYPES } from '../../constant/application.js';
+
 export default {
     initiatePayment: async (req, res, next) => {
         try {
@@ -67,27 +66,29 @@ export default {
                 return httpError(next, new Error('Payment not captured or invalid'), req, 400);
             }
 
+
+            const UpdateStudent = await Student.findByIdAndUpdate(studentId, {
+                isFeePaid: true,
+                isVerified: true
+            })
+
+            if (!UpdateStudent) {
+                return httpResponse(req, res, 404, responseMessage.NOT_FOUND('Student'));
+            }
+
             const payment = await Payment.findOneAndUpdate(
                 { orderId, studentId, status: 'PENDING' },
                 { paymentId, status: 'SUCCESS' },
                 { new: true }
             );
 
+
+
             if (!payment) {
                 return httpResponse(req, res, 404, responseMessage.NOT_FOUND('Payment'));
             }
 
 
-
-            await Student.findByIdAndUpdate(studentId, { isFeePaid: true, isVerified: true });
-            const activity = new StudentActivity({
-                studentId: studentId,
-                activityType: ACTIVITY_TYPES.PAYMENT_COMPLETED,
-                message: `Pay payment of ${payment?.amount} INR`,
-                status: ACTIVITY_STATUSES.COMPLETED,
-                details: { orderId: orderId, amount: payment?.amount, currency: 'INR' }
-            });
-            await activity.save();
             httpResponse(req, res, 200, responseMessage.SUCCESS, { paymentId, status: 'success' });
         } catch (err) {
             console.log("Error during payment verification:", err);

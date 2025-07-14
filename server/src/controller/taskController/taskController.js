@@ -8,6 +8,7 @@ import TaskSubtaskAssignment from '../../model/taskSubtaskAssignmentModel.js';
 import Student from '../../model/studentModel.js';
 import Subtask from '../../model/subtaskModel.js';
 import Member from '../../model/membersModel.js';
+import TaskCategory from '../../model/taskCategoryModel.js';
 
 export default {
     // Create a new task with associated students and subtasks (ADMIN only)

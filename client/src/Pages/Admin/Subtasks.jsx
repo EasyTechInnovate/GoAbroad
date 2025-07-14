@@ -31,6 +31,7 @@ import {
 import { uploadFile } from '@/services/uploadService';
 import { getQuestionnaires } from '@/services/questionnaireService';
 import { Checkbox } from '@/components/ui/checkbox';
+import { getUser } from '@/lib/auth';
 
 const Subtasks = () => {    
     const [subtasks, setSubtasks] = useState([]);
@@ -43,6 +44,13 @@ const Subtasks = () => {
     const [isEditSubtaskOpen, setIsEditSubtaskOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSubtask, setSelectedSubtask] = useState(null);
+    
+    // Permission check functions
+    const hasEditPermission = () => {
+        const currentUser = getUser();
+        return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+    };
+    
     const [newSubtask, setNewSubtask] = useState({
         title: '',
         description: '',
@@ -112,6 +120,12 @@ const Subtasks = () => {
             return;
         }
 
+        // Check if user has permission to create subtasks
+        if (!hasEditPermission()) {
+            toast.error("You don't have permission to create subtasks");
+            return;
+        }
+
         try {
             setLoading(true);
             const createResponse = await createSubtask({
@@ -140,8 +154,13 @@ const Subtasks = () => {
     };    
     
     const handleEditSubtask = async () => {
-
         if (!selectedSubtask) return;
+
+        // Check if user has permission to edit subtasks
+        if (!hasEditPermission()) {
+            toast.error("You don't have permission to edit subtasks");
+            return;
+        }
 
         try {
             setLoading(true);
@@ -177,7 +196,13 @@ const Subtasks = () => {
             priority: 'MEDIUM',
             questionnaireIds: []
         });
-    }; const handleOpenEditSubtask = (subtask) => {
+    };    const handleOpenEditSubtask = (subtask) => {
+        // Check if user has permission to edit subtasks
+        if (!hasEditPermission()) {
+            toast.error("You don't have permission to edit subtasks");
+            return;
+        }
+        
         setSelectedSubtask(subtask);
         setNewSubtask({
             title: subtask.title,
@@ -190,6 +215,12 @@ const Subtasks = () => {
     };
 
     const handleDeleteSubtask = async (subtaskId) => {
+        // Check if user has permission to delete subtasks
+        if (!hasEditPermission()) {
+            toast.error("You don't have permission to delete subtasks");
+            return;
+        }
+        
         if (!confirm('Are you sure you want to delete this subtask?')) {
             return;
         }
@@ -213,6 +244,13 @@ const Subtasks = () => {
     };
 
     const handleFileUpload = async (e) => {
+        // Check if user has permission to upload files
+        if (!hasEditPermission()) {
+            toast.error("You don't have permission to upload files");
+            e.target.value = '';
+            return;
+        }
+        
         const file = e.target.files[0];
         if (file) {
             try {
@@ -274,9 +312,11 @@ const Subtasks = () => {
                 <div className="flex-1 space-y-4">
                     <div className="flex items-center justify-between">
                         <h1 className="text-2xl font-bold tracking-tight">Subtask Management</h1>
-                        <Button onClick={() => setIsCreateSubtaskOpen(true)}>
-                            <Plus className="mr-2 h-4 w-4" /> Add New Subtask
-                        </Button>
+                        {hasEditPermission() && (
+                            <Button onClick={() => setIsCreateSubtaskOpen(true)}>
+                                <Plus className="mr-2 h-4 w-4" /> Add New Subtask
+                            </Button>
+                        )}
                     </div>
 
                     {loading ? (
@@ -336,20 +376,27 @@ const Subtasks = () => {
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex justify-end gap-1">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => handleOpenEditSubtask(subtask)}
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="text-destructive"                                            onClick={() => handleDeleteSubtask(subtask._id)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                                        {hasEditPermission() ? (
+                                                            <>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => handleOpenEditSubtask(subtask)}
+                                                                >
+                                                                    <Edit className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="text-destructive"
+                                                                    onClick={() => handleDeleteSubtask(subtask._id)}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-sm text-muted-foreground px-2">View only</span>
+                                                        )}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>

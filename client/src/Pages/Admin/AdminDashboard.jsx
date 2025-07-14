@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { getAdminStudentActivities } from '@/services/adminActivityService';
+import { getAdminStudentActivities, getAdminDashboardStats, getAdminUpcomingDeadlines } from '@/services/adminActivityService';
 
 function getInitials(name) {
   if (!name) return '';
@@ -15,53 +15,69 @@ function getInitials(name) {
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
     totalStudents: 0,
-    activeApplications: 0,
-    pendingTasks: 0,
-    completedTasks: 0,
+    totalActiveApplications: 0,
+    totalPendingTasks: 0,
+    totalCompletedTasks: 0,
     statsChange: {},
   });
   const [activities, setActivities] = useState([]);
   const [deadlines, setDeadlines] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    stats: true,
+    activities: true,
+    deadlines: true,
+  });
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchDashboard() {
-      setLoading(true);
+      setLoading({
+        stats: true,
+        activities: true,
+        deadlines: true,
+      });
       setError(null);
+      
       try {
-        const res = await getAdminStudentActivities(1, 5);
-        // You may need to adjust this mapping based on your real API response
+        const statsRes = await getAdminDashboardStats();
+        
         setStats({
-          totalStudents: res.data?.totalStudents || 254,
-          activeApplications: res.data?.activeApplications || 189,
-          pendingTasks: res.data?.pendingTasks || 87,
-          completedTasks: res.data?.completedTasks || 419,
-          statsChange: res.data?.statsChange || {
-            totalStudents: '+12%',
-            activeApplications: '+7%',
-            pendingTasks: '-2%',
-            completedTasks: '+22%'
+          totalStudents: statsRes.data?.totalStudents || 0,
+          totalActiveApplications: statsRes.data?.totalActiveApplications || 0,
+          totalPendingTasks: statsRes.data?.totalPendingTasks || 0,
+          totalCompletedTasks: statsRes.data?.totalCompletedTasks || 0,
+          statsChange: statsRes.data?.statsChange || {
+            totalStudents: '0%',
+            totalActiveApplications: '0%',
+            totalPendingTasks: '0%',
+            totalCompletedTasks: '0%'
           }
         });
-        setActivities(res.data?.activities || []);
-        setDeadlines(res.data?.deadlines || [
-          // fallback mock
-          {
-            id: 1,
-            university: 'UC Berkeley Application Due',
-            student: 'Emma Johnson',
-            date: 'Oct 15, 2023',
-            task: '',
-            status: 'pending',
-          },
-        ]);
       } catch (err) {
-        setError(err?.message || 'Failed to load dashboard');
+        console.error("Error fetching dashboard stats:", err);
       } finally {
-        setLoading(false);
+        setLoading(prev => ({ ...prev, stats: false }));
+      }
+      
+      try {
+        const activitiesRes = await getAdminStudentActivities(1, 5);
+        setActivities(activitiesRes.data?.activities || []);
+      } catch (err) {
+        console.error("Error fetching activities:", err);
+      } finally {
+        setLoading(prev => ({ ...prev, activities: false }));
+      }
+      
+      try {
+        const deadlinesRes = await getAdminUpcomingDeadlines(1, 5);
+        setDeadlines(deadlinesRes.data?.upcomingDeadlines || []);
+      } catch (err) {
+        console.error("Error fetching deadlines:", err);
+      } finally {
+        setLoading(prev => ({ ...prev, deadlines: false }));
       }
     }
+    
     fetchDashboard();
   }, []);
 
@@ -78,52 +94,80 @@ const AdminDashboard = () => {
 
       {error ? (
         <div className="text-center text-red-500">{error}</div>
-      ) : loading ? (
-        <div className="text-center text-muted-foreground">Loading...</div>
       ) : (
         <div className="grid gap-6">
           {/* Stats Row */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardContent className="pt-6 pb-4">
-                <div className="text-xs text-muted-foreground font-medium">Total Students</div>
-                <div className="text-3xl font-bold mt-1">{stats.totalStudents}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-green-600 font-semibold">{stats.statsChange.totalStudents || '+12%'}</span>
-                  from last month
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6 pb-4">
-                <div className="text-xs text-muted-foreground font-medium">Active Applications</div>
-                <div className="text-3xl font-bold mt-1">{stats.activeApplications}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-green-600 font-semibold">{stats.statsChange.activeApplications || '+7%'}</span>
-                  from last month
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6 pb-4">
-                <div className="text-xs text-muted-foreground font-medium">Pending Tasks</div>
-                <div className="text-3xl font-bold mt-1">{stats.pendingTasks}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-red-600 font-semibold">{stats.statsChange.pendingTasks || '-2%'}</span>
-                  from last month
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6 pb-4">
-                <div className="text-xs text-muted-foreground font-medium">Completed Tasks</div>
-                <div className="text-3xl font-bold mt-1">{stats.completedTasks}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                  <span className="text-green-600 font-semibold">{stats.statsChange.completedTasks || '+22%'}</span>
-                  from last month
-                </div>
-              </CardContent>
-            </Card>
+            {loading.stats ? (
+              <>
+                {[1, 2, 3, 4].map(i => (
+                  <Card key={i}>
+                    <CardContent className="pt-6 pb-4">
+                      <div className="text-center text-muted-foreground py-4">Loading...</div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </>
+            ) : (
+              <>
+                <Card>
+                  <CardContent className="pt-6 pb-4">
+                    <div className="text-xs text-muted-foreground font-medium">Total Students</div>
+                    <div className="text-3xl font-bold mt-1">
+                      {stats.totalStudents}
+                    </div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                      <span className={`${parseFloat(stats.statsChange.totalStudents) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
+                        {stats.statsChange.totalStudents || '0%'}
+                      </span>
+                      from last month
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6 pb-4">
+                    <div className="text-xs text-muted-foreground font-medium">Active Applications</div>
+                    <div className="text-3xl font-bold mt-1">
+                      {stats.totalActiveApplications}
+                    </div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                      <span className={`${parseFloat(stats.statsChange.totalActiveApplications) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
+                        {stats.statsChange.totalActiveApplications || '0%'}
+                      </span>
+                      from last month
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6 pb-4">
+                    <div className="text-xs text-muted-foreground font-medium">Pending Tasks</div>
+                    <div className="text-3xl font-bold mt-1">
+                      {stats.totalPendingTasks}
+                    </div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                      <span className={`${parseFloat(stats.statsChange.totalPendingTasks) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
+                        {stats.statsChange.totalPendingTasks || '0%'}
+                      </span>
+                      from last month
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6 pb-4">
+                    <div className="text-xs text-muted-foreground font-medium">Completed Tasks</div>
+                    <div className="text-3xl font-bold mt-1">
+                      {stats.totalCompletedTasks}
+                    </div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
+                      <span className={`${parseFloat(stats.statsChange.totalCompletedTasks) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
+                        {stats.statsChange.totalCompletedTasks || '0%'}
+                      </span>
+                      from last month
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </div>
 
           {/* Main Content Row */}
@@ -132,7 +176,9 @@ const AdminDashboard = () => {
             <div className="col-span-2 bg-white rounded-lg shadow-sm p-6">
               <div className="font-semibold text-lg mb-4">Recent Activity</div>
               <div className="divide-y">
-                {activities.length === 0 ? (
+                {loading.activities ? (
+                  <div className="text-center text-muted-foreground py-8">Loading activities...</div>
+                ) : activities.length === 0 ? (
                   <div className="text-center text-muted-foreground py-8">No recent activity found.</div>
                 ) : (
                   activities.map((activity) => (
@@ -157,7 +203,7 @@ const AdminDashboard = () => {
                   variant="ghost"
                   className="text-primary-600"
                   onClick={() => {
-                    // Navigate to All Activities page
+
                     if (typeof window !== 'undefined') {
                       window.location.href = '/admin/all-activities';
                     }
@@ -172,20 +218,30 @@ const AdminDashboard = () => {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="font-semibold text-lg mb-4">Upcoming Deadlines</div>
               <div className="space-y-4">
-                {deadlines.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">No upcoming deadlines.</div>
+                {loading.deadlines ? (
+                  <div className="text-center text-muted-foreground py-8">Loading deadlines...</div>
+                ) : deadlines.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">Not available</div>
                 ) : (
                   deadlines.map((deadline, i) => (
-                    <div key={deadline.id || i} className="flex items-center gap-3">
-                      <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${deadline.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : deadline.status === 'active' ? 'bg-blue-100 text-blue-700' : deadline.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-                        {deadline.university?.[0] || 'U'}
+                    <div key={deadline._id || i} className="flex items-center gap-3">
+                      <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${
+                        deadline.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 
+                        deadline.status === 'ACTIVE' ? 'bg-blue-100 text-blue-700' : 
+                        deadline.status === 'REJECTED' ? 'bg-red-100 text-red-700' : 
+                        'bg-green-100 text-green-700'}`}>
+                        {deadline.title?.[0] || 'T'}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-gray-900">{deadline.university}</div>
-                        <div className="text-xs text-muted-foreground">{deadline.student}</div>
+                        <div className="font-medium text-gray-900">{deadline.title || 'Not available'}</div>
+                        <div className="text-xs text-muted-foreground">{deadline.student?.name || deadline.student?.email || 'Not available'}</div>
                       </div>
                       <div className="flex flex-col items-end min-w-[90px]">
-                        <span className="text-xs text-gray-500">{deadline.date}</span>
+                        <span className="text-xs text-gray-500">
+                          {deadline.dueDate ? new Date(deadline.dueDate).toLocaleDateString() : 
+                           deadline.assignedAt ? new Date(deadline.assignedAt).toLocaleDateString() : 
+                           'Not set'}
+                        </span>
                       </div>
                     </div>
                   ))

@@ -26,11 +26,18 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { createQuestionnaire, getQuestionnaires, deleteQuestionnaire, getQuestionnaireById, updateQuestionnaire } from '@/services/questionnaireService';
 import { getLoans } from '@/services/loanService';
+import { getUser } from '@/lib/auth';
 
 const Forms = () => {
   const [questionnaires, setQuestionnaires] = useState([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
   const [loans, setLoans] = useState([]);
+  
+  const hasEditPermission = () => {
+    const currentUser = getUser();
+    return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
+  };
+  
   const [loanFilters, setLoanFilters] = useState({
     page: 1,
     limit: 10,
@@ -148,6 +155,12 @@ const Forms = () => {
         return <Badge variant="secondary">Unknown</Badge>;
     }
   }; const handleAddQuestion = () => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to add questions");
+      return;
+    }
+    
     if (!newQuestion.trim()) {
       toast.error('Please enter question text');
       return;
@@ -173,6 +186,12 @@ const Forms = () => {
     }
   };
   const handleAddOption = (questionId) => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to add options");
+      return;
+    }
+    
     if (!optionText.trim()) {
       toast.error('Option text cannot be empty');
       return;
@@ -192,6 +211,12 @@ const Forms = () => {
     setOptionText('');
   };
   const handleRemoveOption = (questionId, optionIndex) => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to remove options");
+      return;
+    }
+    
     const question = questions.find(q => q.id === questionId);
     if (question && question.options && question.options.length <= 2) {
       toast.error('Multiple choice questions must have at least 2 options');
@@ -210,12 +235,24 @@ const Forms = () => {
   };
 
   const handleEditQuestion = (question) => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to edit questions");
+      return;
+    }
+    
     setCurrentEditingQuestion(question);
     setNewQuestion(question.text);
     setQuestionType(question.type);
   };
 
   const handleUpdateQuestion = () => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update questions");
+      return;
+    }
+    
     if (currentEditingQuestion && newQuestion.trim()) {
       const updatedQuestions = questions.map(q => {
         if (q.id === currentEditingQuestion.id) {
@@ -235,6 +272,12 @@ const Forms = () => {
   };
 
   const handleRemoveQuestion = (questionId) => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to remove questions");
+      return;
+    }
+    
     const updatedQuestions = questions.filter(q => q.id !== questionId);
     setQuestions(updatedQuestions);
     if (currentEditingQuestion?.id === questionId) {
@@ -245,6 +288,12 @@ const Forms = () => {
   };
 
   const handleSaveForm = async () => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to create or edit forms");
+      return;
+    }
+    
     if (formTitle.trim() === '') {
       toast.error('Please enter a form title');
       return;
@@ -303,6 +352,12 @@ const Forms = () => {
   };
 
   const handleSaveAndAssign = () => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to create or assign forms");
+      return;
+    }
+    
     if (formTitle.trim() === '' || !selectedMainTask || !selectedSubtask) {
       toast.error('Please fill all required fields');
       return;
@@ -325,6 +380,12 @@ const Forms = () => {
   };
 
   const nextStep = () => {
+    // Check if user has permission
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to proceed");
+      return;
+    }
+    
     if (currentStep === 1 && formTitle.trim() === '') {
       toast.error('Please enter a form title');
       return;
@@ -346,9 +407,11 @@ const Forms = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Questionnaires & Forms</h1>
-          <Button onClick={() => setIsCreateFormOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Create Form
-          </Button>
+          {hasEditPermission() && (
+            <Button onClick={() => setIsCreateFormOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" /> Create Form
+            </Button>
+          )}
         </div>
 
         <Tabs defaultValue="questionnaires">
@@ -408,37 +471,53 @@ const Forms = () => {
                         <TableCell>{form.createdAt ? new Date(form.createdAt).toLocaleDateString() : ''}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" onClick={async () => {
-                              try {
-                                const response = await getQuestionnaireById(form._id);
-                                setSelectedQuestionnaire(response.data);
-                                setFormTitle(response.data.title);
-                                setFormDescription(response.data.description);
-                                setQuestions(response.data.questions.map(q => ({
-                                  id: q._id,
-                                  text: q.question,
-                                  type: q.ansType,
-                                  required: true,
-                                  options: q.options || []
-                                })));
-                                setIsCreateFormOpen(true);
-                              } catch (error) {
-                                toast.error(`Failed to load questionnaire: ${error.message}`);
-                              }
-                            }}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => {
-                              try {
-                                await deleteQuestionnaire(form._id);
-                                toast.success('Form deleted successfully');
-                                fetchQuestionnaires();
-                              } catch (error) {
-                                toast.error(`Failed to delete form: ${error.message}`);
-                              }
-                            }}>
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            {hasEditPermission() && (
+                              <>
+                                <Button variant="ghost" size="icon" onClick={async () => {
+                                  // Check if user has permission
+                                  if (!hasEditPermission()) {
+                                    toast.error("You don't have permission to edit forms");
+                                    return;
+                                  }
+                                  
+                                  try {
+                                    const response = await getQuestionnaireById(form._id);
+                                    setSelectedQuestionnaire(response.data);
+                                    setFormTitle(response.data.title);
+                                    setFormDescription(response.data.description);
+                                    setQuestions(response.data.questions.map(q => ({
+                                      id: q._id,
+                                      text: q.question,
+                                      type: q.ansType,
+                                      required: true,
+                                      options: q.options || []
+                                    })));
+                                    setIsCreateFormOpen(true);
+                                  } catch (error) {
+                                    toast.error(`Failed to load questionnaire: ${error.message}`);
+                                  }
+                                }}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => {
+                                  // Check if user has permission
+                                  if (!hasEditPermission()) {
+                                    toast.error("You don't have permission to delete forms");
+                                    return;
+                                  }
+                                  
+                                  try {
+                                    await deleteQuestionnaire(form._id);
+                                    toast.success('Form deleted successfully');
+                                    fetchQuestionnaires();
+                                  } catch (error) {
+                                    toast.error(`Failed to delete form: ${error.message}`);
+                                  }
+                                }}>
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -699,6 +778,7 @@ const Forms = () => {
                     placeholder="Enter form title"
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
+                    disabled={!hasEditPermission()}
                   />
                 </div>
 
@@ -709,6 +789,7 @@ const Forms = () => {
                     placeholder="Enter a description for this form"
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
+                    disabled={!hasEditPermission()}
                   />
                 </div>
               </div>
@@ -866,11 +947,12 @@ const Forms = () => {
                                         }
                                       }}
                                       className="flex-1"
+                                      disabled={!hasEditPermission()}
                                     />
                                     <Button
                                       variant="secondary"
                                       onClick={() => handleAddOption(q.id)}
-                                      disabled={!optionText.trim()}
+                                      disabled={!hasEditPermission() || !optionText.trim()}
                                     >
                                       Add
                                     </Button>
@@ -895,11 +977,12 @@ const Forms = () => {
                         placeholder="Enter question text"
                         value={newQuestion}
                         onChange={(e) => setNewQuestion(e.target.value)}
+                        disabled={!hasEditPermission()}
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <Select value={questionType} onValueChange={setQuestionType}>
+                      <Select value={questionType} onValueChange={setQuestionType} disabled={!hasEditPermission()}>
                         <SelectTrigger>
                           <SelectValue placeholder="Question type" />
                         </SelectTrigger>
@@ -913,7 +996,12 @@ const Forms = () => {
                         </SelectContent>
                       </Select>
 
-                      <Button onClick={handleAddQuestion}>Add Question</Button>
+                      <Button 
+                        onClick={handleAddQuestion}
+                        disabled={!hasEditPermission()}
+                      >
+                        Add Question
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -931,7 +1019,7 @@ const Forms = () => {
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     <div>
                       <Label htmlFor="mainTask" className="text-xs mb-1 block">Main Task</Label>
-                      <Select value={selectedMainTask} onValueChange={setSelectedMainTask}>
+                      <Select value={selectedMainTask} onValueChange={setSelectedMainTask} disabled={!hasEditPermission()}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select main task" />
                         </SelectTrigger>
@@ -950,7 +1038,7 @@ const Forms = () => {
                       <Select
                         value={selectedSubtask}
                         onValueChange={setSelectedSubtask}
-                        disabled={!selectedMainTask}
+                        disabled={!hasEditPermission() || !selectedMainTask}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select subtask" />
@@ -987,18 +1075,28 @@ const Forms = () => {
                 </Button>
 
                 {currentStep < 3 ? (
-                  <Button onClick={nextStep}>
+                  <Button 
+                    onClick={nextStep}
+                    disabled={!hasEditPermission()}
+                  >
                     Next
                     <ChevronRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
                   <>
-                    <Button variant="default" onClick={handleSaveForm}>
+                    <Button 
+                      variant="default" 
+                      onClick={handleSaveForm}
+                      disabled={!hasEditPermission()}
+                    >
                       <Save className="mr-2 h-4 w-4" />
                       Save Form
                     </Button>
                     {selectedMainTask && selectedSubtask && (
-                      <Button onClick={handleSaveAndAssign}>
+                      <Button 
+                        onClick={handleSaveAndAssign}
+                        disabled={!hasEditPermission()}
+                      >
                         Save & Assign
                       </Button>
                     )}

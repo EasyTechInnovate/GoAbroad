@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StudentProfile } from './components/students/StudentProfile';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, User, FileText, BookOpen, Briefcase, FileQuestion } from 'lucide-react';
+import { ArrowLeft, User, FileText, BookOpen, Briefcase, FileQuestion, CheckSquare } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
 import { StudentQuestionnaires } from './components/students/StudentQuestionnaires';
 
@@ -19,7 +19,7 @@ const StudentDetails = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <Button variant="ghost" size="icon" asChild className="mr-2">
-            <Link to="/students">
+            <Link to="/admin/students">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
@@ -43,6 +43,9 @@ const StudentDetails = () => {
           </TabsTrigger>
           <TabsTrigger value="questionnaires" className="flex gap-2">
             <FileQuestion className="h-4 w-4" /> Questionnaires
+          </TabsTrigger>
+          <TabsTrigger value="timeline" className="flex gap-2">
+            <CheckSquare className="h-4 w-4" /> Checklist & Tasks
           </TabsTrigger>
         </TabsList>
 
