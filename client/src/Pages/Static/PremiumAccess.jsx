@@ -1,11 +1,9 @@
-
-import React from 'react';
-import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, CheckCircle, Calendar, FileText, User, Zap, BarChart3, MessageSquare, Star, Clock, Target } from 'lucide-react';
+import Navigation from './components/Navigation';
 
 const PremiumAccess = () => {
   return (
@@ -33,7 +31,7 @@ const PremiumAccess = () => {
                 <span className="text-primary">With Expert Guidance</span>
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-                Don't navigate the complex application process alone. Our expert counselors will guide you through every step with a personalized dashboard to track your progress.
+                Don&apos;t navigate the complex application process alone. Our expert counselors will guide you through every step with a personalized dashboard to track your progress.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-lg">
@@ -289,7 +287,7 @@ const PremiumAccess = () => {
                     ))}
                   </div>
                   <p className="text-gray-600 mb-4">
-                    "The personalized dashboard made tracking my applications so much easier. Got into Stanford!"
+                    &quot;The personalized dashboard made tracking my applications so much easier. Got into Stanford!&quot;
                   </p>
                   <div className="font-semibold text-gray-900">- Alex Chen</div>
                   <div className="text-sm text-gray-500">Stanford University</div>
@@ -304,7 +302,7 @@ const PremiumAccess = () => {
                     ))}
                   </div>
                   <p className="text-gray-600 mb-4">
-                    "My counselor's guidance was invaluable. The essay reviews helped me craft compelling stories."
+                    &quot;My counselor&apos;s guidance was invaluable. The essay reviews helped me craft compelling stories.&quot;
                   </p>
                   <div className="font-semibold text-gray-900">- Maria Rodriguez</div>
                   <div className="text-sm text-gray-500">MIT</div>
@@ -319,7 +317,7 @@ const PremiumAccess = () => {
                     ))}
                   </div>
                   <p className="text-gray-600 mb-4">
-                    "Interview prep sessions boosted my confidence. Couldn't have done it without the expert support."
+                    &quot;Interview prep sessions boosted my confidence. Couldn&apos;t have done it without the expert support.&quot;
                   </p>
                   <div className="font-semibold text-gray-900">- David Kim</div>
                   <div className="text-sm text-gray-500">Harvard University</div>
@@ -336,7 +334,7 @@ const PremiumAccess = () => {
               Ready to Transform Your University Applications?
             </h2>
             <p className="text-xl text-primary-100 mb-8">
-              Don't leave your future to chance. Get expert guidance and start your journey today.
+              Don&apos;t leave your future to chance. Get expert guidance and start your journey today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-white text-primary hover:bg-gray-50 px-8 py-4 text-lg font-semibold">

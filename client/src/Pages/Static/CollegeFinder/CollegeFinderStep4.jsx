@@ -1,15 +1,15 @@
 
-import React, { useState } from 'react';
-import Navigation from '@/components/Navigation';
+import { useState } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
 import { ArrowLeft, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Navigation from '../components/Navigation';
+import { Slider } from '../components/ui/slider';
 
 const CollegeFinderStep4 = () => {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ const CollegeFinderStep4 = () => {
 
         <Card className="w-full max-w-2xl mx-auto shadow-lg">
           <CardHeader className="text-center bg-primary/5">
-            <CardTitle className="text-2xl font-bold text-primary">SOMETIMES IT'S GOOD TO SHOW OFF</CardTitle>
+            <CardTitle className="text-2xl font-bold text-primary">SOMETIMES IT&apos;S GOOD TO SHOW OFF</CardTitle>
             <CardDescription className="text-lg">Step 4 of 4</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8 p-8">

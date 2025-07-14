@@ -1,13 +1,13 @@
-import React from 'react';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
-import PremiumCTA from '@/components/PremiumCTA';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MapPin, DollarSign, GraduationCap, Star, ArrowLeft, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Navigation from '../components/Navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import PremiumCTA from '../components/PremiumCTA';
+import Footer from '../components/Footer';
 
 const CollegeFinderResults = () => {
   const navigate = useNavigate();
@@ -16,66 +16,66 @@ const CollegeFinderResults = () => {
   const universities = [
     {
       id: 1,
-      name: "Stanford University",
-      location: "California, USA",
-      tuitionFee: "$56,169",
-      ranking: "#3 in National Universities",
-      acceptanceRate: "4%",
-      programs: ["Computer Science", "Engineering", "Business"],
+      name: 'Stanford University',
+      location: 'California, USA',
+      tuitionFee: '$56,169',
+      ranking: '#3 in National Universities',
+      acceptanceRate: '4%',
+      programs: ['Computer Science', 'Engineering', 'Business'],
       matchScore: 95,
-      type: "Private"
+      type: 'Private'
     },
     {
       id: 2,
-      name: "Massachusetts Institute of Technology",
-      location: "Massachusetts, USA",
-      tuitionFee: "$57,986",
-      ranking: "#2 in National Universities",
-      acceptanceRate: "7%",
-      programs: ["Engineering", "Computer Science", "Physics"],
+      name: 'Massachusetts Institute of Technology',
+      location: 'Massachusetts, USA',
+      tuitionFee: '$57,986',
+      ranking: '#2 in National Universities',
+      acceptanceRate: '7%',
+      programs: ['Engineering', 'Computer Science', 'Physics'],
       matchScore: 92,
-      type: "Private"
+      type: 'Private'
     },
     {
       id: 3,
-      name: "University of California, Berkeley",
-      location: "California, USA",
-      tuitionFee: "$14,226",
-      ranking: "#22 in National Universities",
-      acceptanceRate: "17%",
-      programs: ["Engineering", "Computer Science", "Liberal Arts"],
+      name: 'University of California, Berkeley',
+      location: 'California, USA',
+      tuitionFee: '$14,226',
+      ranking: '#22 in National Universities',
+      acceptanceRate: '17%',
+      programs: ['Engineering', 'Computer Science', 'Liberal Arts'],
       matchScore: 88,
-      type: "Public"
+      type: 'Public'
     },
     {
       id: 4,
-      name: "Carnegie Mellon University",
-      location: "Pennsylvania, USA",
-      tuitionFee: "$59,864",
-      ranking: "#25 in National Universities",
-      acceptanceRate: "13%",
-      programs: ["Computer Science", "Engineering", "Arts"],
+      name: 'Carnegie Mellon University',
+      location: 'Pennsylvania, USA',
+      tuitionFee: '$59,864',
+      ranking: '#25 in National Universities',
+      acceptanceRate: '13%',
+      programs: ['Computer Science', 'Engineering', 'Arts'],
       matchScore: 85,
-      type: "Private"
+      type: 'Private'
     },
     {
       id: 5,
-      name: "University of Toronto",
-      location: "Ontario, Canada",
-      tuitionFee: "CAD $58,160",
-      ranking: "#18 in Global Universities",
-      acceptanceRate: "43%",
-      programs: ["Engineering", "Medicine", "Business"],
+      name: 'University of Toronto',
+      location: 'Ontario, Canada',
+      tuitionFee: 'CAD $58,160',
+      ranking: '#18 in Global Universities',
+      acceptanceRate: '43%',
+      programs: ['Engineering', 'Medicine', 'Business'],
       matchScore: 82,
-      type: "Public"
+      type: 'Public'
     }
   ];
 
   const getMatchScoreColor = (score) => {
-    if (score >= 90) return "bg-green-500";
-    if (score >= 80) return "bg-blue-500";
-    if (score >= 70) return "bg-yellow-500";
-    return "bg-red-500";
+    if (score >= 90) return 'bg-green-500';
+    if (score >= 80) return 'bg-blue-500';
+    if (score >= 70) return 'bg-yellow-500';
+    return 'bg-red-500';
   };
 
   const backToFinder = () => {

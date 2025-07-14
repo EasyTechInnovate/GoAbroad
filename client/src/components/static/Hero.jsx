@@ -37,7 +37,7 @@ const Hero = () => {
           {/* Left Section - Content */}
           <div className="space-y-8">
             {/* Badge */}
-            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm">
+            <Badge variant="secondary" className="bg-primary-1/10 text-primary border-primary/20 px-4 py-2 text-sm">
               🎓 #1 Study Abroad Platform
             </Badge>
 
@@ -77,7 +77,7 @@ const Hero = () => {
               <Link to="/signin">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
+                  className="bg-primary-1-1 hover:bg-primary-1-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -86,7 +86,7 @@ const Hero = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-primary text-primary hover:bg-primary hover:text-white px-8 py-6 text-lg font-semibold rounded-full transition-all duration-300"
+                className="border-primary text-primary hover:bg-primary-1 hover:text-white px-8 py-6 text-lg font-semibold rounded-full transition-all duration-300"
               >
                 Explore Universities
               </Button>

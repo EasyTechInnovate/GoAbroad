@@ -1,13 +1,13 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import Navigation from '@/components/Navigation';
-import { Users, Search, BookOpen, Globe, Briefcase, GraduationCap, Heart, Code, Camera, Music, MapPin, Clock, Star } from 'lucide-react';
+import { Users, Search, BookOpen, Globe, Briefcase, Heart, Code, Camera, Music, MapPin, Clock, Star } from 'lucide-react';
+import Navigation from './components/Navigation';
 
 const Community = () => {
   const [searchTerm, setSearchTerm] = useState('');

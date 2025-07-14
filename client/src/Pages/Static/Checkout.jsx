@@ -1,15 +1,15 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Badge } from '@/components/ui/badge';
 import { useForm } from 'react-hook-form';
 import { ArrowLeft, CreditCard, CheckCircle, Lock } from 'lucide-react';
+import Navigation from './components/Navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Footer from './components/Footer';
 
 
 const Checkout = () => {
@@ -50,7 +50,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      <Navigation/>
 
       <main className="pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,7 +94,7 @@ const Checkout = () => {
                   </div>
 
                   <div className="border-t pt-4">
-                    <h4 className="font-medium mb-3">What's Included:</h4>
+                    <h4 className="font-medium mb-3">What&apos;s Included:</h4>
                     <div className="space-y-2">
                       {planDetails.features.map((feature, index) => (
                         <div key={index} className="flex items-start gap-2">
@@ -128,7 +128,7 @@ const Checkout = () => {
                       <FormField
                         control={form.control}
                         name="firstName"
-                        rules={{ required: "First name is required" }}
+                        rules={{ required: 'First name is required' }}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>First Name *</FormLabel>
@@ -143,7 +143,7 @@ const Checkout = () => {
                       <FormField
                         control={form.control}
                         name="lastName"
-                        rules={{ required: "Last name is required" }}
+                        rules={{ required: 'Last name is required' }}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Last Name *</FormLabel>
@@ -159,10 +159,10 @@ const Checkout = () => {
                         control={form.control}
                         name="email"
                         rules={{
-                          required: "Email is required",
+                          required: 'Email is required',
                           pattern: {
                             value: /^\S+@\S+$/i,
-                            message: "Please enter a valid email"
+                            message: 'Please enter a valid email'
                           }
                         }}
                         render={({ field }) => (
@@ -179,7 +179,7 @@ const Checkout = () => {
                       <FormField
                         control={form.control}
                         name="phone"
-                        rules={{ required: "Phone number is required" }}
+                        rules={{ required: 'Phone number is required' }}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Phone Number *</FormLabel>
@@ -202,7 +202,7 @@ const Checkout = () => {
                       <FormField
                         control={form.control}
                         name="address"
-                        rules={{ required: "Address is required" }}
+                        rules={{ required: 'Address is required' }}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Address *</FormLabel>
@@ -218,7 +218,7 @@ const Checkout = () => {
                         <FormField
                           control={form.control}
                           name="city"
-                          rules={{ required: "City is required" }}
+                          rules={{ required: 'City is required' }}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>City *</FormLabel>
@@ -233,7 +233,7 @@ const Checkout = () => {
                         <FormField
                           control={form.control}
                           name="state"
-                          rules={{ required: "State is required" }}
+                          rules={{ required: 'State is required' }}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>State *</FormLabel>
@@ -248,7 +248,7 @@ const Checkout = () => {
                         <FormField
                           control={form.control}
                           name="pincode"
-                          rules={{ required: "Pincode is required" }}
+                          rules={{ required: 'Pincode is required' }}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Pincode *</FormLabel>
@@ -272,7 +272,7 @@ const Checkout = () => {
                       <FormField
                         control={form.control}
                         name="emergencyContact"
-                        rules={{ required: "Emergency contact name is required" }}
+                        rules={{ required: 'Emergency contact name is required' }}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Emergency Contact Name *</FormLabel>
@@ -287,7 +287,7 @@ const Checkout = () => {
                       <FormField
                         control={form.control}
                         name="emergencyPhone"
-                        rules={{ required: "Emergency contact phone is required" }}
+                        rules={{ required: 'Emergency contact phone is required' }}
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Emergency Contact Phone *</FormLabel>

@@ -1,7 +1,7 @@
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import OrderConfirmation from '../pages/OrderConfirmation';
+import OrderConfirmation from '../OrderConfirmation';
 
 const TestOrderConfirmation = () => {
   const navigate = useNavigate();

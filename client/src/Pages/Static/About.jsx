@@ -1,78 +1,77 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Navigation from '@/components/Navigation';
-import { GraduationCap, Users, Award, University, Globe, Heart, Target, Lightbulb, CheckCircle, ArrowRight, Phone, Mail, MapPin, Clock, Star, BookOpen, TrendingUp } from 'lucide-react';
+import { GraduationCap, Users, Award, University, Globe, Heart, Target, Lightbulb, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
+import Navigation from './components/Navigation';
 
 const About = () => {
   console.log('About component rendering');
   
   const impactStats = [
     {
-      number: "20,000+",
-      label: "Students Guided",
+      number: '20,000+',
+      label: 'Students Guided',
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50"
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
     },
     {
-      number: "700+",
-      label: "Partner Universities", 
+      number: '700+',
+      label: 'Partner Universities', 
       icon: University,
-      color: "text-green-600",
-      bgColor: "bg-green-50"
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
     },
     {
-      number: "₹100+ Cr",
-      label: "Scholarships Secured",
+      number: '₹100+ Cr',
+      label: 'Scholarships Secured',
       icon: Award,
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-50"
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-50'
     },
     {
-      number: "98%",
-      label: "Visa Success Rate",
+      number: '98%',
+      label: 'Visa Success Rate',
       icon: CheckCircle,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50"
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
     }
   ];
 
   const values = [
     {
-      title: "Student-Centric",
-      description: "We prioritize our students' dreams and aspirations above all else.",
+      title: 'Student-Centric',
+      description: 'We prioritize our students\' dreams and aspirations above all else.',
       icon: Heart,
-      gradient: "from-red-400 to-pink-400"
+      gradient: 'from-red-400 to-pink-400'
     },
     {
-      title: "Transparency", 
-      description: "Complete transparency in processes, fees, and guidance.",
+      title: 'Transparency', 
+      description: 'Complete transparency in processes, fees, and guidance.',
       icon: Lightbulb,
-      gradient: "from-yellow-400 to-orange-400"
+      gradient: 'from-yellow-400 to-orange-400'
     },
     {
-      title: "Excellence",
-      description: "Committed to excellence in every aspect of service delivery.",
+      title: 'Excellence',
+      description: 'Committed to excellence in every aspect of service delivery.',
       icon: Award,
-      gradient: "from-blue-400 to-indigo-400"
+      gradient: 'from-blue-400 to-indigo-400'
     },
     {
-      title: "Innovation",
-      description: "Continuously evolving with latest technology and practices.",
+      title: 'Innovation',
+      description: 'Continuously evolving with latest technology and practices.',
       icon: Target,
-      gradient: "from-green-400 to-teal-400"
+      gradient: 'from-green-400 to-teal-400'
     }
   ];
 
-  const achievements = [
-    { label: "Years of Excellence", value: "15+", icon: Clock },
-    { label: "Success Stories", value: "20K+", icon: Star },
-    { label: "Global Reach", value: "25+", icon: Globe },
-    { label: "Expert Counselors", value: "50+", icon: Users }
-  ];
+  // const achievements = [
+  //   { label: "Years of Excellence", value: "15+", icon: Clock },
+  //   { label: "Success Stories", value: "20K+", icon: Star },
+  //   { label: "Global Reach", value: "25+", icon: Globe },
+  //   { label: "Expert Counselors", value: "50+", icon: Users }
+  // ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -91,7 +90,7 @@ const About = () => {
                 </Badge>
                 
                 <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                  To bring everyone's{' '}
+                  To bring everyone&apos;s{' '}
                   <span className="text-primary">study abroad dream</span>{' '}
                   to life
                 </h1>
@@ -196,7 +195,7 @@ const About = () => {
                 <div className="space-y-4">
                   <p className="text-gray-700 leading-relaxed">
                     GroupBroad was founded with a vision to democratize access to world-class education for Indian students. 
-                    What started as a mission to help a few students has grown into India's most trusted study abroad consultancy.
+                    What started as a mission to help a few students has grown into India&apos;s most trusted study abroad consultancy.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
                     With a team of experienced counselors and a network spanning across the globe, 
@@ -247,12 +246,12 @@ const About = () => {
                     </div>
                     <div className="space-y-4 text-gray-700 leading-relaxed">
                       <p>
-                        Anushk completed his bachelor's degree in Mechanical Engineering from Medi Caps University in India. 
+                        Anushk completed his bachelor&apos;s degree in Mechanical Engineering from Medi Caps University in India. 
                         However, feeling dissatisfied with the quality of education, he sought to enhance his academic journey 
-                        by pursuing his master's degree at the University of Notre Dame.
+                        by pursuing his master&apos;s degree at the University of Notre Dame.
                       </p>
                       <p>
-                        In his quest for admission, Anushk sought assistance from a "reputed local consultancy service in Indore". 
+                        In his quest for admission, Anushk sought assistance from a &quot;reputed local consultancy service in Indore&quot;. 
                         Unfortunately, he found their approach to be generic and lacking relevant industry knowledge, despite 
                         investing nearly 1 lakh rupees in their services. Consequently, he navigated the admissions process independently.
                       </p>
@@ -288,7 +287,7 @@ const About = () => {
                     </div>
                     <div className="space-y-4 text-gray-700 leading-relaxed">
                       <p>
-                        After completing his Bachelor's in Electronics and Communication, Shrey embarked on a transformative 
+                        After completing his Bachelor&apos;s in Electronics and Communication, Shrey embarked on a transformative 
                         journey to pursue an M.S. in Computer Science at Florida State University, driven by a passion for 
                         cutting-edge technology and software development.
                       </p>

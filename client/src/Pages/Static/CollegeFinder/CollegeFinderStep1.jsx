@@ -1,14 +1,14 @@
 
-import React, { useState } from 'react';
-import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { ArrowRight, GraduationCap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Navigation from '../components/Navigation';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 
 const CollegeFinderStep1 = () => {
   const navigate = useNavigate();
@@ -62,11 +62,11 @@ const CollegeFinderStep1 = () => {
               >
                 <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
                   <RadioGroupItem value="bachelor" id="bachelor" className="border-primary" />
-                  <Label htmlFor="bachelor" className="cursor-pointer">Bachelor's</Label>
+                  <Label htmlFor="bachelor" className="cursor-pointer">Bachelor&apos;s</Label>
                 </div>
                 <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
                   <RadioGroupItem value="master" id="master" className="border-primary" />
-                  <Label htmlFor="master" className="cursor-pointer">Master's</Label>
+                  <Label htmlFor="master" className="cursor-pointer">Master&apos;s</Label>
                 </div>
               </RadioGroup>
             </div>

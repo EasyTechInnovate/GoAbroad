@@ -1,6 +1,5 @@
 
-import React, { useState } from 'react';
-import Navigation from '@/components/Navigation';
+import { useState } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Navigation from '../components/Navigation';
 
 const CollegeFinderStep2 = () => {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ const CollegeFinderStep2 = () => {
                 <SelectContent className="bg-background border-primary/20">
                   <SelectItem value="school1">Delhi Public School</SelectItem>
                   <SelectItem value="school2">Kendriya Vidyalaya</SelectItem>
-                  <SelectItem value="school3">St. Mary's School</SelectItem>
+                  <SelectItem value="school3">St. Mary&apos;s School</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>

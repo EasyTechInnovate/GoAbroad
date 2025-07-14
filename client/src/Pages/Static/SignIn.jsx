@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -187,7 +187,7 @@ const SignIn = () => {
               {/* Sign Up Link */}
               <div className="text-center">
                 <span className="text-sm text-gray-600">
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Link to="/signup" className="text-primary hover:text-primary-600 font-medium">
                     Sign up here
                   </Link>

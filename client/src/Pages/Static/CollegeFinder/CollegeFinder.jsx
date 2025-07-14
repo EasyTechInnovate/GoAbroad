@@ -1,16 +1,16 @@
 
-import React, { useState } from 'react';
-import Navigation from '@/components/Navigation';
+import { useState } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
 import { Search, ArrowLeft, ArrowRight, GraduationCap } from 'lucide-react';
+import Navigation from '@/components/static/Navigation';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Slider } from '@/Pages/Admin/components/ui/slider';
 
 const CollegeFinder = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -82,11 +82,11 @@ const CollegeFinder = () => {
           >
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
               <RadioGroupItem value="bachelor" id="bachelor" className="border-primary" />
-              <Label htmlFor="bachelor" className="cursor-pointer">Bachelor's</Label>
+              <Label htmlFor="bachelor" className="cursor-pointer">Bachelor&apos;s</Label>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
               <RadioGroupItem value="master" id="master" className="border-primary" />
-              <Label htmlFor="master" className="cursor-pointer">Master's</Label>
+              <Label htmlFor="master" className="cursor-pointer">Master&apos;s</Label>
             </div>
           </RadioGroup>
         </div>
@@ -168,7 +168,7 @@ const CollegeFinder = () => {
             <SelectContent className="bg-background border-primary/20">
               <SelectItem value="school1">Delhi Public School</SelectItem>
               <SelectItem value="school2">Kendriya Vidyalaya</SelectItem>
-              <SelectItem value="school3">St. Mary's School</SelectItem>
+              <SelectItem value="school3">St. Mary&apos;s School</SelectItem>
               <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
@@ -302,7 +302,7 @@ const CollegeFinder = () => {
   const renderStep4 = () => (
     <Card className="w-full max-w-2xl mx-auto shadow-lg">
       <CardHeader className="text-center bg-primary/5">
-        <CardTitle className="text-2xl font-bold text-primary">SOMETIMES IT'S GOOD TO SHOW OFF</CardTitle>
+        <CardTitle className="text-2xl font-bold text-primary">SOMETIMES IT&apos;S GOOD TO SHOW OFF</CardTitle>
         <CardDescription className="text-lg">Step 4 of 4</CardDescription>
       </CardHeader>
       <CardContent className="space-y-8 p-8">

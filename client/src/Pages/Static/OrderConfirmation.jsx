@@ -1,12 +1,11 @@
 
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
+import { CheckCircle, Download, Calendar, Phone, Mail, Home } from 'lucide-react';
+import Navigation from './components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Download, Calendar, Phone, Mail, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Footer from '@/components/Footer';
 
 const OrderConfirmation = () => {
   const location = useLocation();
@@ -122,11 +121,11 @@ const OrderConfirmation = () => {
           {/* What's Included */}
           <Card className="mb-12">
             <CardHeader>
-              <CardTitle>What's Included in Your Plan</CardTitle>
+              <CardTitle>What&apos;s Included in Your Plan</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
-                {planDetails.features.map((feature: string, index: number) => (
+                {planDetails.features.map((feature, index) => (
                   <div key={index} className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#145044' }} />
                     <span className="text-gray-700">{feature}</span>
@@ -152,7 +151,7 @@ const OrderConfirmation = () => {
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">Confirmation Email</h4>
-                    <p className="text-gray-600 text-sm">You'll receive a detailed confirmation email within 10 minutes with your order details and next steps.</p>
+                    <p className="text-gray-600 text-sm">You&apos;ll receive a detailed confirmation email within 10 minutes with your order details and next steps.</p>
                   </div>
                 </div>
                 

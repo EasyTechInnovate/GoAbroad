@@ -1,12 +1,12 @@
 
-import React, { useState } from 'react';
-import Navigation from '@/components/Navigation';
+import { useState } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Star, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Navigation from './components/Navigation';
 
 const Pricing = () => {
   const [selectedCategory, setSelectedCategory] = useState('masters');
@@ -136,7 +136,7 @@ const Pricing = () => {
     return plans[category][planType];
   };
 
-  const currentPlans = getPlanDetails('basic', selectedCategory);
+  // const currentPlans = getPlanDetails('basic', selectedCategory);
   const basicPlan = getPlanDetails('basic', selectedCategory);
   const proPlan = getPlanDetails('pro', selectedCategory);
   const premierPlan = getPlanDetails('premier', selectedCategory);
@@ -337,7 +337,7 @@ const Pricing = () => {
                   <ArrowRight className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">End-to-End Support</h3>
-                <p className="text-gray-600">From application to visa, we're with you every step of the way</p>
+                <p className="text-gray-600">From application to visa, we&apos;re with you every step of the way</p>
               </div>
             </div>
           </div>
