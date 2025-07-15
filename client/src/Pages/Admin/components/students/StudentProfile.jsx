@@ -503,6 +503,35 @@ export function StudentProfile({ id }) {
     }
   };
 
+  const handleUpdateSubtaskDueDate = async (subtaskId, dueDate) => {
+    if (!hasEditPermission()) {
+      toast.error("You don't have permission to update subtask due date");
+      return;
+    }
+    
+    try {
+      const subtask = subtasks[selectedTaskId]?.find(st => st._id === subtaskId);
+      if (!subtask) {
+        throw new Error('Subtask not found');
+      }
+
+      await apiService.put(`/admin/task-subtask-assignments/update`, { 
+        assignmentId: subtaskId,
+        status: subtask.status,
+        isLocked: subtask.isLocked,
+        dueDate
+      });
+      toast.success('Subtask due date updated successfully');
+      
+      if (selectedTaskId) {
+        await fetchSubtasks(selectedTaskId, id);
+      }
+    } catch (error) {
+      console.error('Error updating subtask due date:', error);
+      toast.error('Failed to update subtask due date: ' + (error.response?.data?.message || error.message));
+    }
+  };
+
   const handleAssign = async () => {
     await fetchAssignments();
   };
@@ -560,6 +589,32 @@ export function StudentProfile({ id }) {
     } catch (error) {
       console.error('Error updating task status:', error);
       toast.error('Failed to update task status: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setTasksLoading(false);
+    }
+  };
+
+  const handleUpdateTaskDueDate = async (taskId, dueDate) => {
+    try {
+      setTasksLoading(true);
+
+      const task = studentTasks.find(t => t._id === taskId);
+      if (!task) {
+        throw new Error('Task not found');
+      }
+
+      await apiService.put(`/admin/student-task-assignments/update`, { 
+        assignmentId: taskId,
+        status: task.status,
+        isLocked: task.isLocked, 
+        dueDate
+      });
+      toast.success('Task due date updated successfully');
+
+      await fetchStudentTasks(id);
+    } catch (error) {
+      console.error('Error updating task due date:', error);
+      toast.error('Failed to update task due date: ' + (error.response?.data?.message || error.message));
     } finally {
       setTasksLoading(false);
     }
@@ -1281,22 +1336,35 @@ export function StudentProfile({ id }) {
                           </AccordionTrigger>
                           <AccordionContent className="px-4 pb-4">
                             <div className="space-y-4">
-                              <div className="flex flex-wrap gap-2 mb-2">
-                                {/* Status update dropdown */}
-                                <Select 
-                                  value={task.status} 
-                                  onValueChange={(value) => handleUpdateTaskStatus(task._id, value)}
-                                >
-                                  <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Update Status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="PENDING">Pending</SelectItem>
-                                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                                    <SelectItem value="COMPLETED">Completed</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
+                              {hasEditPermission() && (
+                                <div className="flex flex-wrap gap-4 mb-4 p-3 bg-muted/20 rounded-md">
+                                  <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-medium">Status:</label>
+                                    <Select 
+                                      value={task.status} 
+                                      onValueChange={(value) => handleUpdateTaskStatus(task._id, value)}
+                                    >
+                                      <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Update Status" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="PENDING">Pending</SelectItem>
+                                        <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                                        <SelectItem value="COMPLETED">Completed</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-medium">Due Date:</label>
+                                    <Input 
+                                      type="date"
+                                      value={task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}
+                                      onChange={(e) => handleUpdateTaskDueDate(task._id, e.target.value)}
+                                      className="w-[180px]"
+                                    />
+                                  </div>
+                                </div>
+                              )}
                               
                               {/* Task details */}
                               <div className="bg-muted/30 p-4 rounded-md">
@@ -1408,6 +1476,38 @@ export function StudentProfile({ id }) {
                             </Button>
                           </div>
                         </div>
+                        
+                        {hasEditPermission() && (
+                          <div className="p-3 bg-muted/20 border-t">
+                            <div className="flex gap-4 items-end">
+                              <div className="flex flex-col gap-2">
+                                <label className="text-sm font-medium">Status:</label>
+                                <Select 
+                                  value={subtask.status} 
+                                  onValueChange={(value) => handleUpdateSubtaskStatus(subtask._id, value, subtask.isLocked)}
+                                >
+                                  <SelectTrigger className="w-[150px]">
+                                    <SelectValue placeholder="Update Status" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="PENDING">Pending</SelectItem>
+                                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <label className="text-sm font-medium">Due Date:</label>
+                                <Input 
+                                  type="date"
+                                  value={subtask.dueDate ? new Date(subtask.dueDate).toISOString().split('T')[0] : ''}
+                                  onChange={(e) => handleUpdateSubtaskDueDate(subtask._id, e.target.value)}
+                                  className="w-[150px]"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         
                         {/* Questionnaires for this subtask */}
                         <div className="p-3 border-t">
@@ -1917,7 +2017,6 @@ export function StudentProfile({ id }) {
                   placeholder="Number of Backlogs"
                 />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="admissionTerm">Admission Term</Label>
                 <Input 

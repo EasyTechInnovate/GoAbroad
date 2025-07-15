@@ -38,7 +38,6 @@ import { Plus, Loader2, X, Briefcase } from 'lucide-react';
 
 const Tasks = () => {
   const [mainTaskCategories, setMainTaskCategories] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
   const [selectedMainTask, setSelectedMainTask] = useState('');
   
   // Permission check functions
@@ -111,8 +110,6 @@ const Tasks = () => {
     description: '',
     priority: 'HIGH',
     logo: '',
-    status: 'pending',
-    dueDate: '',
     assignee: ''
   });
 
@@ -140,6 +137,136 @@ const Tasks = () => {
     setSelectedMainTask(value);
   };
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchTasks = async () => {
+      try {
+        setLoading(prev => ({ ...prev, tasks: true }));
+        const response = await getTasks();
+        const transformedTasks = response.data.tasks.map(task => ({
+          ...task,
+          status: task.subtasks.length > 0 ? 
+            task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
+            task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
+            : 'PENDING',
+          studentNames: task.students?.map(s => s.name || s.email).join(', '),
+          subtaskCount: task.subtasks?.length || 0
+        }));
+        if (isMounted) setTasks(transformedTasks);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+        if (isMounted) toast.error('Failed to fetch tasks');
+      } finally {
+        if (isMounted) setLoading(prev => ({ ...prev, tasks: false }));
+      }
+    };
+
+    const fetchTeamMembers = async () => {
+      // Only fetch team members if user is an admin
+      if (!hasAdminPermission()) {
+        return;
+      }
+      
+      try {
+        setLoading(prev => ({ ...prev, members: true }));
+        const response = await servicesAxiosInstance.get('/admin/members');
+        if (response.data.success && isMounted) {
+          setTeamMembers(response.data.data.members
+            .filter(member => member.status === 'ACTIVE')
+            .map(member => ({
+              id: member._id,
+              name: `${member.firstName} ${member.lastName}`,
+              role: member.role,
+              status: member.status
+            }))
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+        if (isMounted) toast.error(error.response?.data?.message || 'Failed to fetch team members');
+      } finally {
+        if (isMounted) setLoading(prev => ({ ...prev, members: false }));
+      }
+    };
+
+    const fetchSubtasks = async () => {
+      try {
+        setLoading(prev => ({ ...prev, subtasks: true }));
+        const response = await getSubtasks();
+        if (response?.data?.subtasks && isMounted) {
+          setAvailableSubtasks(response.data.subtasks.map(subtask => ({
+            id: subtask._id,
+            title: subtask.title,
+            description: subtask.description,
+            priority: subtask.priority
+          })));
+        }
+      } catch (error) {
+        console.error('Error fetching subtasks:', error);
+        if (isMounted) toast.error('Failed to fetch subtasks');
+      } finally {
+        if (isMounted) setLoading(prev => ({ ...prev, subtasks: false }));
+      }
+    };
+
+    const fetchStudents = async (searchQuery = '') => {
+      try {
+        setLoading(prev => ({ ...prev, students: true }));
+        const params = searchQuery ? { search: searchQuery } : {};
+        const response = await servicesAxiosInstance.get('/admin/students', { params });
+        if (response.data.success && isMounted) {
+          setStudents(response.data.data.students.map(student => ({
+            id: student._id,
+            name: student.name || student.email,
+            email: student.email
+          })));
+        }
+      } catch (error) {
+        console.error('Error fetching students:', error);
+        if (isMounted) toast.error('Failed to fetch students');
+      } finally {
+        if (isMounted) setLoading(prev => ({ ...prev, students: false }));
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        setLoading(prev => ({ ...prev, categories: true }));
+        const response = await getCategories();
+        if (response.success && isMounted) {
+          const categories = response.data.categories || [];
+          setMainTaskCategories(categories);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        if (isMounted) toast.error('Failed to fetch categories');
+      } finally {
+        if (isMounted) setLoading(prev => ({ ...prev, categories: false }));
+      }
+    };
+
+    const fetchInitialData = async () => {
+      try {
+        if (!isMounted) return;
+        await fetchTeamMembers();
+        await fetchSubtasks();
+        await fetchTasks();
+        await fetchStudents('');
+        await fetchCategories();
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+
+    fetchInitialData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Standalone fetch functions for use throughout the component
   const fetchTasks = async () => {
     try {
       setLoading(prev => ({ ...prev, tasks: true }));
@@ -162,74 +289,6 @@ const Tasks = () => {
     }
   };
 
-  const fetchTeamMembers = async () => {
-    // Only fetch team members if user is an admin
-    if (!hasAdminPermission()) {
-      return;
-    }
-    
-    try {
-      setLoading(prev => ({ ...prev, members: true }));
-      const response = await servicesAxiosInstance.get('/admin/members');
-      if (response.data.success) {
-        setTeamMembers(response.data.data.members
-          .filter(member => member.status === 'ACTIVE')
-          .map(member => ({
-            id: member._id,
-            name: `${member.firstName} ${member.lastName}`,
-            role: member.role,
-            status: member.status
-          }))
-        );
-      }
-    } catch (error) {
-      console.error('Error fetching team members:', error);
-      toast.error(error.response?.data?.message || 'Failed to fetch team members');
-    } finally {
-      setLoading(prev => ({ ...prev, members: false }));
-    }
-  };
-
-  const fetchSubtasks = async () => {
-    try {
-      setLoading(prev => ({ ...prev, subtasks: true }));
-      const response = await getSubtasks();
-      if (response?.data?.subtasks) {
-        setAvailableSubtasks(response.data.subtasks.map(subtask => ({
-          id: subtask._id,
-          title: subtask.title,
-          description: subtask.description,
-          priority: subtask.priority
-        })));
-      }
-    } catch (error) {
-      console.error('Error fetching subtasks:', error);
-      toast.error('Failed to fetch subtasks');
-    } finally {
-      setLoading(prev => ({ ...prev, subtasks: false }));
-    }
-  };
-
-  const fetchStudents = async (searchQuery = '') => {
-    try {
-      setLoading(prev => ({ ...prev, students: true }));
-      const params = searchQuery ? { search: searchQuery } : {};
-      const response = await servicesAxiosInstance.get('/admin/students', { params });
-      if (response.data.success) {
-        setStudents(response.data.data.students.map(student => ({
-          id: student._id,
-          name: student.name || student.email,
-          email: student.email
-        })));
-      }
-    } catch (error) {
-      console.error('Error fetching students:', error);
-      toast.error('Failed to fetch students');
-    } finally {
-      setLoading(prev => ({ ...prev, students: false }));
-    }
-  };
-
   const fetchCategories = async () => {
     try {
       setLoading(prev => ({ ...prev, categories: true }));
@@ -245,31 +304,6 @@ const Tasks = () => {
       setLoading(prev => ({ ...prev, categories: false }));
     }
   };
-
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchInitialData = async () => {
-      try {
-        if (!isMounted) return;
-        await fetchTeamMembers();
-        await fetchSubtasks();
-        await fetchTasks();
-        await fetchStudents('');
-        await fetchCategories();
-      } catch (error) {
-        console.error('Error fetching initial data:', error);
-      }
-    };
-
-    fetchInitialData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
 
   const handleDeleteTask = async (taskId) => {
     if (!taskId) return;
@@ -349,8 +383,6 @@ const Tasks = () => {
       description: '',
       priority: 'HIGH',
       logo: '',
-      status: 'pending',
-      dueDate: '',
       assignee: ''
     });
     setSelectedStudents([]);
@@ -371,18 +403,13 @@ const Tasks = () => {
       description: task.description || '',
       priority: task.priority || 'HIGH',
       logo: task.logo || '',
-      status: task.status || 'pending',
-      dueDate: task.dueDate || '',
       assignee: task.assignee || ''
     });
 
-    // Set current students
     setSelectedStudents(task.students?.map(s => s._id) || []);
     
-    // Set current subtasks
     setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); 
     
-    // Set main task category - use the category ID directly
     setSelectedMainTask(task.category || '');
     
     setIsEditTaskOpen(true);
@@ -395,7 +422,6 @@ const Tasks = () => {
       return;
     }
 
-    // Check if user has permission to assign students
     if (!hasEditPermission()) {
       toast.error("You don't have permission to assign students to tasks");
       return;
@@ -404,10 +430,8 @@ const Tasks = () => {
     try {
       setLoading(prev => ({ ...prev, students: true }));
       
-      // Get current students assigned to this task
       const currentStudentIds = selectedTask.students?.map(s => s._id) || [];
       
-      // Add newly selected students
       const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
       if (studentsToAdd.length > 0) {
         await addStudentsToTask(selectedTask._id, {
@@ -415,7 +439,6 @@ const Tasks = () => {
         });
       }
       
-      // Remove deselected students
       const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
       for (const studentId of studentsToRemove) {
         await removeStudentFromTask(selectedTask._id, { studentId });
@@ -436,7 +459,6 @@ const Tasks = () => {
       return;
     }
 
-    // Check if user has permission to create tasks
     if (!hasEditPermission()) {
       toast.error("You don't have permission to create tasks");
       return;
@@ -444,16 +466,25 @@ const Tasks = () => {
 
     try {
       setLoading(prev => ({ ...prev, add: true }));
-      // Create the task with all required data
+      
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
         logo: newTask.logo || '',
-        category: selectedMainTask, // This is already the category ID
         studentIds: selectedStudents,
         subtaskIds: selectedSubtasks
       };
+
+      // Only include category if it has a value
+      if (selectedMainTask) {
+        taskData.category = selectedMainTask;
+      }
+
+      // Only include optional fields if they have values
+      if (newTask.assignee) {
+        taskData.assignee = newTask.assignee;
+      }
 
       await createTask(taskData);
       await fetchTasks();
@@ -473,7 +504,6 @@ const Tasks = () => {
       return;
     }
 
-    // Check if user has permission to edit tasks
     if (!hasEditPermission()) {
       toast.error("You don't have permission to edit tasks");
       return;
@@ -481,17 +511,52 @@ const Tasks = () => {
 
     try {
       setLoading(prev => ({ ...prev, edit: true }));        
+      
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
         priority: newTask.priority.toUpperCase(),
-        logo: newTask.logo || '',
-        category: selectedMainTask, // Send the selected category ID
-        studentIds: selectedStudents,
-        subtaskIds: selectedSubtasks
+        logo: newTask.logo || ''
       };
 
+      // Only include category if it has a value
+      if (selectedMainTask) {
+        taskData.category = selectedMainTask;
+      }
+
+      // Only include assignee if it has a value
+      if (newTask.assignee) {
+        taskData.assignee = newTask.assignee;
+      }
+
       await updateTask(selectedTask._id, taskData);
+      
+      // Handle students separately if they changed
+      const currentStudentIds = selectedTask.students?.map(s => s._id) || [];
+      const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
+      const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
+      
+      if (studentsToAdd.length > 0) {
+        await addStudentsToTask(selectedTask._id, { studentIds: studentsToAdd });
+      }
+      
+      for (const studentId of studentsToRemove) {
+        await removeStudentFromTask(selectedTask._id, { studentId });
+      }
+
+      // Handle subtasks separately if they changed
+      const currentSubtaskIds = selectedTask.subtasks?.map(s => s.subtask._id) || [];
+      const subtasksToAdd = selectedSubtasks.filter(id => !currentSubtaskIds.includes(id));
+      const subtasksToRemove = currentSubtaskIds.filter(id => !selectedSubtasks.includes(id));
+      
+      if (subtasksToAdd.length > 0) {
+        await addSubtasksToTask(selectedTask._id, { subtaskIds: subtasksToAdd });
+      }
+      
+      if (subtasksToRemove.length > 0) {
+        await removeSubtaskFromTask(selectedTask._id, { subtaskIds: subtasksToRemove });
+      }
+
       await fetchTasks();
       setIsEditTaskOpen(false);
       toast.success('Task updated successfully!');
@@ -1001,38 +1066,6 @@ const Tasks = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <label htmlFor="status" className="text-sm font-medium">
-                  Status
-                </label>
-                <Select
-                  value={newTask.status}
-                  onValueChange={(val) => setNewTask({ ...newTask, status: val })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <label htmlFor="dueDate" className="text-sm font-medium">
-                  Due Date
-                </label>
-                <Input
-                  type="date"
-                  id="dueDate"
-                  value={newTask.dueDate}
-                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
                 <label htmlFor="priority" className="text-sm font-medium">
                   Priority
                 </label>
@@ -1195,38 +1228,6 @@ const Tasks = () => {
                   </ul>
                 </div>
               )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <label htmlFor="status" className="text-sm font-medium">
-                  Status
-                </label>
-                <Select
-                  value={newTask.status}
-                  onValueChange={(val) => setNewTask({ ...newTask, status: val })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <label htmlFor="dueDate" className="text-sm font-medium">
-                  Due Date
-                </label>
-                <Input
-                  type="date"
-                  id="dueDate"
-                  value={newTask.dueDate}
-                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                />
-              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -1516,7 +1517,7 @@ const Tasks = () => {
                 <p className="text-sm font-medium mb-2">Current Categories:</p>
                 <div className="border rounded-md p-3 max-h-[200px] overflow-y-auto">
                   <ul className="space-y-2">
-                    {categoryData.map((category) => (
+                    {mainTaskCategories.map((category) => (
                       <li key={category._id} className="flex justify-between items-center p-2 rounded hover:bg-muted/50">
                         <span>{category.name}</span>
                         <div className="flex gap-1">
