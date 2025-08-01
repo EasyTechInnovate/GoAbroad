@@ -203,6 +203,32 @@ const studentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    planDetails: {
+        course: {
+            type: String,
+            default: null
+        },
+        planId: {
+            type: String,
+            default: null
+        },
+        planName: {
+            type: String,
+            default: null
+        },
+        planPrice: {
+            type: Number,
+            default: null
+        },
+        planBuyDate: {
+            type: Date,
+            default: Date.now()
+        },
+        receiptLink: {
+            type: String,
+
+        }
+    },
     isVerified: {
         type: Boolean,
         default: false

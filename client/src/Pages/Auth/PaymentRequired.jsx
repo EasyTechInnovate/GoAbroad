@@ -31,7 +31,10 @@ const PaymentRequired = () => {
         try {
             setLoading(true);
             // Initialize payment
-            const response = await apiService.post('/payment/initiate');
+            const response = await apiService.post('/payment/initiate', {
+                "planType": "basic",
+                "category": "masters"
+            });
 
             // If fee is already paid, clear auth and redirect to login to refresh user data
             if (response.message === 'Already Fee Paid') {
