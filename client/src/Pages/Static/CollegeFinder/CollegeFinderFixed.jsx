@@ -13,6 +13,7 @@ import { Slider } from '@/Pages/Admin/components/ui/slider';
 import { findUniversities } from '@/services/universityService';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import PremiumCTA from '@/components/static/PremiumCTA';
 
 const CollegeFinderFixed = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -461,13 +462,14 @@ const CollegeFinderFixed = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {universities.map((university) => (
-              <Card key={university._id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-40 bg-muted relative">
+              <Card key={university._id} className="overflow-hidden hover:shadow-lg transition-shadow p-0 flex flex-col">
+                <div className="aspect-[16/9] bg-muted relative overflow-hidden p-0 m-0 w-full border-0">
                   {university.banner ? (
                     <img 
                       src={university.banner} 
                       alt={`${university.name} banner`} 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center block"
+                      style={{ margin: 0, display: 'block', verticalAlign: 'top' }}
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.style.display = 'none';
@@ -492,7 +494,7 @@ const CollegeFinderFixed = () => {
                   </div>
                 </div>
                 
-                <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                <CardHeader className="flex flex-row items-center gap-3 pb-2 pt-3 px-4">
                   <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center overflow-hidden">
                     {university.logo ? (
                       <img 
@@ -632,6 +634,9 @@ const CollegeFinderFixed = () => {
             <p>{error}</p>
           </div>
         )}
+        
+        {/* Premium CTA Section */}
+        {showResults && universities.length > 0 && <PremiumCTA />}
       </main>
 
       <Footer />
