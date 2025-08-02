@@ -43,7 +43,7 @@ import About from './Pages/Static/About';
 import PremiumAccess from './Pages/Static/PremiumAccess';
 import Pricing from './Pages/Static/Pricing';
 import TestCheckout from './components/static/TestCheckout';
-import CollegeFinder from './Pages/Static/CollegeFinder/CollegeFinder';
+import CollegeFinder from './Pages/Static/CollegeFinder/CollegeFinderFixed';
 import CollegeFinderStep1 from './Pages/Static/CollegeFinder/CollegeFinderStep1';
 import CollegeFinderStep2 from './Pages/Static/CollegeFinder/CollegeFinderStep2';
 import CollegeFinderStep3 from './Pages/Static/CollegeFinder/CollegeFinderStep3';

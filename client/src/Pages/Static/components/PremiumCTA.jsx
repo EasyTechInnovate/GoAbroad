@@ -179,10 +179,10 @@ const PremiumCTA = () => {
               Don&apos;t leave your future to chance. Get expert guidance and a personalized dashboard to track every step of your journey.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-3">
-                Get Premium Access - $299/month
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-3 cursor-pointer">
+                Pricing Plans
               </Button>
-              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 px-8 py-3">
+              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 px-8 py-3 cursor-pointer">
                 Schedule Free Consultation
               </Button>
             </div>

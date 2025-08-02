@@ -64,7 +64,7 @@ const Footer = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
+                className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white bg-gray-900"
               >
                 Get Started
               </Button>

@@ -28,7 +28,7 @@ const SignIn = () => {
     if (isAuthenticated()) {
       const user = getUser();
       if (!user.isFeePaid || !user.isVerified) {
-        navigate('/auth/payment-required');
+        navigate('/pricing', { state: { fromAuth: true, user: user } });
       } else {
         navigate('/dashboard');
       }
@@ -43,7 +43,7 @@ const SignIn = () => {
     
     const tokenExpired = searchParams.get('expired');
     if (tokenExpired === 'true') {
-      setApiError('Your session has expired. Please log in again.');
+      setApiError('Your session has expired. Please signin in again.');
     }
   }, [location.state, searchParams]);
 
@@ -74,7 +74,7 @@ const SignIn = () => {
           navigate('/admin/dashboard');
         } else {
           if (!response.data.user.isFeePaid || !response.data.user.isVerified) {
-            navigate('/auth/payment-required');
+            navigate('/pricing', { state: { fromAuth: true, user: response.data.user } });
           } else {
             const redirectPath = location.state?.from || '/dashboard';
             navigate(redirectPath);

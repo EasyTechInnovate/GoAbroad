@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, ArrowLeft, ArrowRight, GraduationCap, ExternalLink, Globe, Building, Award, DollarSign, Calendar, Loader2 } from 'lucide-react';
+import { Search, ArrowLeft, ArrowRight, GraduationCap, ExternalLink, Globe, Building, Calendar, Loader2 } from 'lucide-react';
 import Navigation from '@/components/static/Navigation';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { Slider } from '@/Pages/Admin/components/ui/slider';
@@ -15,7 +14,7 @@ import { findUniversities } from '@/services/universityService';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
-const CollegeFinder = () => {
+const CollegeFinderFixed = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -258,21 +257,8 @@ const CollegeFinder = () => {
           <Button onClick={prevStep} variant="outline" className="border-primary text-primary hover:bg-primary/10">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back
           </Button>
-          <Button 
-            onClick={handleSubmit} 
-            className="bg-primary hover:bg-primary/90 px-8"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Finding Universities...
-              </>
-            ) : (
-              <>
-                Find Universities <Search className="ml-2 h-4 w-4" />
-              </>
-            )}
+          <Button onClick={nextStep} className="bg-primary hover:bg-primary/90 px-8">
+            Next <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </CardContent>
@@ -294,15 +280,15 @@ const CollegeFinder = () => {
             className="mt-3"
           >
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-              <RadioGroupItem value="toefl" id="toefl" className="border-primary" />
+              <RadioGroupItem value="TOEFL" id="toefl" className="border-primary" />
               <Label htmlFor="toefl" className="cursor-pointer">TOEFL</Label>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-              <RadioGroupItem value="ielts" id="ielts" className="border-primary" />
+              <RadioGroupItem value="IELTS" id="ielts" className="border-primary" />
               <Label htmlFor="ielts" className="cursor-pointer">IELTS</Label>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-              <RadioGroupItem value="pte" id="pte" className="border-primary" />
+              <RadioGroupItem value="PTE" id="pte" className="border-primary" />
               <Label htmlFor="pte" className="cursor-pointer">PTE</Label>
             </div>
           </RadioGroup>
@@ -316,16 +302,16 @@ const CollegeFinder = () => {
             className="mt-3"
           >
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-              <RadioGroupItem value="sat" id="sat" className="border-primary" />
+              <RadioGroupItem value="SAT" id="sat" className="border-primary" />
               <Label htmlFor="sat" className="cursor-pointer">SAT</Label>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-              <RadioGroupItem value="act" id="act" className="border-primary" />
+              <RadioGroupItem value="ACT" id="act" className="border-primary" />
               <Label htmlFor="act" className="cursor-pointer">ACT</Label>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-              <RadioGroupItem value="academic" id="academic" className="border-primary" />
-              <Label htmlFor="academic" className="cursor-pointer">Academic</Label>
+              <RadioGroupItem value="GRE" id="gre" className="border-primary" />
+              <Label htmlFor="gre" className="cursor-pointer">GRE</Label>
             </div>
           </RadioGroup>
         </div>
@@ -482,10 +468,17 @@ const CollegeFinder = () => {
                       src={university.banner} 
                       alt={`${university.name} banner`} 
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.style.display = 'none';
+                        e.target.parentNode.classList.add('flex', 'items-center', 'justify-center');
+                        e.target.parentNode.innerHTML = '<div class="flex flex-col items-center justify-center"><Building class="w-12 h-12 text-primary/40" /><p class="text-sm text-muted-foreground mt-2">No image available</p></div>';
+                      }}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-primary/10">
                       <Building className="w-12 h-12 text-primary/40" />
+                      <p className="text-sm text-muted-foreground mt-2">No image available</p>
                     </div>
                   )}
                   <div className="absolute top-3 right-3">
@@ -506,6 +499,11 @@ const CollegeFinder = () => {
                         src={university.logo} 
                         alt={`${university.name} logo`} 
                         className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.style.display = 'none';
+                          e.target.parentNode.innerHTML = '<div class="flex flex-col items-center justify-center"><GraduationCap class="w-6 h-6 text-primary" /></div>';
+                        }}
                       />
                     ) : (
                       <GraduationCap className="w-6 h-6 text-primary" />
@@ -641,4 +639,4 @@ const CollegeFinder = () => {
   );
 };
 
-export default CollegeFinder;
+export default CollegeFinderFixed;

@@ -96,8 +96,8 @@ const ForgotPassword = () => {
           )}
 
           <div className="mt-8 text-center">
-            <Link to="/login" className="text-sm text-primary-1 hover:underline">
-              ← Back to Login
+            <Link to="/signin" className="text-sm text-primary-1 hover:underline">
+              ← Back to Signin
             </Link>
           </div>
         </div>

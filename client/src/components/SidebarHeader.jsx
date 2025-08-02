@@ -31,7 +31,7 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/signin');
   };
   
   const getPageTitle = () => {

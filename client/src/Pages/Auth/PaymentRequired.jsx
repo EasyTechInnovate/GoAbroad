@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { apiService } from '@/services/api.services';
 import { getUser, clearAuth } from '@/lib/auth';
@@ -20,9 +20,20 @@ import {
 
 const PaymentRequired = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [countdown, setCountdown] = useState(8);
     const [loading, setLoading] = useState(false);
-    const user = getUser();
+    
+    // Get plan details from location state or use default values
+    const planType = location.state?.planType || 'basic';
+    const planCategory = location.state?.category || 'masters';
+    const planPrice = location.state?.price || 0;
+    const planDetails = location.state?.planDetails || {};
+    
+    // Get user data either from location state or from auth
+    const userFromState = location.state?.user;
+    const user = userFromState || getUser();
+    
     const razorpayLoaded = useRazorpay();
 
     const handleProceed = useCallback(async () => {
@@ -30,17 +41,17 @@ const PaymentRequired = () => {
 
         try {
             setLoading(true);
-            // Initialize payment
+            // Initialize payment with the selected plan details
             const response = await apiService.post('/payment/initiate', {
-                "planType": "basic",
-                "category": "masters"
+                "planType": planType,
+                "category": planCategory
             });
 
             // If fee is already paid, clear auth and redirect to login to refresh user data
             if (response.message === 'Already Fee Paid') {
-                toast.success('Payment already completed! Redirecting to login...');
+                toast.success('Payment already completed! Redirecting to signin...');
                 clearAuth();
-                navigate('/login');
+                navigate('/signin');
                 return;
             }
 
@@ -53,7 +64,7 @@ const PaymentRequired = () => {
                 amount: response.data.amount,
                 currency: response.data.currency || 'INR',
                 name: 'GoAbroad',
-                description: 'Registration Fee',
+                description: `${planCategory.charAt(0).toUpperCase() + planCategory.slice(1)} ${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan`,
                 order_id: response.data.orderId,
                 prefill: {
                     name: user?.name || '',
@@ -68,12 +79,22 @@ const PaymentRequired = () => {
                             signature: response.razorpay_signature
                         });
                         if (verifyResponse.success) {
-                            toast.success('Payment successful! Please log in again.');
-
+                            toast.success('Payment successful!');
+                            
+                            // Store the current user data before clearing auth
+                            const currentUser = getUser();
+                            
+                            // Clear auth tokens
                             localStorage.removeItem('user');
                             localStorage.removeItem('authToken');
                             Cookies.remove('accessToken');
-                            navigate('/login');
+                            
+                            // Navigate to order confirmation with payment details
+                            navigate('/order-confirmation', {
+                                state: {
+                                    orderDetails: verifyResponse.data.orderDetails
+                                }
+                            });
                         } else {
                             throw new Error('Payment verification failed');
                         }
@@ -106,13 +127,13 @@ const PaymentRequired = () => {
 
     useEffect(() => {
         if (!user) {
-            navigate('/auth/login');
+            navigate('/signin');
             return;
         }
 
         if (user.isVerified && user.isFeePaid) {
             clearAuth();
-            navigate('/login');
+            navigate('/signin');
             return;
         }
 
@@ -183,9 +204,9 @@ const PaymentRequired = () => {
                         For any queries, contact us at <span className="font-medium text-primary-1">support@goabroad.com</span>
                     </p>
                     <Button asChild variant="outline" className="w-full">
-                        <Link to="/auth/login" className="flex items-center justify-center gap-2">
+                        <Link to="/auth/sigin" className="flex items-center justify-center gap-2">
                             <ArrowLeft className="w-4 h-4" />
-                            Back to Login
+                            Back to Signin
                         </Link>
                     </Button>
                 </motion.div>
@@ -193,7 +214,7 @@ const PaymentRequired = () => {
         );
     }
 
-    // Main payment required state
+    // Main payment required state 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 flex items-center justify-center p-4">
             <div className="w-full max-w-4xl">
@@ -282,6 +303,10 @@ const PaymentRequired = () => {
                             </div>
                             <h2 className="text-2xl font-semibold text-slate-800 mb-2">Registration Payment</h2>
                             <p className="text-slate-600">Complete your payment to access the dashboard</p>
+                            <div className="mt-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                <p className="text-primary font-semibold">{planCategory.charAt(0).toUpperCase() + planCategory.slice(1)} {planType.charAt(0).toUpperCase() + planType.slice(1)} Plan</p>
+                                <p className="text-2xl font-bold text-primary mt-1">₹{planPrice.toLocaleString('en-IN')}</p>
+                            </div>
                         </div>
 
                         {/* Countdown Timer */}

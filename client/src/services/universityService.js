@@ -41,3 +41,27 @@ export const deleteUniversity = async (id) => {
   const response = await servicesAxiosInstance.delete(`/admin/universities/${id}`);
   return response.data;
 };
+
+export const findUniversities = async (params) => {
+  try {
+    // Clean up params to remove any empty values
+    const cleanParams = {};
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== null && value !== '' && value !== undefined) {
+        cleanParams[key] = value;
+      }
+    }
+    
+    // Make the API call to find universities based on parameters
+    const response = await servicesAxiosInstance.get('/universities/find', {
+      params: cleanParams
+    });
+    
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data || error.message;
+    }
+    throw error;
+  }
+};
