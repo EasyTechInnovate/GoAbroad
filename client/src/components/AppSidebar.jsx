@@ -29,7 +29,7 @@ const AppSidebar = ({ isSidebarOpen }) => {
     try {
       logout();
       toast.success('Logged out successfully');
-      navigate('/login');
+      navigate('/signin');
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Failed to log out');

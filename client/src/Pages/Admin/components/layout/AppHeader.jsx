@@ -32,7 +32,7 @@ export function AppHeader() {
   useEffect(() => {
     const userData = getUser();
     if (!userData) {
-      navigate('/login');
+      navigate('/signin');
       return;
     }
     setUser(userData);
@@ -41,7 +41,7 @@ export function AppHeader() {
 
     const unsubscribe = subscribeToAuth((isAuthenticated) => {
       if (!isAuthenticated) {
-        navigate('/login');
+        navigate('/signin');
       }
     });
 

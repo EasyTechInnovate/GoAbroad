@@ -1,6 +1,6 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CheckCircle, Download, Calendar, Phone, Mail, Home } from 'lucide-react';
+import { CheckCircle, Download, Calendar, Mail, Home, Phone } from 'lucide-react';
 import Navigation from './components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,14 +11,33 @@ const OrderConfirmation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
+  // Safely access orderDetails with fallbacks
   const { orderDetails } = location.state || {};
 
+  // If no orderDetails at all, redirect to pricing
   if (!orderDetails) {
     navigate('/pricing');
     return null;
   }
 
-  const { planDetails, customerData, orderId, paymentId, price, category } = orderDetails;
+  // Safely destructure with default values to prevent errors
+  const { 
+    planDetails = { 
+      name: 'Plan', 
+      price: 0, 
+      features: ['Feature information not available']
+    }, 
+    customerData = { 
+      firstName: 'User', 
+      lastName: '', 
+      email: 'email@example.com' 
+    }, 
+    orderId = 'N/A', 
+    paymentId = 'N/A', 
+    price = 0, 
+    category = 'plan', 
+    receiptUrl = null 
+  } = orderDetails;
 
   return (
     <div className="min-h-screen bg-background">
@@ -92,26 +111,24 @@ const OrderConfirmation = () => {
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#145044' }}>
                     <span className="text-white text-sm font-medium">
-                      {customerData.firstName.charAt(0)}{customerData.lastName.charAt(0)}
+                      {customerData.firstName.charAt(0)}{customerData.lastName ? customerData.lastName.charAt(0) : ''}
                     </span>
                   </div>
                   <div>
-                    <div className="font-medium">{customerData.firstName} {customerData.lastName}</div>
+                    <div className="font-medium">
+                      {customerData.firstName} {customerData.lastName || ''}
+                    </div>
                     <div className="text-sm text-gray-500">{customerData.email}</div>
                   </div>
                 </div>
                 
-                <div className="space-y-2 pt-4 border-t">
+                <div className="pt-4 border-t">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{customerData.phone}</span>
+                    <Mail className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm">{customerData.email}</span>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <Home className="w-4 h-4 text-gray-400 mt-0.5" />
-                    <div className="text-sm">
-                      <div>{customerData.address}</div>
-                      <div>{customerData.city}, {customerData.state} - {customerData.pincode}</div>
-                    </div>
+                  <div className="mt-2 text-sm text-gray-600">
+                    Our team will contact you via email for further assistance.
                   </div>
                 </div>
               </CardContent>
@@ -193,7 +210,7 @@ const OrderConfirmation = () => {
             <Button 
               size="lg" 
               className="bg-[#145044] hover:bg-[#145044]/90 text-white"
-              onClick={() => window.print()}
+              onClick={() => receiptUrl ? window.open(receiptUrl, '_blank') : window.print()}
             >
               <Download className="w-5 h-5 mr-2" />
               Download Receipt
@@ -202,10 +219,10 @@ const OrderConfirmation = () => {
               size="lg" 
               variant="outline" 
               className="border-[#145044] text-[#145044] hover:bg-[#145044]/10"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/signin')}
             >
               <Home className="w-5 h-5 mr-2" />
-              Back to Home
+              Sign In
             </Button>
           </div>
 

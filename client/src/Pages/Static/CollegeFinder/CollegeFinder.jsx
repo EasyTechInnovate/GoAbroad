@@ -7,13 +7,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, ArrowLeft, ArrowRight, GraduationCap } from 'lucide-react';
+import { Search, ArrowLeft, ArrowRight, GraduationCap, ExternalLink, Globe, Building, Award, DollarSign, Calendar, Loader2 } from 'lucide-react';
 import Navigation from '@/components/static/Navigation';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { Slider } from '@/Pages/Admin/components/ui/slider';
+import { findUniversities } from '@/services/universityService';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 
 const CollegeFinder = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [universities, setUniversities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showResults, setShowResults] = useState(false);
   const [formData, setFormData] = useState({
     // Step 1
     degree: '',
@@ -58,9 +65,42 @@ const CollegeFinder = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    alert('Universities will be suggested based on your profile!');
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Prepare query parameters from form data
+      const params = {
+        score: formData.score,
+        topTenPercent: formData.topTenPercent,
+        englishTest: formData.englishTest,
+        aptitudeTest: formData.aptitudeTest,
+        coCurricularRating: JSON.stringify(formData.coCurricularRating),
+        extraCurricularRating: JSON.stringify(formData.extraCurricularRating),
+        internshipDuration: formData.internshipDuration,
+        internshipUnit: formData.internshipUnit
+      };
+      
+      // Call the API
+      const response = await findUniversities(params);
+      
+      // Update state with results
+      setUniversities(response.data.universities || []);
+      setShowResults(true);
+      
+      // Scroll to results
+      setTimeout(() => {
+        document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      
+    } catch (err) {
+      console.error('Error finding universities:', err);
+      setError(err.message || 'Failed to find universities. Please try again.');
+      toast.error('Failed to find universities. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderStep1 = () => (
@@ -218,8 +258,21 @@ const CollegeFinder = () => {
           <Button onClick={prevStep} variant="outline" className="border-primary text-primary hover:bg-primary/10">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back
           </Button>
-          <Button onClick={nextStep} className="bg-primary hover:bg-primary/90 px-8">
-            Next <ArrowRight className="ml-2 h-4 w-4" />
+          <Button 
+            onClick={handleSubmit} 
+            className="bg-primary hover:bg-primary/90 px-8"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Finding Universities...
+              </>
+            ) : (
+              <>
+                Find Universities <Search className="ml-2 h-4 w-4" />
+              </>
+            )}
           </Button>
         </div>
       </CardContent>
@@ -380,13 +433,152 @@ const CollegeFinder = () => {
           <Button onClick={prevStep} variant="outline" className="border-primary text-primary hover:bg-primary/10">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back
           </Button>
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 px-8">
-            Find Universities <Search className="ml-2 h-4 w-4" />
+          <Button 
+            onClick={handleSubmit} 
+            className="bg-primary hover:bg-primary/90 px-8"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Finding Universities...
+              </>
+            ) : (
+              <>
+                Find Universities <Search className="ml-2 h-4 w-4" />
+              </>
+            )}
           </Button>
         </div>
       </CardContent>
     </Card>
   );
+
+  // University Results Component
+  const UniversityResults = () => {
+    if (!showResults) return null;
+    
+    return (
+      <section id="results-section" className="mt-16 mb-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-primary mb-2">Your University Matches</h2>
+          <p className="text-lg text-muted-foreground">
+            Based on your profile, we've found {universities.length} universities that might be a good fit for you.
+          </p>
+        </div>
+        
+        {universities.length === 0 ? (
+          <div className="text-center p-8 bg-muted/30 rounded-lg">
+            <p className="text-xl font-medium">No universities found matching your criteria.</p>
+            <p className="mt-2 text-muted-foreground">Try adjusting your search parameters.</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {universities.map((university) => (
+              <Card key={university._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="h-40 bg-muted relative">
+                  {university.banner ? (
+                    <img 
+                      src={university.banner} 
+                      alt={`${university.name} banner`} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                      <Building className="w-12 h-12 text-primary/40" />
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3">
+                    <Badge 
+                      className={`${university.matchLevel === 'Poor' ? 'bg-red-500' : 
+                        university.matchLevel === 'Fair' ? 'bg-yellow-500' : 
+                        university.matchLevel === 'Good' ? 'bg-green-500' : 'bg-blue-500'}`}
+                    >
+                      {university.matchPercentage} Match
+                    </Badge>
+                  </div>
+                </div>
+                
+                <CardHeader className="flex flex-row items-center gap-3 pb-2">
+                  <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center overflow-hidden">
+                    {university.logo ? (
+                      <img 
+                        src={university.logo} 
+                        alt={`${university.name} logo`} 
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <GraduationCap className="w-6 h-6 text-primary" />
+                    )}
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">{university.name}</CardTitle>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Globe className="w-3 h-3 mr-1" />
+                      <span>{university.location || 'Location not specified'}</span>
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Program</p>
+                      <p className="font-medium">{university.program || 'Various Programs'}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Type</p>
+                      <p className="font-medium">{university.universityType || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Tuition Fee</p>
+                      <p className="font-medium">
+                        {university.tuitionFee ? `₹${university.tuitionFee}` : 'Not specified'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Acceptance Rate</p>
+                      <p className="font-medium">{university.acceptanceRate || 'Not specified'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-3 border-t">
+                    <p className="font-medium mb-2">AI Analysis</p>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                      <div className="flex justify-between">
+                        <span>Academic Fit:</span>
+                        <span className="font-medium">{university.aiAnalysis?.academicFit || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Test Score:</span>
+                        <span className="font-medium">{university.aiAnalysis?.testScoreCompatibility || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Extracurricular:</span>
+                        <span className="font-medium">{university.aiAnalysis?.extracurricularMatch || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Admission Probability:</span>
+                        <span className="font-medium">{university.aiAnalysis?.admissionProbability || 'N/A'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full mt-2 border-primary text-primary hover:bg-primary/10"
+                    onClick={() => window.open(university.website_url || '#', '_blank')}
+                  >
+                    View Details <ExternalLink className="ml-2 w-4 h-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -431,6 +623,17 @@ const CollegeFinder = () => {
         {currentStep === 2 && renderStep2()}
         {currentStep === 3 && renderStep3()}
         {currentStep === 4 && renderStep4()}
+        
+        {/* Display university results */}
+        <UniversityResults />
+        
+        {/* Error message */}
+        {error && (
+          <div className="max-w-2xl mx-auto mt-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+            <p className="font-medium">Error finding universities:</p>
+            <p>{error}</p>
+          </div>
+        )}
       </main>
 
       <Footer />

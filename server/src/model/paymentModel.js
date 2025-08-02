@@ -7,7 +7,7 @@ const paymentSchema = new mongoose.Schema({
     },
     orderId: {
         type: String,
-
+        required: true
     },
     paymentId: {
         type: String,
@@ -25,6 +25,22 @@ const paymentSchema = new mongoose.Schema({
         enum: ['PENDING', 'SUCCESS', 'FAILED'],
         default: 'PENDING'
     },
+    planId: {
+        type: String,
+        required: true
+    },
+    planName: {
+        type: String,
+        required: true
+    },
+    planCategory: {
+        type: String,
+        required: true
+    },
+    planType: {
+        type: String,
+        required: true
+    }
 }, {
     timestamps: true,
     versionKey: false

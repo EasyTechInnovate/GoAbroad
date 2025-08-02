@@ -10,7 +10,7 @@ export const apiService = {
     const response = await servicesAxiosInstance.post(endpoint, data);
     return response.data;
   },
-  
+    
   put: async (endpoint, data) => {
     const response = await servicesAxiosInstance.put(endpoint, data);
     return response.data;

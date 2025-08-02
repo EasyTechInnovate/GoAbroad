@@ -26,6 +26,16 @@ const config = Object.freeze({
     IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
     IMAGEKIT_URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
+
+    // Email Service
+    email: {
+        service: process.env.EMAIL_SERVICE || "smtp",
+        host: process.env.EMAIL_HOST || "smtp.gmail.com",
+        port: parseInt(process.env.EMAIL_PORT || '587', 10),
+        user: process.env.EMAIL_USER || "",
+        password: process.env.EMAIL_PASSWORD || "",
+        from: process.env.EMAIL_FROM || "GoUpBroad <noreply@goupbroad.com>"
+    },
 })
 
 export default config;

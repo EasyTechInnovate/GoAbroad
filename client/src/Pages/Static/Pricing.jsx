@@ -1,151 +1,144 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Star, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { CheckCircle, Star, ArrowRight, AlertCircle } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import { fetchPlans, getPlanDetails } from '@/services/planService';
+import { apiService } from '@/services/api.services';
+import { toast } from 'sonner';
+import { clearAuth } from '@/lib/auth';
 
 const Pricing = () => {
   const [selectedCategory, setSelectedCategory] = useState('masters');
+  const [plansData, setPlansData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // Removed processingPayment state as it's no longer needed
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if user is coming from auth flow and needs to make a payment
+  const fromAuth = location.state?.fromAuth;
+  const userData = location.state?.user;
+  
+  useEffect(() => {
+    const getPlans = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchPlans();
+        setPlansData(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching plans:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    
+    getPlans();
+  }, []);
 
   const handleSelectPlan = (planType, price, category) => {
-    navigate('/checkout', {
+    // Always navigate to payment page with plan details
+    navigate('/auth/payment-required', {
       state: {
         planType,
         price,
         category,
-        planDetails: getPlanDetails(planType, category)
+        planDetails: getPlanDetailsForCategory(planType, category),
+        user: userData || null
       }
     });
   };
+  
+  // Removed initiatePayment function as we're now handling payment in the PaymentRequired component
 
-  const getPlanDetails = (planType, category) => {
-    const plans = {
-      masters: {
-        basic: {
-          name: 'UpBroad Basic',
-          price: 24999,
-          features: [
-            'Help you shortlist universities',
-            'Prepare and Assess Your Admissions Documents Tailored for 1 Unique University'
-          ]
-        },
-        pro: {
-          name: 'UpBroad Pro',
-          price: 39999,
-          features: [
-            'Help you shortlist universities',
-            'Prepare and Assess Your Admissions Documents Tailored for 3 Unique Universities',
-            'Become Your Mentors',
-            'Help You Crack Interviews',
-            'Guide You Through Scholarships'
-          ]
-        },
-        premier: {
-          name: 'UpBroad Premier',
-          price: 59999,
-          features: [
-            'Help you shortlist universities',
-            'Prepare and Assess Your Admissions Documents Tailored for 5 Unique Universities',
-            'Become Your Mentors',
-            'Help You Crack Interviews',
-            'Guide You Through Scholarships',
-            'US Job Market Masterclass',
-            'GRE Help',
-            'Give You Visa Assistance',
-            'Guide You Pre-Departure',
-            'Connect You to a Community'
-          ]
-        }
-      },
-      bachelors: {
-        basic: {
-          name: 'UpBroad Basic',
-          price: 44999,
-          features: [
-            'One (1) Statement of Purpose (SOP) preparation',
-            'University shortlisting (limited to the US)',
-            'One (1) Letter of Recommendation (LOR) preparation'
-          ]
-        },
-        pro: {
-          name: 'UpBroad Pro',
-          price: 69999,
-          features: [
-            'Help in shortlisting universities (US)',
-            'Preparation and assessment of admissions documents',
-            'Mentorship & interview preparation',
-            'Guidance on available scholarships'
-          ]
-        },
-        premier: {
-          name: 'UpBroad Premier',
-          price: 84999,
-          features: [
-            'Help in shortlisting universities (US)',
-            'Preparation and assessment of admissions documents',
-            'Mentorship & interview preparation',
-            'Job Market Masterclass',
-            'Visa assistance',
-            'Pre-departure guidance'
-          ]
-        }
-      },
-      mba: {
-        basic: {
-          name: 'UpBroad Basic',
-          price: 44999,
-          features: [
-            'Help you shortlist universities',
-            'Prepare and assess your admissions documents tailored for 1 unique university'
-          ]
-        },
-        pro: {
-          name: 'UpBroad Pro',
-          price: 59999,
-          features: [
-            'Help you shortlist universities',
-            'Prepare and assess your admissions documents tailored for 3 unique universities',
-            'Become your mentors',
-            'Help you crack interviews',
-            'Guide you through scholarships'
-          ]
-        },
-        premier: {
-          name: 'UpBroad Premier',
-          price: 79999,
-          features: [
-            'Help you shortlist universities',
-            'Prepare and assess your admissions documents tailored for 5 unique universities',
-            'Become your mentors',
-            'Help you crack interviews',
-            'Guide you through scholarships',
-            'US job market masterclass',
-            'GRE help',
-            'Give you visa assistance',
-            'Guide you pre-departure',
-            'Connect you to a community'
-          ]
-        }
-      }
-    };
-    return plans[category][planType];
+  const getPlanDetailsForCategory = (planType, category) => {
+    return getPlanDetails(plansData, planType, category);
   };
 
-  // const currentPlans = getPlanDetails('basic', selectedCategory);
-  const basicPlan = getPlanDetails('basic', selectedCategory);
-  const proPlan = getPlanDetails('pro', selectedCategory);
-  const premierPlan = getPlanDetails('premier', selectedCategory);
+  // If data is still loading or there's an error, provide fallback values
+  const basicPlan = !loading && plansData ? getPlanDetailsForCategory('basic', selectedCategory) : { name: 'Basic Plan', price: 0, features: [] };
+  const proPlan = !loading && plansData ? getPlanDetailsForCategory('pro', selectedCategory) : { name: 'Pro Plan', price: 0, features: [] };
+  const premierPlan = !loading && plansData ? getPlanDetailsForCategory('premier', selectedCategory) : { name: 'Premier Plan', price: 0, features: [] };
+
+  // Load Razorpay script if user is coming from auth flow
+  useEffect(() => {
+    if (fromAuth && userData) {
+      const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+      };
+      
+      const loadScript = async () => {
+        if (!window.Razorpay) {
+          const res = await loadRazorpayScript();
+          if (!res) {
+            toast.error('Razorpay SDK failed to load. Please check your internet connection.');
+          }
+        }
+      };
+      
+      loadScript();
+    }
+  }, [fromAuth, userData]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Navigation />
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Loading plans...</h2>
+          <p>Please wait while we fetch the latest pricing information.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Navigation />
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-red-600">Error Loading Plans</h2>
+          <p>We encountered an error while loading the pricing plans.</p>
+          <p className="text-gray-600 mt-2">{error}</p>
+          <Button 
+            className="mt-4 bg-[#145044] hover:bg-[#145044]/90 text-white"
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      <main className="pt-24">
+      {fromAuth && userData && (
+        <div className="bg-amber-50 border-l-4 border-amber-400 p-4 mx-auto max-w-7xl mt-24 mb-0">
+          <div className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-amber-400 mr-2" />
+            <p className="text-amber-700">
+              <span className="font-bold">Payment Required:</span> Please select a plan to complete your registration and access all features.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <main className={fromAuth && userData ? "pt-8" : "pt-24"}>
         {/* Hero Section */}
         <section className="py-20 bg-gradient-to-br from-[#145044]/5 to-[#145044]/10 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -214,7 +207,7 @@ const Pricing = () => {
                     ))}
                   </div>
                   <Button
-                    className="w-full bg-[#145044] hover:bg-[#145044]/90 text-white"
+                    className="w-full bg-[#145044] hover:bg-[#145044]/90 text-white cursor-pointer"
                     size="lg"
                     onClick={() => handleSelectPlan('basic', basicPlan.price, selectedCategory)}
                   >
@@ -249,7 +242,7 @@ const Pricing = () => {
                     ))}
                   </div>
                   <Button
-                    className="w-full bg-[#145044] hover:bg-[#145044]/90 text-white"
+                    className="w-full bg-[#145044] hover:bg-[#145044]/90 text-white cursor-pointer"
                     size="lg"
                     onClick={() => handleSelectPlan('pro', proPlan.price, selectedCategory)}
                   >
@@ -278,7 +271,7 @@ const Pricing = () => {
                     ))}
                   </div>
                   <Button
-                    className="w-full bg-[#145044] hover:bg-[#145044]/90 text-white"
+                    className="w-full bg-[#145044] hover:bg-[#145044]/90 text-white cursor-pointer"
                     size="lg"
                     onClick={() => handleSelectPlan('premier', premierPlan.price, selectedCategory)}
                   >

@@ -31,6 +31,8 @@ router.route('/self').get(apiController.self)
 router.route('/health').get(apiController.health)
 router.route('/upload-file').post(uploadFiles, apiController.uploadFile);
 router.route('/faqs').get(faqController.getFaqs)
+router.route('/universities/find').get(apiController.findUniversities);
+router.route('/plans').get(apiController.getPlanDetails);
 // auth routes
 router.route('/auth/login').post(authController.login);
 router.route('/auth/signup').post(authController.signup);
