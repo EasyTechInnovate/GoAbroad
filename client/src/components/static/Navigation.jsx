@@ -22,7 +22,7 @@ const Navigation = () => {
 
   const navItems = [
     { name: 'University Finder', href: '/college-finder' },
-    { name: 'Scholarships', href: '#scholarships' },
+    // { name: 'Scholarships', href: '#scholarships' },
     { name: 'Community', href: '/community' },
     { name: 'About', href: '/about' }
   ];
