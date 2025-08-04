@@ -123,14 +123,14 @@ const Services = () => {
                     </li>
                   ))}
                 </ul>
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="sm"
                   className="w-full group-hover:bg-primary group-hover:text-white transition-all duration-300"
                 >
                   Learn More
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                </Button> */}
               </CardContent>
             </Card>
           ))}
