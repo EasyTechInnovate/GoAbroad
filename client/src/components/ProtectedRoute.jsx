@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
   const user = getUser();
 
   if (!isPublicRoute(currentPath) && !isAuth) {
-    return <Navigate to="/login" state={{ from: currentPath }} replace />;
+    return <Navigate to="/signin" state={{ from: currentPath }} replace />;
   }
 
   if (currentPath.startsWith('/dashboard')) {
@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
       return <Navigate to="/admin" replace />;
     }
     if (user?.role !== 'STUDENT') {
-      return <Navigate to="/login" replace />;
+      return <Navigate to="/signin" replace />;
     }
 
     // Check payment and verification status for student dashboard access

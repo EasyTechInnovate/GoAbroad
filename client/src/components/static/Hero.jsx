@@ -12,19 +12,19 @@ const Hero = () => {
       <div className="absolute inset-0 overflow-hidden">
         {/* Large primary gradient - top left */}
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-radial from-primary/30 via-primary/10 to-transparent rounded-full blur-3xl"></div>
-        
+
         {/* Medium secondary gradient - top right */}
         <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-radial from-primary-300/40 via-primary-200/20 to-transparent rounded-full blur-2xl"></div>
-        
+
         {/* Small accent gradient - middle left */}
         <div className="absolute top-1/3 -left-20 w-40 h-40 bg-gradient-radial from-primary-400/50 via-primary-300/25 to-transparent rounded-full blur-xl"></div>
-        
+
         {/* Large bottom gradient - bottom right */}
         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-radial from-primary-200/30 via-primary-100/15 to-transparent rounded-full blur-3xl"></div>
-        
+
         {/* Small floating gradient - center */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-radial from-primary-500/20 via-primary-400/10 to-transparent rounded-full blur-xl animate-pulse"></div>
-        
+
         {/* Additional small gradients for depth */}
         <div className="absolute bottom-1/4 left-1/4 w-24 h-24 bg-gradient-radial from-primary-600/25 via-primary-500/12 to-transparent rounded-full blur-lg"></div>
         <div className="absolute top-1/4 right-1/3 w-20 h-20 bg-gradient-radial from-primary-300/35 via-primary-200/18 to-transparent rounded-full blur-md"></div>
@@ -32,7 +32,7 @@ const Hero = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          
+
           {/* Left Section - Content */}
           <div className="space-y-8">
             {/* Badge */}
@@ -51,7 +51,7 @@ const Hero = () => {
 
             {/* Subheading */}
             <p className="text-lg sm:text-xl text-gray-600 leading-relaxed">
-              Transform your international education dreams into reality. Find the perfect university, 
+              Transform your international education dreams into reality. Find the perfect university,
               secure scholarships, and connect with a global community of ambitious students.
             </p>
 
@@ -74,21 +74,22 @@ const Hero = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/signin">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-primary-1 hover:bg-primary-1-700 text-white px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="border-primary text-primary hover:bg-primary-1 hover:text-white px-8 py-6 text-lg font-semibold rounded-full transition-all duration-300"
-              >
-                Explore Universities
-              </Button>
+              <Link to="/college-finder">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-primary text-primary hover:bg-primary-1 hover:text-white px-8 py-6 text-lg font-semibold rounded-full transition-all duration-300"
+                >
+                  Explore Universities
+                </Button></Link>
             </div>
           </div>
 
@@ -97,15 +98,15 @@ const Hero = () => {
             {/* Main University Image - Rectangular with Academic Frame */}
             <div className="relative">
               <div className="w-96 h-80 rounded-xl overflow-hidden shadow-2xl border-8 border-white bg-white transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                <img 
-                  src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="University campus with students" 
+                <img
+                  src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="University campus with students"
                   className="w-full h-full object-cover"
                 />
                 {/* Overlay for university atmosphere */}
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent"></div>
               </div>
-              
+
               {/* Academic Frame Effect */}
               <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary-300/20 rounded-2xl -z-10 blur-xl"></div>
             </div>

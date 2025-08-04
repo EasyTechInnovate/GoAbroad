@@ -4,8 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, Users, BookOpen, CalendarDays, Calculator, TrendingUp, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Services = () => {
+  const navigate = useNavigate()
+
   const services = [
     {
       icon: Search,
@@ -81,20 +84,20 @@ const Services = () => {
             Everything You Need for Study Abroad Success
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Our comprehensive platform provides all the tools and resources you need to make informed decisions 
+            Our comprehensive platform provides all the tools and resources you need to make informed decisions
             about your international education journey.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card 
-              key={index} 
+            <Card
+              key={index}
               className={`group hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 shadow-md bg-white/80 backdrop-blur-sm hover:bg-white ${service.borderColor} border-l-4 relative overflow-hidden`}
             >
               {/* Background gradient overlay */}
               <div className={`absolute inset-0 ${service.color.split(' ')[0]}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
-              
+
               <CardHeader className="relative z-10">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
@@ -120,9 +123,9 @@ const Services = () => {
                     </li>
                   ))}
                 </ul>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="w-full group-hover:bg-primary group-hover:text-white transition-all duration-300"
                 >
                   Learn More
@@ -143,9 +146,12 @@ const Services = () => {
               <p className="text-primary-100 mb-6">
                 Get access to all these features and more with our comprehensive platform.
               </p>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-white text-primary hover:bg-gray-100 px-8 py-3 font-semibold rounded-full shadow-lg transform hover:scale-105 transition-all duration-300"
+                onClick={() => {
+                  navigate('/signin')
+                }}
               >
                 Get Started Free
                 <ArrowRight className="ml-2 w-5 h-5" />
