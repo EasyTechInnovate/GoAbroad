@@ -26,14 +26,14 @@ function notifyAuthChange(isAuthenticated) {
 
 export function setAuth(authData) {
   if (!authData) return;
-  
+
   logout();
-  
+
   if (authData.accessToken) {
     localStorage.setItem('authToken', authData.accessToken);
     Cookies.set('accessToken', authData.accessToken, COOKIE_OPTIONS);
   }
-  
+
   if (authData.user) {
     localStorage.setItem('user', JSON.stringify(authData.user));
   }
@@ -45,7 +45,7 @@ export function setAuth(authData) {
 export function getToken() {
   const cookieToken = Cookies.get('accessToken');
   if (cookieToken) return cookieToken;
-  
+
   return localStorage.getItem('authToken');
 }
 
@@ -60,7 +60,7 @@ export function getUser() {
   try {
     const userStr = localStorage.getItem('user');
     if (!userStr) return null;
-    
+
     const user = JSON.parse(userStr);
     return user;
   } catch {
@@ -86,11 +86,11 @@ export function logout() {
 export function getUserInitials() {
   const user = getUser();
   if (!user) return 'GU';
-  
+
   if (user.firstName && user.lastName) {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
   }
-  
+
   if (user.email) {
     const emailParts = user.email.split('@');
     if (emailParts[0]) {
@@ -101,7 +101,7 @@ export function getUserInitials() {
       return emailParts[0].substring(0, 2).toUpperCase();
     }
   }
-  
+
   return 'NU';
 }
 
@@ -110,6 +110,6 @@ export function isAdminRoute(pathname) {
 }
 
 export function isPublicRoute(pathname) {
-  const publicRoutes = ['/', '/login', '/signup', '/forgot-password', '/admin/login'];
+  const publicRoutes = ['/', '/signin', '/signup', '/forgot-password', '/admin/login'];
   return publicRoutes.includes(pathname) || publicRoutes.some(route => pathname.startsWith(`${route}/`));
 }

@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
+  const navigator = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
@@ -19,8 +20,10 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold text-primary">GroupBroad</h1>
+          <div className="flex-shrink-0" onClick={() => {
+            navigator('/')
+          }}>
+            <h1 className="text-2xl font-bold text-primary cursor-pointer" >GroupBroad</h1>
           </div>
 
           {/* Desktop Navigation */}

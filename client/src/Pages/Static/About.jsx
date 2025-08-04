@@ -4,10 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GraduationCap, Users, Award, University, Globe, Heart, Target, Lightbulb, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
 import Navigation from './components/Navigation';
+import { useNavigate } from 'react-router-dom';
 
 const About = () => {
   console.log('About component rendering');
-  
+  const navigate = useNavigate()
+
   const impactStats = [
     {
       number: '20,000+',
@@ -18,7 +20,7 @@ const About = () => {
     },
     {
       number: '700+',
-      label: 'Partner Universities', 
+      label: 'Partner Universities',
       icon: University,
       color: 'text-green-600',
       bgColor: 'bg-green-50'
@@ -47,7 +49,7 @@ const About = () => {
       gradient: 'from-red-400 to-pink-400'
     },
     {
-      title: 'Transparency', 
+      title: 'Transparency',
       description: 'Complete transparency in processes, fees, and guidance.',
       icon: Lightbulb,
       gradient: 'from-yellow-400 to-orange-400'
@@ -76,28 +78,28 @@ const About = () => {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      
+
       {/* Minimalistic Hero Section */}
       <section className="pt-24 pb-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
+
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-6">
                 <Badge variant="outline" className="border-gray-300 text-gray-600 px-3 py-1">
                   About GroupBroad
                 </Badge>
-                
+
                 <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                   To bring everyone&apos;s{' '}
                   <span className="text-primary">study abroad dream</span>{' '}
                   to life
                 </h1>
-                
+
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  GroupBroad is an all-in-one platform for aspirants to connect and collaborate 
-                  with fellow students and counselling experts creating a community that strives 
+                  GroupBroad is an all-in-one platform for aspirants to connect and collaborate
+                  with fellow students and counselling experts creating a community that strives
                   to make every study abroad aspiration a dream come true.
                 </p>
               </div>
@@ -129,12 +131,12 @@ const About = () => {
             {/* Right Image Section */}
             <div className="relative">
               <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="Students collaborating and studying together" 
+                <img
+                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Students collaborating and studying together"
                   className="w-full h-96 object-cover rounded-lg shadow-lg"
                 />
-                
+
                 {/* Simple overlay card */}
                 <Card className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm border-0 shadow-lg">
                   <CardContent className="p-4">
@@ -162,7 +164,7 @@ const About = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Impact</h2>
             <p className="text-lg text-gray-600">Transforming lives through education, one student at a time</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {impactStats.map((stat, index) => {
               const IconComponent = stat.icon;
@@ -194,21 +196,21 @@ const About = () => {
                 </h2>
                 <div className="space-y-4">
                   <p className="text-gray-700 leading-relaxed">
-                    GroupBroad was founded with a vision to democratize access to world-class education for Indian students. 
+                    GroupBroad was founded with a vision to democratize access to world-class education for Indian students.
                     What started as a mission to help a few students has grown into India&apos;s most trusted study abroad consultancy.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    With a team of experienced counselors and a network spanning across the globe, 
+                    With a team of experienced counselors and a network spanning across the globe,
                     we continue to innovate and evolve our services to meet the changing landscape of international education.
                   </p>
                 </div>
               </div>
             </div>
-            
+
             <div className="relative">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3"
-                alt="Team collaboration" 
+                alt="Team collaboration"
                 className="rounded-lg shadow-lg w-full h-80 object-cover"
               />
             </div>
@@ -224,13 +226,13 @@ const About = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Founders</h2>
             <p className="text-lg text-gray-600">Meet the visionaries behind GroupBroad</p>
           </div>
-          
+
           <Tabs defaultValue="anushk" className="max-w-4xl mx-auto">
             <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="anushk" className="text-lg py-3">Anushk Sharma</TabsTrigger>
               <TabsTrigger value="shrey" className="text-lg py-3">Shrey Choksi</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="anushk">
               <Card className="border-0 shadow-lg">
                 <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -246,13 +248,13 @@ const About = () => {
                     </div>
                     <div className="space-y-4 text-gray-700 leading-relaxed">
                       <p>
-                        Anushk completed his bachelor&apos;s degree in Mechanical Engineering from Medi Caps University in India. 
-                        However, feeling dissatisfied with the quality of education, he sought to enhance his academic journey 
+                        Anushk completed his bachelor&apos;s degree in Mechanical Engineering from Medi Caps University in India.
+                        However, feeling dissatisfied with the quality of education, he sought to enhance his academic journey
                         by pursuing his master&apos;s degree at the University of Notre Dame.
                       </p>
                       <p>
-                        In his quest for admission, Anushk sought assistance from a &quot;reputed local consultancy service in Indore&quot;. 
-                        Unfortunately, he found their approach to be generic and lacking relevant industry knowledge, despite 
+                        In his quest for admission, Anushk sought assistance from a &quot;reputed local consultancy service in Indore&quot;.
+                        Unfortunately, he found their approach to be generic and lacking relevant industry knowledge, despite
                         investing nearly 1 lakh rupees in their services. Consequently, he navigated the admissions process independently.
                       </p>
                     </div>
@@ -262,16 +264,16 @@ const About = () => {
                     </div>
                   </div>
                   <div className="bg-gray-50 p-8 flex items-center justify-center">
-                    <img 
+                    <img
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&w=300&h=300&fit=crop&crop=face"
-                      alt="Anushk Sharma" 
+                      alt="Anushk Sharma"
                       className="w-48 h-48 rounded-full object-cover shadow-lg"
                     />
                   </div>
                 </div>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="shrey">
               <Card className="border-0 shadow-lg">
                 <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -287,14 +289,14 @@ const About = () => {
                     </div>
                     <div className="space-y-4 text-gray-700 leading-relaxed">
                       <p>
-                        After completing his Bachelor&apos;s in Electronics and Communication, Shrey embarked on a transformative 
-                        journey to pursue an M.S. in Computer Science at Florida State University, driven by a passion for 
+                        After completing his Bachelor&apos;s in Electronics and Communication, Shrey embarked on a transformative
+                        journey to pursue an M.S. in Computer Science at Florida State University, driven by a passion for
                         cutting-edge technology and software development.
                       </p>
                       <p>
-                        Like many students, Shrey initially sought help from traditional agencies to navigate the study abroad process, 
-                        but he encountered numerous challenges and setbacks. Determined to overcome these obstacles, he took matters into 
-                        his own hands, gaining crucial insights through his personal experiences. Now, with UpBroad, he is committed to 
+                        Like many students, Shrey initially sought help from traditional agencies to navigate the study abroad process,
+                        but he encountered numerous challenges and setbacks. Determined to overcome these obstacles, he took matters into
+                        his own hands, gaining crucial insights through his personal experiences. Now, with UpBroad, he is committed to
                         helping others overcome similar hurdles and achieve their educational goals abroad.
                       </p>
                     </div>
@@ -304,9 +306,9 @@ const About = () => {
                     </div>
                   </div>
                   <div className="bg-gray-50 p-8 flex items-center justify-center">
-                    <img 
+                    <img
                       src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&w=300&h=300&fit=crop&crop=face"
-                      alt="Shrey Choksi" 
+                      alt="Shrey Choksi"
                       className="w-48 h-48 rounded-full object-cover shadow-lg"
                     />
                   </div>
@@ -325,7 +327,7 @@ const About = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">What Drives Us</h2>
             <p className="text-lg text-gray-600">Core principles that guide our mission</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {
               const IconComponent = value.icon;
@@ -355,11 +357,15 @@ const About = () => {
             Join thousands of successful students who have achieved their dreams with GroupBroad.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-gray-100 px-6 py-3">
+            <Button size="lg" className="bg-white text-primary hover:bg-gray-100 px-6 py-3" onClick={() => {
+              navigate('/signin')
+            }}>
               <Mail className="mr-2 h-4 w-4" />
               Get Started Today
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary px-6 py-3">
+            <Button size="lg" className="bg-white text-primary hover:bg-gray-100 px-6 py-3" onClick={() => {
+              navigate('/signin')
+            }}>
               <Phone className="mr-2 h-4 w-4" />
               Free Consultation
             </Button>

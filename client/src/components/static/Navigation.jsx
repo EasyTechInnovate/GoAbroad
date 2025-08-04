@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { isAuthenticated, subscribeToAuth } from '@/lib/auth';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     setIsLoggedIn(isAuthenticated());
@@ -34,7 +35,10 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
+
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => {
+            navigate('/')
+          }}>
             <h1 className="text-2xl font-bold text-primary">GroupBroad</h1>
           </div>
 

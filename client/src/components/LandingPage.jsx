@@ -212,7 +212,7 @@ export default function GoupbroadLandingPage() {
                   <Globe className="h-6 w-6 text-primary-1" />
                   <span className="text-xl font-bold text-white">Go Abroad</span>
                 </div>
-                <p className="text-gray-400">© {new Date().getFullYear()} Go Abroad. Maintained by EasyTechInnovate.</p>
+                <p className="text-gray-400">© {new Date().getFullYear()} Go Abroad. Maintained by Go Abroad.</p>
               </div>
             </footer>
           </div>

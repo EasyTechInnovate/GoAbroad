@@ -47,13 +47,14 @@ const CTA = () => {
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-6 text-lg font-semibold rounded-full transition-all duration-300 hover:border-white/50"
-            >
-              Schedule Consultation
-            </Button>
+            <Link to="/signin">
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-white text-primary hover:bg-gray-100 px-8 py-6 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group"
+              >
+                Schedule Consultation
+              </Button></Link>
           </div>
         </div>
 
