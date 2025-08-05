@@ -483,6 +483,7 @@ const Tasks = () => {
 
       // Only include optional fields if they have values
       if (newTask.assignee) {
+        // newTask.assignee already contains the ID from our SelectItem value
         taskData.assignee = newTask.assignee;
       }
 
@@ -1096,7 +1097,7 @@ const Tasks = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {teamMembers.map(member => (
-                      <SelectItem key={member.id} value={member.name}>
+                      <SelectItem key={member.id} value={member.id}>
                         <div className="flex items-center">
                           <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
                           <span>{member.name}</span>
@@ -1262,7 +1263,7 @@ const Tasks = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {teamMembers.map(member => (
-                      <SelectItem key={member.id} value={member.name}>
+                      <SelectItem key={member.id} value={member.id}>
                         <div className="flex items-center">
                           <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
                           <span>{member.name}</span>
