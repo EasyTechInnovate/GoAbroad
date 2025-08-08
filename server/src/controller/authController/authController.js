@@ -98,5 +98,79 @@ export default {
             console.log(err);
             httpError(next, err, req, 500);
         }
-    }
+    },
+
+    oauthSuccess: async (req, res, next) => {
+        try {
+            const user = req.user;
+
+            if (!user) {
+                return httpError(next, new Error('OAuth authentication failed'), req, 401);
+            }
+
+            const accessToken = quicker.generateToken(
+                { email: user.email, studentId: user._id },
+                config.ACCESS_TOKEN.SECRET,
+                config.ACCESS_TOKEN.EXPIRY
+            );
+
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+                path: '/',
+                sameSite: 'strict'
+            });
+
+            const userData = { ...user.toObject(), password: undefined };
+
+            // Log activity
+            const activity = new StudentActivity({
+                studentId: user._id,
+                activityType: ACTIVITY_TYPES.LOGIN,
+                message: `Student ${user.email} logged in via ${user.provider}`,
+                status: ACTIVITY_STATUSES.COMPLETED
+            });
+            await activity.save();
+
+
+            const isNewUser = !user.isFeePaid;
+            const redirectUrl = isNewUser
+                ? `${config.FRONTEND_URL || 'http://localhost:3000'}/pricing`
+                : `${config.FRONTEND_URL || 'http://localhost:3000'}/dashboard`;
+
+
+            if (req.accepts('html')) {
+                return res.redirect(redirectUrl);
+            }
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, {
+                accessToken,
+                user: userData,
+                requiresPayment: !user.isFeePaid,
+                message: isNewUser ? 'Registration successful. Payment required to access dashboard.' : 'Login successful'
+            });
+
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
+    oauthFailure: (req, res, next) => {
+        try {
+            if (req.accepts('html')) {
+                const errorMessage = req.flash('error') || 'Authentication failed';
+                const redirectUrl = `${config.FRONTEND_URL || 'http://localhost:3000'}/signin?error=${encodeURIComponent(errorMessage)}`;
+                return res.redirect(redirectUrl);
+            }
+
+            httpResponse(req, res, 400, 'Authentication failed', {
+                status: false,
+                message: "Failed Authentication"
+            });
+        } catch (err) {
+            httpError(next, err, req, 500);
+        }
+    },
+
 };
