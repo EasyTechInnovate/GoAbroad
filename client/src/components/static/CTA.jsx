@@ -25,7 +25,7 @@ const CTA = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+          <Badge variant="secondary" className="mb-6 rounded-full bg-white/20 text-white border-white/30 backdrop-blur-sm">
             Join 10,000+ Students Worldwide
           </Badge>
 
@@ -41,20 +41,20 @@ const CTA = () => {
             <Link to="/signin">
               <Button
                 size="lg"
-                className="bg-white text-primary hover:bg-gray-100 px-8 py-6 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group"
+                className="bg-white text-primary-700 hover:bg-gray-100 px-8 py-6 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group"
               >
                 Get Started Free
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/signin">
+            {/* <Link to="/signin">
               <Button
                 variant="outline"
                 size="lg"
                 className="bg-white text-primary hover:bg-gray-100 px-8 py-6 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 group"
               >
                 Schedule Consultation
-              </Button></Link>
+              </Button></Link> */}
           </div>
         </div>
 

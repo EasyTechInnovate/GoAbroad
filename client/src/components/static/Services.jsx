@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, Users, BookOpen, CalendarDays, Calculator, TrendingUp, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Services = () => {
   const navigate = useNavigate()
@@ -17,7 +17,8 @@ const Services = () => {
       color: 'bg-blue-50 text-blue-600',
       borderColor: 'border-blue-200',
       features: ['AI-powered matching', 'Detailed course insights', 'Admission requirements'],
-      badge: 'Popular'
+      badge: 'Popular',
+      route:'/college-finder'
     },
     {
       icon: Users,
@@ -26,26 +27,27 @@ const Services = () => {
       color: 'bg-green-50 text-green-600',
       borderColor: 'border-green-200',
       features: ['Student networking', 'Experience sharing', 'Peer support'],
-      badge: 'Active'
+      badge: 'Active',
+      route:'/community'
     },
-    {
-      icon: BookOpen,
-      title: 'Scholarship & Funding Finder',
-      description: 'Access comprehensive scholarship database and find the best funding options including lowest interest loans.',
-      color: 'bg-purple-50 text-purple-600',
-      borderColor: 'border-purple-200',
-      features: ['Scholarship database', 'Loan comparison', 'Funding guidance'],
-      badge: 'Featured'
-    },
-    {
-      icon: CalendarDays,
-      title: 'Application Tracker Dashboard',
-      description: 'Keep track of all your applications, deadlines, interview dates, and admission rounds in one place.',
-      color: 'bg-orange-50 text-orange-600',
-      borderColor: 'border-orange-200',
-      features: ['Deadline tracking', 'Status updates', 'Interview scheduling'],
-      badge: 'Essential'
-    },
+    // {
+    //   icon: BookOpen,
+    //   title: 'Scholarship & Funding Finder',
+    //   description: 'Access comprehensive scholarship database and find the best funding options including lowest interest loans.',
+    //   color: 'bg-purple-50 text-purple-600',
+    //   borderColor: 'border-purple-200',
+    //   features: ['Scholarship database', 'Loan comparison', 'Funding guidance'],
+    //   badge: 'Featured'
+    // },
+    // {
+    //   icon: CalendarDays,
+    //   title: 'Application Tracker Dashboard',
+    //   description: 'Keep track of all your applications, deadlines, interview dates, and admission rounds in one place.',
+    //   color: 'bg-orange-50 text-orange-600',
+    //   borderColor: 'border-orange-200',
+    //   features: ['Deadline tracking', 'Status updates', 'Interview scheduling'],
+    //   badge: 'Essential'
+    // },
     {
       icon: Calculator,
       title: 'Test Score Calculator & Eligibility',
@@ -53,17 +55,18 @@ const Services = () => {
       color: 'bg-red-50 text-red-600',
       borderColor: 'border-red-200',
       features: ['Score calculation', 'Eligibility check', 'Test preparation'],
-      badge: 'Smart'
+      badge: 'Smart',
+      route:''
     },
-    {
-      icon: TrendingUp,
-      title: 'Career Guidance & Planning',
-      description: 'Get insights into career prospects, job markets, and post-graduation opportunities in your chosen field.',
-      color: 'bg-indigo-50 text-indigo-600',
-      borderColor: 'border-indigo-200',
-      features: ['Career insights', 'Market analysis', 'Job prospects'],
-      badge: 'Future-Ready'
-    }
+    // {
+    //   icon: TrendingUp,
+    //   title: 'Career Guidance & Planning',
+    //   description: 'Get insights into career prospects, job markets, and post-graduation opportunities in your chosen field.',
+    //   color: 'bg-indigo-50 text-indigo-600',
+    //   borderColor: 'border-indigo-200',
+    //   features: ['Career insights', 'Market analysis', 'Job prospects'],
+    //   badge: 'Future-Ready'
+    // }
   ];
 
   return (
@@ -77,7 +80,7 @@ const Services = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4 bg-primary/10 text-primary border-primary/20">
+          <Badge variant="secondary" className="mb-4 bg-primary-700/20 text-primary-700 rounded-full border-primary-700/20">
             Comprehensive Platform
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -123,14 +126,14 @@ const Services = () => {
                     </li>
                   ))}
                 </ul>
-                {/* <Button
+                <Button
                   variant="ghost"
                   size="sm"
                   className="w-full group-hover:bg-primary group-hover:text-white transition-all duration-300"
                 >
-                  Learn More
+                 <Link to={service.route} > Learn More </Link>
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button> */}
+                </Button>
               </CardContent>
             </Card>
           ))}
@@ -148,7 +151,7 @@ const Services = () => {
               </p>
               <Button
                 size="lg"
-                className="bg-white text-primary hover:bg-gray-100 px-8 py-3 font-semibold rounded-full shadow-lg transform hover:scale-105 transition-all duration-300"
+                className="bg-white text-primary-700 hover:bg-gray-100 px-8 py-3 font-semibold rounded-full shadow-lg transform hover:scale-105 transition-all duration-300"
                 onClick={() => {
                   navigate('/signin')
                 }}

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { isAuthenticated, subscribeToAuth } from '@/lib/auth';
-
+import logo from '../../assets/logo.svg'
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +24,8 @@ const Navigation = () => {
     { name: 'University Finder', href: '/college-finder' },
     // { name: 'Scholarships', href: '#scholarships' },
     { name: 'Community', href: '/community' },
-    { name: 'About', href: '/about' }
+    { name: 'About', href: '/about' },
+    {name: 'Pricing Plan' , href: '/pricing'}
   ];
 
   const buttonText = isLoggedIn ? 'Dashboard' : 'Get Started';
@@ -39,7 +40,11 @@ const Navigation = () => {
           <div className="flex-shrink-0 cursor-pointer" onClick={() => {
             navigate('/')
           }}>
-            <h1 className="text-2xl font-bold text-primary">GroupBroad</h1>
+            <div className='flex items-center justify-center gap-2'>
+
+            <img src={logo} alt="Goupbroad logo" className='w-[50px] h-[50px]' />
+            <h1 className="text-3xl font-bold text-[#145044] ">GroupBroad</h1>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
@@ -70,7 +75,7 @@ const Navigation = () => {
           {/* CTA Button */}
           <div className="hidden md:block">
             <Link to={buttonPath}>
-              <Button className="bg-primary hover:bg-primary-700 text-white">
+              <Button className="bg-primary-700  text-white">
                 {buttonText}
               </Button>
             </Link>
@@ -114,7 +119,7 @@ const Navigation = () => {
               ))}
               <div className="pt-2">
                 <Link to={buttonPath}>
-                  <Button className="w-full bg-primary hover:bg-primary-700 text-white">
+                  <Button className="w-full bg-primary-700 text-white">
                     {buttonText}
                   </Button>
                 </Link>

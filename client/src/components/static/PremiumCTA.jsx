@@ -8,7 +8,7 @@ import { ArrowRight, CheckCircle, Calendar, FileText, User, Zap, BarChart3, Mess
 const PremiumCTA = () => {
   const navigate = useNavigate();
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-primary-50 to-primary-100 relative overflow-hidden mt-8 md:mt-12">
+    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-primary-50 to-primary-100 relative overflow-hidden ">
       {/* Background decorative elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 right-10 w-32 sm:w-48 md:w-64 h-32 sm:h-48 md:h-64 bg-primary-200/30 rounded-full blur-3xl"></div>
@@ -19,13 +19,13 @@ const PremiumCTA = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
-          <Badge className="bg-primary text-white px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+          <Badge className="bg-primary-700 rounded-full text-white px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
             🎓 Premium Application Service
           </Badge>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Apply to Your Dream Universities
             <br className="hidden sm:block" />
-            <span className="text-primary">With Expert Guidance</span>
+            <span className="text-primary-700">With Expert Guidance</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-2">
             Don't navigate the complex application process alone. Our expert counselors will guide you through every step with a personalized dashboard to track your progress.
@@ -80,7 +80,7 @@ const PremiumCTA = () => {
             {/* Quick Benefits */}
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border">
               <h4 className="font-semibold text-gray-900 mb-3 sm:mb-4 text-center sm:text-left">What You Get:</h4>
-              <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   <span className="text-xs sm:text-sm text-gray-700">Application Strategy</span>
@@ -147,8 +147,8 @@ const PremiumCTA = () => {
 
                 <div className="text-center pt-3 sm:pt-4">
                   <Button onClick={() => {
-                    navigate("/pricing")
-                  }} className="bg-primary hover:bg-primary/90 text-white px-4 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-lg group w-full sm:w-auto">
+                    navigate('/pricing')
+                  }} className="bg-primary-800  text-white px-4 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-lg group w-full sm:w-auto">
                     Start Your Premium Journey
                     <ArrowRight className="ml-1 sm:ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -167,7 +167,7 @@ const PremiumCTA = () => {
 
             <div className="absolute -bottom-3 sm:-bottom-4 -left-2 sm:-left-4 bg-white rounded-lg sm:rounded-xl shadow-lg p-2 sm:p-4 border">
               <div className="text-center">
-                <div className="text-lg sm:text-2xl font-bold text-primary">$2M+</div>
+                <div className="text-lg sm:text-2xl font-bold text-primary-700">$2M+</div>
                 <div className="text-[10px] sm:text-xs text-gray-600">Scholarships Won</div>
               </div>
             </div>
@@ -186,7 +186,7 @@ const PremiumCTA = () => {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Button
                 size="default"
-                className="bg-primary hover:bg-primary/90 text-white px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-base w-full sm:w-auto"
+                className="bg-primary-800   text-white px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-base w-full sm:w-auto"
                 onClick={() => navigate('/pricing')}
               >
                 Pricing Plans
