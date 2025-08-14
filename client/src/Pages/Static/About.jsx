@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GraduationCap, Users, Award, University, Globe, Heart, Target, Lightbulb, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
 import Navigation from './components/Navigation';
 import { useNavigate } from 'react-router-dom';
+import CTA from '@/components/static/CTA';
+import Footer from '@/components/static/Footer';
 
 const About = () => {
   console.log('About component rendering');
@@ -87,7 +89,7 @@ const About = () => {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <Badge variant="outline" className="border-gray-300 text-gray-600 px-3 py-1">
+                <Badge variant="outline" className="border-primary-700 text-primary-700 rounded-full px-3 py-1">
                   About GroupBroad
                 </Badge>
 
@@ -190,7 +192,7 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div>
-                <Badge variant="outline" className="mb-4 border-primary text-primary">Our Story</Badge>
+                <Badge variant="outline" className="mb-4 border-primary-700 rounded-full text-primary-700 ">Our Story</Badge>
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">
                   15+ Years of Excellence in Global Education
                 </h2>
@@ -222,7 +224,7 @@ const About = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-primary text-primary">Leadership</Badge>
+            <Badge variant="outline" className="mb-4 border-primary-700 text-primary-700 rounded-full">Leadership</Badge>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Founders</h2>
             <p className="text-lg text-gray-600">Meet the visionaries behind GroupBroad</p>
           </div>
@@ -323,7 +325,7 @@ const About = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-primary text-primary">Our Values</Badge>
+            <Badge variant="outline" className="mb-4 border-primary-700 text-primary-700 rounded-full">Our Values</Badge>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">What Drives Us</h2>
             <p className="text-lg text-gray-600">Core principles that guide our mission</p>
           </div>
@@ -350,7 +352,7 @@ const About = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary text-white">
+      {/* <section className="py-16 bg-primary text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Begin Your Journey?</h2>
           <p className="text-xl text-white/90 mb-8">
@@ -371,7 +373,10 @@ const About = () => {
             </Button>
           </div>
         </div>
-      </section>
+      </section> */}
+      <CTA/>
+      <Footer/>
+
     </div>
   );
 };

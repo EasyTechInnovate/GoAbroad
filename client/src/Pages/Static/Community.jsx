@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Users, Search, BookOpen, Globe, Briefcase, Heart, Code, Camera, Music, MapPin, Clock, Star } from 'lucide-react';
 import Navigation from './components/Navigation';
+import Footer from '@/components/static/Footer';
+import CTA from '@/components/static/CTA';
 
 const Community = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -321,6 +323,8 @@ const Community = () => {
             </div>
           </div>
         </section>
+        <CTA/>
+        <Footer/>
       </main>
     </div>
   );
