@@ -39,8 +39,8 @@ const Footer = () => {
       title: 'Company',
       links: [
         {title: 'About Us' , href:'/about'},
-        {title: 'Terms & Conditons' , href:''},
-        {title: 'Privacy Policy' , href:''}
+        {title: 'Terms & Conditons' , href:'/terms-and-conditions'},
+        {title: 'Privacy Policy' , href:'/privacy-policy'}
        
       ]
     }
