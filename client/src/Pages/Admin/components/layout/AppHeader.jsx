@@ -64,9 +64,9 @@ export function AppHeader() {
     <header className="h-16 border-b bg-background/95 backdrop-blur flex items-center px-4 sticky top-0 z-30 w-full">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
-          <h2 className="text-lg font-semibold md:block hidden">Dashboard</h2>
+          <h2 className="text-lg font-semibold ">Dashboard</h2>
           
-          {searchOpen ? (
+          {/* {searchOpen ? (
             <div className="relative md:ml-4 ml-0">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -85,11 +85,11 @@ export function AppHeader() {
             >
               <Search className="h-5 w-5" />
             </Button>
-          )}
+          )} */}
         </div>
         
         <div className="flex items-center gap-2">
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
                 <Calendar className="h-4 w-4" />
@@ -107,7 +107,7 @@ export function AppHeader() {
               <DropdownMenuItem>This Quarter</DropdownMenuItem>
               <DropdownMenuItem>This Year</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
 
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
@@ -136,7 +136,7 @@ export function AppHeader() {
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 className="cursor-pointer"
-                onClick={() => navigate('/admin/profile')}
+                onClick={() => navigate('/admin')}
               >
                 <User className="mr-2 h-4 w-4" />
                 Profile

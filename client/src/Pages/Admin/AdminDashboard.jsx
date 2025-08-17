@@ -82,8 +82,8 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 w-full">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <div className="flex items-center space-x-2">
           <Button>
@@ -171,9 +171,9 @@ const AdminDashboard = () => {
           </div>
 
           {/* Main Content Row */}
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-3">
             {/* Recent Activity */}
-            <div className="col-span-2 bg-white rounded-lg shadow-sm p-6">
+            <div className="col-span-2 bg-white rounded-lg shadow-sm p-6 max-md:p-3">
               <div className="font-semibold text-lg mb-4">Recent Activity</div>
               <div className="divide-y">
                 {loading.activities ? (
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Upcoming Deadlines */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white max-lg:col-span-2 rounded-lg shadow-sm p-6 max-md:p-3">
               <div className="font-semibold text-lg mb-4">Upcoming Deadlines</div>
               <div className="space-y-4">
                 {loading.deadlines ? (

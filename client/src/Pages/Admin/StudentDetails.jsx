@@ -28,7 +28,7 @@ const StudentDetails = () => {
       </div>
         
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 max-w-full overflow-x-auto justify-start">
           <TabsTrigger value="profile" className="flex gap-2">
             <User className="h-4 w-4" /> Profile
           </TabsTrigger>

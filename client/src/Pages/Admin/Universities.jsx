@@ -133,7 +133,7 @@ const Universities = () => {
 
       const response = await getUniversities(params);
       setUniversities(response.data.universities || []);
-      setTotalPages(response.data.totalPages);
+      setTotalPages(response.data.pagination.totalPages);
     } catch (error) {
       console.error('Error fetching universities:', error);
       toast.error('Failed to fetch universities');
@@ -488,7 +488,7 @@ const Universities = () => {
   return (
     <>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap gap-2 items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">University Management</h1>
           {hasEditPermission() && (
             <Button onClick={() => setIsAddUniversityOpen(true)} disabled={loading}>

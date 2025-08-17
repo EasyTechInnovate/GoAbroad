@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 
 import logo from '/logo.svg';
+import { SidebarHeader } from '../ui/sidebar';
 
 const sidebarItems = [
   {
@@ -89,28 +90,29 @@ const sidebarItems = [
 export function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const [isOpen , setIsOpen] = useState(true)
 
   return (
     <>
-      <Sidebar className="border-r border-border">
-        <div className="flex items-center justify-between h-16 px-4 border-b">
-          <div className={cn('flex items-center gap-2', collapsed && 'justify-center w-full')}>
-            <div className="bg-primary text-primary-foreground rounded h-8 w-8 flex items-center justify-center font-semibold">
-            <img src={logo} alt="Logo" className="h-10 w-10" />
-            </div>
-            {!collapsed && <span className="font-semibold text-lg">GoupBroad</span>}
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setCollapsed(!collapsed)}
-            className={cn('h-8 w-8', collapsed && 'hidden')}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        </div>
+      <Sidebar collapsible='icon' className={`border-r border-border overflow-hidden `}>
 
-        <SidebarContent className="p-2">
+        <SidebarHeader  className={'bg-white'} >
+          {collapsed && (
+            <div className="py-4 ml-1">
+              <img src="/logo.svg" height={35} width={35} />
+            </div>
+          )}
+            {!collapsed && (
+          <div className="md:py-6 flex items-center space-x-3 px-1">
+              <>
+                <img src="/logo.svg" height={40} width={40} />
+                <span className={cn("text-2xl font-bold text-gray-900" )}>Goupbroad</span>
+              </>
+          </div>
+            )}
+      </SidebarHeader>
+ 
+        <SidebarContent className={`p-2 w-fit`}>
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -120,7 +122,7 @@ export function AppSidebar() {
                       asChild
                       className={cn(
                         'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                        location.pathname === item.path ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
+                        location.pathname === item.path ? 'bg-primary-1 text-white' : 'hover:bg-gray-300/50'
                       )}
                     >
                       <Link to={item.path} className="w-full flex items-center">
@@ -149,8 +151,8 @@ export function AppSidebar() {
         )}
       </Sidebar>
       
-      <div className="lg:hidden">
-        <SidebarTrigger>
+      <div className="mt-5">
+        <SidebarTrigger onClick={()=>{setIsOpen(!isOpen) ; console.log("worked")}}>
           <Button variant="outline" size="icon" className="fixed bottom-4 right-4 z-50 rounded-full shadow-lg">
             <ChevronRight className="h-4 w-4" />
           </Button>

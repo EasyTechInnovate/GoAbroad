@@ -203,7 +203,7 @@ const Applications = () => {
       const res = await getApplications(params);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
-      toast.error('Failed to update application');
+      toast.error('Failed to update application' , err.response?.data?.message);
       console.error('Update application error:', err);
     } finally {
       setLoading(false);
@@ -231,7 +231,7 @@ const Applications = () => {
       const res = await getApplications(params);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
-      toast.error('Failed to delete application');
+      toast.error('Failed to delete application', err.response?.data?.message);
       console.error('Delete application error:', err);
     }
   };
@@ -289,7 +289,7 @@ const Applications = () => {
 
         setFilteredApplications(res.data?.applications || []);
       } catch (err) {
-        setError(err?.message || 'Failed to load applications');
+        setError(err?.response?.data?.message || 'Failed to load applications');
       } finally {
         setLoading(false);
       }
@@ -321,7 +321,7 @@ const Applications = () => {
       // setApplications(res.data?.applications || []);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
-      toast.error('Failed to update status');
+      toast.error('Failed to update status' , err.response?.data?.message);
       console.error('Update application status error:', err);
     } finally {
       setLoading(false);
@@ -341,7 +341,7 @@ const Applications = () => {
     <div className="space-y-6">
       {error && <div className="text-center text-red-500">{error}</div>}
       {loading && <div className="text-center text-muted-foreground">Loading...</div>}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
         <div className="flex items-center gap-2">
           {hasEditPermission() && (
@@ -366,7 +366,7 @@ const Applications = () => {
       </div>
 
       <Tabs defaultValue="all" value={activeStatus} onValueChange={handleTabChange}>
-        <TabsList>
+        <TabsList className='max-w-full overflow-x-auto justify-start'> 
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="pending">Pending</TabsTrigger>
           <TabsTrigger value="approved">Approved</TabsTrigger>
@@ -379,7 +379,7 @@ const Applications = () => {
             <div className="text-center text-muted-foreground py-8">No applications available</div>
           ) : (
             <Card>
-              <CardContent className="p-0">
+              <CardContent className="md:px-6">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -492,7 +492,7 @@ const Applications = () => {
                 // setApplications(res.data?.applications || []);
                 setFilteredApplications(res.data?.applications || []);
               } catch (err) {
-                toast.error('Failed to create application');
+                toast.error('Failed to create application' , err.response?.data?.message);
                 console.error('Create application error:', err);
               } finally {
                 setLoading(false);

@@ -103,7 +103,7 @@ export function StudentsTable({ initialFilters = {} }) {
       fetchStudents();
     } catch (error) {
       console.error('Error deleting student:', error);
-      toast.error('Failed to delete student');
+      toast.error('Failed to delete student' , error.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -133,7 +133,9 @@ export function StudentsTable({ initialFilters = {} }) {
             <SelectContent>
               <SelectItem value="ALL">All Status</SelectItem>
               <SelectItem value="ACTIVE">Active</SelectItem>
-              <SelectItem value="INACTIVE">Inactive</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="COMPLETE">Complete</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
             </SelectContent>
           </Select>
         </div>

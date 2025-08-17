@@ -204,7 +204,7 @@ const Tasks = () => {
         }
       } catch (error) {
         console.error('Error fetching subtasks:', error);
-        if (isMounted) toast.error('Failed to fetch subtasks');
+        if (isMounted) toast.error('Failed to fetch subtasks', error.response?.data?.message);
       } finally {
         if (isMounted) setLoading(prev => ({ ...prev, subtasks: false }));
       }
@@ -224,7 +224,7 @@ const Tasks = () => {
         }
       } catch (error) {
         console.error('Error fetching students:', error);
-        if (isMounted) toast.error('Failed to fetch students');
+        if (isMounted) toast.error('Failed to fetch students' , error.response?.data?.message);
       } finally {
         if (isMounted) setLoading(prev => ({ ...prev, students: false }));
       }
@@ -240,7 +240,7 @@ const Tasks = () => {
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
-        if (isMounted) toast.error('Failed to fetch categories');
+        if (isMounted) toast.error('Failed to fetch categories' , error.response?.data?.message);
       } finally {
         if (isMounted) setLoading(prev => ({ ...prev, categories: false }));
       }
@@ -283,7 +283,7 @@ const Tasks = () => {
       setTasks(transformedTasks);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      toast.error('Failed to fetch tasks');
+      toast.error('Failed to fetch tasks' , error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, tasks: false }));
     }
@@ -299,7 +299,7 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
-      toast.error('Failed to fetch categories');
+      toast.error('Failed to fetch categories' , error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, categories: false }));
     }
@@ -345,7 +345,7 @@ const Tasks = () => {
           toast.success(`Added subtask "${subtask.title}" to task`);
         } catch (error) {
           console.error('Error adding subtask:', error);
-          toast.error('Failed to add subtask');
+          toast.error('Failed to add subtask' , error.response?.data?.message);
           setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtask.id));
         } finally {
           setLoading(prev => ({ ...prev, subtasks: false }));
@@ -368,7 +368,7 @@ const Tasks = () => {
         toast.success('Removed subtask from task');
       } catch (error) {
         console.error('Error removing subtask:', error);
-        toast.error('Failed to remove subtask');
+        toast.error('Failed to remove subtask' , error.response?.data?.message);
         // Revert the UI change if the API call fails
         setSelectedSubtasks([...selectedSubtasks, subtaskId]);
       } finally {
@@ -581,7 +581,7 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error('Error fetching student task details:', error);
-      toast.error('Failed to fetch task details');
+      toast.error('Failed to fetch task details' , error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, subtasks: false }));
     }
@@ -635,9 +635,10 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error('Error updating subtask status:', error);
-      toast.error('Failed to update subtask status');
+      toast.error('Failed to update subtask status' , error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, subtasks: false }));
+
     }
   };
 
@@ -719,10 +720,10 @@ const Tasks = () => {
 
 
   return (
-    <div className="space-y-4 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4  max-w-[100vw] md:max-w-full  overflow-x-auto ">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
             onClick={() => handleOpenCategoryManage()}
@@ -750,8 +751,8 @@ const Tasks = () => {
         View and manage all tasks assigned to students
       </div>
 
-      <div className="rounded-md border">
-        <table className="w-full">
+      <div className="rounded-md border overflow-x-auto">
+        <table className="w-full ">
           <thead>
             <tr className="border-b bg-muted/50">
               <th className="px-4 py-3 text-left font-medium">Status</th>
@@ -794,14 +795,14 @@ const Tasks = () => {
                     <div>
                       <div className="font-medium">{task.title}</div>
                       {task.subtasks?.length > 0 && (
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-muted-foreground whitespace-nowrap">
                           {task.subtasks.length} subtasks
                         </div>
                       )}
                     </div>
                   </td>
                   <td className="px-4 py-3">{task.mainTask || '-'}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 max-w-[250px] truncate" title={task.students?.map(student => student.email).join(', ') || '-'}>
                     {task.students?.map(student => student.email).join(', ') || '-'}
                   </td>
                   <td className="px-4 py-3">

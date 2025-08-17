@@ -21,6 +21,8 @@ const CollegeFinderFixed = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [pagination, setPagination] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState({
     // Step 1
     degree: '',
@@ -65,21 +67,31 @@ const CollegeFinderFixed = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (page = 1) => {
     try {
       setLoading(true);
       setError(null);
       
       // Prepare query parameters from form data
       const params = {
+        degree: formData.degree,
+        country: formData.country,
+        fieldOfStudy: formData.fieldOfStudy,
+
+        highestEducation : formData.highestEducation,
+        schoolName : formData.schoolName,
+        schoolBoard : formData.schoolBoard,
+
         score: formData.score,
         topTenPercent: formData.topTenPercent,
         englishTest: formData.englishTest,
         aptitudeTest: formData.aptitudeTest,
+        apExams: formData.apExams,
         coCurricularRating: JSON.stringify(formData.coCurricularRating),
         extraCurricularRating: JSON.stringify(formData.extraCurricularRating),
         internshipDuration: formData.internshipDuration,
-        internshipUnit: formData.internshipUnit
+        internshipUnit: formData.internshipUnit,
+        page
       };
       
       // Call the API
@@ -87,6 +99,8 @@ const CollegeFinderFixed = () => {
       
       // Update state with results
       setUniversities(response.data.universities || []);
+      setPagination(response.data.pagination);
+      setCurrentPage(response.data.pagination.currentPage);
       setShowResults(true);
       
       // Scroll to results
@@ -139,6 +153,8 @@ const CollegeFinderFixed = () => {
             </SelectTrigger>
             <SelectContent className="bg-background border-primary/20">
               <SelectItem value="united-states">United States</SelectItem>
+              <SelectItem value="india">India</SelectItem>
+              <SelectItem value="india">Japan</SelectItem>
               <SelectItem value="canada">Canada</SelectItem>
               <SelectItem value="uk">United Kingdom</SelectItem>
               <SelectItem value="australia">Australia</SelectItem>
@@ -626,6 +642,27 @@ const CollegeFinderFixed = () => {
         
         {/* Display university results */}
         <UniversityResults />
+        {pagination && (
+          <div className="flex justify-center my-6 gap-2">
+            <Button
+              variant="outline"
+              disabled={!pagination.hasPrevPage}
+              onClick={() => handleSubmit(currentPage - 1)}
+            >
+              Previous
+            </Button>
+            <span className="px-4 py-2">
+              Page {pagination.currentPage} of {pagination.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              disabled={!pagination.hasNextPage}
+              onClick={() => handleSubmit(currentPage + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
         
         {/* Error message */}
         {error && (

@@ -93,7 +93,7 @@ const Footer = () => {
         </div>
 
         {/* Newsletter Section */}
-        <div className="border-t border-gray-800 pt-12 mb-8">
+        {/* <div className="border-t border-gray-800 pt-12 mb-8">
           <div className="text-center">
             <h4 className="text-xl font-semibold text-white mb-4">
               Stay Updated with Latest Opportunities
@@ -112,7 +112,7 @@ const Footer = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Bottom Footer */}
         <div className="border-t border-gray-800 pt-8">

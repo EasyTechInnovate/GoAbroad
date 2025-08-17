@@ -74,7 +74,7 @@ const AllActivities = () => {
         setActivities(res.data?.activities || []);
         setTotalPages(res.data?.totalPages || 1);
       } catch (err) {
-        setError(err?.message || 'Failed to load activities');
+        setError(err?.response?.data?.message || 'Failed to load activities');
       } finally {
         setLoading(false);
       }

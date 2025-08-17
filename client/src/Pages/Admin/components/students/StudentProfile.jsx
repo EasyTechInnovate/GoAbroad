@@ -955,7 +955,7 @@ export function StudentProfile({ id }) {
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent >
             <div className="flex flex-col items-center text-center mb-6">
               <Avatar className="h-24 w-24 mb-4">
                 <AvatarImage src={student.profilePicture} />
@@ -1005,14 +1005,14 @@ export function StudentProfile({ id }) {
 
         <div className="flex-1">
           <Tabs defaultValue="overview">
-              <div className="w-full flex items-center justify-between mb-4">
-              <TabsList>
+              <div className="w-full flex flex-wrap items-center justify-between mb-4">
+              <TabsList className='max-w-full  overflow-x-auto justify-start mb-2 '>
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="documents">Documents</TabsTrigger>
                 <TabsTrigger value="universities">Universities</TabsTrigger>
                 <TabsTrigger value="tasks">Tasks</TabsTrigger>
               </TabsList>
-              {student && hasEditPermission() && <AssignUniversityDialog studentId={student._id} onAssign={handleAssign} />}
+              {student && hasEditPermission() && <AssignUniversityDialog  studentId={student._id} onAssign={handleAssign} />}
             </div>
 
             <TabsContent value="overview" className="space-y-4">
@@ -1021,7 +1021,7 @@ export function StudentProfile({ id }) {
                   <CardTitle>Test Scores</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="space-y-4 ">
                     <div>
                       <h3 className="text-sm font-medium mb-2">GRE</h3>
                       <div className="grid grid-cols-3 gap-4">

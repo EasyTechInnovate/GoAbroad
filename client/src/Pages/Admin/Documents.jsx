@@ -122,7 +122,7 @@ const Documents = ({ studentId }) => {
       setFilteredDocuments(mappedDocs);
     } catch (err) {
       console.error('Error fetching documents:', err);
-      toast.error(err.message || 'Failed to fetch documents');
+      toast.error(err.response?.data?.message || 'Failed to fetch documents');
     } finally {
       setLoading(false);
     }
@@ -166,7 +166,7 @@ const Documents = ({ studentId }) => {
       toast.success(`Document marked as ${newStatus}`);
     } catch (err) {
       console.error('Error updating status:', err);
-      toast.error(err.message || 'Failed to update document status');
+      toast.error(err.response?.data?.message || 'Failed to update document status');
     }
   };
 
@@ -177,7 +177,7 @@ const Documents = ({ studentId }) => {
       toast.success('Document deleted successfully');
     } catch (err) {
       console.error('Error deleting document:', err);
-      toast.error(err.message || 'Failed to delete document');
+      toast.error(err.response?.data?.message || 'Failed to delete document');
     }
   };
 
@@ -241,7 +241,7 @@ const Documents = ({ studentId }) => {
       resetForm();
     } catch (err) {
       console.error('Upload error:', err);
-      toast.error(err.message || 'Failed to upload document');
+      toast.error(err.response?.data?.message || 'Failed to upload document');
     } finally {
       setUploadLoading(false);
     }
@@ -280,7 +280,7 @@ const Documents = ({ studentId }) => {
       setTasks(mappedTasks);
     } catch (err) {
       console.error('Error fetching tasks:', err);
-      toast.error(err.message || 'Failed to fetch tasks');
+      toast.error(err.response?.data?.message || 'Failed to fetch tasks');
     } finally {
       setTasksLoading(false);
     }
@@ -326,7 +326,7 @@ const Documents = ({ studentId }) => {
     } catch (err) {
       setSubtasks([]);
       console.error('Error fetching subtasks:', err);
-      toast.error(err.message || 'Failed to fetch subtasks');
+      toast.error(err.response?.data?.message || 'Failed to fetch subtasks');
     } finally {
       setSubtasksLoading(false);
     }
@@ -345,7 +345,7 @@ const Documents = ({ studentId }) => {
       setStudents(studentsData);
     } catch (err) {
       console.error('Error fetching students:', err);
-      toast.error(err.message || 'Failed to fetch students');
+      toast.error(err.response?.data?.message || 'Failed to fetch students');
     } finally {
       setStudentsLoading(false);
     }
@@ -376,10 +376,10 @@ const Documents = ({ studentId }) => {
   }, [studentId]);
 
   return (
-    <div className="space-y-4 max-w-[1200px] mx-auto p-4">
+    <div className="space-y-4 max-w-[1200px] mx-auto md:p-4">
       <h1 className="text-xl font-semibold">Document Manager</h1>
       
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap gap-2 justify-between items-center">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -440,9 +440,9 @@ const Documents = ({ studentId }) => {
                   filteredDocuments.map((doc) => (
                     <TableRow key={doc.id}>
                       <TableCell>
-                        <div className="flex items-center">
+                        <div className="flex items-center ">
                           <FileText className="mr-2 h-4 w-4 text-blue-500" />
-                          {doc.name}
+                          <h1 className='truncate max-w-[300px]' title={doc.name}> {doc.name}</h1> 
                         </div>
                       </TableCell>
                       <TableCell>{doc.size}</TableCell>

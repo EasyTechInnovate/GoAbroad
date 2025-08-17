@@ -64,7 +64,7 @@ const Forms = () => {
       setLoans(response.data.loans);
       setLoanPagination(response.data.pagination);
     } catch (error) {
-      toast.error(`Failed to fetch loans: ${error.message}`);
+      toast.error(`Failed to fetch loans: ${error.response?.data?.message}`);
     } finally {
       setIsLoadingLoans(false);
     }
@@ -74,7 +74,7 @@ const Forms = () => {
       const response = await getQuestionnaires();
       setQuestionnaires(response.data || []);
     } catch (error) {
-      toast.error(`Failed to fetch questionnaires: ${error.message}`);
+      toast.error(`Failed to fetch questionnaires: ${error.response?.data?.message}`);
     }
   }, []);
 
@@ -87,9 +87,7 @@ const Forms = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formTitle, setFormTitle] = useState('');
   const [formDescription, setFormDescription] = useState('');
-  const [questions, setQuestions] = useState([
-    { id: 1, text: '', type: 'TEXT', required: true, options: [] }
-  ]);
+  const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState('');
   const [questionType, setQuestionType] = useState('TEXT');
   const [optionText, setOptionText] = useState('');
@@ -347,7 +345,7 @@ const Forms = () => {
       resetForm();
     } catch (error) {
       console.error('Error saving form:', error);
-      toast.error(`Failed to save form: ${error.message}`);
+      toast.error(`Failed to save form: ${error.response?.data?.message}`);
     }
   };
 
@@ -370,7 +368,8 @@ const Forms = () => {
   const resetForm = () => {
     setFormTitle('');
     setFormDescription('');
-    setQuestions([{ id: 1, text: '', type: 'TEXT', required: true, options: [] }]);
+    setQuestions([]);
+    setQuestionType('TEXT');
     setNewQuestion('');
     setCurrentStep(1);
     setSelectedMainTask('');
@@ -405,7 +404,7 @@ const Forms = () => {
   return (
     <div>
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap gap-2 items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Questionnaires & Forms</h1>
           {hasEditPermission() && (
             <Button onClick={() => setIsCreateFormOpen(true)}>
@@ -415,7 +414,7 @@ const Forms = () => {
         </div>
 
         <Tabs defaultValue="questionnaires">
-          <TabsList>
+          <TabsList >
             <TabsTrigger value="questionnaires">Questionnaires</TabsTrigger>
             <TabsTrigger value="eduloans">Education Loan Forms</TabsTrigger>
           </TabsList>
@@ -494,7 +493,7 @@ const Forms = () => {
                                     })));
                                     setIsCreateFormOpen(true);
                                   } catch (error) {
-                                    toast.error(`Failed to load questionnaire: ${error.message}`);
+                                    toast.error(`Failed to load questionnaire: ${error.response?.data?.message}`);
                                   }
                                 }}>
                                   <Edit className="h-4 w-4" />
@@ -511,7 +510,7 @@ const Forms = () => {
                                     toast.success('Form deleted successfully');
                                     fetchQuestionnaires();
                                   } catch (error) {
-                                    toast.error(`Failed to delete form: ${error.message}`);
+                                    toast.error(`Failed to delete form: ${error.response?.data?.message}`);
                                   }
                                 }}>
                                   <Trash2 className="h-4 w-4" />
