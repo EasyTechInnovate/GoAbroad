@@ -140,15 +140,14 @@ export default {
                 : `${config.FRONTEND_URL || 'http://localhost:3000'}/dashboard`;
 
 
-            if (req.accepts('html')) {
-                return res.redirect(redirectUrl);
-            }
+
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, {
                 accessToken,
                 user: userData,
                 requiresPayment: !user.isFeePaid,
-                message: isNewUser ? 'Registration successful. Payment required to access dashboard.' : 'Login successful'
+                message: isNewUser ? 'Registration successful. Payment required to access dashboard.' : 'Login successful',
+                redirectUrl,
             });
 
         } catch (err) {
