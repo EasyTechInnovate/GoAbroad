@@ -203,7 +203,7 @@ const Applications = () => {
       const res = await getApplications(params);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
-      toast.error('Failed to update application' , err.response?.data?.message);
+      toast.error('Failed to update application: ' + err.response?.data?.message);
       console.error('Update application error:', err);
     } finally {
       setLoading(false);
@@ -231,7 +231,7 @@ const Applications = () => {
       const res = await getApplications(params);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
-      toast.error('Failed to delete application', err.response?.data?.message);
+      toast.error('Failed to delete application: '+ err.response?.data?.message);
       console.error('Delete application error:', err);
     }
   };
@@ -321,7 +321,7 @@ const Applications = () => {
       // setApplications(res.data?.applications || []);
       setFilteredApplications(res.data?.applications || []);
     } catch (err) {
-      toast.error('Failed to update status' , err.response?.data?.message);
+      toast.error('Failed to update status: ' + err.response?.data?.message);
       console.error('Update application status error:', err);
     } finally {
       setLoading(false);
@@ -492,7 +492,7 @@ const Applications = () => {
                 // setApplications(res.data?.applications || []);
                 setFilteredApplications(res.data?.applications || []);
               } catch (err) {
-                toast.error('Failed to create application' , err.response?.data?.message);
+                toast.error('Failed to create application: ' + err.response?.data?.message);
                 console.error('Create application error:', err);
               } finally {
                 setLoading(false);

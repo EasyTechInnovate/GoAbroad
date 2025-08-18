@@ -103,7 +103,7 @@ const Settings = () => {
         setInitialFormData(userData); // Store initial data
       } catch (error) {
         console.error('Error loading profile:', error);
-        toast.error('Failed to load profile data' , error.response?.data?.message);
+        toast.error('Failed to load profile data: ' + error.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -329,7 +329,7 @@ const Settings = () => {
                                 window.location.reload();
                               } catch (error) {
                                 console.error('Error removing profile picture:', error);
-                                toast.error('Failed to remove profile picture' , error.response?.data?.message);
+                                toast.error('Failed to remove profile picture: ' + error.response?.data?.message);
                               } finally {
                                 setLoading(false);
                               }

@@ -88,7 +88,7 @@ const Subtasks = () => {
             } catch (err) {
                 console.error('Error fetching subtasks:', err);
                 setError(err.message || 'Failed to fetch subtasks');
-                toast.error('Failed to fetch subtasks' , err.response?.data?.message);
+                toast.error('Failed to fetch subtasks: ' + err.response?.data?.message);
                 setSubtasks([]);
             } finally {
                 setLoading(false);
@@ -107,7 +107,7 @@ const Subtasks = () => {
                 }
             } catch (err) {
                 console.error('Error fetching questionnaires:', err);
-                toast.error('Failed to fetch questionnaires' , err.response?.data?.message);
+                toast.error('Failed to fetch questionnaires: ' + err.response?.data?.message);
             }
         };
 

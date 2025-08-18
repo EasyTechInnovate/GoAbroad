@@ -4,8 +4,8 @@ export const createTask = async (data) => {
   return await apiService.post('/admin/tasks', data);
 };
 
-export const getTasks = async (params = {}) => {
-  return await apiService.get('/admin/tasks', { params });
+export const getTasks = async ({page , limit= 10 }) => {
+  return await apiService.get(`/admin/tasks?page=${page}`);
 };
 
 export const getTaskById = async (taskId) => {

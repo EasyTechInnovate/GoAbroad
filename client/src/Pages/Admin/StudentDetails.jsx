@@ -35,18 +35,18 @@ const StudentDetails = () => {
           <TabsTrigger value="applications" className="flex gap-2">
             <FileText className="h-4 w-4" /> Applications
           </TabsTrigger>
-          <TabsTrigger value="academics" className="flex gap-2">
+          {/* <TabsTrigger value="academics" className="flex gap-2">
             <BookOpen className="h-4 w-4" /> Academics
           </TabsTrigger>
           <TabsTrigger value="career" className="flex gap-2">
             <Briefcase className="h-4 w-4" /> Career
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="questionnaires" className="flex gap-2">
             <FileQuestion className="h-4 w-4" /> Questionnaires
           </TabsTrigger>
-          <TabsTrigger value="timeline" className="flex gap-2">
+          {/* <TabsTrigger value="timeline" className="flex gap-2">
             <CheckSquare className="h-4 w-4" /> Checklist & Tasks
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="profile">

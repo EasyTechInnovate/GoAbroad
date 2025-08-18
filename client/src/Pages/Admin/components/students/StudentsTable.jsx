@@ -103,7 +103,7 @@ export function StudentsTable({ initialFilters = {} }) {
       fetchStudents();
     } catch (error) {
       console.error('Error deleting student:', error);
-      toast.error('Failed to delete student' , error.response?.data?.message);
+      toast.error('Failed to delete student: ' + error.response?.data?.message);
     } finally {
       setLoading(false);
     }

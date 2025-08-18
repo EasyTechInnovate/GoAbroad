@@ -207,12 +207,15 @@ export function StudentProfile({ id }) {
     }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [universityCurrentPage , setUniversityCurrentPage] = useState(1);
+  const [universityPaginationData , setUniversityPaginationData] = useState({});
 
   const fetchAssignments = async () => {
     try {
-      const response = await apiService.get('/admin/student-university-assignments');
+      const response = await apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}`);
       if (response.data?.assignments) {
         setAssignments(response.data.assignments);
+        setUniversityPaginationData(response.data.pagination);
       }
     } catch (error) {
       console.error('Error fetching assignments:', error);
@@ -227,7 +230,7 @@ export function StudentProfile({ id }) {
         // Get student data and assignments in parallel
         const [studentResponse, assignmentsResponse] = await Promise.all([
           getStudentById(id),
-          apiService.get('/admin/student-university-assignments')
+          apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}`)
         ]);
         
         // Check if student data exists
@@ -284,6 +287,8 @@ export function StudentProfile({ id }) {
         }));
         if (assignmentsResponse?.data?.assignments) {
           setAssignments(assignmentsResponse.data.assignments);
+          setUniversityPaginationData(assignmentsResponse?.data.pagination);
+          // setUniversityCurrentPage(assignmentsResponse.data.pagination.page)
         }
 
         // Fetch tasks and subtasks (including questionnaires)
@@ -311,8 +316,11 @@ export function StudentProfile({ id }) {
 
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id ]);
 
+  useEffect(()=>{
+    fetchAssignments();
+  }, [universityCurrentPage])
 
   const fetchStudentTasks = async (studentId) => {
     try {
@@ -1282,6 +1290,28 @@ export function StudentProfile({ id }) {
                       </div>
                     )}
                   </div>
+
+                   {universityPaginationData && universityPaginationData?.totalPages > 1 && (
+                    <div className="flex justify-center my-6 gap-2">
+                      <Button
+                        variant="outline"
+                        disabled={universityPaginationData.page == 1 ? true :false}
+                        onClick={()=> { setUniversityCurrentPage(universityPaginationData.page - 1) }}
+                      >
+                        Previous
+                      </Button>
+                      <span className="px-4 py-2">
+                        Page {universityPaginationData.page} of {universityPaginationData.totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        disabled={universityPaginationData.totalPages == universityPaginationData.page ? true : false}
+                        onClick={() => {setUniversityCurrentPage(universityPaginationData.page + 1) }}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
