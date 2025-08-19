@@ -168,8 +168,54 @@ export default {
 
     getAllQuestionnaires: async (req, res, next) => {
         try {
-            const questionnaires = await Questionnaire.find().lean();
-            httpResponse(req, res, 200, responseMessage.SUCCESS, questionnaires);
+            const {
+                page = 1,
+                limit = 10,
+                search = '',
+                status = ''
+            } = req.query;
+
+            const pageNumber = parseInt(page);
+            const limitNumber = parseInt(limit);
+            const skip = (pageNumber - 1) * limitNumber;
+
+            let query = {};
+
+            if (status && ['ACTIVE', 'DRAFT', 'ARCHIVED'].includes(status.toUpperCase())) {
+                query.status = status.toUpperCase();
+            }
+
+            if (search.trim()) {
+                query.$or = [
+                    { title: { $regex: search, $options: 'i' } },
+                    { description: { $regex: search, $options: 'i' } }
+                ];
+            }
+
+            const [questionnaires, total] = await Promise.all([
+                Questionnaire.find(query)
+                    .skip(skip)
+                    .limit(limitNumber)
+                    .sort({ createdAt: -1 })
+                    .lean(),
+                Questionnaire.countDocuments(query)
+            ]);
+
+            const totalPages = Math.ceil(total / limitNumber);
+
+            const result = {
+                questionnaires,
+                pagination: {
+                    currentPage: pageNumber,
+                    totalPages,
+                    totalItems: total,
+                    itemsPerPage: limitNumber,
+                    hasNextPage: pageNumber < totalPages,
+                    hasPreviousPage: pageNumber > 1
+                }
+            };
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, result);
         } catch (err) {
             httpError(next, err, req, 500);
         }

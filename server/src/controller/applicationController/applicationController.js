@@ -33,8 +33,8 @@ export default {
             }
 
             const studentUniversityAssignment = await StudentUniversityAssignment.findOne({
-                studentId,
-                universityId
+                studentId: student._id,
+                universityId: university._id
             }).lean();
             if (!studentUniversityAssignment) {
                 return httpError(next, new Error('Student is not associated with this university'), req, 400);

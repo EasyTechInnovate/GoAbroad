@@ -23,7 +23,11 @@ export const ACTIVITY_STATUSES = Object.freeze({
     IN_PROGRESS: 'IN_PROGRESS',
     UPDATED: 'UPDATED'
 })
-
+export const EAuthProvider = Object.freeze({
+    LOCAL: "LOCAL",
+    GOOGLE: "GOOGLE",
+    FACEBOOK: "FACEBOOK"
+})
 
 
 export const PAYMENT_PLANS = Object.freeze(

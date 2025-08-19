@@ -5,8 +5,11 @@ import responseMessage from './constant/responseMessage.js';
 import httpError from './util/httpError.js';
 import helmet from 'helmet';
 import cors from 'cors';
-import cookieParser from 'cookie-parser'
-
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import passport from "./config/passport.js";
+import config from './config/config.js';
+import { EApplicationEnvironment } from './constant/application.js';
 const app = express();
 
 app.use(helmet());
@@ -28,9 +31,24 @@ app.use(cors({
     origin: '*',
 }))
 
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.json());
 
+// Session configuration
+app.use(session({
+    secret: config.auth.sessionSecret || 'fallback-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: config.ENV === EApplicationEnvironment.PRODUCTION,
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/v1', router);
 

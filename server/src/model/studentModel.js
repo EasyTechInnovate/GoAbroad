@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { EAuthProvider } from "../constant/application.js";
 const studentSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -7,7 +8,6 @@ const studentSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
     },
     name: {
         type: String,
@@ -233,14 +233,53 @@ const studentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    googleId: {
+        type: String,
+        default: null
+    },
+    facebookId: {
+        type: String,
+        default: null
+    },
+    provider: {
+        type: String,
+        enum: [...Object.values(EAuthProvider)],
+        default: 'LOCAL'
+    },
     role: {
         type: String,
         default: "STUDENT"
+    },
+
+    lastLogin: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true,
     versionKey: false
 });
+
+studentSchema.statics.findByEmail = function (email) {
+    return this.findOne({ email });
+};
+
+studentSchema.statics.findByGoogleId = function (googleId) {
+    return this.findOne({ googleId });
+};
+
+studentSchema.statics.findByFacebookId = function (facebookId) {
+    return this.findOne({ facebookId });
+};
+
+studentSchema.methods.comparePassword = async function (password) {
+    const bcrypt = await import('bcrypt');
+    return bcrypt.compare(password, this.password);
+};
+
+studentSchema.methods.isAccountConfirmed = function () {
+    return this.isVerified;
+};
 
 const Student = mongoose.model('Student', studentSchema);
 export default Student
