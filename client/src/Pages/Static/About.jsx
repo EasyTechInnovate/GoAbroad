@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GraduationCap, Users, Award, University, Globe, Heart, Target, Lightbulb, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
 import Navigation from './components/Navigation';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CTA from '@/components/static/CTA';
 import Footer from '@/components/static/Footer';
 
@@ -121,12 +121,12 @@ const About = () => {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-3">
-                  Learn More
+                  <Link to='/signin'> Learn More</Link>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3">
+                {/* <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3">
                   Contact Us
-                </Button>
+                </Button> */}
               </div>
             </div>
 
@@ -230,7 +230,7 @@ const About = () => {
           </div>
 
           <Tabs defaultValue="anushk" className="max-w-4xl mx-auto">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsList className="grid w-full grid-cols-2 mb-8 overflow-y-hidden h-fit">
               <TabsTrigger value="anushk" className="text-lg py-3">Anushk Sharma</TabsTrigger>
               <TabsTrigger value="shrey" className="text-lg py-3">Shrey Choksi</TabsTrigger>
             </TabsList>
@@ -260,7 +260,7 @@ const About = () => {
                         investing nearly 1 lakh rupees in their services. Consequently, he navigated the admissions process independently.
                       </p>
                     </div>
-                    <div className="mt-6 flex items-center space-x-3">
+                    <div className="mt-6 flex flex-wrap gap-2 items-center space-x-3">
                       <Badge variant="secondary" className="bg-blue-50 text-blue-700">University of Notre Dame</Badge>
                       <Badge variant="secondary" className="bg-green-50 text-green-700">Mechanical Engineering</Badge>
                     </div>
@@ -302,7 +302,7 @@ const About = () => {
                         helping others overcome similar hurdles and achieve their educational goals abroad.
                       </p>
                     </div>
-                    <div className="mt-6 flex items-center space-x-3">
+                    <div className="mt-6 flex flex-wrap gap-2 items-center space-x-3">
                       <Badge variant="secondary" className="bg-purple-50 text-purple-700">Florida State University</Badge>
                       <Badge variant="secondary" className="bg-orange-50 text-orange-700">Computer Science</Badge>
                     </div>

@@ -1,11 +1,24 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getUser, isAuthenticated, subscribeToAuth } from '@/lib/auth';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated());
+    const unsubscribe = subscribeToAuth((authenticated) => {
+      setIsLoggedIn(authenticated);
+    });
+
+    return () => unsubscribe();
+  }, []);
+  const buttonText = isLoggedIn ? 'Dashboard'  : 'Get Started';
+  const buttonPath = isLoggedIn ? '/dashboard' : '/signin';
   const footerSections = [
     {
       title: 'Services',
@@ -64,7 +77,7 @@ const Footer = () => {
                 size="sm" 
                 className="border-gray-600  text-primary-700  hover:text-primary-800  bg-white"
               >
-                Get Started
+                <Link to={buttonPath}>{buttonText}</Link>
               </Button>
             </div>
           </div>
