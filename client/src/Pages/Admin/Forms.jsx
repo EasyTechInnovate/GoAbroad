@@ -53,6 +53,14 @@ const Forms = () => {
   });  const [isLoadingLoans, setIsLoadingLoans] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState(null);  const [isViewLoanOpen, setIsViewLoanOpen] = useState(false);
 
+  const [questionnairsFilter , setQuestionnairesFilter] = useState({
+    page: 1,
+    limit: 10,
+    search: "",
+    status: ''
+  })
+  const [questionnairesPagination , setQuestionnairesPagination] = useState({})
+
   const fetchLoans = useCallback(async () => {
     setIsLoadingLoans(true);
     try {
@@ -72,7 +80,7 @@ const Forms = () => {
   const fetchQuestionnaires = useCallback(async () => {
     try {
       const response = await getQuestionnaires();
-      setQuestionnaires(response.data || []);
+      setQuestionnaires(response.data?.questionnaires || []);
     } catch (error) {
       toast.error(`Failed to fetch questionnaires: ${error.response?.data?.message}`);
     }
@@ -791,6 +799,17 @@ const Forms = () => {
                     disabled={!hasEditPermission()}
                   />
                 </div>
+
+                 {/* <div className="grid gap-2">
+                  <Label htmlFor="status">Description</Label>
+                  <Textarea
+                    id="status"
+                    placeholder="Enter a description for this form"
+                    value={}
+                    onChange={(e) => setFormDescription(e.target.value)}
+                    disabled={!hasEditPermission()}
+                  />
+                </div> */}
               </div>
             )}
 
@@ -1073,7 +1092,7 @@ const Forms = () => {
                   Cancel
                 </Button>
 
-                {currentStep < 3 ? (
+                {currentStep < 2 ? (
                   <Button 
                     onClick={nextStep}
                     disabled={!hasEditPermission()}

@@ -77,7 +77,7 @@ const Dashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex min-w-0">
+      <div className="min-h-screen flex min-w-full">
         <AppSidebar isSidebarOpen={isOpen}/>
         <SidebarInset>
           <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen}/>

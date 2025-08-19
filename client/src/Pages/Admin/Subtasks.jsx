@@ -103,7 +103,7 @@ const Subtasks = () => {
             try {
                 const response = await getQuestionnaires();
                 if (response.success) {
-                    setAvailableQuestionnaires(response.data);
+                    setAvailableQuestionnaires(response.data.subtasks);
                 }
             } catch (err) {
                 console.error('Error fetching questionnaires:', err);
@@ -514,7 +514,7 @@ const Subtasks = () => {
                                 <div>
                                     <Label className="mb-2">Questionnaires</Label>
                                     <div className="border rounded-md p-4 space-y-2 max-h-[200px] overflow-y-auto" role="group" aria-label="Select questionnaires">
-                                        {availableQuestionnaires.map((questionnaire) => (
+                                        {availableQuestionnaires?.map((questionnaire) => (
                                             <div key={questionnaire._id} className="flex items-center space-x-2">
                                                 <Checkbox
                                                     id={`questionnaire-${questionnaire._id}`}
@@ -529,7 +529,7 @@ const Subtasks = () => {
                                                 </Label>
                                             </div>
                                         ))}
-                                        {availableQuestionnaires.length === 0 && (
+                                        {availableQuestionnaires?.length === 0 && (
                                             <p className="text-sm text-muted-foreground">No questionnaires available</p>
                                         )}
                                     </div>
