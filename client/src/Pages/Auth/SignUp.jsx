@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { registerUser } from '@/services/api.services';
 import { isAuthenticated } from '@/lib/auth';
+import logo from '../../assets/logo.svg'
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -93,16 +94,14 @@ const SignUp = () => {
         <div className="hidden lg:flex flex-col justify-center space-y-8 px-8">
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="bg-primary p-3 rounded-xl">
-                <GraduationCap className="h-8 w-8 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold text-primary">StudyAbroad</h1>
+              <img src={logo} alt="goupbroadlogo" className='w-[50px] h-[50px] ' />
+              <h1 className="text-3xl font-bold text-primary-700">Goupbroad</h1>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-4xl font-bold text-gray-800 leading-tight">
                 Begin Your
-                <span className="text-primary block">Global Education Journey</span>
+                <span className="text-primary-700 block">Global Education Journey</span>
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Join thousands of students worldwide who have found their perfect university match and started their international education adventure.
@@ -113,19 +112,19 @@ const SignUp = () => {
           {/* Features */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-primary">10,000+</div>
+              <div className="text-2xl font-bold text-primary-700">10,000+</div>
               <div className="text-sm text-gray-600">Universities</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-primary">50+</div>
+              <div className="text-2xl font-bold text-primary-700">50+</div>
               <div className="text-sm text-gray-600">Countries</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-primary">100k+</div>
+              <div className="text-2xl font-bold text-primary-700">100k+</div>
               <div className="text-sm text-gray-600">Students</div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="text-2xl font-bold text-primary">24/7</div>
+              <div className="text-2xl font-bold text-primary-700">24/7</div>
               <div className="text-sm text-gray-600">Support</div>
             </div>
           </div>
@@ -244,7 +243,7 @@ const SignUp = () => {
                 {/* Sign Up Button */}
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-primary hover:bg-primary-600 text-white font-semibold"
+                  className="w-full h-12 bg-primary-800 cursor-pointer text-white font-semibold"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Creating Account...' : 'Create Account'}

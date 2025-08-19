@@ -33,13 +33,22 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
   const [universityStatus, setUniversityStatus] = useState('Ambitious');
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [universityCurrentPage , setUniversityCurrentPage] = useState(1);
+  const [universityPaginationData , setUniversityPaginationData] = useState({});
+  
 
   const fetchUniversities = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await apiService.get('/admin/universities');
+       let queryString = `?page=${universityCurrentPage}`;
+      if (searchQuery) {
+          queryString += `&search=${encodeURIComponent(searchQuery)}`;
+      }
+
+      const response = await apiService.get(`/admin/universities${queryString}` );
       if (response.data?.universities) {
         setUniversities(response.data.universities);
+        setUniversityPaginationData(response.data.pagination)
       }
     } catch (error) {
       toast.error('Failed to fetch universities');
@@ -47,7 +56,7 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [universityCurrentPage , searchQuery]);
 
   const fetchAssignments = useCallback(async () => {
     try {
@@ -71,7 +80,7 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
       fetchUniversities();
       fetchAssignments();
     }
-  }, [open, fetchUniversities, fetchAssignments]);
+  }, [open, fetchUniversities, fetchAssignments ]);
 
   const resetForm = () => {
     setSelectedUniversity(null);
@@ -148,16 +157,16 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
     }
   };
 
-  const filteredUniversities = universities.filter((uni) =>
-    uni.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredUniversities = universities.filter((uni) =>
+  //   uni.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} >
       <DialogTrigger asChild>
         <Button variant="default" className="cursor-pointer">University Assignments</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px]">
+      <DialogContent className="md:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Manage University Assignments</DialogTitle>
           <DialogDescription>
@@ -166,12 +175,12 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
               : 'Assign a new university to the student'}
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-4 ">
 
           {assignments.length > 0 && (
             <div className="space-y-2">
               <h3 className="font-medium">Current Assignments</h3>
-              <div className="grid grid-cols-1 gap-2">
+              <div className="grid grid-cols-1 gap-2 max-h-[200px] overflow-y-auto">
                 {assignments.map((assignment) => (
                   <div
                     key={assignment._id}
@@ -218,7 +227,7 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
             />
 
             <div className="grid grid-cols-2 gap-4 max-h-[300px] overflow-y-auto">
-              {filteredUniversities.map((uni) => (
+              {universities.map((uni) => (
                 <button
                   key={uni._id}
                   type="button"
@@ -234,6 +243,31 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
                 </button>
               ))}
             </div>
+             {universityPaginationData && universityPaginationData?.totalPages > 0 ? (
+          <div className="flex justify-center my-6 gap-2">
+            <Button
+              variant="outline"
+              disabled={universityPaginationData.currentPage == 1 ? true :false}
+              onClick={()=> setUniversityCurrentPage(universityPaginationData.currentPage - 1)}
+            >
+              Previous
+            </Button>
+            <span className="px-4 py-2">
+              Page {universityPaginationData.currentPage} of {universityPaginationData.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              disabled={universityPaginationData.totalPages == universityPaginationData.currentPage ? true : false}
+              onClick={() => setUniversityCurrentPage(universityPaginationData.currentPage + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        ): (
+          <div>
+            <h1 className='text-center'>No Data Found</h1>
+          </div>
+        )}
 
             {selectedUniversity && (
               <div className="grid grid-cols-2 gap-4">

@@ -21,12 +21,12 @@ export default function Students() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Student Management</h1>
         
-        {hasCreatePermission() && (
+        {/* {hasCreatePermission() && (
           <Button className="flex items-center gap-2">
             <PlusCircle className="h-4 w-4" />
             Add Student
           </Button>
-        )}
+        )} */}
       </div>
       
       <Tabs defaultValue="all" className="space-y-4">

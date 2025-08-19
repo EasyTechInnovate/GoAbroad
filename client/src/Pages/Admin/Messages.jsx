@@ -90,7 +90,7 @@ const Messages = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Communication</h1>
         <Button>
           <Plus className="mr-2 h-4 w-4" /> New Message
@@ -98,7 +98,7 @@ const Messages = () => {
       </div>
 
       <Tabs defaultValue="direct">
-        <TabsList>
+        <TabsList className='max-w-full overflow-x-auto justify-start'>
           <TabsTrigger value="direct">Direct Messages</TabsTrigger>
           <TabsTrigger value="groups">Group Chats</TabsTrigger>
           <TabsTrigger value="announcements">Announcements</TabsTrigger>

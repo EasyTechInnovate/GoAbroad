@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +10,7 @@ import { fetchPlans, getPlanDetails } from '@/services/planService';
 import { apiService } from '@/services/api.services';
 import { toast } from 'sonner';
 import { clearAuth } from '@/lib/auth';
+import Footer from '@/components/static/Footer';
 
 const Pricing = () => {
   const [selectedCategory, setSelectedCategory] = useState('masters');
@@ -138,7 +138,7 @@ const Pricing = () => {
         </div>
       )}
 
-      <main className={fromAuth && userData ? "pt-8" : "pt-24"}>
+      <main className={fromAuth && userData ? 'pt-8' : 'pt-24'}>
         {/* Hero Section */}
         <section className="py-20 bg-gradient-to-br from-[#145044]/5 to-[#145044]/10 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">

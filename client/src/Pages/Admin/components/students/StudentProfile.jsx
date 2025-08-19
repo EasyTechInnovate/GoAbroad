@@ -207,12 +207,15 @@ export function StudentProfile({ id }) {
     }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [universityCurrentPage , setUniversityCurrentPage] = useState(1);
+  const [universityPaginationData , setUniversityPaginationData] = useState({});
 
   const fetchAssignments = async () => {
     try {
-      const response = await apiService.get('/admin/student-university-assignments');
+      const response = await apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}`);
       if (response.data?.assignments) {
         setAssignments(response.data.assignments);
+        setUniversityPaginationData(response.data.pagination);
       }
     } catch (error) {
       console.error('Error fetching assignments:', error);
@@ -227,7 +230,7 @@ export function StudentProfile({ id }) {
         // Get student data and assignments in parallel
         const [studentResponse, assignmentsResponse] = await Promise.all([
           getStudentById(id),
-          apiService.get('/admin/student-university-assignments')
+          apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}`)
         ]);
         
         // Check if student data exists
@@ -284,6 +287,8 @@ export function StudentProfile({ id }) {
         }));
         if (assignmentsResponse?.data?.assignments) {
           setAssignments(assignmentsResponse.data.assignments);
+          setUniversityPaginationData(assignmentsResponse?.data.pagination);
+          // setUniversityCurrentPage(assignmentsResponse.data.pagination.page)
         }
 
         // Fetch tasks and subtasks (including questionnaires)
@@ -311,8 +316,11 @@ export function StudentProfile({ id }) {
 
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id ]);
 
+  useEffect(()=>{
+    fetchAssignments();
+  }, [universityCurrentPage])
 
   const fetchStudentTasks = async (studentId) => {
     try {
@@ -955,7 +963,7 @@ export function StudentProfile({ id }) {
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent >
             <div className="flex flex-col items-center text-center mb-6">
               <Avatar className="h-24 w-24 mb-4">
                 <AvatarImage src={student.profilePicture} />
@@ -1005,14 +1013,14 @@ export function StudentProfile({ id }) {
 
         <div className="flex-1">
           <Tabs defaultValue="overview">
-              <div className="w-full flex items-center justify-between mb-4">
-              <TabsList>
+              <div className="w-full flex flex-wrap items-center justify-between mb-4">
+              <TabsList className='max-w-full  overflow-x-auto justify-start mb-2 '>
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="documents">Documents</TabsTrigger>
                 <TabsTrigger value="universities">Universities</TabsTrigger>
                 <TabsTrigger value="tasks">Tasks</TabsTrigger>
               </TabsList>
-              {student && hasEditPermission() && <AssignUniversityDialog studentId={student._id} onAssign={handleAssign} />}
+              {student && hasEditPermission() && <AssignUniversityDialog  studentId={student._id} onAssign={handleAssign} />}
             </div>
 
             <TabsContent value="overview" className="space-y-4">
@@ -1021,7 +1029,7 @@ export function StudentProfile({ id }) {
                   <CardTitle>Test Scores</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="space-y-4 ">
                     <div>
                       <h3 className="text-sm font-medium mb-2">GRE</h3>
                       <div className="grid grid-cols-3 gap-4">
@@ -1282,6 +1290,28 @@ export function StudentProfile({ id }) {
                       </div>
                     )}
                   </div>
+
+                   {universityPaginationData && universityPaginationData?.totalPages > 1 && (
+                    <div className="flex justify-center my-6 gap-2">
+                      <Button
+                        variant="outline"
+                        disabled={universityPaginationData.page == 1 ? true :false}
+                        onClick={()=> { setUniversityCurrentPage(universityPaginationData.page - 1) }}
+                      >
+                        Previous
+                      </Button>
+                      <span className="px-4 py-2">
+                        Page {universityPaginationData.page} of {universityPaginationData.totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        disabled={universityPaginationData.totalPages == universityPaginationData.page ? true : false}
+                        onClick={() => {setUniversityCurrentPage(universityPaginationData.page + 1) }}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>

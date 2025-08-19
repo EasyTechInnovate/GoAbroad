@@ -88,7 +88,7 @@ const Subtasks = () => {
             } catch (err) {
                 console.error('Error fetching subtasks:', err);
                 setError(err.message || 'Failed to fetch subtasks');
-                toast.error('Failed to fetch subtasks');
+                toast.error('Failed to fetch subtasks: ' + err.response?.data?.message);
                 setSubtasks([]);
             } finally {
                 setLoading(false);
@@ -107,7 +107,7 @@ const Subtasks = () => {
                 }
             } catch (err) {
                 console.error('Error fetching questionnaires:', err);
-                toast.error('Failed to fetch questionnaires');
+                toast.error('Failed to fetch questionnaires: ' + err.response?.data?.message);
             }
         };
 
@@ -147,7 +147,7 @@ const Subtasks = () => {
             }
         } catch (err) {
             console.error('Error creating subtask:', err);
-            toast.error(err.message || 'Failed to create subtask');
+            toast.error(err.response?.data?.message || 'Failed to create subtask');
         } finally {
             setLoading(false);
         }
@@ -182,7 +182,7 @@ const Subtasks = () => {
                 throw new Error(updateResponse.error || 'Failed to update subtask');
             }
         } catch (err) {
-            toast.error(err.message || 'Failed to update subtask');
+            toast.error(err.response?.data?.message || 'Failed to update subtask');
         } finally {
             setLoading(false);
             setSelectedSubtask(null);
@@ -237,7 +237,7 @@ const Subtasks = () => {
                 throw new Error(deleteResponse.error || 'Failed to delete subtask');
             }
         } catch (err) {
-            toast.error(err.message || 'Failed to delete subtask');
+            toast.error(err.response?.data?.message || 'Failed to delete subtask');
         } finally {
             setLoading(false);
         }
@@ -270,7 +270,7 @@ const Subtasks = () => {
                 }
             } catch (err) {
                 console.error('Error uploading logo:', err);
-                toast.error(err.message || 'Failed to upload logo');
+                toast.error(err.response?.data?.message || 'Failed to upload logo');
 
                 e.target.value = '';
             } finally {
@@ -310,7 +310,7 @@ const Subtasks = () => {
                 </div>
             ) : (
                 <div className="flex-1 space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap gap-2 items-center justify-between">
                         <h1 className="text-2xl font-bold tracking-tight">Subtask Management</h1>
                         {hasEditPermission() && (
                             <Button onClick={() => setIsCreateSubtaskOpen(true)}>
@@ -326,13 +326,13 @@ const Subtasks = () => {
                     ) : (
                         <Card>
                             <CardHeader>
-                                <div className="flex justify-between items-center">
+                                <div className="flex flex-wrap gap-2 justify-between items-center">
                                     <div>
                                         <CardTitle>All Subtasks</CardTitle>
                                         <CardDescription>View and manage subtasks for assignments</CardDescription>
                                     </div>
                                     <div className="flex gap-2">
-                                        <div className="relative w-[280px]">
+                                        <div className="relative max:w-[280px]">
                                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 type="search"
@@ -362,7 +362,7 @@ const Subtasks = () => {
                                             <TableRow key={subtask._id}>
                                                 <TableCell className="font-medium">{subtask.title}</TableCell>
                                                 <TableCell>{priorityBadge(subtask.priority)}</TableCell>
-                                                <TableCell>                                                    {subtask.questionnaires && subtask.questionnaires.length > 0 ? (
+                                                {/* <TableCell>                                                    {subtask.questionnaires && subtask.questionnaires.length > 0 ? (
                                                         <div className="flex gap-1 flex-wrap">
                                                             {subtask.questionnaires.map(questionnaire => (
                                                                 <Badge key={questionnaire._id} variant="outline">
@@ -372,6 +372,30 @@ const Subtasks = () => {
                                                         </div>
                                                     ) : (
                                                         <span className="text-sm text-muted-foreground">No questionnaires assigned</span>
+                                                    )}
+                                                </TableCell> */}
+                                                <TableCell>
+                                                    {subtask.questionnaires && subtask.questionnaires.length > 0 ? (
+                                                        <div className="flex gap-1 flex-nowrap"  title={subtask.questionnaires.map((q) => q.title).join(", ")}>
+                                                        {subtask.questionnaires.slice(0, 3).map((questionnaire) => (
+                                                            <Badge key={questionnaire._id} variant="outline">
+                                                            {questionnaire.title}
+                                                            </Badge>
+                                                        ))}
+
+                                                        {subtask.questionnaires.length > 3 && (
+                                                            <span
+                                                            className="text-sm font-bold text-muted-foreground cursor-pointer"
+                                                            title={subtask.questionnaires.map((q) => q.title).join(", ")}
+                                                            >
+                                                            ...
+                                                            </span>
+                                                        )}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-sm text-muted-foreground">
+                                                        No questionnaires assigned
+                                                        </span>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="text-right">
@@ -403,7 +427,7 @@ const Subtasks = () => {
                                         ))}
                                     </TableBody>
                                 </Table>                {/* Pagination Controls */}
-                                <div className="flex items-center justify-between space-x-2 py-4">
+                                <div className="flex flex-wrap items-center justify-between space-x-2 py-4">
                                     <div className="text-sm text-muted-foreground">
                                         {subtasks.length > 0 ? (
                                             <>

@@ -53,6 +53,8 @@ import OrderConfirmation from './Pages/Static/OrderConfirmation';
 import Checkout from './Pages/Static/Checkout';
 import TestOrderConfirmation from './Pages/Static/components/TestOrderConfirmation';
 import SignIn from './Pages/Static/SignIn';
+import TermsCondition from './Pages/Static/TermsCondition';
+import PrivacyPolicy from './Pages/Static/PrivacyPolicy.';
 
 const App = () => {
   return (
@@ -72,6 +74,8 @@ const App = () => {
       <Route path="/about" element={<About />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/premium" element={<PremiumAccess />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms-and-conditions" element={<TermsCondition />} />
 
       {/* Payment Routes */}
       <Route path="/checkout" element={<Checkout />} />

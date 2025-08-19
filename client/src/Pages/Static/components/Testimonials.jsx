@@ -88,7 +88,7 @@ const Testimonials = () => {
                 <p className="text-gray-600 mb-6 italic">"{testimonial.text}"</p>
 
                 {/* Achievement Badge */}
-                <div className="bg-primary-50 text-primary text-xs font-semibold px-3 py-1 rounded-full inline-block mb-4">
+                <div className="bg-primary-50 text-primary-700 text-xs font-semibold px-3 py-1 rounded-full inline-block mb-4">
                   {testimonial.achievement}
                 </div>
 
@@ -114,19 +114,19 @@ const Testimonials = () => {
         <div className="mt-16 text-center">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">98%</div>
+              <div className="text-3xl font-bold text-primary-700 mb-2">98%</div>
               <div className="text-sm text-gray-600">Success Rate</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">4.9/5</div>
+              <div className="text-3xl font-bold text-primary-700 mb-2">4.9/5</div>
               <div className="text-sm text-gray-600">Student Rating</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">15K+</div>
+              <div className="text-3xl font-bold text-primary-700 mb-2">15K+</div>
               <div className="text-sm text-gray-600">Happy Students</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">24/7</div>
+              <div className="text-3xl font-bold text-primary-700 mb-2">24/7</div>
               <div className="text-sm text-gray-600">Support Available</div>
             </div>
           </div>

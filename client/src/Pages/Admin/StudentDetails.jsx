@@ -28,25 +28,25 @@ const StudentDetails = () => {
       </div>
         
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 max-w-full overflow-x-auto justify-start">
           <TabsTrigger value="profile" className="flex gap-2">
             <User className="h-4 w-4" /> Profile
           </TabsTrigger>
           <TabsTrigger value="applications" className="flex gap-2">
             <FileText className="h-4 w-4" /> Applications
           </TabsTrigger>
-          <TabsTrigger value="academics" className="flex gap-2">
+          {/* <TabsTrigger value="academics" className="flex gap-2">
             <BookOpen className="h-4 w-4" /> Academics
           </TabsTrigger>
           <TabsTrigger value="career" className="flex gap-2">
             <Briefcase className="h-4 w-4" /> Career
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="questionnaires" className="flex gap-2">
             <FileQuestion className="h-4 w-4" /> Questionnaires
           </TabsTrigger>
-          <TabsTrigger value="timeline" className="flex gap-2">
+          {/* <TabsTrigger value="timeline" className="flex gap-2">
             <CheckSquare className="h-4 w-4" /> Checklist & Tasks
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="profile">

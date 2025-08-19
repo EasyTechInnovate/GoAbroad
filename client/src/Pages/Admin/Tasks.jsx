@@ -123,6 +123,9 @@ const Tasks = () => {
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [newCategoryData, setNewCategoryData] = useState({ name: '', description: '' });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationData, setPaginationData] = useState({});
+
 
   const validateTaskData = (data) => {
     if (!data.title?.trim()) {
@@ -140,25 +143,32 @@ const Tasks = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchTasks = async () => {
+    const fetchTasks = async (page = 1) => {
       try {
         setLoading(prev => ({ ...prev, tasks: true }));
-        const response = await getTasks();
-        const transformedTasks = response.data.tasks.map(task => ({
+        const response = await getTasks({ page: page, limit: 10 }); 
+
+        const { tasks, pagination } = response.data;
+
+        const transformedTasks = tasks.map(task => ({
           ...task,
           status: task.subtasks.length > 0 ? 
             task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
             task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
             : 'PENDING',
-          studentNames: task.students?.map(s => s.name || s.email).join(', '),
+          studentNames: task.students?.map(s => s?.name || s?.email).join(', '),
           subtaskCount: task.subtasks?.length || 0
         }));
-        if (isMounted) setTasks(transformedTasks);
+
+        setTasks(transformedTasks);
+        setPaginationData(pagination);
+        setCurrentPage(page);
+
       } catch (error) {
         console.error('Error fetching tasks:', error);
-        if (isMounted) toast.error('Failed to fetch tasks');
+        toast.error('Failed to fetch tasks : '+ error.response?.data?.message);
       } finally {
-        if (isMounted) setLoading(prev => ({ ...prev, tasks: false }));
+        setLoading(prev => ({ ...prev, tasks: false }));
       }
     };
 
@@ -204,7 +214,7 @@ const Tasks = () => {
         }
       } catch (error) {
         console.error('Error fetching subtasks:', error);
-        if (isMounted) toast.error('Failed to fetch subtasks');
+        if (isMounted) toast.error('Failed to fetch subtasks: '+ error.response?.data?.message);
       } finally {
         if (isMounted) setLoading(prev => ({ ...prev, subtasks: false }));
       }
@@ -224,7 +234,7 @@ const Tasks = () => {
         }
       } catch (error) {
         console.error('Error fetching students:', error);
-        if (isMounted) toast.error('Failed to fetch students');
+        if (isMounted) toast.error('Failed to fetch students: ' + error.response?.data?.message);
       } finally {
         if (isMounted) setLoading(prev => ({ ...prev, students: false }));
       }
@@ -240,7 +250,7 @@ const Tasks = () => {
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
-        if (isMounted) toast.error('Failed to fetch categories');
+        if (isMounted) toast.error('Failed to fetch categories: ' + error.response?.data?.message);
       } finally {
         if (isMounted) setLoading(prev => ({ ...prev, categories: false }));
       }
@@ -267,27 +277,35 @@ const Tasks = () => {
   }, []);
 
   // Standalone fetch functions for use throughout the component
-  const fetchTasks = async () => {
-    try {
-      setLoading(prev => ({ ...prev, tasks: true }));
-      const response = await getTasks();
-      const transformedTasks = response.data.tasks.map(task => ({
-        ...task,
-        status: task.subtasks.length > 0 ? 
-          task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
-          task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
-          : 'PENDING',
-        studentNames: task.students?.map(s => s.name || s.email).join(', '),
-        subtaskCount: task.subtasks?.length || 0
-      }));
-      setTasks(transformedTasks);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      toast.error('Failed to fetch tasks');
-    } finally {
-      setLoading(prev => ({ ...prev, tasks: false }));
-    }
-  };
+   const fetchTasks = async (page = 1) => {
+      try {
+        setLoading(prev => ({ ...prev, tasks: true }));
+       
+        const response = await getTasks({ page: page, limit: 10 }); 
+
+        const { tasks, pagination } = response.data;
+
+        const transformedTasks = tasks.map(task => ({
+          ...task,
+          status: task.subtasks.length > 0 ? 
+            task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
+            task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
+            : 'PENDING',
+          studentNames: task.students?.map(s => s?.name || s?.email).join(', '),
+          subtaskCount: task.subtasks?.length || 0
+        }));
+
+        setTasks(transformedTasks);
+        setPaginationData(pagination);
+        setCurrentPage(page);
+
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+        toast.error('Failed to fetch tasks: '+ error.response?.data?.message);
+      } finally {
+        setLoading(prev => ({ ...prev, tasks: false }));
+      }
+    };
 
   const fetchCategories = async () => {
     try {
@@ -299,7 +317,7 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
-      toast.error('Failed to fetch categories');
+      toast.error('Failed to fetch categories: '+ error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, categories: false }));
     }
@@ -331,7 +349,7 @@ const Tasks = () => {
   
 
   const handleSubtaskSelection = async (subtaskId) => {
-    const subtask = availableSubtasks.find(s => s.id === subtaskId);
+    const subtask = availableSubtasks.find(s => s?.id === subtaskId);
 
     if (subtask && !selectedSubtasks.includes(subtask.id)) {
       setSelectedSubtasks([...selectedSubtasks, subtask.id]);
@@ -344,8 +362,8 @@ const Tasks = () => {
           });
           toast.success(`Added subtask "${subtask.title}" to task`);
         } catch (error) {
-          console.error('Error adding subtask:', error);
-          toast.error('Failed to add subtask');
+          console.error('Error adding subtask:', error.response.data.message);
+          toast.error("Failed to Add Subtask: " + error.response.data.message);
           setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtask.id));
         } finally {
           setLoading(prev => ({ ...prev, subtasks: false }));
@@ -368,7 +386,7 @@ const Tasks = () => {
         toast.success('Removed subtask from task');
       } catch (error) {
         console.error('Error removing subtask:', error);
-        toast.error('Failed to remove subtask');
+        toast.error('Failed to remove subtask: ' + error.response?.data?.message);
         // Revert the UI change if the API call fails
         setSelectedSubtasks([...selectedSubtasks, subtaskId]);
       } finally {
@@ -406,9 +424,9 @@ const Tasks = () => {
       assignee: task.assignee || ''
     });
 
-    setSelectedStudents(task.students?.map(s => s._id) || []);
+    setSelectedStudents(task.students?.map(s => s?._id) || []);
     
-    setSelectedSubtasks(task.subtasks?.map(s => s.subtask._id) || []); 
+    setSelectedSubtasks(task.subtasks?.map(s => s?.subtask?._id) || []); 
     
     setSelectedMainTask(task.category || '');
     
@@ -430,7 +448,7 @@ const Tasks = () => {
     try {
       setLoading(prev => ({ ...prev, students: true }));
       
-      const currentStudentIds = selectedTask.students?.map(s => s._id) || [];
+      const currentStudentIds = selectedTask.students?.map(s => s?._id) || [];
       
       const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
       if (studentsToAdd.length > 0) {
@@ -441,7 +459,7 @@ const Tasks = () => {
       
       const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
       for (const studentId of studentsToRemove) {
-        await removeStudentFromTask(selectedTask._id, { studentId });
+        await removeStudentFromTask(selectedTask?._id, { studentId });
       }
       
       await fetchTasks();
@@ -533,7 +551,7 @@ const Tasks = () => {
       await updateTask(selectedTask._id, taskData);
       
       // Handle students separately if they changed
-      const currentStudentIds = selectedTask.students?.map(s => s._id) || [];
+      const currentStudentIds = selectedTask.students?.map(s => s?._id) || [];
       const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
       const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
       
@@ -546,7 +564,7 @@ const Tasks = () => {
       }
 
       // Handle subtasks separately if they changed
-      const currentSubtaskIds = selectedTask.subtasks?.map(s => s.subtask._id) || [];
+      const currentSubtaskIds = selectedTask.subtasks?.map(s => s?.subtask?._id) || [];
       const subtasksToAdd = selectedSubtasks.filter(id => !currentSubtaskIds.includes(id));
       const subtasksToRemove = currentSubtaskIds.filter(id => !selectedSubtasks.includes(id));
       
@@ -581,7 +599,7 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error('Error fetching student task details:', error);
-      toast.error('Failed to fetch task details');
+      toast.error('Failed to fetch task details: ' + error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, subtasks: false }));
     }
@@ -589,7 +607,7 @@ const Tasks = () => {
 
   // Function to open task details for a specific student
   const handleOpenTaskDetails = (task, studentId) => {
-    const student = students.find(s => s.id === studentId);
+    const student = students.find(s => s?.id === studentId);
     if (!student) return;
     
     setSelectedTask(task);
@@ -635,9 +653,10 @@ const Tasks = () => {
       }
     } catch (error) {
       console.error('Error updating subtask status:', error);
-      toast.error('Failed to update subtask status');
+      toast.error('Failed to update subtask status: ' + error.response?.data?.message);
     } finally {
       setLoading(prev => ({ ...prev, subtasks: false }));
+
     }
   };
 
@@ -719,10 +738,10 @@ const Tasks = () => {
 
 
   return (
-    <div className="space-y-4 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4  max-w-[100vw] md:max-w-full  overflow-x-auto ">
+      <div className="flex flex-wrap gap-2 items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button 
             variant="outline" 
             onClick={() => handleOpenCategoryManage()}
@@ -737,7 +756,7 @@ const Tasks = () => {
             Manage Categories
           </Button>
           <Button 
-            onClick={() => setIsAddTaskOpen(true)} 
+            onClick={() => {setIsAddTaskOpen(true) ; resetTaskForm()}} 
             disabled={loading.add || !hasEditPermission()}
             title={hasEditPermission() ? "Add a new task" : "You don't have permission to add tasks"}
           >
@@ -750,13 +769,13 @@ const Tasks = () => {
         View and manage all tasks assigned to students
       </div>
 
-      <div className="rounded-md border">
-        <table className="w-full">
+      <div className="rounded-md border overflow-x-auto">
+        <table className="w-full ">
           <thead>
             <tr className="border-b bg-muted/50">
               <th className="px-4 py-3 text-left font-medium">Status</th>
               <th className="px-4 py-3 text-left font-medium">Task</th>
-              <th className="px-4 py-3 text-left font-medium">Main Task</th>  
+              {/* <th className="px-4 py-3 text-left font-medium">Main Task</th>   */}
               <th className="px-4 py-3 text-left font-medium">Student</th>
               <th className="px-4 py-3 text-left font-medium">Assignee</th>
               <th className="px-4 py-3 text-left font-medium">Priority</th>
@@ -792,17 +811,17 @@ const Tasks = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div>
-                      <div className="font-medium">{task.title}</div>
+                      <div className="font-medium truncate max-w-[100px]" title={task.title}>{task.title}</div>
                       {task.subtasks?.length > 0 && (
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-muted-foreground whitespace-nowrap">
                           {task.subtasks.length} subtasks
                         </div>
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3">{task.mainTask || '-'}</td>
-                  <td className="px-4 py-3">
-                    {task.students?.map(student => student.email).join(', ') || '-'}
+                  {/* <td className="px-4 py-3">{task.mainTask || '-'}</td> */}
+                  <td className="px-4 py-3 max-w-[250px] truncate" title={task.students?.map(student => student?.email).join(', ') || '-'}>
+                    {task.students?.map(student => student?.email).join(', ') || '-'}
                   </td>
                   <td className="px-4 py-3">
                     {task.assignee ? teamMembers.find(m => m.id === task.assignee)?.name : '-'}
@@ -825,7 +844,7 @@ const Tasks = () => {
                             onClick={() => {
                               setSelectedTask(task);
                               // Make sure to load the current students assigned to this task
-                              setSelectedStudents(task.students?.map(s => s._id) || []);
+                              setSelectedStudents(task.students?.map(s => s?._id) || []);
                               setIsAssignStudentOpen(true);
                             }}
                           >
@@ -868,10 +887,36 @@ const Tasks = () => {
             )}
           </tbody>
         </table>
-      </div>
+</div>
+                {paginationData && (
+          <div className="flex justify-center my-6 gap-2">
+            <Button
+              variant="outline"
+              disabled={!paginationData.hasPrevPage}
+              onClick={()=> fetchTasks(paginationData.page - 1)}
+            >
+              Previous
+            </Button>
+            <span className="px-4 py-2">
+              Page {paginationData.page} of {paginationData.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              disabled={!paginationData.hasNextPage}
+              onClick={() => fetchTasks(paginationData.page + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
 
       {/* Add Task Dialog */}
-      <Dialog open={isAddTaskOpen} onOpenChange={setIsAddTaskOpen}>
+      <Dialog open={isAddTaskOpen} onOpenChange={(open) => {
+            setIsAddTaskOpen(open);
+            if (!open) {
+              resetTaskForm();
+            }
+          }}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Task</DialogTitle>
@@ -944,7 +989,7 @@ const Tasks = () => {
                   <p className="text-sm font-medium mb-2">Selected Students:</p>
                   <div className="flex flex-wrap gap-2">
                     {selectedStudents.map((studentId) => {
-                      const student = students.find(s => s.id === studentId);
+                      const student = students.find(s => s?.id === studentId);
                       if (!student) return null;
                       return (
                         <Badge
@@ -1016,7 +1061,7 @@ const Tasks = () => {
                   <p className="text-sm font-medium mb-2">Selected Subtasks:</p>
                   <ul className="space-y-1">
                     {selectedSubtasks.map((subtaskId) => {
-                      const subtask = availableSubtasks.find(s => s.id === subtaskId);
+                      const subtask = availableSubtasks.find(s => s?.id === subtaskId);
                       if (!subtask) return null;
                       return (
                         <li key={subtask.id} className="flex items-center justify-between text-sm bg-muted/50 rounded-sm px-2 py-1">
@@ -1051,7 +1096,7 @@ const Tasks = () => {
                         variant="outline"
                         className="cursor-pointer"
                         onClick={() => {
-                          const matchedSubtask = availableSubtasks.find(s => s.title === template);
+                          const matchedSubtask = availableSubtasks.find(s => s?.title === template);
                           if (matchedSubtask && !selectedSubtasks.includes(matchedSubtask.id)) {
                             setSelectedSubtasks([...selectedSubtasks, matchedSubtask.id]);
                           }
@@ -1075,12 +1120,12 @@ const Tasks = () => {
                   onValueChange={(val) => setNewTask({ ...newTask, priority: val })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select priority" />
+                    <SelectValue  placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="HIGH">High</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="LOW">Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1205,7 +1250,7 @@ const Tasks = () => {
                   <p className="text-sm font-medium mb-2">Selected Subtasks:</p>
                   <ul className="space-y-1">
                     {selectedSubtasks.map((subtaskId) => {
-                      const subtask = availableSubtasks.find(s => s.id === subtaskId);
+                      const subtask = availableSubtasks.find(s => s?.id === subtaskId);
                       if (!subtask) return null;
                       return (
                         <li key={subtask.id} className="flex items-center justify-between text-sm bg-muted/50 rounded-sm px-2 py-1">
@@ -1244,9 +1289,9 @@ const Tasks = () => {
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="HIGH">High</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="LOW">Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1335,7 +1380,7 @@ const Tasks = () => {
                 <p className="text-sm font-medium mb-2">Selected Students:</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedStudents.map((studentId) => {
-                    const student = students.find(s => s.id === studentId);
+                    const student = students.find(s => s?.id === studentId);
                     if (!student) return null;
                     return (
                       <Badge

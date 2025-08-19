@@ -46,7 +46,7 @@ const AppSidebar = ({ isSidebarOpen }) => {
     { id: 7, name: 'FAQs', icon: <HelpCircle className="h-5 w-5" />, link: '/dashboard/faq' },
     { id: 8, name: 'Documents', icon: <FileText className="h-5 w-5" />, link: '/dashboard/documents' },
     { id: 10, name: 'Messages', icon: <MessageSquare className="h-5 w-5" />, link: '/dashboard/chat' },
-    { id: 11, name: 'Settings', icon: <Settings className="h-5 w-5" />, link: '/dashboard/settings' },
+    // { id: 11, name: 'Settings', icon: <Settings className="h-5 w-5" />, link: '/dashboard/settings' },
     { id: 12, name: 'Sign Out', icon: <LogOut className="h-5 w-5" />, action: handleLogout },
   ];
 

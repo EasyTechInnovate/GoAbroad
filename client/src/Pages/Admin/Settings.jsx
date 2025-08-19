@@ -82,7 +82,7 @@ const Settings = () => {
       setMembers(response.data.members);
       setPagination(response.data.pagination);
     } catch (error) {
-      console.error('Error fetching members:', error);
+      console.error('Error fetching members:', error.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -103,7 +103,7 @@ const Settings = () => {
         setInitialFormData(userData); // Store initial data
       } catch (error) {
         console.error('Error loading profile:', error);
-        toast.error('Failed to load profile data');
+        toast.error('Failed to load profile data: ' + error.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -197,9 +197,9 @@ const Settings = () => {
       </div>
 
       <Tabs defaultValue="profile">
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="sm:w-64 w-full">
-            <TabsList className="flex flex-col w-full h-full space-y-1 bg-transparent p-0">
+            <TabsList className="flex flex-col w-full h-fit space-y-1 bg-transparent p-0">
               <TabsTrigger value="profile" className="justify-start w-full">
                 <User className="mr-2 h-4 w-4" /> Profile
               </TabsTrigger>
@@ -287,7 +287,7 @@ const Settings = () => {
                                 window.location.reload();
                               } catch (error) {
                                 console.error('Error uploading profile picture:', error);
-                                toast.error(error?.message || 'Failed to update profile picture');
+                                toast.error(error?.response?.data?.message || 'Failed to update profile picture');
                               } finally {
                                 setLoading(false);
                               }
@@ -329,7 +329,7 @@ const Settings = () => {
                                 window.location.reload();
                               } catch (error) {
                                 console.error('Error removing profile picture:', error);
-                                toast.error('Failed to remove profile picture');
+                                toast.error('Failed to remove profile picture: ' + error.response?.data?.message);
                               } finally {
                                 setLoading(false);
                               }

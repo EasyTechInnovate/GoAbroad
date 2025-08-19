@@ -4,7 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GraduationCap, Users, Award, University, Globe, Heart, Target, Lightbulb, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
 import Navigation from './components/Navigation';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import CTA from '@/components/static/CTA';
+import Footer from '@/components/static/Footer';
 
 const About = () => {
   console.log('About component rendering');
@@ -87,7 +89,7 @@ const About = () => {
             {/* Left Content */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <Badge variant="outline" className="border-gray-300 text-gray-600 px-3 py-1">
+                <Badge variant="outline" className="border-primary-700 text-primary-700 rounded-full px-3 py-1">
                   About GroupBroad
                 </Badge>
 
@@ -119,12 +121,12 @@ const About = () => {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-3">
-                  Learn More
+                  <Link to='/signin'> Learn More</Link>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3">
+                {/* <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3">
                   Contact Us
-                </Button>
+                </Button> */}
               </div>
             </div>
 
@@ -190,7 +192,7 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div>
-                <Badge variant="outline" className="mb-4 border-primary text-primary">Our Story</Badge>
+                <Badge variant="outline" className="mb-4 border-primary-700 rounded-full text-primary-700 ">Our Story</Badge>
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">
                   15+ Years of Excellence in Global Education
                 </h2>
@@ -222,13 +224,13 @@ const About = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-primary text-primary">Leadership</Badge>
+            <Badge variant="outline" className="mb-4 border-primary-700 text-primary-700 rounded-full">Leadership</Badge>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Founders</h2>
             <p className="text-lg text-gray-600">Meet the visionaries behind GroupBroad</p>
           </div>
 
           <Tabs defaultValue="anushk" className="max-w-4xl mx-auto">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsList className="grid w-full grid-cols-2 mb-8 overflow-y-hidden h-fit">
               <TabsTrigger value="anushk" className="text-lg py-3">Anushk Sharma</TabsTrigger>
               <TabsTrigger value="shrey" className="text-lg py-3">Shrey Choksi</TabsTrigger>
             </TabsList>
@@ -258,7 +260,7 @@ const About = () => {
                         investing nearly 1 lakh rupees in their services. Consequently, he navigated the admissions process independently.
                       </p>
                     </div>
-                    <div className="mt-6 flex items-center space-x-3">
+                    <div className="mt-6 flex flex-wrap gap-2 items-center space-x-3">
                       <Badge variant="secondary" className="bg-blue-50 text-blue-700">University of Notre Dame</Badge>
                       <Badge variant="secondary" className="bg-green-50 text-green-700">Mechanical Engineering</Badge>
                     </div>
@@ -300,7 +302,7 @@ const About = () => {
                         helping others overcome similar hurdles and achieve their educational goals abroad.
                       </p>
                     </div>
-                    <div className="mt-6 flex items-center space-x-3">
+                    <div className="mt-6 flex flex-wrap gap-2 items-center space-x-3">
                       <Badge variant="secondary" className="bg-purple-50 text-purple-700">Florida State University</Badge>
                       <Badge variant="secondary" className="bg-orange-50 text-orange-700">Computer Science</Badge>
                     </div>
@@ -323,7 +325,7 @@ const About = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-primary text-primary">Our Values</Badge>
+            <Badge variant="outline" className="mb-4 border-primary-700 text-primary-700 rounded-full">Our Values</Badge>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">What Drives Us</h2>
             <p className="text-lg text-gray-600">Core principles that guide our mission</p>
           </div>
@@ -350,7 +352,7 @@ const About = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary text-white">
+      {/* <section className="py-16 bg-primary text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Begin Your Journey?</h2>
           <p className="text-xl text-white/90 mb-8">
@@ -371,7 +373,10 @@ const About = () => {
             </Button>
           </div>
         </div>
-      </section>
+      </section> */}
+      <CTA/>
+      <Footer/>
+
     </div>
   );
 };
