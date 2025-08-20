@@ -316,6 +316,8 @@ export default {
             })
                 .populate('taskId', '')
                 .populate('subtaskId', '')
+                .skip(skip)
+                .limit(limit)
                 .lean();
 
             const taskSubtaskMap = assignments.reduce((acc, assignment) => {
