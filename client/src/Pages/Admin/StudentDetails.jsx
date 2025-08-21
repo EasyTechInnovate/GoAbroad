@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, User, FileText, BookOpen, Briefcase, FileQuestion, CheckSquare } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
 import { StudentQuestionnaires } from './components/students/StudentQuestionnaires';
+import StudentApplication from './components/students/StudentApplication';
 
 const StudentDetails = () => {
   const { id } = useParams();
@@ -54,10 +55,7 @@ const StudentDetails = () => {
         </TabsContent>
           
         <TabsContent value="applications">
-          <div className="rounded-lg border p-8 text-center">
-            <h3 className="text-lg font-medium">Application History</h3>
-            <p className="text-muted-foreground mt-2">Student application history will be displayed here.</p>
-          </div>
+         <StudentApplication studentId={id} />
         </TabsContent>
           
         <TabsContent value="academics">

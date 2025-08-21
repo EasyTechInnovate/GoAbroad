@@ -13,6 +13,11 @@ export const getStudents = async (params = { page: 1, limit: 10 }) => {
   });
   return response.data;
 };
+export const getStudentForAdmin = async ({params}={}) => {
+  const response = await servicesAxiosInstance.get(`/admin/students`, {params});
+  return response.data;
+};
+
 
 export const getStudentById = async (studentId) => {
   const response = await servicesAxiosInstance.get(`/admin/students/${studentId}`);

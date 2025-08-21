@@ -56,10 +56,11 @@ const Forms = () => {
   const [questionnairsFilter , setQuestionnairesFilter] = useState({
     page: 1,
     limit: 10,
-    search: "",
+    search: '',
     status: ''
   })
   const [questionnairesPagination , setQuestionnairesPagination] = useState({})
+
 
   const fetchLoans = useCallback(async () => {
     setIsLoadingLoans(true);
@@ -79,12 +80,13 @@ const Forms = () => {
   }, [loanFilters]);
   const fetchQuestionnaires = useCallback(async () => {
     try {
-      const response = await getQuestionnaires();
+      const response = await getQuestionnaires({questionnairsFilter});
       setQuestionnaires(response.data?.questionnaires || []);
+      setQuestionnairesPagination(response.data?.pagination )
     } catch (error) {
       toast.error(`Failed to fetch questionnaires: ${error.response?.data?.message}`);
     }
-  }, []);
+  }, [questionnairsFilter]);
 
   useEffect(() => {
     fetchQuestionnaires();
@@ -95,6 +97,7 @@ const Forms = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formTitle, setFormTitle] = useState('');
   const [formDescription, setFormDescription] = useState('');
+  const [formStatus , setFormStatus] = useState('ACTIVE')
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState('');
   const [questionType, setQuestionType] = useState('TEXT');
@@ -148,7 +151,7 @@ const Forms = () => {
       case 'active':
         return <Badge className="bg-green-500">Active</Badge>;
       case 'draft':
-        return <Badge variant="outline">Draft</Badge>;
+        return <Badge variant="outline" className='bg-amber-300  '>Draft</Badge>;
       case 'archived':
         return <Badge variant="secondary">Archived</Badge>;
       case 'pending':
@@ -163,7 +166,7 @@ const Forms = () => {
   }; const handleAddQuestion = () => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to add questions");
+      toast.error('You don\'t have permission to add questions');
       return;
     }
     
@@ -194,7 +197,7 @@ const Forms = () => {
   const handleAddOption = (questionId) => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to add options");
+      toast.error('You don\'t have permission to add options');
       return;
     }
     
@@ -219,7 +222,7 @@ const Forms = () => {
   const handleRemoveOption = (questionId, optionIndex) => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to remove options");
+      toast.error('You don\'t have permission to remove options');
       return;
     }
     
@@ -243,7 +246,7 @@ const Forms = () => {
   const handleEditQuestion = (question) => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to edit questions");
+      toast.error('You don\'t have permission to edit questions');
       return;
     }
     
@@ -255,7 +258,7 @@ const Forms = () => {
   const handleUpdateQuestion = () => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to update questions");
+      toast.error('You don\'t have permission to update questions');
       return;
     }
     
@@ -280,7 +283,7 @@ const Forms = () => {
   const handleRemoveQuestion = (questionId) => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to remove questions");
+      toast.error('You don\'t have permission to remove questions');
       return;
     }
     
@@ -296,12 +299,17 @@ const Forms = () => {
   const handleSaveForm = async () => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to create or edit forms");
+      toast.error('You don\'t have permission to create or edit forms');
       return;
     }
     
     if (formTitle.trim() === '') {
       toast.error('Please enter a form title');
+      return;
+    }
+
+    if(formStatus.trim === ''){
+      toast.error('Please select Status')
       return;
     }
 
@@ -329,7 +337,7 @@ const Forms = () => {
       const formData = {
         title: formTitle,
         description: formDescription,
-        status: 'ACTIVE',
+        status: formStatus ,
         questions: questions.map(q => {
           const questionType = q.type.toUpperCase();
           return {
@@ -360,7 +368,7 @@ const Forms = () => {
   const handleSaveAndAssign = () => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to create or assign forms");
+      toast.error('You don\'t have permission to create or assign forms');
       return;
     }
     
@@ -376,6 +384,7 @@ const Forms = () => {
   const resetForm = () => {
     setFormTitle('');
     setFormDescription('');
+    setFormStatus('ACTIVE')
     setQuestions([]);
     setQuestionType('TEXT');
     setNewQuestion('');
@@ -389,12 +398,16 @@ const Forms = () => {
   const nextStep = () => {
     // Check if user has permission
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to proceed");
+      toast.error('You don\'t have permission to proceed');
       return;
     }
     
     if (currentStep === 1 && formTitle.trim() === '') {
       toast.error('Please enter a form title');
+      return;
+    }
+    if (currentStep === 1 && formStatus.trim() === '') {
+      toast.error('Please Select Status');
       return;
     }
     setCurrentStep(currentStep + 1);
@@ -433,13 +446,28 @@ const Forms = () => {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
+                  onChange={(e)=> setQuestionnairesFilter(prevFilters => ({...prevFilters ,status:'' ,page:1 ,search : e.target.value}))}
                   placeholder="Search questionnaires..."
                   className="pl-8 w-full"
                 />
               </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
+             
+               <div>
+                      <Select
+                          defaultValue="ACTIVE"
+                          value={questionnairsFilter.status}
+                          onValueChange={(e) => setQuestionnairesFilter(prevFilters => ({...prevFilters , page: 1 , status: e}))}
+                      >
+                          <SelectTrigger>
+                              <SelectValue  placeholder="Select by Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="ACTIVE">Active</SelectItem>
+                              <SelectItem value="DRAFT">Draft</SelectItem>
+                              <SelectItem value="ARCHIVED">Archived</SelectItem>
+                          </SelectContent>
+                      </Select>
+                  </div>
             </div>
 
             <Card>
@@ -456,7 +484,7 @@ const Forms = () => {
                       <TableHead>Title</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead>Questions</TableHead>
-                      <TableHead>Responses</TableHead>
+                      {/* <TableHead>Responses</TableHead> */}
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -473,7 +501,7 @@ const Forms = () => {
                         <TableCell className="font-medium">{form.title || ''}</TableCell>
                         <TableCell>{form.description || ''}</TableCell>
                         <TableCell>{Array.isArray(form.questions) ? form.questions.length : 0}</TableCell>
-                        <TableCell>{form.responses || 0}</TableCell>
+                        {/* <TableCell>{form.responses || 0}</TableCell> */}
                         <TableCell>{statusBadge(form.status || 'draft')}</TableCell>
                         <TableCell>{form.createdAt ? new Date(form.createdAt).toLocaleDateString() : ''}</TableCell>
                         <TableCell className="text-right">
@@ -483,7 +511,7 @@ const Forms = () => {
                                 <Button variant="ghost" size="icon" onClick={async () => {
                                   // Check if user has permission
                                   if (!hasEditPermission()) {
-                                    toast.error("You don't have permission to edit forms");
+                                    toast.error('You don\'t have permission to edit forms');
                                     return;
                                   }
                                   
@@ -492,6 +520,7 @@ const Forms = () => {
                                     setSelectedQuestionnaire(response.data);
                                     setFormTitle(response.data.title);
                                     setFormDescription(response.data.description);
+                                    setFormStatus(response.data.status)
                                     setQuestions(response.data.questions.map(q => ({
                                       id: q._id,
                                       text: q.question,
@@ -509,7 +538,7 @@ const Forms = () => {
                                 <Button variant="ghost" size="icon" className="text-destructive" onClick={async () => {
                                   // Check if user has permission
                                   if (!hasEditPermission()) {
-                                    toast.error("You don't have permission to delete forms");
+                                    toast.error('You don\'t have permission to delete forms');
                                     return;
                                   }
                                   
@@ -531,6 +560,30 @@ const Forms = () => {
                     ))}
                   </TableBody>
                 </Table>
+                {questionnairesPagination && (
+                          <div className="flex justify-center my-6 gap-2">
+                            <Button
+                              variant="outline"
+                              disabled={!questionnairesPagination.hasPreviousPage}
+                              onClick={()=> setQuestionnairesFilter(prevFilters =>  ({
+                                  ...prevFilters,
+                                  page: questionnairesPagination.currentPage - 1
+                              }))}
+                            >
+                              Previous
+                            </Button>
+                            <span className="px-4 py-2">
+                              Page {questionnairesPagination.currentPage} of {questionnairesPagination.totalPages}
+                            </span>
+                            <Button
+                              variant="outline"
+                              disabled={!questionnairesPagination.hasNextPage}
+                              onClick={() => setQuestionnairesFilter(prevFilters => ({ ...prevFilters , page:questionnairesPagination.currentPage + 1}))}
+                            >
+                              Next
+                            </Button>
+                          </div>
+                        )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -800,16 +853,23 @@ const Forms = () => {
                   />
                 </div>
 
-                 {/* <div className="grid gap-2">
-                  <Label htmlFor="status">Description</Label>
-                  <Textarea
-                    id="status"
-                    placeholder="Enter a description for this form"
-                    value={}
-                    onChange={(e) => setFormDescription(e.target.value)}
-                    disabled={!hasEditPermission()}
-                  />
-                </div> */}
+                  <div>
+                      <Label htmlFor="Status" className="mb-2">Status</Label>
+                      <Select
+                          defaultValue="ACTIVE"
+                          value={formStatus}
+                          onValueChange={(e) => setFormStatus(e)}
+                      >
+                          <SelectTrigger>
+                              <SelectValue  placeholder="Select priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="ACTIVE">Active</SelectItem>
+                              <SelectItem value="DRAFT">Draft</SelectItem>
+                              <SelectItem value="ARCHIVED">Archived</SelectItem>
+                          </SelectContent>
+                      </Select>
+                  </div>
               </div>
             )}
 

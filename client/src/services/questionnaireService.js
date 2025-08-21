@@ -12,8 +12,14 @@ export const deleteQuestionnaire = async (questionnaireId) => {
   return await apiService.delete(`/admin/questionnaires/${questionnaireId}`);
 };
 
-export const getQuestionnaires = async () => {
-  return await apiService.get('/admin/questionnaires');
+export const getQuestionnaires = async ({ questionnairsFilter } = {}) => {
+  return await apiService.get(
+    `/admin/questionnaires?page=${questionnairsFilter?.page || 1}${
+      questionnairsFilter?.search ? `&search=${questionnairsFilter.search}` : ''
+    }${
+      questionnairsFilter?.status ? `&status=${questionnairsFilter.status}` : ''
+    }`
+  );
 };
 
 export const getQuestionnaireById = async (questionnaireId) => {
@@ -66,9 +72,9 @@ export const submitQuestionnaireResponses = async (data) => {
 };
 
 
-export const getTaskSubtaskQuestionDetails = async (studentId) => {
+export const getTaskSubtaskQuestionDetails = async ({studentId , page=1 , limit =10}={}) => {
   try {
-    const response = await apiService.get(`/admin/students/${studentId}/task-subtask-question-details`);
+    const response = await apiService.get(`/admin/students/${studentId}/task-subtask-question-details?page=${page}&limit=${limit}`);
     
 
     if (response && response.data) {

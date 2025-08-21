@@ -61,10 +61,7 @@ export function AssignUniversityDialog({ studentId, onAssign }) {
   const fetchAssignments = useCallback(async () => {
     try {
       const response = await apiService.get(
-        '/admin/student-university-assignments',
-        {
-          params: { studentId },
-        }
+        `/admin/student-university-assignments?studentId=${studentId}`
       );
       if (response.data?.assignments) {
         setAssignments(response.data.assignments);

@@ -1,9 +1,9 @@
 import { servicesAxiosInstance } from './config';
 
-export const getAdminStudentActivities = async (page = 1, limit = 5) => {
+export const getAdminStudentActivities = async (page = 1, limit = 5 , params) => {
   try {
     const response = await servicesAxiosInstance.get('/admin/student-activities', {
-      params: { page, limit }
+      params: { page, limit , search: params.search , status: params.status}
     });
     return response.data;
   } catch (err) {
