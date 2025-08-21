@@ -380,33 +380,24 @@ export default {
     // ************* ADMIN SIDE CONTROLLER ******************
     getStudentAllDocumentsMembers: async (req, res, next) => {
         try {
-
-
-            const { studentId } = req.params
-
+            const { studentId } = req.params;
             const { page, limit } = req.query;
 
             if (!page || +page <= 0 || !limit || +limit < 1) {
-                return httpError(next, new Error("All Field Are Required"), req, 400)
+                return httpError(next, new Error("All Field Are Required"), req, 400);
             }
             if (!studentId || !mongoose.Types.ObjectId.isValid(studentId)) {
-                return httpError(next, new Error("Student Id Required"), req, 400)
-
+                return httpError(next, new Error("Student Id Required"), req, 400);
             }
+
             const skip = (page - 1) * limit;
 
-            const assignments = await TaskSubtaskAssignment.find({
-                studentId: studentId,
-            })
+            const assignments = await TaskSubtaskAssignment.find({ studentId })
                 .populate('taskId', 'title')
                 .populate('subtaskId', 'title')
                 .lean();
 
-            const documents = await Document.find({
-                studentId: studentId
-            })
-                .skip(skip)
-                .limit(limit)
+            const documents = await Document.find({ studentId })
                 .populate('taskId', 'title')
                 .populate('subtaskId', 'title')
                 .populate('uploader', 'name email')
@@ -426,8 +417,8 @@ export default {
 
                 const subtask = assignment.subtaskId;
                 const subtaskDocs = documents.filter(doc =>
-                    doc.taskId._id.toString() === taskId &&
-                    doc.subtaskId._id.toString() === subtask._id.toString()
+                    doc.taskId?._id.toString() === taskId &&
+                    doc.subtaskId?._id.toString() === subtask._id.toString()
                 );
 
                 if (subtaskDocs.length > 0) {
@@ -445,28 +436,37 @@ export default {
                             createdAt: doc.createdAt
                         }))
                     });
+                } else {
+                    // Include subtask even if no documents, to match response
+                    acc[taskId].subtasks.push({
+                        _id: subtask._id,
+                        title: subtask.title,
+                        documents: []
+                    });
                 }
 
                 return acc;
             }, {});
 
-            const totalDocuments = await Document.countDocuments({ studentId: studentId });
+            const responseDocuments = Object.values(structuredResponse);
+            const totalTasks = responseDocuments.length;
+            const paginatedDocuments = responseDocuments.slice(skip, skip + +limit);
+
             const pagination = {
-                total: totalDocuments,
+                total: totalTasks,
                 page: +page,
-                limit,
-                totalPages: Math.ceil(totalDocuments / limit),
-                hasNextPage: page < Math.ceil(totalDocuments / limit),
+                limit: +limit,
+                totalPages: Math.ceil(totalTasks / limit),
+                hasNextPage: page < Math.ceil(totalTasks / limit),
                 hasPrevPage: page > 1
             };
 
             httpResponse(req, res, 200, responseMessage.SUCCESS, {
-                documents: Object.values(structuredResponse),
+                documents: paginatedDocuments,
                 pagination
             });
         } catch (err) {
             console.log(err);
-
             httpError(next, err, req, 500);
         }
     }
