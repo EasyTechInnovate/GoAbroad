@@ -163,23 +163,115 @@ export default {
             if (status) query.status = status;
             if (studentId) query.studentId = studentId;
             if (universityId) query.universityId = universityId;
+
+            let applications = [];
+            let totalApplications = 0;
+
             if (search) {
-                query.$or = [
-                    { 'studentId': { $regex: search, $options: 'i' } },
-                    { 'universityId': { $regex: search, $options: 'i' } }
-                ];
+                // Search in populated fields (student name, university name)
+                const searchQuery = {
+                    $or: [
+                        { 'studentId.name': { $regex: search, $options: 'i' } },
+                        { 'universityId.name': { $regex: search, $options: 'i' } },
+                        { 'universityId.program': { $regex: search, $options: 'i' } }
+                    ]
+                };
+
+                // Perform aggregation for search
+                applications = await Application.aggregate([
+                    {
+                        $lookup: {
+                            from: 'students',
+                            localField: 'studentId',
+                            foreignField: '_id',
+                            as: 'studentId'
+                        }
+                    },
+                    { $unwind: '$studentId' },
+                    {
+                        $lookup: {
+                            from: 'universities',
+                            localField: 'universityId',
+                            foreignField: '_id',
+                            as: 'universityId'
+                        }
+                    },
+                    { $unwind: '$universityId' },
+                    { $match: searchQuery },
+                    { $skip: skip },
+                    { $limit: limit },
+                    {
+                        $lookup: {
+                            from: 'members',
+                            localField: 'assignTo',
+                            foreignField: '_id',
+                            as: 'assignTo'
+                        }
+                    },
+                    { $unwind: '$assignTo' },
+                    {
+                        $lookup: {
+                            from: 'studenttaskassignments',
+                            localField: 'taskAssignments.taskAssignmentId',
+                            foreignField: '_id',
+                            as: 'taskAssignmentsData'
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            studentId: { _id: '$studentId._id', name: '$studentId.name', email: '$studentId.email' },
+                            universityId: { _id: '$universityId._id', name: '$universityId.name', program: '$universityId.program' },
+                            assignTo: { _id: '$assignTo._id', name: '$assignTo.name', email: '$assignTo.email', role: '$assignTo.role' },
+                            taskAssignments: {
+                                $map: {
+                                    input: '$taskAssignmentsData',
+                                    as: 'task',
+                                    in: { taskAssignmentId: '$$task._id', taskId: '$$task.taskId', status: '$$task.status', assignedAt: '$$task.assignedAt' }
+                                }
+                            },
+                            status: 1,
+                            progress: 1,
+                            createdAt: 1,
+                            updatedAt: 1
+                        }
+                    }
+                ]);
+
+                totalApplications = await Application.aggregate([
+                    {
+                        $lookup: {
+                            from: 'students',
+                            localField: 'studentId',
+                            foreignField: '_id',
+                            as: 'studentId'
+                        }
+                    },
+                    { $unwind: '$studentId' },
+                    {
+                        $lookup: {
+                            from: 'universities',
+                            localField: 'universityId',
+                            foreignField: '_id',
+                            as: 'universityId'
+                        }
+                    },
+                    { $unwind: '$universityId' },
+                    { $match: searchQuery },
+                    { $count: 'total' }
+                ]).then(result => result[0]?.total || 0);
+            } else {
+                // Non-search query using find
+                totalApplications = await Application.countDocuments(query);
+                applications = await Application.find(query)
+                    .skip(skip)
+                    .limit(limit)
+                    .populate('studentId', 'name email')
+                    .populate('universityId', 'name program')
+                    .populate('assignTo', 'name email role')
+                    .populate('taskAssignments.taskAssignmentId', 'taskId status assignedAt')
+                    .lean();
             }
-
-            const totalApplications = await Application.countDocuments(query);
-
-            const applications = await Application.find(query)
-                .skip(skip)
-                .limit(limit)
-                .populate('studentId', 'name email')
-                .populate('universityId', 'name program')
-                .populate('assignTo', 'name email role')
-                .populate('taskAssignments.taskAssignmentId', 'taskId status assignedAt')
-                .lean();
 
             const pagination = {
                 total: totalApplications,
