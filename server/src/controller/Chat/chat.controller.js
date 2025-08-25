@@ -26,14 +26,18 @@ export default {
             if (authenticatedStudent) {
                 // Student initiating chat with a Member
                 student = authenticatedStudent;
-                member = await Member.findById(targetId).select('-password');
+                member = await Member.findById(targetId)
+                    .select('firstName lastName email profilePicture phone bio role status createdDate')
+                    .lean();
                 if (!member || member.status !== 'ACTIVE') {
                     return httpError(next, new Error('Member not found or inactive'), req, 404);
                 }
                 chatRoomId = `${student._id}_${member._id}`;
             } else if (authenticatedMember) {
                 member = authenticatedMember;
-                student = await Student.findById(targetId).select('-password');
+                student = await Student.findById(targetId)
+                    .select('name email profilePicture phoneNumber isVerified isFeePaid status collegeDetails.university collegeDetails.college collegeDetails.branch personalDetails.profession personalDetails.address createdAt')
+                    .lean();
                 if (!student || !student.isVerified || !student.isFeePaid) {
                     return httpError(next, new Error('Student not found, unverified, or fee not paid'), req, 404);
                 }
@@ -94,12 +98,33 @@ export default {
                 userInfo: {
                     id: userId,
                     name: authenticatedStudent ? student.name : `${member.firstName} ${member.lastName}`.trim(),
+                    email: authenticatedStudent ? student.email : member.email,
+                    profilePicture: authenticatedStudent ? student.profilePicture : member.profilePicture,
                     role: authenticatedStudent ? 'STUDENT' : 'MEMBER',
                 },
                 targetInfo: {
                     id: authenticatedStudent ? member._id.toString() : student._id.toString(),
                     name: authenticatedStudent ? `${member.firstName} ${member.lastName}`.trim() : student.name,
+                    email: authenticatedStudent ? member.email : student.email,
+                    profilePicture: authenticatedStudent ? member.profilePicture : student.profilePicture,
+                    phone: authenticatedStudent ? member.phone : student.phoneNumber,
                     role: authenticatedStudent ? 'MEMBER' : 'STUDENT',
+                    ...(authenticatedStudent && {
+                        bio: member.bio,
+                        memberRole: member.role,
+                        joinedDate: member.createdDate,
+                    }),
+                    ...(authenticatedMember && {
+                        university: student.collegeDetails?.university,
+                        college: student.collegeDetails?.college,
+                        branch: student.collegeDetails?.branch,
+                        profession: student.personalDetails?.profession,
+                        address: student.personalDetails?.address,
+                        isVerified: student.isVerified,
+                        isFeePaid: student.isFeePaid,
+                        studentStatus: student.status,
+                        joinedDate: student.createdAt,
+                    }),
                 },
             });
         } catch (error) {
@@ -108,7 +133,7 @@ export default {
         }
     },
 
-    //  Get list of chat rooms 
+    //  Get list of chat rooms with pagination
     getChatRooms: async (req, res, next) => {
         try {
             const { authenticatedStudent, authenticatedMember } = req;
@@ -117,18 +142,53 @@ export default {
                 return httpError(next, new Error('Failed to initialize Firestore'), req, 500);
             }
 
+            // Extract pagination and search parameters
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 20;
+            const search = req.query.search ? req.query.search.trim() : '';
+            
+            if (page < 1 || limit < 1 || limit > 100) {
+                return httpError(next, new Error('Page must be >= 1 and limit between 1 and 100'), req, 400);
+            }
+
             let query;
             const userId = authenticatedStudent ? authenticatedStudent._id.toString() : authenticatedMember._id.toString();
             const role = authenticatedStudent ? 'studentId' : 'memberId';
 
             // Query chat rooms where user is a participant
-            query = db.collection('chatRooms').where(role, '==', userId).where('status', '==', 'active');
+            query = db.collection('chatRooms')
+                .where(role, '==', userId)
+                .where('status', '==', 'active');
 
             const snapshot = await query.get();
             let chatRooms = snapshot.docs.map(doc => ({
                 chatRoomId: doc.id,
                 ...doc.data(),
             }));
+
+            // Fetch latest messages for each chat room
+            const latestMessagesPromises = chatRooms.map(async (room) => {
+                try {
+                    const messagesQuery = db.collection('chatRooms')
+                        .doc(room.chatRoomId)
+                        .collection('messages')
+                        .orderBy('timestamp', 'desc')
+                        .limit(1);
+                    
+                    const messageSnapshot = await messagesQuery.get();
+                    const latestMessage = messageSnapshot.empty ? null : {
+                        ...messageSnapshot.docs[0].data(),
+                        id: messageSnapshot.docs[0].id,
+                    };
+                    
+                    return { ...room, latestMessage };
+                } catch (messageError) {
+                    console.warn(`Failed to fetch latest message for room ${room.chatRoomId}:`, messageError);
+                    return { ...room, latestMessage: null };
+                }
+            });
+
+            chatRooms = await Promise.all(latestMessagesPromises);
 
             if (authenticatedStudent) {
                 // For students: Fetch member details
@@ -185,14 +245,72 @@ export default {
                 }));
             }
 
-            httpResponse(req, res, 200, responseMessage.SUCCESS, { chatRooms });
+            // Apply search filter if provided
+            if (search) {
+                chatRooms = chatRooms.filter(room => {
+                    if (authenticatedStudent) {
+                        // Student searching for members
+                        const member = room.participants?.member;
+                        if (!member) return false;
+                        
+                        const memberName = member.name?.toLowerCase() || '';
+                        const memberEmail = member.email?.toLowerCase() || '';
+                        const searchLower = search.toLowerCase();
+                        
+                        return memberName.includes(searchLower) || memberEmail.includes(searchLower);
+                    } else if (authenticatedMember) {
+                        // Member searching for students
+                        const student = room.participants?.student;
+                        if (!student) return false;
+                        
+                        const studentName = student.name?.toLowerCase() || '';
+                        const studentEmail = student.email?.toLowerCase() || '';
+                        const searchLower = search.toLowerCase();
+                        
+                        return studentName.includes(searchLower) || studentEmail.includes(searchLower);
+                    }
+                    return false;
+                });
+            }
+
+            // Sort chat rooms by latest message timestamp (newest first)
+            chatRooms.sort((a, b) => {
+                const aTime = a.latestMessage?.timestamp?.toDate?.() || a.latestMessage?.timestamp || a.createdAt?.toDate?.() || a.createdAt || new Date(0);
+                const bTime = b.latestMessage?.timestamp?.toDate?.() || b.latestMessage?.timestamp || b.createdAt?.toDate?.() || b.createdAt || new Date(0);
+                
+                const aDate = aTime instanceof Date ? aTime : new Date(aTime);
+                const bDate = bTime instanceof Date ? bTime : new Date(bTime);
+                
+                return bDate.getTime() - aDate.getTime();
+            });
+
+            // Apply pagination
+            const totalItems = chatRooms.length;
+            const startIndex = (page - 1) * limit;
+            const endIndex = startIndex + limit;
+            const paginatedChatRooms = chatRooms.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(totalItems / limit);
+
+            httpResponse(req, res, 200, responseMessage.SUCCESS, { 
+                chatRooms: paginatedChatRooms,
+                pagination: {
+                    totalItems,
+                    currentPage: page,
+                    totalPages,
+                    limit,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1,
+                    totalReturned: paginatedChatRooms.length,
+                },
+                search: search || null,
+            });
         } catch (error) {
             console.error('Get chat rooms error:', error);
             httpError(next, error, req, 500);
         }
     },
 
-    //  Get all students with pagination (for admins)
+    //  Get all students with pagination and search (for admins)
     getAllStudents: async (req, res, next) => {
         try {
             const { authenticatedMember } = req;
@@ -203,6 +321,8 @@ export default {
             // Extract and validate pagination parameters
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
+            const search = req.query.search ? req.query.search.trim() : '';
+            
             if (page < 1 || limit < 1) {
                 return httpError(next, new Error('Invalid page or limit parameters'), req, 400);
             }
@@ -210,23 +330,44 @@ export default {
             // Calculate skip value for pagination
             const skip = (page - 1) * limit;
 
-            // Fetch total count of students
-            const totalItems = await Student.countDocuments();
+            // Build search query
+            let searchQuery = {};
+            if (search) {
+                searchQuery = {
+                    $or: [
+                        { name: { $regex: search, $options: 'i' } },
+                        { email: { $regex: search, $options: 'i' } },
+                        { phoneNumber: { $regex: search, $options: 'i' } },
+                        { 'collegeDetails.university': { $regex: search, $options: 'i' } },
+                        { 'collegeDetails.college': { $regex: search, $options: 'i' } },
+                        { 'collegeDetails.branch': { $regex: search, $options: 'i' } },
+                        { status: { $regex: search, $options: 'i' } }
+                    ]
+                };
+            }
 
-            const students = await Student.find()
-                .select('name email profilePicture isVerified isFeePaid status')
+            // Fetch total count of students with search filter
+            const totalItems = await Student.countDocuments(searchQuery);
+
+            const students = await Student.find(searchQuery)
+                .select('name email profilePicture phoneNumber isVerified isFeePaid status collegeDetails.university collegeDetails.college collegeDetails.branch')
                 .skip(skip)
                 .limit(limit)
+                .sort({ createdAt: -1 })
                 .lean();
 
             const sanitizedStudents = students.map(student => ({
                 id: student._id.toString(),
                 name: student.name || 'Unnamed Student',
                 email: student.email,
+                phoneNumber: student.phoneNumber || null,
                 profilePicture: student.profilePicture || null,
                 isVerified: student.isVerified,
                 isFeePaid: student.isFeePaid,
                 status: student.status,
+                university: student.collegeDetails?.university || null,
+                college: student.collegeDetails?.college || null,
+                branch: student.collegeDetails?.branch || null,
             }));
 
             const totalPages = Math.ceil(totalItems / limit);
@@ -238,7 +379,10 @@ export default {
                     currentPage: page,
                     totalPages,
                     limit,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1,
                 },
+                search: search || null,
             });
         } catch (error) {
             console.error('Get all students error:', error);
@@ -246,7 +390,7 @@ export default {
         }
     },
 
-    // Get all active members with pagination (for students)
+    // Get all active members with pagination and search (for students)
     getAllMembers: async (req, res, next) => {
         try {
             const { authenticatedStudent } = req;
@@ -256,24 +400,48 @@ export default {
 
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
+            const search = req.query.search ? req.query.search.trim() : '';
+            
             if (page < 1 || limit < 1) {
                 return httpError(next, new Error('Invalid page or limit parameters'), req, 400);
             }
 
             const skip = (page - 1) * limit;
 
-            const totalItems = await Member.countDocuments({ status: 'ACTIVE' });
+            // Build search query
+            let searchQuery = { status: 'ACTIVE' };
+            if (search) {
+                searchQuery = {
+                    status: 'ACTIVE',
+                    $or: [
+                        { firstName: { $regex: search, $options: 'i' } },
+                        { lastName: { $regex: search, $options: 'i' } },
+                        { email: { $regex: search, $options: 'i' } },
+                        { phone: { $regex: search, $options: 'i' } },
+                        { bio: { $regex: search, $options: 'i' } },
+                        { role: { $regex: search, $options: 'i' } }
+                    ]
+                };
+            }
 
-            const members = await Member.find({ status: 'ACTIVE' })
-                .select('firstName lastName email profilePicture')
+            const totalItems = await Member.countDocuments(searchQuery);
+
+            const members = await Member.find(searchQuery)
+                .select('firstName lastName email profilePicture phone bio role')
                 .skip(skip)
                 .limit(limit)
+                .sort({ createdDate: -1 })
                 .lean();
 
             const sanitizedMembers = members.map(member => ({
                 id: member._id.toString(),
                 name: `${member.firstName} ${member.lastName}`.trim() || 'Unnamed Member',
+                firstName: member.firstName,
+                lastName: member.lastName,
                 email: member.email,
+                phone: member.phone || null,
+                bio: member.bio || null,
+                role: member.role,
                 profilePicture: member.profilePicture || null,
             }));
 
@@ -286,7 +454,10 @@ export default {
                     currentPage: page,
                     totalPages,
                     limit,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1,
                 },
+                search: search || null,
             });
         } catch (error) {
             console.error('Get all members error:', error);
