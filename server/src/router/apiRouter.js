@@ -23,6 +23,7 @@ import studentUniversityAssignmentController from '../controller/University/stud
 import applicationController from '../controller/applicationController/applicationController.js'
 import taskCategoryController from '../controller/taslCategoryController/taskCategoryController.js'
 import passport from "../config/passport.js"
+import chatController from '../controller/Chat/chat.controller.js'
 
 
 const router = Router()
@@ -292,5 +293,35 @@ router.route('/admin/applications/:applicationId')
 router.route('/admin/dashboard-stats').get(memberAccess, adminController.getAdminDashboardStats)
 router.route('/admin/upcoming-deadlines').get(memberAccess, studentTaskAssignmentController.getUpcomingDeadlines)
 // ********************* APPLICATION CONTROLLER ROUTES END ******************
+
+
+// ********************* CHAT CONTROLLER ROUTES ******************
+
+// Generate Firebase token and create/retrieve chat room
+router.route('/chat/student/generate-token')
+    .post(authentication, chatController.generateChatToken) // For students
+router.route('/chat/admin/generate-token')
+    .post(memberAccess, chatController.generateChatToken); // For members (all active members)
+
+// Get list of active chat rooms for the authenticated user
+router.route('/chat/student/rooms')
+    .get(authentication, chatController.getChatRooms) // For students
+router.route('/chat/admin/rooms')
+    .get(memberAccess, chatController.getChatRooms); // For members (all active members)
+
+
+// Get all students  (admin only)
+router.route('/chat/admin/students')
+    .get(memberAccess, chatController.getAllStudents);
+// Get all active members (student only)
+router.route('/chat/student/members')
+    .get(authentication, chatController.getAllMembers);
+
+
+//   router.route('/chat/cleanup/:chatId').delete(authentication, chatController.cleanupChatRoom);
+// ********************* CHAT CONTROLLER ROUTES END ******************
+
+
+
 
 export default router
