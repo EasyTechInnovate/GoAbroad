@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronDown, FilterIcon, FlashlightIcon } from 'lucide-react';
-import { SidebarProvider, SidebarInset } from '../../components/ui/sidebar';
-import AppSidebar from '../../components/AppSidebar';
-import SidebarHeader from '../../components/SidebarHeader';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import AppSidebar from '@/components/AppSidebar';
+import SidebarHeader from '@/components/SidebarHeader';
 import { apiService } from '../../services/api.services';
 import { toast } from 'sonner';
 
@@ -38,7 +38,7 @@ const UniversityManagement = () => {
       }
     } catch (error) {
       console.error('Error fetching university details:', error);
-      toast.error("Failed to fetch university details");
+      toast.error('Failed to fetch university details');
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,7 @@ const UniversityManagement = () => {
       }
     } catch (error) {
       console.error('Error fetching assignments:', error);
-      toast.error("Failed to fetch universities");
+      toast.error('Failed to fetch universities');
     } finally {
       setLoading(false);
     }
@@ -108,10 +108,10 @@ const UniversityManagement = () => {
         fetchUniversityDetails(assignment.universityId._id);
       }
       
-      toast.success("Status updated successfully");
+      toast.success('Status updated successfully');
     } catch (error) {
       console.error('Error updating status:', error);
-      toast.error("Failed to update status");
+      toast.error('Failed to update status');
     } finally {
       setLoading(false);
     }
@@ -337,7 +337,7 @@ const UniversityManagement = () => {
 
                     <div className="w-full h-64 relative overflow-hidden p-3">
                       <img
-                        src={universityData.banner || "https://cdn.pixabay.com/photo/2016/11/14/05/15/academic-1822682_960_720.jpg"}
+                        src={universityData.banner || 'https://cdn.pixabay.com/photo/2016/11/14/05/15/academic-1822682_960_720.jpg'}
                         alt={universityData.name}
                         className="w-full h-full rounded-lg"
                       />

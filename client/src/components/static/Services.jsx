@@ -50,8 +50,8 @@ const Services = () => {
     // },
     {
       icon: Calculator,
-      title: 'Test Score Calculator & Eligibility',
-      description: 'Check your eligibility and calculate required scores for IELTS, GMAT, GRE, and other standardized tests.',
+      title: 'CGPA TO GPA Converter',
+      description: 'Use our CGPA to GPA calculator to convert your 10-point CGPA to a 4-point GPA accurately',
       color: 'bg-red-50 text-red-600',
       borderColor: 'border-red-200',
       features: ['Score calculation', 'Eligibility check', 'Test preparation'],
@@ -106,9 +106,9 @@ const Services = () => {
                   <div className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                     <service.icon size={24} />
                   </div>
-                  <Badge variant="secondary" className="text-xs px-2 py-1">
+                  {/* <Badge variant="secondary" className="text-xs px-2 py-1">
                     {service.badge}
-                  </Badge>
+                  </Badge> */}
                 </div>
                 <CardTitle className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-800 transition-colors">
                   {service.title}

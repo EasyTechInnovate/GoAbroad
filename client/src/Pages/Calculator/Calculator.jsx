@@ -279,7 +279,17 @@ export default function Calculator() {
                 min={0}
                 max={10}
                 value={cgpa}
-                onChange={(e) => setCgpa(toNumber(e.target.value, 0))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const numValue = toNumber(value, 0);
+
+                  if (numValue >= 0 && numValue <= 10) {
+                    setCgpa(numValue);
+                  }
+                  else{
+                     setCgpa(0);
+                  }
+                }}
                 className="w-full px-3 py-2 rounded-xl border"
               />
               <p className="text-xs text-gray-600">Assumptions by band (by <em>credits</em>):
