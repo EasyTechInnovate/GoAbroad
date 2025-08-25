@@ -42,4 +42,4 @@ const rbacMiddleware = (requiredRoles = []) => {
 export default rbacMiddleware;
 export const adminOnly = rbacMiddleware(['ADMIN']);
 export const adminEditorOnly = rbacMiddleware(['ADMIN', 'EDITOR']);
-export const memberAccess = rbacMiddleware([]); // Allows all active members
+export const memberAccess = rbacMiddleware(['ADMIN', 'EDITOR', 'VIEWER']); // Allows all active members

@@ -1,8 +1,8 @@
 import { apiService } from './api.services';
 
-export const getSubtasks = async (page = 1, limit = 10) => {
+export const getSubtasks = async (page = 1, limit = 10 ,searchTerm) => {
   try {
-    const response = await apiService.get(`/admin/subtasks?page=${page}&limit=${limit}`);
+    const response = await apiService.get(`/admin/subtasks?page=${page}&limit=${limit}&search=${searchTerm}`);
     return {
       success: true,
       data: response.data || []

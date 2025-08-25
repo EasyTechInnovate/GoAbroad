@@ -30,7 +30,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,      
+  SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Loader2, X, Briefcase } from 'lucide-react';
@@ -39,18 +39,18 @@ import { Plus, Loader2, X, Briefcase } from 'lucide-react';
 const Tasks = () => {
   const [mainTaskCategories, setMainTaskCategories] = useState([]);
   const [selectedMainTask, setSelectedMainTask] = useState('');
-  
+
   // Permission check functions
   const hasAdminPermission = () => {
     const currentUser = getUser();
     return currentUser && currentUser.role === 'ADMIN';
   };
-  
+
   const hasEditPermission = () => {
     const currentUser = getUser();
     return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
   };
-  
+
   const subtaskTemplates = {
     'Application Documents': [
       'Draft SOP',
@@ -99,7 +99,8 @@ const Tasks = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [selectedSubtasks, setSelectedSubtasks] = useState([]);
   const [newSubtask, setNewSubtask] = useState('');
-  
+
+  const [selectedStudentDetails, setSelectedStudentDetails] = useState([]);
 
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
@@ -126,6 +127,12 @@ const Tasks = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationData, setPaginationData] = useState({});
 
+  // New state for student dropdown
+  const [studentSearch, setStudentSearch] = useState('');
+  const [studentPage, setStudentPage] = useState(1);
+  const [studentPagination, setStudentPagination] = useState({});
+  const [isStudentDropdownOpen, setIsStudentDropdownOpen] = useState(false);
+
 
   const validateTaskData = (data) => {
     if (!data.title?.trim()) {
@@ -140,19 +147,45 @@ const Tasks = () => {
     setSelectedMainTask(value);
   };
 
+  // Updated fetchStudents function
+  const fetchStudents = async (searchQuery = studentSearch, page = 1) => {
+    try {
+      setLoading(prev => ({ ...prev, students: true }));
+      const params = { search: searchQuery, page, limit: 10 };
+      const response = await servicesAxiosInstance.get('/admin/students', { params });
+      if (response.data.success) {
+        setStudents(response.data.data.students.map(student => ({
+          id: student._id,
+          name: student.name || student.email,
+          email: student.email
+        })));
+        setStudentPagination(response.data.data.pagination);
+      }
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      toast.error('Failed to fetch students: ' + error.response?.data?.message);
+    } finally {
+      setLoading(prev => ({ ...prev, students: false }));
+    }
+  };
+ 
+  useEffect(()=>{
+    fetchStudents()
+  },[studentSearch])
+  
   useEffect(() => {
     let isMounted = true;
 
     const fetchTasks = async (page = 1) => {
       try {
         setLoading(prev => ({ ...prev, tasks: true }));
-        const response = await getTasks({ page: page, limit: 10 }); 
+        const response = await getTasks({ page: page, limit: 10 });
 
         const { tasks, pagination } = response.data;
 
         const transformedTasks = tasks.map(task => ({
           ...task,
-          status: task.subtasks.length > 0 ? 
+          status: task.subtasks.length > 0 ?
             task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
             task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
             : 'PENDING',
@@ -177,7 +210,7 @@ const Tasks = () => {
       if (!hasAdminPermission()) {
         return;
       }
-      
+
       try {
         setLoading(prev => ({ ...prev, members: true }));
         const response = await servicesAxiosInstance.get('/admin/members');
@@ -220,26 +253,6 @@ const Tasks = () => {
       }
     };
 
-    const fetchStudents = async (searchQuery = '') => {
-      try {
-        setLoading(prev => ({ ...prev, students: true }));
-        const params = searchQuery ? { search: searchQuery } : {};
-        const response = await servicesAxiosInstance.get('/admin/students', { params });
-        if (response.data.success && isMounted) {
-          setStudents(response.data.data.students.map(student => ({
-            id: student._id,
-            name: student.name || student.email,
-            email: student.email
-          })));
-        }
-      } catch (error) {
-        console.error('Error fetching students:', error);
-        if (isMounted) toast.error('Failed to fetch students: ' + error.response?.data?.message);
-      } finally {
-        if (isMounted) setLoading(prev => ({ ...prev, students: false }));
-      }
-    };
-
     const fetchCategories = async () => {
       try {
         setLoading(prev => ({ ...prev, categories: true }));
@@ -262,7 +275,7 @@ const Tasks = () => {
         await fetchTeamMembers();
         await fetchSubtasks();
         await fetchTasks();
-        await fetchStudents('');
+        await fetchStudents('', 1);
         await fetchCategories();
       } catch (error) {
         console.error('Error fetching initial data:', error);
@@ -280,14 +293,14 @@ const Tasks = () => {
    const fetchTasks = async (page = 1) => {
       try {
         setLoading(prev => ({ ...prev, tasks: true }));
-       
-        const response = await getTasks({ page: page, limit: 10 }); 
+
+        const response = await getTasks({ page: page, limit: 10 });
 
         const { tasks, pagination } = response.data;
 
         const transformedTasks = tasks.map(task => ({
           ...task,
-          status: task.subtasks.length > 0 ? 
+          status: task.subtasks.length > 0 ?
             task.subtasks.every(st => st.status === 'COMPLETED') ? 'COMPLETED' :
             task.subtasks.some(st => st.status === 'IN_PROGRESS') ? 'IN_PROGRESS' : 'PENDING'
             : 'PENDING',
@@ -328,7 +341,7 @@ const Tasks = () => {
 
     // Check if user has permission to delete tasks
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to delete tasks");
+      toast.error('You don\'t have permission to delete tasks');
       return;
     }
 
@@ -346,14 +359,14 @@ const Tasks = () => {
   };
 
 
-  
+
 
   const handleSubtaskSelection = async (subtaskId) => {
     const subtask = availableSubtasks.find(s => s?.id === subtaskId);
 
     if (subtask && !selectedSubtasks.includes(subtask.id)) {
       setSelectedSubtasks([...selectedSubtasks, subtask.id]);
-      
+
       if (isEditTaskOpen && selectedTask) {
         try {
           setLoading(prev => ({ ...prev, subtasks: true }));
@@ -363,7 +376,7 @@ const Tasks = () => {
           toast.success(`Added subtask "${subtask.title}" to task`);
         } catch (error) {
           console.error('Error adding subtask:', error.response.data.message);
-          toast.error("Failed to Add Subtask: " + error.response.data.message);
+          toast.error('Failed to Add Subtask: ' + error.response.data.message);
           setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtask.id));
         } finally {
           setLoading(prev => ({ ...prev, subtasks: false }));
@@ -375,7 +388,7 @@ const Tasks = () => {
 
   const handleRemoveSubtask = async (subtaskId) => {
     setSelectedSubtasks(selectedSubtasks.filter(id => id !== subtaskId));
-    
+
     // If we're in edit mode, remove the subtask from the task immediately
     if (isEditTaskOpen && selectedTask) {
       try {
@@ -407,14 +420,20 @@ const Tasks = () => {
     setSelectedSubtasks([]);
     setNewSubtask('');
     setSelectedMainTask('');
+    setCurrentPage(1);
+    setStudentSearch('');
+    setIsStudentDropdownOpen(false);
+    setSelectedStudentDetails([]);
+
+
   };
   const handleOpenEditTask = (task) => {
     // Check if user has permission to edit tasks
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to edit tasks");
+      toast.error('You don\'t have permission to edit tasks');
       return;
     }
-    
+
     setSelectedTask(task);
     setNewTask({
       title: task.title,
@@ -425,11 +444,11 @@ const Tasks = () => {
     });
 
     setSelectedStudents(task.students?.map(s => s?._id) || []);
-    
-    setSelectedSubtasks(task.subtasks?.map(s => s?.subtask?._id) || []); 
-    
+
+    setSelectedSubtasks(task.subtasks?.map(s => s?.subtask?._id) || []);
+
     setSelectedMainTask(task.category || '');
-    
+
     setIsEditTaskOpen(true);
   };
 
@@ -441,27 +460,27 @@ const Tasks = () => {
     }
 
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to assign students to tasks");
+      toast.error('You don\'t have permission to assign students to tasks');
       return;
     }
 
     try {
       setLoading(prev => ({ ...prev, students: true }));
-      
+
       const currentStudentIds = selectedTask.students?.map(s => s?._id) || [];
-      
+
       const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
       if (studentsToAdd.length > 0) {
         await addStudentsToTask(selectedTask._id, {
           studentIds: studentsToAdd
         });
       }
-      
+
       const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
       for (const studentId of studentsToRemove) {
         await removeStudentFromTask(selectedTask?._id, { studentId });
       }
-      
+
       await fetchTasks();
       setIsAssignStudentOpen(false);
       toast.success('Students assigned successfully!');
@@ -478,13 +497,13 @@ const Tasks = () => {
     }
 
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to create tasks");
+      toast.error('You don\'t have permission to create tasks');
       return;
     }
 
     try {
       setLoading(prev => ({ ...prev, add: true }));
-      
+
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
@@ -524,13 +543,13 @@ const Tasks = () => {
     }
 
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to edit tasks");
+      toast.error('You don\'t have permission to edit tasks');
       return;
     }
 
     try {
-      setLoading(prev => ({ ...prev, edit: true }));        
-      
+      setLoading(prev => ({ ...prev, edit: true }));
+
       const taskData = {
         title: newTask.title.trim(),
         description: newTask.description?.trim() || '',
@@ -549,16 +568,16 @@ const Tasks = () => {
       }
 
       await updateTask(selectedTask._id, taskData);
-      
+
       // Handle students separately if they changed
       const currentStudentIds = selectedTask.students?.map(s => s?._id) || [];
       const studentsToAdd = selectedStudents.filter(id => !currentStudentIds.includes(id));
       const studentsToRemove = currentStudentIds.filter(id => !selectedStudents.includes(id));
-      
+
       if (studentsToAdd.length > 0) {
         await addStudentsToTask(selectedTask._id, { studentIds: studentsToAdd });
       }
-      
+
       for (const studentId of studentsToRemove) {
         await removeStudentFromTask(selectedTask._id, { studentId });
       }
@@ -567,11 +586,11 @@ const Tasks = () => {
       const currentSubtaskIds = selectedTask.subtasks?.map(s => s?.subtask?._id) || [];
       const subtasksToAdd = selectedSubtasks.filter(id => !currentSubtaskIds.includes(id));
       const subtasksToRemove = currentSubtaskIds.filter(id => !selectedSubtasks.includes(id));
-      
+
       if (subtasksToAdd.length > 0) {
         await addSubtasksToTask(selectedTask._id, { subtaskIds: subtasksToAdd });
       }
-      
+
       if (subtasksToRemove.length > 0) {
         await removeSubtaskFromTask(selectedTask._id, { subtaskIds: subtasksToRemove });
       }
@@ -590,7 +609,7 @@ const Tasks = () => {
   // Function to fetch subtasks for a specific student and task
   const fetchStudentTaskDetails = async (taskId, studentId) => {
     if (!taskId || !studentId) return;
-    
+
     try {
       setLoading(prev => ({ ...prev, subtasks: true }));
       const response = await getSubtasksByTaskAndStudent(taskId, studentId);
@@ -609,7 +628,7 @@ const Tasks = () => {
   const handleOpenTaskDetails = (task, studentId) => {
     const student = students.find(s => s?.id === studentId);
     if (!student) return;
-    
+
     setSelectedTask(task);
     setSelectedStudentForTask(student);
     fetchStudentTaskDetails(task._id, studentId);
@@ -620,14 +639,14 @@ const Tasks = () => {
   const handleUpdateSubtaskStatus = async (assignmentId, status, isLocked = false) => {
     // Check if user has permission to update subtask status
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to update subtask status");
+      toast.error('You don\'t have permission to update subtask status');
       return;
     }
 
     const currentSubtask = studentSubtasks.find(st => st.assignmentId === assignmentId);
     const isStatusChange = currentSubtask && currentSubtask.status !== status;
     const isLockChange = currentSubtask && currentSubtask.isLocked !== isLocked;
-    
+
     try {
       setLoading(prev => ({ ...prev, subtasks: true }));
       await updateTaskSubtaskAssignment({
@@ -635,12 +654,12 @@ const Tasks = () => {
         status,
         isLocked
       });
-      
+
       // Refresh the task details
       if (selectedTask && selectedStudentForTask) {
         await fetchStudentTaskDetails(selectedTask._id, selectedStudentForTask.id);
       }
-      
+
       // Provide appropriate success message
       if (isStatusChange && isLockChange) {
         toast.success(`Subtask status updated and ${isLocked ? 'locked' : 'unlocked'}`);
@@ -664,10 +683,10 @@ const Tasks = () => {
   const handleOpenCategoryManage = (category = null) => {
     // Check if user has permission to manage categories
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to manage categories");
+      toast.error('You don\'t have permission to manage categories');
       return;
     }
-    
+
     if (category) {
       setCategoryToEdit(category);
       setNewCategoryData({ name: category.name, description: category.description || '' });
@@ -686,13 +705,13 @@ const Tasks = () => {
 
     // Check if user has permission to manage categories
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to create or edit categories");
+      toast.error('You don\'t have permission to create or edit categories');
       return;
     }
 
     try {
       setLoading(prev => ({ ...prev, categories: true }));
-      
+
       if (categoryToEdit) {
         // Update existing category
         await updateCategory(categoryToEdit._id, newCategoryData);
@@ -702,7 +721,7 @@ const Tasks = () => {
         await createCategory(newCategoryData);
         toast.success('Category created successfully');
       }
-      
+
       // Refresh categories
       await fetchCategories();
       setIsCategoryManageOpen(false);
@@ -716,13 +735,13 @@ const Tasks = () => {
 
   const handleDeleteCategory = async (categoryId) => {
     if (!categoryId) return;
-    
+
     // Check if user has permission to delete categories
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to delete categories");
+      toast.error('You don\'t have permission to delete categories');
       return;
     }
-    
+
     try {
       setLoading(prev => ({ ...prev, categories: true }));
       await deleteCategory(categoryId);
@@ -736,17 +755,22 @@ const Tasks = () => {
     }
   };
 
+  const handleStudentSearch = (e) => {
+    setStudentSearch(e.target.value);
+    fetchStudents(e.target.value, 1);
+  };
+
 
   return (
     <div className="space-y-4  max-w-[100vw] md:max-w-full  overflow-x-auto ">
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Task Management</h1>
         <div className="flex flex-wrap gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => handleOpenCategoryManage()}
             disabled={loading.categories || !hasEditPermission()}
-            title={hasEditPermission() ? "Manage task categories" : "You don't have permission to manage categories"}
+            title={hasEditPermission() ? 'Manage task categories' : 'You don\'t have permission to manage categories'}
           >
             {loading.categories ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -755,10 +779,10 @@ const Tasks = () => {
             )}
             Manage Categories
           </Button>
-          <Button 
-            onClick={() => {setIsAddTaskOpen(true) ; resetTaskForm()}} 
+          <Button
+            onClick={() => {setIsAddTaskOpen(true) ; resetTaskForm()}}
             disabled={loading.add || !hasEditPermission()}
-            title={hasEditPermission() ? "Add a new task" : "You don't have permission to add tasks"}
+            title={hasEditPermission() ? 'Add a new task' : 'You don\'t have permission to add tasks'}
           >
             <Plus className="mr-2 h-4 w-4" /> Add Task
           </Button>
@@ -827,8 +851,8 @@ const Tasks = () => {
                     {task.assignee ? teamMembers.find(m => m.id === task.assignee)?.name : '-'}
                   </td>
                   <td className="px-4 py-3">
-                    <Badge 
-                      variant={task.priority === 'HIGH' ? 'destructive' : 
+                    <Badge
+                      variant={task.priority === 'HIGH' ? 'destructive' :
                               task.priority === 'MEDIUM' ? 'warning' : 'secondary'}
                     >
                       {task.priority}
@@ -839,17 +863,24 @@ const Tasks = () => {
                       {hasEditPermission() && (
                         <>
                           <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedTask(task);
-                              // Make sure to load the current students assigned to this task
-                              setSelectedStudents(task.students?.map(s => s?._id) || []);
-                              setIsAssignStudentOpen(true);
-                            }}
-                          >
-                            Assign
-                          </Button>
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedTask(task);
+                                const currentStudents = task.students || [];
+                                // Set the simple ID array
+                                setSelectedStudents(currentStudents.map(s => s._id));
+                                // Set the detailed object array
+                                setSelectedStudentDetails(currentStudents.map(s => ({
+                                  id: s._id,
+                                  name: s.name || s.email,
+                                  email: s.email
+                                })));
+                                setIsAssignStudentOpen(true);
+                              }}
+                            >
+                              Assign
+                            </Button>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -957,39 +988,74 @@ const Tasks = () => {
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
               />
-            </div>            <div className="grid grid-cols-1 gap-2">
+            </div>
+            <div className="grid grid-cols-1 gap-2">
               <label className="text-sm font-medium">
                 Assign to Students
               </label>
-              <Select 
-                value=""
-                onValueChange={(val) => {
-                  if (!selectedStudents.includes(val)) {
-                    setSelectedStudents([...selectedStudents, val])
-                  }
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select students" />
-                </SelectTrigger>
-                <SelectContent>
-                  {students.map(student => (
-                    <SelectItem key={student.id} value={student.id}>
-                      <div className="flex items-center">
-                        <span>{student.name}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">({student.email})</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <button
+                  className="w-full border rounded-md p-2 text-left"
+                  onClick={() => setIsStudentDropdownOpen(!isStudentDropdownOpen)}
+                >
+                  Select students
+                </button>
+                {isStudentDropdownOpen && (
+                  <div className="text-xs z-10 w-full bg-white border rounded-md mt-1">
+                    <div className="p-2">
+                      <Input
+                        placeholder="Search students..."
+                        value={studentSearch}
+                        onChange={(e)=>setStudentSearch(e.target.value)}
+                      />
+                    </div>
+                    <ul>
+                      {students.map(student => (
+                        <li
+                          key={student.id}
+                          className="p-2 ml-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => {
+                            // Check if the student is already selected
+                            if (!selectedStudents.includes(student.id)) {
+                              // Add the ID to the simple array
+                              setSelectedStudents([...selectedStudents, student.id]);
+                              // Add the full student object to our new details array
+                              setSelectedStudentDetails([...selectedStudentDetails, student]);
+                            }
+                          }}
+                        >
+                          {student.name} ({student.email})
+                        </li>   
+                      ))}
+                    </ul>
+                    <div className="flex justify-center p-2">
+                      <Button
+                        variant="outline"
+                        disabled={!studentPagination.hasPrev}
+                        onClick={() => fetchStudents(studentSearch, studentPagination.currentPage - 1)}
+                      >
+                        Previous
+                      </Button>
+                      <span className="px-4 py-2">
+                        {studentPagination.currentPage} of {studentPagination.totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        disabled={!studentPagination.hasNext}
+                        onClick={() => fetchStudents(studentSearch, studentPagination.currentPage + 1)}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-              {selectedStudents.length > 0 && (
+              {selectedStudentDetails.length > 0 && (
                 <div className="border rounded-md p-2 mt-2">
                   <p className="text-sm font-medium mb-2">Selected Students:</p>
                   <div className="flex flex-wrap gap-2">
-                    {selectedStudents.map((studentId) => {
-                      const student = students.find(s => s?.id === studentId);
+                    {selectedStudentDetails.map((student) => {
                       if (!student) return null;
                       return (
                         <Badge
@@ -1012,17 +1078,19 @@ const Tasks = () => {
                               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                             </Button>
                             <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedStudents(selectedStudents.filter(id => id !== student.id));
-                              }}
-                              title="Remove student"
-                            >
-                              <X className="h-2 w-2" />
-                            </Button>
+                            variant="ghost"
+                            size="icon"
+                            className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Remove from both state arrays
+                              setSelectedStudents(selectedStudents.filter(id => id !== student.id));
+                              setSelectedStudentDetails(selectedStudentDetails.filter(s => s.id !== student.id));
+                            }}
+                            title="Remove student"
+                          >
+                            <X className="h-2 w-2" />
+                          </Button>
                           </div>
                         </Badge>
                       );
@@ -1343,7 +1411,7 @@ const Tasks = () => {
 
       {/* Assign Students Dialog */}
       <Dialog open={isAssignStudentOpen} onOpenChange={setIsAssignStudentOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Assign Students to Task</DialogTitle>
             <DialogDescription>
@@ -1352,35 +1420,69 @@ const Tasks = () => {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <Select
-              value=""
-              onValueChange={(val) => {
-                if (!selectedStudents.includes(val)) {
-                  setSelectedStudents([...selectedStudents, val])
-                }
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select students" />
-              </SelectTrigger>
-              <SelectContent>
-                {students.map(student => (
-                  <SelectItem key={student.id} value={student.id}>
-                    <div className="flex items-center">
-                      <span>{student.name}</span>
-                      <span className="ml-2 text-xs text-muted-foreground">({student.email})</span>
+            <div className="relative text-xs">
+                <button
+                  className="w-full border rounded-md p-2 text-left"
+                  onClick={() => setIsStudentDropdownOpen(!isStudentDropdownOpen)}
+                >
+                  Select students
+                </button>
+                {isStudentDropdownOpen && (
+                  <div className=" z-10 w-full bg-white border rounded-md mt-1">
+                    <div className="p-2">
+                      <Input
+                        placeholder="Search students..."
+                        value={studentSearch}
+                        onChange={(e)=>setStudentSearch(e.target.value)}
+                      />
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                    <ul>
+                      {students.map(student => (
+                       <li
+                          key={student.id}
+                          className="p-2 ml-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => {
+                            // Check if the student is already selected
+                            if (!selectedStudents.includes(student.id)) {
+                              // Add the ID to the simple array
+                              setSelectedStudents([...selectedStudents, student.id]);
+                              // Add the full student object to our new details array
+                              setSelectedStudentDetails([...selectedStudentDetails, student]);
+                            }
+                          }}
+                        >
+                          {student.name} ({student.email})
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex justify-center p-2">
+                      <Button
+                        variant="outline"
+                        disabled={!studentPagination.hasPrev}
+                        onClick={() => fetchStudents(studentSearch, studentPagination.currentPage - 1)}
+                      >
+                        Previous
+                      </Button>
+                      <span className="px-4 py-2">
+                        {studentPagination.currentPage} of {studentPagination.totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        disabled={!studentPagination.hasNext}
+                        onClick={() => fetchStudents(studentSearch, studentPagination.currentPage + 1)}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-            {selectedStudents.length > 0 && (
+            {selectedStudentDetails.length > 0 && (
               <div className="border rounded-md p-2">
                 <p className="text-sm font-medium mb-2">Selected Students:</p>
                 <div className="flex flex-wrap gap-2">
-                  {selectedStudents.map((studentId) => {
-                    const student = students.find(s => s?.id === studentId);
+                  {selectedStudentDetails.map((student) => {
                     if (!student) return null;
                     return (
                       <Badge
@@ -1388,12 +1490,18 @@ const Tasks = () => {
                         variant="secondary"
                         className="pl-2 pr-1 py-1 flex items-center gap-1"
                       >
-                        {student.name}
-                        <Button
+                        {student?.email}
+                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-4 w-4 ml-1 hover:bg-destructive hover:text-destructive-foreground rounded-full"
-                          onClick={() => setSelectedStudents(selectedStudents.filter(id => id !== student.id))}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Remove from both state arrays
+                            setSelectedStudents(selectedStudents.filter(id => id !== student.id));
+                            setSelectedStudentDetails(selectedStudentDetails.filter(s => s.id !== student.id));
+                          }}
+                          title="Remove student"
                         >
                           <X className="h-2 w-2" />
                         </Button>
@@ -1486,7 +1594,7 @@ const Tasks = () => {
                           onValueChange={(value) => handleUpdateSubtaskStatus(subtask.assignmentId, value, subtask.isLocked)}
                           disabled={subtask.isLocked}
                         >
-                          <SelectTrigger className={`w-[140px] ${subtask.isLocked ? "opacity-70" : ""}`}>
+                          <SelectTrigger className={`w-[140px] ${subtask.isLocked ? 'opacity-70' : ''}`}>
                             <SelectValue placeholder="Change status" />
                           </SelectTrigger>
                           <SelectContent>
@@ -1495,15 +1603,15 @@ const Tasks = () => {
                             <SelectItem value="COMPLETED">Completed</SelectItem>
                           </SelectContent>
                         </Select>
-                        
+
                         <Button
-                          variant={subtask.isLocked ? "secondary" : "outline"}
+                          variant={subtask.isLocked ? 'secondary' : 'outline'}
                           size="sm"
-                          className={`gap-1 ${subtask.isLocked ? "bg-blue-100 hover:bg-blue-200 text-blue-700" : ""}`}
+                          className={`gap-1 ${subtask.isLocked ? 'bg-blue-100 hover:bg-blue-200 text-blue-700' : ''}`}
                           onClick={() => handleUpdateSubtaskStatus(subtask.assignmentId, subtask.status, !subtask.isLocked)}
-                          title={subtask.isLocked ? "Unlock subtask" : "Lock subtask"}
+                          title={subtask.isLocked ? 'Unlock subtask' : 'Lock subtask'}
                         >
-                          {subtask.isLocked ? "🔓 Unlock" : "🔒 Lock"}
+                          {subtask.isLocked ? '🔓 Unlock' : '🔒 Lock'}
                         </Button>
                       </div>
                     </div>
@@ -1527,8 +1635,8 @@ const Tasks = () => {
           <DialogHeader>
             <DialogTitle>{categoryToEdit ? 'Edit Category' : 'Add Category'}</DialogTitle>
             <DialogDescription>
-              {categoryToEdit 
-                ? `Edit details for "${categoryToEdit.name}" category` 
+              {categoryToEdit
+                ? `Edit details for "${categoryToEdit.name}" category`
                 : 'Create a new task category'}
             </DialogDescription>
           </DialogHeader>
@@ -1600,8 +1708,8 @@ const Tasks = () => {
             <Button variant="outline" onClick={() => setIsCategoryManageOpen(false)}>
               Cancel
             </Button>
-            <Button 
-              onClick={handleSaveCategory} 
+            <Button
+              onClick={handleSaveCategory}
               disabled={loading.categories || !newCategoryData.name.trim()}
             >
               {loading.categories ? (

@@ -55,23 +55,26 @@ const Documents = ({ studentId }) => {
     const currentUser = getUser();
     return currentUser && (currentUser.role === 'ADMIN' || currentUser.role === 'EDITOR');
   };
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
   const [tasks, setTasks] = useState([]);
   const [tasksLoading, setTasksLoading] = useState(false);
   const [subtasks, setSubtasks] = useState([]);
   const [subtasksLoading, setSubtasksLoading] = useState(false);
-  const [selectedTask, setSelectedTask] = useState("");
-  const [selectedSubtask, setSelectedSubtask] = useState("");
+  const [selectedTask, setSelectedTask] = useState('');
+  const [selectedSubtask, setSelectedSubtask] = useState('');
   const [uploadLoading, setUploadLoading] = useState(false);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedFileType, setSelectedFileType] = useState("");
+  const [selectedFileType, setSelectedFileType] = useState('');
   const [students, setStudents] = useState([]);
   const [studentsLoading, setStudentsLoading] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(studentId || "");
+  const [selectedStudent, setSelectedStudent] = useState(studentId || '');
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [dropdownPosition, setDropdownPosition] = useState({});
+  const [currentPage , setCurrentPage] = useState(1)
+  const [documentPagination , setDocumnetPagination] = useState({})
+  const [documentStatus , setDocumentStatus] = useState('')
 
   const validateFile = (file) => {
     const validFileTypes = {
@@ -100,7 +103,11 @@ const Documents = ({ studentId }) => {
   const fetchDocuments = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getDocuments({ page: 1, limit: 10 });
+      let params = {
+        page: currentPage , limit: 10 , status: documentStatus , search : searchQuery
+      }
+    
+      const response = await getDocuments(params);
       
       if (!response?.data?.documents) {
         throw new Error('Invalid response from server');
@@ -114,46 +121,50 @@ const Documents = ({ studentId }) => {
         task: doc.taskId?.title || 'N/A',
         subtask: doc.subtaskId?.title || 'N/A',
         uploadDate: new Date(doc.uploadedAt || doc.createdAt).toLocaleDateString(),
-        status: doc.status.toLowerCase(),
+        status: doc.status,
         fileUrl: doc.fileUrl
       }));
 
       setDocuments(mappedDocs);
       setFilteredDocuments(mappedDocs);
+      setDocumnetPagination(response.data?.pagination)
     } catch (err) {
       console.error('Error fetching documents:', err);
+      setDocuments([]);
+      setFilteredDocuments([]);
+      setDocumnetPagination({})
       toast.error(err.response?.data?.message || 'Failed to fetch documents');
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies needed as it only uses stable functions
+  }, [currentPage , documentStatus ,searchQuery]); // No dependencies needed as it only uses stable functions
 
   useEffect(() => {
     fetchDocuments();
   }, [fetchDocuments]);
 
   // Filtering effect
-  useEffect(() => {
-    let filtered = [...documents];
+  // useEffect(() => {
+  //   let filtered = [...documents];
     
-    // Filter by status
-    if (activeTab !== 'all') {
-      filtered = filtered.filter(doc => doc.status === activeTab);
-    }
+  //   // Filter by status
+  //   if (activeTab !== 'all') {
+  //     filtered = filtered.filter(doc => doc.status === activeTab);
+  //   }
     
-    // Filter by search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(doc => (
-        doc.name.toLowerCase().includes(query) ||
-        doc.student.toLowerCase().includes(query) ||
-        doc.task.toLowerCase().includes(query) ||
-        doc.subtask.toLowerCase().includes(query)
-      ));
-    }
+  //   // Filter by search query
+  //   if (searchQuery) {
+  //     const query = searchQuery.toLowerCase();
+  //     filtered = filtered.filter(doc => (
+  //       doc.name.toLowerCase().includes(query) ||
+  //       doc.student.toLowerCase().includes(query) ||
+  //       doc.task.toLowerCase().includes(query) ||
+  //       doc.subtask.toLowerCase().includes(query)
+  //     ));
+  //   }
     
-    setFilteredDocuments(filtered);
-  }, [documents, activeTab, searchQuery]);
+  //   setFilteredDocuments(filtered);
+  // }, [documents, activeTab, searchQuery]);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -189,7 +200,7 @@ const Documents = ({ studentId }) => {
         setSelectedFile(file);
         setSelectedFileType(validType);
       } else {
-        setSelectedFileType("");
+        setSelectedFileType('');
         event.target.value = null;
       }
     }
@@ -197,7 +208,7 @@ const Documents = ({ studentId }) => {
 
   const resetForm = () => {
     setSelectedFile(null);
-    setSelectedFileType("");
+    setSelectedFileType('');
     setSelectedTask('');
     setSelectedSubtask('');
     if (!studentId) {
@@ -257,7 +268,7 @@ const Documents = ({ studentId }) => {
     try {
       setTasksLoading(true);
       console.log('Fetching tasks for student:', studentId); // Debug log
-      const response = await getTasksByStudentId(studentId);
+      const response = await getTasksByStudentId({studentId});
       const tasksData = response.data?.task || [];
       
       if (!Array.isArray(tasksData)) {
@@ -294,7 +305,7 @@ const Documents = ({ studentId }) => {
     try {
       setSubtasksLoading(true);
       const response = await getSubtasksByTaskAndStudent(taskId, selectedStudent);
-      console.log("Subtaskssss",response)
+      console.log('Subtaskssss',response)
       const subtasksData = response.subTasks || [];
       if (!Array.isArray(subtasksData)) {
         throw new Error('Invalid subtasks data received');
@@ -375,21 +386,59 @@ const Documents = ({ studentId }) => {
     }
   }, [studentId]);
 
+
+
   return (
     <div className="space-y-4 max-w-[1200px] mx-auto md:p-4">
       <h1 className="text-xl font-semibold">Document Manager</h1>
       
       <div className="flex flex-wrap gap-2 justify-between items-center">
         <div className="relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          {/* <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search documents..."
             value={searchQuery}
-            onChange={handleSearch}
+            onChange={(e) =>{ setCurrentPage(1) , setSearchQuery(e.target.value)}}
             className="pl-8 w-[300px]"
-          />
+          /> */}
         </div>
-        {hasEditPermission() && (
+           {/* <Select
+            value={documentStatus || undefined}
+            onValueChange={ setDocumentStatus}
+          >
+            <SelectTrigger className="w-[130px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="VERIFIED">Verified</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
+            </SelectContent>
+          </Select> */}
+        {/* {hasEditPermission() && (
+          <Button
+            onClick={() => setIsUploadDialogOpen(true)}
+            className="bg-primary text-white"
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Document
+          </Button>
+        )} */}
+      </div>
+
+      <Tabs value={activeTab}  onValueChange={(value) => {
+          setDocumentStatus(value); 
+          setActiveTab(value);
+          setCurrentPage(1);
+        }} >
+          <div className="flex flex-wrap gap-2 justify-between items-center">
+        <TabsList>
+          <TabsTrigger value="all">All Documents</TabsTrigger>
+          <TabsTrigger value="VERIFIED">Verified</TabsTrigger>
+          <TabsTrigger value="PENDING">Pending</TabsTrigger>
+          <TabsTrigger value="REJECTED">Rejected</TabsTrigger>
+        </TabsList>
+ {hasEditPermission() && (
           <Button
             onClick={() => setIsUploadDialogOpen(true)}
             className="bg-primary text-white"
@@ -398,15 +447,7 @@ const Documents = ({ studentId }) => {
             Upload Document
           </Button>
         )}
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="all">All Documents</TabsTrigger>
-          <TabsTrigger value="verified">Verified</TabsTrigger>
-          <TabsTrigger value="pending">Pending Review</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected</TabsTrigger>
-        </TabsList>
+          </div>
 
         <TabsContent value={activeTab} className="mt-4">
           <div className="rounded-md border">
@@ -452,13 +493,15 @@ const Documents = ({ studentId }) => {
                       <TableCell>{doc.uploadDate}</TableCell>
                       <TableCell className="text-center">
                         <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold
-                          ${doc.status === 'verified' ? 'bg-green-100 text-green-700' :
-                            doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                            'bg-gray-100 text-gray-700'}`}
+                          ${doc.status === 'VERIFIED' ? 'bg-green-100 text-green-700' :
+                            doc.status === 'REJECTED' ? 'bg-red-100 text-red-700' :
+                            doc.status === 'PENDING' ? 'bg-gray-100 text-gray-700':
+                           'bg-gray-100 text-gray-700'
+                          }`}
                           style={{ minWidth: 70, justifyContent: 'center' }}>
-                          {doc.status === 'verified' && 'Verified'}
-                          {doc.status === 'pending' && 'Pending'}
-                          {doc.status === 'rejected' && 'Rejected'}
+                          {doc.status === 'VERIFIED' && 'VERIFIED'}
+                          {doc.status === 'PENDING' && 'PENDING'}
+                          {doc.status === 'REJECTED' && 'REJECTED'}
                         </span>
                       </TableCell>
                       <TableCell className="text-center" style={{ verticalAlign: 'middle', padding: 0 }}>
@@ -524,10 +567,32 @@ const Documents = ({ studentId }) => {
             </Table>
           </div>
         </TabsContent>
+
+         {documentPagination && documentPagination.totalPages > 1 && (
+            <div className="flex justify-center my-1 text-xs gap-2">
+            <Button
+                variant="outline"
+                disabled={!documentPagination.hasPrevPage}
+                onClick={()=> setCurrentPage(documentPagination.page - 1)}
+            >
+                Previous
+            </Button>
+            <span className="px-4 py-2">
+                Page {documentPagination.page} of {documentPagination.totalPages}
+            </span>
+            <Button
+                variant="outline"
+                disabled={!documentPagination.hasNextPage}
+                onClick={() => setCurrentPage(documentPagination.page + 1)}
+            >
+                Next
+            </Button>
+            </div>
+        )}
       </Tabs>
 
       {/* Upload Dialog */}
-      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+      <Dialog open={isUploadDialogOpen}  onOpenChange={(open) => {  if (!open) resetForm();  setIsUploadDialogOpen(open);}}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Upload Document</DialogTitle>
@@ -544,8 +609,8 @@ const Documents = ({ studentId }) => {
                   value={selectedStudent || undefined}
                   onValueChange={value => {
                     setSelectedStudent(value);
-                    setSelectedTask("");
-                    setSelectedSubtask("");
+                    setSelectedTask('');
+                    setSelectedSubtask('');
                   }}
                   disabled={studentsLoading}
                 >
@@ -564,7 +629,7 @@ const Documents = ({ studentId }) => {
                   <SelectContent>
                     {students.length === 0 ? (
                       <SelectItem value="__none__" disabled>
-                        {studentsLoading ? "Loading..." : "No students available"}
+                        {studentsLoading ? 'Loading...' : 'No students available'}
                       </SelectItem>
                     ) : (
                       students.map(student => (
@@ -584,7 +649,7 @@ const Documents = ({ studentId }) => {
                 value={selectedTask || undefined}
                 onValueChange={value => {
                   setSelectedTask(value);
-                  setSelectedSubtask("");
+                  setSelectedSubtask('');
                 }}
                 disabled={!selectedStudent || tasksLoading}
               >
@@ -596,7 +661,7 @@ const Documents = ({ studentId }) => {
                 <SelectContent>
                   {tasks.length === 0 ? (
                     <SelectItem value="__none__" disabled>
-                      {tasksLoading ? "Loading..." : "No tasks available"}
+                      {tasksLoading ? 'Loading...' : 'No tasks available'}
                     </SelectItem>
                   ) : (
                     tasks.map(task => (
@@ -624,7 +689,7 @@ const Documents = ({ studentId }) => {
                 <SelectContent>
                   {subtasks.length === 0 ? (
                     <SelectItem value="__none__" disabled>
-                      {subtasksLoading ? "Loading..." : "No subtasks available"}
+                      {subtasksLoading ? 'Loading...' : 'No subtasks available'}
                     </SelectItem>
                   ) : (
                     subtasks.map(subtask => (

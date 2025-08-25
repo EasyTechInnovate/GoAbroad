@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Chat rooms - accessible only to the student and member involved
+    match /chatRooms/{chatRoomId} {
+      allow read, write: if request.auth != null
+        && request.auth.token.chatRoomId == chatRoomId
+        && (request.auth.token.role == 'STUDENT' || request.auth.token.role == 'MEMBER')
+        && request.auth.token.exp > request.time.seconds
+        && (
+          (request.auth.token.role == 'STUDENT' && resource.data.studentId == request.auth.uid) ||
+          (request.auth.token.role == 'MEMBER' && resource.data.memberId == request.auth.uid)
+        );
+    }
+    
+    // Messages within chat rooms
+    match /chatRooms/{chatRoomId}/messages/{messageId} {
+      allow read: if request.auth != null
+        && request.auth.token.chatRoomId == chatRoomId
+        && (request.auth.token.role == 'STUDENT' || request.auth.token.role == 'MEMBER')
+        && request.auth.token.exp > request.time.seconds
+        && (
+          (request.auth.token.role == 'STUDENT' && resource.data.studentId == request.auth.uid) ||
+          (request.auth.token.role == 'MEMBER' && resource.data.memberId == request.auth.uid)
+        );
+      
+      allow create: if request.auth != null
+        && request.auth.token.chatRoomId == chatRoomId
+        && (request.auth.token.role == 'STUDENT' || request.auth.token.role == 'MEMBER')
+        && request.auth.token.exp > request.time.seconds
+        && (
+          (request.auth.token.role == 'STUDENT' && resource.data.studentId == request.auth.uid) ||
+          (request.auth.token.role == 'MEMBER' && resource.data.memberId == request.auth.uid)
+        )
+        && request.resource.data.senderId == request.auth.uid
+        && request.resource.data.senderRole == request.auth.token.role;
+      
+      allow update: if request.auth != null
+        && request.auth.token.chatRoomId == chatRoomId
+        && request.auth.token.exp > request.time.seconds
+        && resource.data.senderId == request.auth.uid
+        && resource.data.senderRole == request.auth.token.role;
+      
+      allow delete: if false; // Prevent message deletion for simplicity
+    }
+  }
+}

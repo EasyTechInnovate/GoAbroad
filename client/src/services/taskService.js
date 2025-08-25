@@ -70,7 +70,7 @@ export const getStudentTasks = async ({ sortOrder = 'desc', page = 1, limit = 10
   });
 };
 
-export const getTasksByStudentId = async (studentId) => {
+export const getTasksByStudentId = async ({studentId , page , search }={}) => {
   if (!studentId) {
     throw new Error('Student ID is required');
   }

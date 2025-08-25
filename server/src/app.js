@@ -10,6 +10,7 @@ import session from 'express-session';
 import passport from "./config/passport.js";
 import config from './config/config.js';
 import { EApplicationEnvironment } from './constant/application.js';
+import { initializeFirebase } from './config/firebase.js';
 const app = express();
 
 app.use(helmet());
@@ -61,5 +62,14 @@ app.use((req, _res, next) => {
 });
 
 app.use(globalErrorHandler);
+
+
+// Initialize Firebase 
+try {
+    initializeFirebase();
+} catch (error) {
+    console.error('Failed to initialize Firebase services:', error);
+}
+
 
 export default app;

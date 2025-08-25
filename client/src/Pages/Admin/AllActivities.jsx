@@ -72,7 +72,7 @@ const AllActivities = () => {
         };
         const res = await getAdminStudentActivities(params.page, params.limit, params);
         setActivities(res.data?.activities || []);
-        setTotalPages(res.data?.totalPages || 1);
+        setTotalPages(res.data?.pages || 1);
       } catch (err) {
         setError(err?.response?.data?.message || 'Failed to load activities');
       } finally {
@@ -109,26 +109,28 @@ const AllActivities = () => {
           onChange={handleSearchChange}
         />
         <div className="flex flex-col sm:flex-row gap-4">
-          <Select value={statusFilter} onValueChange={handleStatusChange}>
+          <Select value={statusFilter} onValueChange={(e)=>{setSearchQuery('') ; handleStatusChange(e)}}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All Statuses</SelectItem>
+              <SelectItem value="COMPLETED">Completed</SelectItem>
+              <SelectItem value="SUBMITTED">Submitted</SelectItem>
+              <SelectItem value="UPDATED">Updated</SelectItem>
               <SelectItem value="PENDING">Pending</SelectItem>
               <SelectItem value="ACTIVE">Active</SelectItem>
-              <SelectItem value="COMPLETED">Completed</SelectItem>
               <SelectItem value="REJECTED">Rejected</SelectItem>
             </SelectContent>
           </Select>
 
-          <div className="w-[220px]">
+          {/* <div className="w-[220px]">
             <MultipleStudentSelect
               students={students}
               selectedStudents={selectedStudents}
               onChange={handleStudentsChange}
             />
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -179,7 +181,7 @@ const AllActivities = () => {
                             <span className="font-medium">{activity.student?.name || activity.student?.email || 'Unknown'}</span>
                           </div>
                         </TableCell>
-                        <TableCell>{activity.action || activity.type || '-'}</TableCell>
+                        <TableCell className='truncate max-w-[150px]' title={activity.activityType}>{activity.activityType || activity.type || '-'}</TableCell>
                         <TableCell>{activity.subject || activity.message || '-'}</TableCell>
                         <TableCell>{activity.createdAt ? new Date(activity.createdAt).toLocaleDateString() : '-'}</TableCell>
                         <TableCell>
@@ -196,6 +198,7 @@ const AllActivities = () => {
               </Table>
 
               {/* Pagination Controls */}
+              {totalPages > 1 && 
               <div className="flex justify-end items-center gap-2 mt-4">
                 <button
                   className="px-3 py-1 rounded border disabled:opacity-50"
@@ -213,6 +216,8 @@ const AllActivities = () => {
                   Next
                 </button>
               </div>
+
+              }
             </>
           )}
         </CardContent>

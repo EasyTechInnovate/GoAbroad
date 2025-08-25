@@ -44,6 +44,8 @@ const Subtasks = () => {
     const [isEditSubtaskOpen, setIsEditSubtaskOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSubtask, setSelectedSubtask] = useState(null);
+    const [questionnairesPagination , setQuestionnairesPagination] = useState({});
+    const [questionnaireCurrentPage , setQuestionnaireCurrentPage] = useState(1)
     
     // Permission check functions
     const hasEditPermission = () => {
@@ -78,7 +80,7 @@ const Subtasks = () => {
         const fetchSubtasks = async () => {
             try {
                 setLoading(true);
-                const response = await getSubtasks(page, limit);
+                const response = await getSubtasks(page, limit );
                 if (response.success) {
                     setSubtasks(Array.isArray(response.data.subtasks) ? response.data.subtasks : []);
                     setTotalPages(response.data.pagination.totalPages || 1);
@@ -96,14 +98,16 @@ const Subtasks = () => {
         };
 
         fetchSubtasks();
-    }, [page, limit]);
+    }, [page, limit ]);
 
     useEffect(() => {
         const fetchQuestionnaires = async () => {
+            let questionnairsFilter = { page : questionnaireCurrentPage}
             try {
-                const response = await getQuestionnaires();
+                const response = await getQuestionnaires({questionnairsFilter});
                 if (response.success) {
-                    setAvailableQuestionnaires(response.data);
+                    setAvailableQuestionnaires(response.data.questionnaires);
+                    setQuestionnairesPagination(response.data.pagination)
                 }
             } catch (err) {
                 console.error('Error fetching questionnaires:', err);
@@ -112,7 +116,7 @@ const Subtasks = () => {
         };
 
         fetchQuestionnaires();
-    }, []);
+    }, [questionnaireCurrentPage]);
 
     const handleCreateSubtask = async () => {
         if (!newSubtask.title.trim()) {
@@ -122,7 +126,7 @@ const Subtasks = () => {
 
         // Check if user has permission to create subtasks
         if (!hasEditPermission()) {
-            toast.error("You don't have permission to create subtasks");
+            toast.error('You don\'t have permission to create subtasks');
             return;
         }
 
@@ -158,7 +162,7 @@ const Subtasks = () => {
 
         // Check if user has permission to edit subtasks
         if (!hasEditPermission()) {
-            toast.error("You don't have permission to edit subtasks");
+            toast.error('You don\'t have permission to edit subtasks');
             return;
         }
 
@@ -199,7 +203,7 @@ const Subtasks = () => {
     };    const handleOpenEditSubtask = (subtask) => {
         // Check if user has permission to edit subtasks
         if (!hasEditPermission()) {
-            toast.error("You don't have permission to edit subtasks");
+            toast.error('You don\'t have permission to edit subtasks');
             return;
         }
         
@@ -217,7 +221,7 @@ const Subtasks = () => {
     const handleDeleteSubtask = async (subtaskId) => {
         // Check if user has permission to delete subtasks
         if (!hasEditPermission()) {
-            toast.error("You don't have permission to delete subtasks");
+            toast.error('You don\'t have permission to delete subtasks');
             return;
         }
         
@@ -246,7 +250,7 @@ const Subtasks = () => {
     const handleFileUpload = async (e) => {
         // Check if user has permission to upload files
         if (!hasEditPermission()) {
-            toast.error("You don't have permission to upload files");
+            toast.error('You don\'t have permission to upload files');
             e.target.value = '';
             return;
         }
@@ -332,7 +336,7 @@ const Subtasks = () => {
                                         <CardDescription>View and manage subtasks for assignments</CardDescription>
                                     </div>
                                     <div className="flex gap-2">
-                                        <div className="relative max:w-[280px]">
+                                        {/* <div className="relative max:w-[280px]">
                                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 type="search"
@@ -341,10 +345,10 @@ const Subtasks = () => {
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
                                             />
-                                        </div>
-                                        <Button variant="outline" size="icon">
+                                        </div> */}
+                                        {/* <Button variant="outline" size="icon">
                                             <Filter className="h-4 w-4" />
-                                        </Button>
+                                        </Button> */}
                                     </div>
                                 </div>
                             </CardHeader>
@@ -358,7 +362,7 @@ const Subtasks = () => {
                                     </TableRow>
                                 </TableHeader>
                                     <TableBody>
-                                        {filteredSubtasks.map((subtask) => (
+                                        {subtasks.map((subtask) => (
                                             <TableRow key={subtask._id}>
                                                 <TableCell className="font-medium">{subtask.title}</TableCell>
                                                 <TableCell>{priorityBadge(subtask.priority)}</TableCell>
@@ -376,7 +380,7 @@ const Subtasks = () => {
                                                 </TableCell> */}
                                                 <TableCell>
                                                     {subtask.questionnaires && subtask.questionnaires.length > 0 ? (
-                                                        <div className="flex gap-1 flex-nowrap"  title={subtask.questionnaires.map((q) => q.title).join(", ")}>
+                                                        <div className="flex gap-1 flex-nowrap"  title={subtask.questionnaires.map((q) => q.title).join(', ')}>
                                                         {subtask.questionnaires.slice(0, 3).map((questionnaire) => (
                                                             <Badge key={questionnaire._id} variant="outline">
                                                             {questionnaire.title}
@@ -386,7 +390,7 @@ const Subtasks = () => {
                                                         {subtask.questionnaires.length > 3 && (
                                                             <span
                                                             className="text-sm font-bold text-muted-foreground cursor-pointer"
-                                                            title={subtask.questionnaires.map((q) => q.title).join(", ")}
+                                                            title={subtask.questionnaires.map((q) => q.title).join(', ')}
                                                             >
                                                             ...
                                                             </span>
@@ -513,8 +517,8 @@ const Subtasks = () => {
                                 </div>
                                 <div>
                                     <Label className="mb-2">Questionnaires</Label>
-                                    <div className="border rounded-md p-4 space-y-2 max-h-[200px] overflow-y-auto" role="group" aria-label="Select questionnaires">
-                                        {availableQuestionnaires.map((questionnaire) => (
+                                    <div className="border rounded-md p-4 space-y-2 max-h-[150px] overflow-y-auto" role="group" aria-label="Select questionnaires">
+                                        {availableQuestionnaires?.map((questionnaire) => (
                                             <div key={questionnaire._id} className="flex items-center space-x-2">
                                                 <Checkbox
                                                     id={`questionnaire-${questionnaire._id}`}
@@ -529,7 +533,28 @@ const Subtasks = () => {
                                                 </Label>
                                             </div>
                                         ))}
-                                        {availableQuestionnaires.length === 0 && (
+                                        {questionnairesPagination && questionnairesPagination.totalPages > 1 && (
+                                            <div className="flex justify-center my-1 text-xs gap-2">
+                                            <Button
+                                                variant="outline"
+                                                disabled={!questionnairesPagination.hasPreviousPage}
+                                                onClick={()=> setQuestionnaireCurrentPage(questionnairesPagination.currentPage - 1)}
+                                            >
+                                                Previous
+                                            </Button>
+                                            <span className="px-4 py-2">
+                                                Page {questionnairesPagination.currentPage} of {questionnairesPagination.totalPages}
+                                            </span>
+                                            <Button
+                                                variant="outline"
+                                                disabled={!questionnairesPagination.hasNextPage}
+                                                onClick={() => setQuestionnaireCurrentPage(questionnairesPagination.currentPage + 1)}
+                                            >
+                                                Next
+                                            </Button>
+                                            </div>
+                                        )}
+                                        {availableQuestionnaires?.length === 0 && (
                                             <p className="text-sm text-muted-foreground">No questionnaires available</p>
                                         )}
                                     </div>

@@ -58,7 +58,7 @@ export default {
             const application = new Application({
                 studentId,
                 universityId,
-                taskAssignments: taskAssignments.map(taskAssignmentId => ({ taskAssignmentId })),
+                taskAssignments: validAssignments.map(taskAssignmentId => ({ taskAssignmentId: taskAssignmentId._id })),
                 assignTo: assingToMember?._id || req.authenticatedMember._id
             });
             await application.save();
@@ -100,7 +100,7 @@ export default {
                 if (validAssignments.length !== taskAssignmentIds.length) {
                     return httpError(next, new Error('One or more task assignments are invalid or not assigned to the student'), req, 400);
                 }
-                application.taskAssignments = taskAssignments.map(taskAssignmentId => ({ taskAssignmentId }));
+                application.taskAssignments = validAssignments.map(taskAssignmentId => ({ taskAssignmentId: taskAssignmentId._id }))
             }
             if (assignTo) {
                 let assingToMember = null
@@ -168,7 +168,7 @@ export default {
             let totalApplications = 0;
 
             if (search) {
-                // Search in populated fields (student name, university name)
+                // Search in populated fields (student name, university name, program)
                 const searchQuery = {
                     $or: [
                         { 'studentId.name': { $regex: search, $options: 'i' } },
@@ -187,7 +187,7 @@ export default {
                             as: 'studentId'
                         }
                     },
-                    { $unwind: '$studentId' },
+                    { $unwind: { path: '$studentId', preserveNullAndEmptyArrays: true } },
                     {
                         $lookup: {
                             from: 'universities',
@@ -196,8 +196,8 @@ export default {
                             as: 'universityId'
                         }
                     },
-                    { $unwind: '$universityId' },
-                    { $match: searchQuery },
+                    { $unwind: { path: '$universityId', preserveNullAndEmptyArrays: true } },
+                    { $match: { ...query, ...searchQuery } },
                     { $skip: skip },
                     { $limit: limit },
                     {
@@ -208,7 +208,7 @@ export default {
                             as: 'assignTo'
                         }
                     },
-                    { $unwind: '$assignTo' },
+                    { $unwind: { path: '$assignTo', preserveNullAndEmptyArrays: true } },
                     {
                         $lookup: {
                             from: 'studenttaskassignments',
@@ -217,23 +217,115 @@ export default {
                             as: 'taskAssignmentsData'
                         }
                     },
+                    // Add lookup for Task to populate taskId details
+                    {
+                        $lookup: {
+                            from: 'tasks',
+                            localField: 'taskAssignmentsData.taskId',
+                            foreignField: '_id',
+                            as: 'taskData'
+                        }
+                    },
                     {
                         $project: {
                             _id: 1,
-                            studentId: { _id: '$studentId._id', name: '$studentId.name', email: '$studentId.email' },
-                            universityId: { _id: '$universityId._id', name: '$universityId.name', program: '$universityId.program' },
-                            assignTo: { _id: '$assignTo._id', name: '$assignTo.name', email: '$assignTo.email', role: '$assignTo.role' },
+                            studentId: {
+                                _id: '$studentId._id',
+                                name: '$studentId.name',
+                                email: '$studentId.email'
+                            },
+                            universityId: {
+                                _id: '$universityId._id',
+                                name: '$universityId.name',
+                                program: '$universityId.program'
+                            },
+                            assignTo: {
+                                _id: '$assignTo._id',
+                                name: '$assignTo.name',
+                                email: '$assignTo.email',
+                                role: '$assignTo.role'
+                            },
                             taskAssignments: {
                                 $map: {
-                                    input: '$taskAssignmentsData',
-                                    as: 'task',
-                                    in: { taskAssignmentId: '$$task._id', taskId: '$$task.taskId', status: '$$task.status', assignedAt: '$$task.assignedAt' }
+                                    input: '$taskAssignments',
+                                    as: 'ta',
+                                    in: {
+                                        _id: '$$ta._id',
+                                        taskAssignmentId: '$$ta.taskAssignmentId',
+                                        task: {
+                                            $let: {
+                                                vars: {
+                                                    matchedTaskAssignment: {
+                                                        $arrayElemAt: [
+                                                            {
+                                                                $filter: {
+                                                                    input: '$taskAssignmentsData',
+                                                                    as: 'taskAssignment',
+                                                                    cond: { $eq: ['$$taskAssignment._id', '$$ta.taskAssignmentId'] }
+                                                                }
+                                                            },
+                                                            0
+                                                        ]
+                                                    }
+                                                },
+                                                in: {
+                                                    $cond: {
+                                                        if: '$$matchedTaskAssignment',
+                                                        then: {
+                                                            taskAssignmentId: '$$matchedTaskAssignment._id',
+                                                            taskId: '$$matchedTaskAssignment.taskId',
+                                                            status: '$$matchedTaskAssignment.status',
+                                                            assignedAt: '$$matchedTaskAssignment.assignedAt',
+                                                            taskDetails: {
+                                                                $arrayElemAt: [
+                                                                    {
+                                                                        $filter: {
+                                                                            input: '$taskData',
+                                                                            as: 'task',
+                                                                            cond: { $eq: ['$$task._id', '$$matchedTaskAssignment.taskId'] }
+                                                                        }
+                                                                    },
+                                                                    0
+                                                                ]
+                                                            }
+                                                        },
+                                                        else: {
+                                                            taskAssignmentId: '$$ta.taskAssignmentId',
+                                                            taskId: null,
+                                                            status: null,
+                                                            assignedAt: null,
+                                                            taskDetails: null
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             },
                             status: 1,
                             progress: 1,
                             createdAt: 1,
                             updatedAt: 1
+                        }
+                    },
+                    // Remove taskAssignments where task is null to clean up, but keep partial data
+                    {
+                        $addFields: {
+                            taskAssignments: {
+                                $map: {
+                                    input: '$taskAssignments',
+                                    as: 'ta',
+                                    in: {
+                                        _id: '$$ta._id',
+                                        taskAssignmentId: '$$ta.task.taskAssignmentId',
+                                        taskId: '$$ta.task.taskId',
+                                        status: '$$ta.task.status',
+                                        assignedAt: '$$ta.task.assignedAt',
+                                        taskDetails: '$$ta.task.taskDetails'
+                                    }
+                                }
+                            }
                         }
                     }
                 ]);
@@ -247,7 +339,7 @@ export default {
                             as: 'studentId'
                         }
                     },
-                    { $unwind: '$studentId' },
+                    { $unwind: { path: '$studentId', preserveNullAndEmptyArrays: true } },
                     {
                         $lookup: {
                             from: 'universities',
@@ -256,8 +348,8 @@ export default {
                             as: 'universityId'
                         }
                     },
-                    { $unwind: '$universityId' },
-                    { $match: searchQuery },
+                    { $unwind: { path: '$universityId', preserveNullAndEmptyArrays: true } },
+                    { $match: { ...query, ...searchQuery } },
                     { $count: 'total' }
                 ]).then(result => result[0]?.total || 0);
             } else {
@@ -269,8 +361,33 @@ export default {
                     .populate('studentId', 'name email')
                     .populate('universityId', 'name program')
                     .populate('assignTo', 'name email role')
-                    .populate('taskAssignments.taskAssignmentId', 'taskId status assignedAt')
+                    .populate({
+                        path: 'taskAssignments.taskAssignmentId',
+                        populate: {
+                            path: 'taskId',
+                            select: 'title description priority'
+                        }
+                    })
                     .lean();
+                // Transform taskAssignments to include task details and handle nulls
+                applications = applications.map(app => ({
+                    ...app,
+                    taskAssignments: app.taskAssignments.map(ta => ({
+                        _id: ta._id,
+                        taskAssignmentId: ta.taskAssignmentId ? ta.taskAssignmentId._id : null,
+                        taskId: ta.taskAssignmentId ? ta.taskAssignmentId.taskId?._id : null,
+                        status: ta.taskAssignmentId ? ta.taskAssignmentId.status : null,
+                        assignedAt: ta.taskAssignmentId ? ta.taskAssignmentId.assignedAt : null,
+                        taskDetails: ta.taskAssignmentId && ta.taskAssignmentId.taskId
+                            ? {
+                                _id: ta.taskAssignmentId.taskId._id,
+                                title: ta.taskAssignmentId.taskId.title,
+                                description: ta.taskAssignmentId.taskId.description,
+                                priority: ta.taskAssignmentId.taskId.priority
+                            }
+                            : null
+                    }))
+                }));
             }
 
             const pagination = {
@@ -287,6 +404,7 @@ export default {
                 pagination
             });
         } catch (err) {
+            console.error('Error in getApplications:', err);
             httpError(next, err, req, 500);
         }
     },

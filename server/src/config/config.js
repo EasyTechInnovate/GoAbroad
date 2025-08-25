@@ -10,7 +10,7 @@ const config = Object.freeze({
     FRONTEND_URL: process.env.FRONTEND_URL,
     ACCESS_TOKEN: {
         SECRET: process.env.ACCESS_TOKEN_SECRET,
-        EXPIRY: '24h'
+        EXPIRY: '7d'
     },
     REFRESH_TOKEN: {
         SECRET: process.env.REFRESH_TOKEN_SECRET,
@@ -49,6 +49,12 @@ const config = Object.freeze({
         password: process.env.EMAIL_PASSWORD || "",
         from: process.env.EMAIL_FROM || "GoUpBroad <noreply@goupbroad.com>"
     },
+
+    //firebase
+    firebase: {
+        FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+        FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
+    }
 })
 
 export default config;

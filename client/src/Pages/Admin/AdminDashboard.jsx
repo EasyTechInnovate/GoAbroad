@@ -54,16 +54,16 @@ const AdminDashboard = () => {
           }
         });
       } catch (err) {
-        console.error("Error fetching dashboard stats:", err);
+        console.error('Error fetching dashboard stats:', err);
       } finally {
         setLoading(prev => ({ ...prev, stats: false }));
       }
       
       try {
-        const activitiesRes = await getAdminStudentActivities(1, 5);
+        const activitiesRes = await getAdminStudentActivities(1, 5 , {});
         setActivities(activitiesRes.data?.activities || []);
       } catch (err) {
-        console.error("Error fetching activities:", err);
+        console.error('Error fetching activities:', err);
       } finally {
         setLoading(prev => ({ ...prev, activities: false }));
       }
@@ -72,7 +72,7 @@ const AdminDashboard = () => {
         const deadlinesRes = await getAdminUpcomingDeadlines(1, 5);
         setDeadlines(deadlinesRes.data?.upcomingDeadlines || []);
       } catch (err) {
-        console.error("Error fetching deadlines:", err);
+        console.error('Error fetching deadlines:', err);
       } finally {
         setLoading(prev => ({ ...prev, deadlines: false }));
       }
@@ -116,12 +116,7 @@ const AdminDashboard = () => {
                     <div className="text-3xl font-bold mt-1">
                       {stats.totalStudents}
                     </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                      <span className={`${parseFloat(stats.statsChange.totalStudents) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-                        {stats.statsChange.totalStudents || '0%'}
-                      </span>
-                      from last month
-                    </div>
+                    
                   </CardContent>
                 </Card>
                 <Card>
@@ -130,12 +125,7 @@ const AdminDashboard = () => {
                     <div className="text-3xl font-bold mt-1">
                       {stats.totalActiveApplications}
                     </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                      <span className={`${parseFloat(stats.statsChange.totalActiveApplications) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-                        {stats.statsChange.totalActiveApplications || '0%'}
-                      </span>
-                      from last month
-                    </div>
+                   
                   </CardContent>
                 </Card>
                 <Card>
@@ -144,12 +134,7 @@ const AdminDashboard = () => {
                     <div className="text-3xl font-bold mt-1">
                       {stats.totalPendingTasks}
                     </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                      <span className={`${parseFloat(stats.statsChange.totalPendingTasks) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-                        {stats.statsChange.totalPendingTasks || '0%'}
-                      </span>
-                      from last month
-                    </div>
+                    
                   </CardContent>
                 </Card>
                 <Card>
@@ -158,12 +143,7 @@ const AdminDashboard = () => {
                     <div className="text-3xl font-bold mt-1">
                       {stats.totalCompletedTasks}
                     </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                      <span className={`${parseFloat(stats.statsChange.totalCompletedTasks) >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-                        {stats.statsChange.totalCompletedTasks || '0%'}
-                      </span>
-                      from last month
-                    </div>
+                    
                   </CardContent>
                 </Card>
               </>

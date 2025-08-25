@@ -15,6 +15,8 @@ export function StudentQuestionnaires({ studentId }) {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [paginationData , setPaginationData] = useState({})
+  const [currentPage , setCurrentPage] = useState(1)
   
   useEffect(() => {
     const fetchQuestionnaireData = async () => {
@@ -24,7 +26,7 @@ export function StudentQuestionnaires({ studentId }) {
         setIsLoading(true);
         setError(null);
         
-        const response = await getTaskSubtaskQuestionDetails(studentId);
+        const response = await getTaskSubtaskQuestionDetails({studentId , page : currentPage});
         
         if (response && response.success) {
           // Extract all questionnaires from all subtasks
@@ -38,9 +40,9 @@ export function StudentQuestionnaires({ studentId }) {
                     // Add task/subtask context to each questionnaire
                     const enhancedQuestionnaires = subtask.questionnaires.map(q => ({
                       ...q,
-                      taskName: task.name || 'Unknown Task',
-                      subtaskName: subtask.name || (subtask.subtaskId?.name) || 'Unknown Subtask',
-                      taskId: task._id,
+                      taskName: task.task.title || 'Unknown Task',
+                      subtaskName: subtask.title || (subtask.subtaskId?.name) || 'Unknown Subtask',
+                      taskId: task.task._id,
                       subtaskId: subtask._id || subtask.assignmentId
                     }));
                     
@@ -52,6 +54,7 @@ export function StudentQuestionnaires({ studentId }) {
           }
           
           setQuestionnaires(allQuestionnaires);
+          setPaginationData(response.pagination)
         } else {
           setError('Failed to fetch questionnaire data');
         }
@@ -65,7 +68,7 @@ export function StudentQuestionnaires({ studentId }) {
     };
     
     fetchQuestionnaireData();
-  }, [studentId]);
+  }, [studentId , currentPage]);
   
   const handleViewQuestionnaire = (questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
@@ -162,6 +165,28 @@ export function StudentQuestionnaires({ studentId }) {
                 </div>
               </div>
             ))}
+
+            {paginationData && paginationData.totalPages > 1 && (
+              <div className="flex justify-center my-6 gap-2">
+                <Button
+                  variant="outline"
+                  disabled={!paginationData.hasPrevPage}
+                  onClick={()=> setCurrentPage(paginationData.page - 1)}
+                >
+                  Previous
+                </Button>
+                <span className="px-4 py-2">
+                  Page {paginationData.page} of {paginationData.totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  disabled={!paginationData.hasNextPage}
+                  onClick={() => setCurrentPage(paginationData.page + 1 )}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </CardContent>

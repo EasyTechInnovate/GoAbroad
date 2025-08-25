@@ -210,9 +210,12 @@ export function StudentProfile({ id }) {
   const [universityCurrentPage , setUniversityCurrentPage] = useState(1);
   const [universityPaginationData , setUniversityPaginationData] = useState({});
 
-  const fetchAssignments = async () => {
+  const [documentCurrentPage , setDocumnetCurrentPage] = useState(1)
+  const [documentPagination , setDocumentPagination] = useState({})
+
+  const fetchAssignments = async ({studentId}={}) => {
     try {
-      const response = await apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}`);
+      const response = await apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}&studentId=${studentId}`);
       if (response.data?.assignments) {
         setAssignments(response.data.assignments);
         setUniversityPaginationData(response.data.pagination);
@@ -230,12 +233,12 @@ export function StudentProfile({ id }) {
         // Get student data and assignments in parallel
         const [studentResponse, assignmentsResponse] = await Promise.all([
           getStudentById(id),
-          apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}`)
+          apiService.get(`/admin/student-university-assignments?page=${universityCurrentPage}&studentId=${id}`)
         ]);
         
         // Check if student data exists
-        if (!studentResponse?.data?.student) {
-          throw new Error("Student data not found");
+        if (!studentResponse?.data?.student) { 
+          throw new Error('Student data not found');
         }
         
         // Merge the API response with default values to ensure all nested objects exist
@@ -294,14 +297,14 @@ export function StudentProfile({ id }) {
         // Fetch tasks and subtasks (including questionnaires)
         await fetchStudentTasks(id);
         // Fetch task-subtask-question details
-        await fetchQuestionnaireDetails(id);
+        // await fetchQuestionnaireDetails(id);
         // Fetch student documents
         await fetchStudentDocuments(id);
       } catch (error) {
         console.error('Error fetching data:', error);
         
         // Get a specific error message
-        let errorMessage = "Failed to load student profile";
+        let errorMessage = 'Failed to load student profile';
         if (error.response?.data?.message) {
           errorMessage = error.response.data.message;
         } else if (error.message) {
@@ -315,18 +318,21 @@ export function StudentProfile({ id }) {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id ]);
 
   useEffect(()=>{
-    fetchAssignments();
+    fetchAssignments({studentId : id});
   }, [universityCurrentPage])
+
+  useEffect(()=>{
+    fetchStudentDocuments(id)
+  },[documentCurrentPage])
 
   const fetchStudentTasks = async (studentId) => {
     try {
       setTasksLoading(true);
 
-      const taskResponse = await getTasksByStudentId(studentId);
+      const taskResponse = await getTasksByStudentId({studentId});
       
       if (taskResponse.success && taskResponse.data.task) {
         const tasks = taskResponse.data.task || [];
@@ -375,7 +381,7 @@ export function StudentProfile({ id }) {
   const fetchQuestionnaireDetails = async (studentId) => {
     try {
       setQuestionnaireLoading(true);
-      const response = await getTaskSubtaskQuestionDetails(studentId);
+      const response = await getTaskSubtaskQuestionDetails({studentId , limit:50});
       
       if (response && response.success) {
 
@@ -470,10 +476,11 @@ export function StudentProfile({ id }) {
     try {
       setDocumentsLoading(true);
       
-      const response = await apiService.get(`/admin/documents/student/${studentId}?page=1&limit=10`);
+      const response = await apiService.get(`/admin/documents/student/${studentId}?page=${documentCurrentPage}&limit=10`);
       
       if (response && response.success) {
         setDocuments(response.data.documents || []);
+        setDocumentPagination(response.data.pagination || {})
       } else {
         console.warn('API response unsuccessful or missing data:', response);
         toast.error('Failed to fetch documents data');
@@ -489,7 +496,7 @@ export function StudentProfile({ id }) {
 
   const handleUpdateSubtaskStatus = async (subtaskId, status, isLocked) => {
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to update subtask status");
+      toast.error('You don\'t have permission to update subtask status');
       return;
     }
     
@@ -513,7 +520,7 @@ export function StudentProfile({ id }) {
 
   const handleUpdateSubtaskDueDate = async (subtaskId, dueDate) => {
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to update subtask due date");
+      toast.error('You don\'t have permission to update subtask due date');
       return;
     }
     
@@ -547,7 +554,7 @@ export function StudentProfile({ id }) {
   const handleUpdateAssignment = async (assignmentId, updates) => {
     // Check if user has edit permissions
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to update university assignments");
+      toast.error('You don\'t have permission to update university assignments');
       return;
     }
     
@@ -562,7 +569,7 @@ export function StudentProfile({ id }) {
   const handleDeleteAssignment = async (assignmentId) => {
     // Check if user has edit permissions
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to delete university assignments");
+      toast.error('You don\'t have permission to delete university assignments');
       return;
     }
     
@@ -691,7 +698,7 @@ export function StudentProfile({ id }) {
 
   const handleEditStudent = async () => {
     if (!student || !student._id) {
-      toast.error("Student information not found");
+      toast.error('Student information not found');
       return;
     }
     
@@ -771,7 +778,7 @@ export function StudentProfile({ id }) {
       
 
       if ((response && (response.success === true || response.data?.success === true))) {
-        toast.success("Student information updated successfully");
+        toast.success('Student information updated successfully');
         
 
         const updatedStudent = response.data?.student || response.data?.data?.student;
@@ -800,7 +807,7 @@ export function StudentProfile({ id }) {
       console.error('Error updating student:', error);
       
 
-      let errorMessage = "Failed to update student information";
+      let errorMessage = 'Failed to update student information';
       
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
@@ -821,7 +828,7 @@ export function StudentProfile({ id }) {
       
 
       if (errorMessage.includes('enum')) {
-        errorMessage += ". Please check dropdown values - they must match the server's expected values exactly.";
+        errorMessage += '. Please check dropdown values - they must match the server\'s expected values exactly.';
       }
       
       toast.error(errorMessage);
@@ -1002,7 +1009,7 @@ export function StudentProfile({ id }) {
                 className="flex-1"
                 onClick={() => setShowEditDialog(true)}
                 disabled={!hasEditPermission()}
-                title={!hasEditPermission() ? "You don't have permission to edit" : "Edit student information"}
+                title={!hasEditPermission() ? 'You don\'t have permission to edit' : 'Edit student information'}
               >
                 <FilePen className="h-4 w-4 mr-2" />
                 Edit
@@ -1196,6 +1203,28 @@ export function StudentProfile({ id }) {
                           )}
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                   {documentPagination && documentPagination?.totalPages > 1 && (
+                    <div className="flex justify-center my-6 gap-2">
+                      <Button
+                        variant="outline"
+                        disabled={documentPagination.page == 1 ? true :false}
+                        onClick={()=> { setDocumnetCurrentPage(documentPagination.page - 1) }}
+                      >
+                        Previous
+                      </Button>
+                      <span className="px-4 py-2">
+                        Page {documentPagination.page} of {documentPagination.totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        disabled={documentPagination.totalPages == documentPagination.page ? true : false}
+                        onClick={() => {setDocumnetCurrentPage(documentPagination.page + 1) }}
+                      >
+                        Next
+                      </Button>
                     </div>
                   )}
                 </CardContent>
@@ -1738,7 +1767,7 @@ export function StudentProfile({ id }) {
           if (!open || hasEditPermission()) {
             setShowEditDialog(open);
           } else {
-            toast.error("You don't have permission to edit student information");
+            toast.error('You don\'t have permission to edit student information');
           }
         }}
       >
@@ -2522,7 +2551,7 @@ export function StudentProfile({ id }) {
               onClick={handleEditStudent} 
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving..." : "Save Changes"}
+              {isSubmitting ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
         </DialogContent>

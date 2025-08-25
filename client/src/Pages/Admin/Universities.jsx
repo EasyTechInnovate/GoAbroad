@@ -67,7 +67,7 @@ const Universities = () => {
     tuition: '',
     application_fee: '',
     deadline: '',
-    programs: []
+    programs: ''
   });
 
   const [newProgram, setNewProgram] = useState('');
@@ -149,7 +149,7 @@ const Universities = () => {
   const handleAddUniversity = async () => {
     // Check if user has permission to add universities
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to add universities");
+      toast.error('You don\'t have permission to add universities');
       return;
     }
     
@@ -159,7 +159,7 @@ const Universities = () => {
     }
 
     if (currentStep === 2 && !newUniversity.programs.length) {
-      toast.error('Please add at least one program');
+      toast.error('Program Cant be empty');
       return;
     }
 
@@ -173,7 +173,7 @@ const Universities = () => {
           location: newUniversity.location || null,
           logo: newUniversity.logo || null,
           banner: newUniversity.banner,
-          program: newUniversity.programs?.[0] || '',
+          program: newUniversity.programs || '',
           description: newUniversity.description || null,
           website_url: newUniversity.website_url || null,
           university_type: newUniversity.university_type || 'Private',
@@ -254,7 +254,7 @@ const Universities = () => {
   const handleDeleteUniversity = async () => {
     // Check if user has permission to delete universities
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to delete universities");
+      toast.error('You don\'t have permission to delete universities');
       return;
     }
     
@@ -302,7 +302,7 @@ const Universities = () => {
   const handleUpdateUniversity = async () => {
     // Check if user has permission to update universities
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to update universities");
+      toast.error('You don\'t have permission to update universities');
       return;
     }
     
@@ -376,7 +376,7 @@ const Universities = () => {
   const handleLogoUpload = async (event) => {
     // Check if user has permission to upload files
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to upload files");
+      toast.error('You don\'t have permission to upload files');
       return;
     }
     
@@ -424,7 +424,7 @@ const Universities = () => {
   const handleBannerUpload = async (event) => {
     // Check if user has permission to upload files
     if (!hasEditPermission()) {
-      toast.error("You don't have permission to upload files");
+      toast.error('You don\'t have permission to upload files');
       return;
     }
     
@@ -721,13 +721,20 @@ const Universities = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <h3 className="font-semibold">Application Deadline</h3>
-                    <p className="text-sm mt-1">
-                      {selectedUniversity.application_deadline
-                        ? new Date(selectedUniversity.application_deadline).toLocaleDateString()
-                        : 'N/A'}
-                    </p>
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <h3 className="font-semibold">Application Deadline</h3>
+                      <p className="text-sm mt-1">
+                        {selectedUniversity.application_deadline
+                          ? new Date(selectedUniversity.application_deadline).toLocaleDateString()
+                          : 'N/A'}
+                      </p>
+                    </div>
+                  
+                    <div>
+                      <h3 className="font-semibold">Program</h3>
+                      <p className="text-sm mt-1">{selectedUniversity.program?.toLocaleString() || 'N/A'}</p>
+                    </div>
                   </div>
                 </div>
                 <DialogFooter className="gap-2 mt-4">
@@ -1262,20 +1269,20 @@ const Universities = () => {
                 <Label>Programs Offered *</Label>
                 <div className="flex gap-2">
                   <Input
-                    value={newProgram}
-                    onChange={(e) => setNewProgram(e.target.value)}
+                    value={newUniversity.programs}
+                    onChange={(e) => setNewUniversity({ ...newUniversity, programs: e.target.value})}
                     placeholder="Enter program name"
                     className="flex-1"
                   />
-                  <Button
+                  {/* <Button
                     type="button"
                     onClick={handleAddProgram}
                   >
                     Add
-                  </Button>
+                  </Button> */}
                 </div>
 
-                {newUniversity.programs.length > 0 ? (
+                {/* {newUniversity.programs.length > 0 ? (
                   <div className="mt-3">
                     <p className="text-sm font-medium mb-2">Added Programs:</p>
                     <div className="flex flex-wrap gap-1.5">
@@ -1300,7 +1307,7 @@ const Universities = () => {
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-2">No programs added yet. Add at least one program.</p>
-                )}
+                )} */}
               </div>
 
               <div className="grid gap-1.5">

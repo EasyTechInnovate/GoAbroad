@@ -5,7 +5,7 @@ export const getApplications = async (params = {}) => {
   return response.data;
 };
 
-export const getApplicationById = async (applicationId) => {
+export const getApplicationById = async ({applicationId}) => {
   const response = await servicesAxiosInstance.get(`/admin/applications/${applicationId}`);
   return response.data;
 };
