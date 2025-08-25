@@ -55,6 +55,7 @@ import TestOrderConfirmation from './Pages/Static/components/TestOrderConfirmati
 import SignIn from './Pages/Static/SignIn';
 import TermsCondition from './Pages/Static/TermsCondition';
 import PrivacyPolicy from './Pages/Static/PrivacyPolicy.';
+import Calculator from './Pages/Calculator/Calculator';
 
 const App = () => {
   return (
@@ -76,6 +77,7 @@ const App = () => {
       <Route path="/premium" element={<PremiumAccess />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsCondition />} />
+      <Route path='/calculator' element={<Calculator/>}/>
 
       {/* Payment Routes */}
       <Route path="/checkout" element={<Checkout />} />

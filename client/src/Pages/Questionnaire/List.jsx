@@ -54,7 +54,7 @@ const QuestionnaireList = () => {
     navigate(`/questionnaire/${taskId}/${subtaskId}/${questionnaireId}`);
   };
 
-  const handleGoBack = () => {
+  const handleGoBack = () => { 
     navigate(-1);
   };
 
@@ -160,10 +160,10 @@ const QuestionnaireList = () => {
                         
                         <div className="flex justify-between items-center mt-4 text-sm">
                           <div>
-                            <span className="text-gray-600">Questions: </span>
+                            {/* <span className="text-gray-600">Questions: </span>
                             <span className="font-medium bg-gray-50 px-2 py-0.5 rounded-xs">
                               {questionnaire.totalQuestions || 0}
-                            </span>
+                            </span>   */}
                             
                             {questionnaire.estimatedTime && (
                               <>

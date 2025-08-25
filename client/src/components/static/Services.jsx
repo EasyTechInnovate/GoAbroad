@@ -56,7 +56,7 @@ const Services = () => {
       borderColor: 'border-red-200',
       features: ['Score calculation', 'Eligibility check', 'Test preparation'],
       badge: 'Smart',
-      route:''
+      route:'/calculator'
     },
     // {
     //   icon: TrendingUp,
