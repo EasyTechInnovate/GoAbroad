@@ -1,5 +1,5 @@
 # Use a specific node version instead of latest for stability
-FROM node:20-slim
+FROM node:20
 
 # Switch to root temporarily to set up directories
 USER root
@@ -13,10 +13,10 @@ RUN mkdir -p /usr/src/app/public/temp && \
     chmod -R 777 /usr/src/app/public/temp
 
 # Copy package files
-COPY package*.json ./
+COPY package.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production && \
+RUN npm install && \
     chown -R node:node /usr/src/app/node_modules
 
 # Copy application code
