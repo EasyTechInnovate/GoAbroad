@@ -312,7 +312,7 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-100">              
               <img
-                src={formData.profilePicture || '/profile-full.svg'}
+                src={formData.profilePicture || ''}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
