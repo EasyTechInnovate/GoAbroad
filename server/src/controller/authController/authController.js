@@ -136,22 +136,25 @@ export default {
 
             const isNewUser = !user.isFeePaid;
             const redirectUrl = isNewUser
-                ? `${config.FRONTEND_URL || 'http://localhost:3000'}/pricing`
-                : `${config.FRONTEND_URL || 'http://localhost:3000'}/dashboard`;
+                ? `${config.FRONTEND_URL || 'http://localhost:3000'}/pricing?accesstoken=${accessToken}&user=${encodeURIComponent(user)}`
+                : `${config.FRONTEND_URL || 'http://localhost:3000'}/dashboard?accesstoken=${accessToken}&user=${encodeURIComponent(user)}`;
 
 
 
+            return res.redirect(redirectUrl)
 
-            httpResponse(req, res, 200, responseMessage.SUCCESS, {
-                accessToken,
-                user: userData,
-                requiresPayment: !user.isFeePaid,
-                message: isNewUser ? 'Registration successful. Payment required to access dashboard.' : 'Login successful',
-                redirectUrl,
-            });
+            // httpResponse(req, res, 200, responseMessage.SUCCESS, {
+            //     accessToken,
+            //     user: userData,
+            //     requiresPayment: !user.isFeePaid,
+            //     message: isNewUser ? 'Registration successful. Payment required to access dashboard.' : 'Login successful',
+            //     redirectUrl,
+            // });
 
         } catch (err) {
-            httpError(next, err, req, 500);
+            const errorRedirectUrl = `${config.FRONTEND_URL || 'http://localhost:3000'}/signin?error${encodeURIComponent(err?.message || err)}`
+            return res.redirect(errorRedirectUrl)
+
         }
     },
 
