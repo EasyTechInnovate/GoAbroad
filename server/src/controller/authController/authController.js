@@ -133,11 +133,13 @@ export default {
             });
             await activity.save();
 
+            const userObject = user.toObject();
+            delete userObject.password;
 
             const isNewUser = !user.isFeePaid;
             const redirectUrl = isNewUser
-                ? `${config.FRONTEND_URL || 'http://localhost:3000'}/pricing?accesstoken=${accessToken}&user=${encodeURIComponent(user)}`
-                : `${config.FRONTEND_URL || 'http://localhost:3000'}/dashboard?accesstoken=${accessToken}&user=${encodeURIComponent(user)}`;
+                ? `${config.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?accesstoken=${accessToken}&user=${encodeURIComponent(JSON.stringify(userObject))}&redirectTo=/pricing`
+                : `${config.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?accesstoken=${accessToken}&user=${encodeURIComponent(JSON.stringify(userObject))}&redirectTo=/dashboard`;
 
 
 

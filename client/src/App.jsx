@@ -56,6 +56,7 @@ import SignIn from './Pages/Static/SignIn';
 import TermsCondition from './Pages/Static/TermsCondition';
 import PrivacyPolicy from './Pages/Static/PrivacyPolicy.';
 import Calculator from './Pages/Calculator/Calculator';
+import AuthCallback from './Pages/Auth/AuthCallback';
 
 const App = () => {
   return (
@@ -64,6 +65,7 @@ const App = () => {
       <Route path="/server-health" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<SignIn />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/payment-required" element={<PaymentRequired />} />

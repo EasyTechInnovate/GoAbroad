@@ -23,7 +23,7 @@ const ProtectedRoute = ({ children }) => {
 
     // Check payment and verification status for student dashboard access
     if (!canAccessDashboard()) {
-      return <Navigate to="/auth/payment-required" replace />;
+      return <Navigate to="/pricing" replace />;
     }
   }
 
