@@ -1,4 +1,8 @@
 // src/models/Home.ts
+import { Course } from "./Course";
+import { News } from "./News";
+import { Blog } from "./Blog";
+
 export interface User {
   id: string;
   name: string;
@@ -9,25 +13,6 @@ export interface CarouselItem {
   id: string;
   title: string;
   image: string;
-}
-
-export interface Course {
-  id: string;
-  title: string;
-  students: number;
-  price: number;
-}
-
-export interface News {
-  id: string;
-  title: string;
-  image: string;
-}
-
-export interface Blog {
-  id: string;
-  title: string;
-  excerpt: string;
 }
 
 export interface HomeResponse {

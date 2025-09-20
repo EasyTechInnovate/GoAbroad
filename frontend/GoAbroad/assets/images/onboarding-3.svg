@@ -1,0 +1,51 @@
+<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background elements -->
+  <circle cx="100" cy="80" r="25" fill="#10B981" opacity="0.1"/>
+  <circle cx="320" cy="120" r="20" fill="#10B981" opacity="0.1"/>
+  
+  <!-- Person reading -->
+  <circle cx="200" cy="200" r="25" fill="#FBBF24"/>
+  <!-- Body -->
+  <rect x="180" y="225" width="40" height="50" fill="#1F2937" rx="5"/>
+  <!-- Arms -->
+  <rect x="170" y="230" width="15" height="35" fill="#FBBF24" rx="7"/>
+  <rect x="215" y="230" width="15" height="35" fill="#FBBF24" rx="7"/>
+  <!-- Legs -->
+  <rect x="185" y="275" width="12" height="40" fill="#1F2937" rx="6"/>
+  <rect x="203" y="275" width="12" height="40" fill="#1F2937" rx="6"/>
+  
+  <!-- Green book -->
+  <rect x="190" y="200" width="25" height="20" fill="#10B981" rx="2"/>
+  <line x1="202" y1="200" x2="202" y2="220" stroke="#059669" stroke-width="1"/>
+  
+  <!-- Globe -->
+  <circle cx="200" cy="120" r="60" fill="#10B981" opacity="0.1" stroke="#10B981" stroke-width="2"/>
+  <circle cx="200" cy="120" r="50" fill="none" stroke="#10B981" stroke-width="1"/>
+  <line x1="150" y1="120" x2="250" y2="120" stroke="#10B981" stroke-width="1"/>
+  <line x1="200" y1="70" x2="200" y2="170" stroke="#10B981" stroke-width="1"/>
+  
+  <!-- DNA helix -->
+  <path d="M120 100 Q130 80 140 100 Q150 80 160 100" stroke="#10B981" stroke-width="2" fill="none"/>
+  <path d="M125 105 Q135 85 145 105 Q155 85 165 105" stroke="#10B981" stroke-width="2" fill="none"/>
+  
+  <!-- Chemical structures -->
+  <circle cx="280" cy="80" r="8" fill="#10B981"/>
+  <line x1="280" y1="72" x2="280" y2="88" stroke="#10B981" stroke-width="2"/>
+  <line x1="272" y1="80" x2="288" y2="80" stroke="#10B981" stroke-width="2"/>
+  
+  <!-- Mathematical function f(x) -->
+  <text x="300" y="150" fill="#10B981" font-family="Arial" font-size="16" font-weight="bold">f(x)</text>
+  
+  <!-- Stars -->
+  <g fill="#10B981">
+    <path d="M150 60 L155 55 L150 50 L145 55 Z"/>
+    <path d="M250 50 L255 45 L250 40 L245 45 Z"/>
+    <path d="M320 180 L325 175 L320 170 L315 175 Z"/>
+  </g>
+  
+  <!-- Thought bubble with question mark -->
+  <ellipse cx="280" cy="250" rx="30" ry="20" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="280" y="255" text-anchor="middle" fill="#10B981" font-family="Arial" font-size="20" font-weight="bold">?</text>
+  <path d="M260 270 Q270 280 280 270" stroke="#E5E7EB" stroke-width="2" fill="none"/>
+</svg>
+

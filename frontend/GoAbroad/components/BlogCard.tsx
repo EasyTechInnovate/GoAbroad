@@ -1,154 +1,146 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Blog } from "@/models/Blog";
 
 interface BlogCardProps {
-  imageUrl: string;
-  category: string;
-  readTime: string;
-  publishedAt: string;
-  title: string;
-  description: string;
-  authorName: string;
+  blog: Blog;
+  onPress?: () => void;
 }
 
-const BlogCard: React.FC<BlogCardProps> = ({
-  imageUrl,
-  category,
-  readTime,
-  publishedAt,
-  title,
-  description,
-  authorName,
-}) => {
+export default function BlogCard({ blog, onPress }: BlogCardProps) {
   return (
-    <View style={styles.card}>
-      {/* Image */}
-      <Image source={{ uri: imageUrl }} style={styles.image} />
-
-      {/* Content */}
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Image source={{ uri: blog.image }} style={styles.image} />
+      
       <View style={styles.content}>
-        {/* Top Row */}
-        <View style={styles.row}>
-          <Text style={styles.tag}>{category}</Text>
-          <Text style={styles.meta}>{readTime}</Text>
-          <Text style={styles.meta}>{publishedAt}</Text>
-        </View>
-
-        {/* Title */}
-        <Text style={styles.title}>{title}</Text>
-
-        {/* Description */}
-        <Text style={styles.description}>{description}</Text>
-
-        {/* Author */}
-        <View style={styles.authorRow}>
-          <Ionicons name="person-circle-outline" size={18} color="green" />
-          <Text style={styles.author}>By {authorName}</Text>
-        </View>
-
-        {/* Button & Actions */}
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Read Full Post</Text>
-          </TouchableOpacity>
-
-          <View style={styles.actions}>
-            <Ionicons name="heart-outline" size={18} color="gray" />
-            <Ionicons
-              name="share-social-outline"
-              size={18}
-              color="gray"
-              style={{ marginLeft: 8 }}
+        <View style={styles.header}>
+          <Text style={styles.category}>{blog.category}</Text>
+          <TouchableOpacity style={styles.bookmarkButton}>
+            <Ionicons 
+              name={blog.isBookmarked ? "bookmark" : "bookmark-outline"} 
+              size={20} 
+              color={blog.isBookmarked ? "#f39c12" : "#bdc3c7"} 
             />
+          </TouchableOpacity>
+        </View>
+        
+        <Text style={styles.title} numberOfLines={2}>{blog.title}</Text>
+        <Text style={styles.excerpt} numberOfLines={3}>{blog.excerpt}</Text>
+        
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagsContainer}>
+          {blog.tags.map((tag, index) => (
+            <View key={index} style={styles.tag}>
+              <Text style={styles.tagText}>{tag}</Text>
+            </View>
+          ))}
+        </ScrollView>
+        
+        <View style={styles.footer}>
+          <View style={styles.authorInfo}>
+            <Text style={styles.author}>{blog.author}</Text>
+            <Text style={styles.date}>{blog.publishedAt}</Text>
+          </View>
+          <View style={styles.metaInfo}>
+            <Text style={styles.readTime}>{blog.readTime}</Text>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
-};
-
-export default BlogCard;
+}
 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    borderRadius: 16,
-    marginVertical: 10,
-    marginHorizontal: 6,
+    borderRadius: 12,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 8,
+    elevation: 4,
     overflow: "hidden",
   },
   image: {
     width: "100%",
-    height: 160,
+    height: 200,
   },
   content: {
-    padding: 12,
+    padding: 16,
   },
-  row: {
+  header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 6,
+    marginBottom: 8,
   },
-  tag: {
-    backgroundColor: "#E6F8EF",
-    color: "green",
+  category: {
     fontSize: 12,
+    fontWeight: "600",
+    color: "#9b59b6",
+    backgroundColor: "#f4ecf7",
     paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: 12,
-    marginRight: 8,
   },
-  meta: {
-    fontSize: 12,
-    color: "gray",
-    marginRight: 8,
+  bookmarkButton: {
+    padding: 4,
   },
   title: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 6,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#2c3e50",
+    marginBottom: 8,
+    lineHeight: 24,
   },
-  description: {
-    fontSize: 13,
-    color: "#444",
-    marginBottom: 10,
+  excerpt: {
+    fontSize: 14,
+    color: "#7f8c8d",
+    marginBottom: 12,
+    lineHeight: 20,
   },
-  authorRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  tagsContainer: {
     marginBottom: 12,
   },
-  author: {
-    fontSize: 12,
-    color: "#222",
-    marginLeft: 4,
+  tag: {
+    backgroundColor: "#ecf0f1",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: 6,
+  },
+  tagText: {
+    fontSize: 11,
+    color: "#7f8c8d",
+    fontWeight: "500",
   },
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  button: {
-    backgroundColor: "#E6F8EF",
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+  authorInfo: {
+    flex: 1,
+  },
+  author: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#2c3e50",
+  },
+  date: {
+    fontSize: 11,
+    color: "#95a5a6",
+    marginTop: 2,
+  },
+  metaInfo: {
+    alignItems: "flex-end",
+  },
+  readTime: {
+    fontSize: 11,
+    color: "#95a5a6",
+    backgroundColor: "#ecf0f1",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "green",
-  },
-  buttonText: {
-    fontSize: 13,
-    fontWeight: "500",
-    color: "green",
-  },
-  actions: {
-    flexDirection: "row",
-    alignItems: "center",
   },
 });

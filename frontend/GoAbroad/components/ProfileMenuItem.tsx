@@ -1,40 +1,78 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-interface Props {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  color?: string;
-  onPress?: () => void;
+interface ProfileMenuItemProps {
+  icon: string;
+  title: string;
+  subtitle: string;
+  onPress: () => void;
+  isDestructive?: boolean;
 }
 
-const ProfileMenuItem: React.FC<Props> = ({ icon, label, color = "green", onPress }) => {
+export default function ProfileMenuItem({ 
+  icon, 
+  title, 
+  subtitle, 
+  onPress, 
+  isDestructive = false 
+}: ProfileMenuItemProps) {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 12,
-        borderBottomWidth: 0.5,
-        borderColor: "#ddd",
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "#e6f7ec",
-          padding: 8,
-          borderRadius: 20,
-          marginRight: 15,
-        }}
-      >
-        <Ionicons name={icon} size={20} color={color} />
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <View style={styles.iconContainer}>
+        <Ionicons 
+          name={icon as any} 
+          size={24} 
+          color={isDestructive ? "#e74c3c" : "#3498db"} 
+        />
       </View>
-      <Text style={{ flex: 1, fontSize: 16 }}>{label}</Text>
-      <Ionicons name="chevron-forward" size={20} color="gray" />
+      <View style={styles.content}>
+        <Text style={[styles.title, isDestructive && styles.destructiveText]}>
+          {title}
+        </Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+      </View>
+      <Ionicons 
+        name="chevron-forward" 
+        size={20} 
+        color="#bdc3c7" 
+      />
     </TouchableOpacity>
   );
-};
+}
 
-export default ProfileMenuItem;
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ecf0f1",
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#f8f9fa",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  content: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2c3e50",
+    marginBottom: 2,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#7f8c8d",
+  },
+  destructiveText: {
+    color: "#e74c3c",
+  },
+});

@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "start:clear": "expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-navigation/native": "^7.1.6",
     "axios": "^1.12.1",
     "expo": "~53.0.22",
@@ -31,6 +33,7 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-svg-uri": "^1.2.3",
     "react-native-web": "~0.20.0"
   },
   "devDependencies": {

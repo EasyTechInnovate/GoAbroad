@@ -1,34 +1,71 @@
-import { Blog } from "../models/Blog";
+import { Blog } from "@/models/Blog";
 
-export const getBlogs = async (): Promise<Blog[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          id: "1",
-          title: "10 Tips for Writing a Student Success Blog",
-          description:
-            "Learn the best practices to create engaging and informative blog posts for students...",
-          author: "Mukul Parmar",
-          timeAgo: "2 hours ago",
-          image:
-            "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60",
-          likes: 12,
-          comments: 4,
-        },
-        {
-          id: "2",
-          title: "5 Study Hacks That Actually Work",
-          description:
-            "Discover practical and effective study hacks to improve focus and retention...",
-          author: "Riya Sharma",
-          timeAgo: "5 hours ago",
-          image:
-            "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=60",
-          likes: 34,
-          comments: 10,
-        },
-      ]);
-    }, 1000); // simulate network delay
-  });
+export const fetchBlogsData = async (): Promise<Blog[]> => {
+  return [
+    {
+      id: "1",
+      title: "10 Essential Tips for Writing a Compelling Statement of Purpose",
+      excerpt: "Learn how to craft a SOP that stands out and increases your chances of admission.",
+      content: "Full blog content here...",
+      category: "SOP Writing",
+      image: "https://picsum.photos/400/250?random=1",
+      author: "Dr. Sarah Johnson",
+      publishedAt: "2024-01-15",
+      readTime: "8 min read",
+      tags: ["SOP", "Writing", "Admission"],
+      isBookmarked: false,
+    },
+    {
+      id: "2",
+      title: "Student Life in the UK: A Complete Guide for International Students",
+      excerpt: "Everything you need to know about living and studying in the United Kingdom.",
+      content: "Full blog content here...",
+      category: "Student Life",
+      image: "https://picsum.photos/400/250?random=2",
+      author: "UK Student Ambassador",
+      publishedAt: "2024-01-14",
+      readTime: "12 min read",
+      tags: ["UK", "Student Life", "Guide"],
+      isBookmarked: true,
+    },
+    {
+      id: "3",
+      title: "How to Choose the Right University: A Step-by-Step Guide",
+      excerpt: "Navigate the complex process of selecting the perfect university for your goals.",
+      content: "Full blog content here...",
+      category: "University Selection",
+      image: "https://picsum.photos/400/250?random=3",
+      author: "Education Counselor",
+      publishedAt: "2024-01-13",
+      readTime: "10 min read",
+      tags: ["University", "Selection", "Guide"],
+      isBookmarked: false,
+    },
+    {
+      id: "4",
+      title: "IELTS vs TOEFL: Which Test Should You Take?",
+      excerpt: "Compare IELTS and TOEFL to make an informed decision about your English proficiency test.",
+      content: "Full blog content here...",
+      category: "Test Preparation",
+      image: "https://picsum.photos/400/250?random=4",
+      author: "Test Prep Expert",
+      publishedAt: "2024-01-12",
+      readTime: "7 min read",
+      tags: ["IELTS", "TOEFL", "Comparison"],
+      isBookmarked: false,
+    },
+    {
+      id: "5",
+      title: "Managing Finances as an International Student",
+      excerpt: "Practical tips for budgeting and managing money while studying abroad.",
+      content: "Full blog content here...",
+      category: "Finance",
+      image: "https://picsum.photos/400/250?random=5",
+      author: "Financial Advisor",
+      publishedAt: "2024-01-11",
+      readTime: "9 min read",
+      tags: ["Finance", "Budgeting", "Student"],
+      isBookmarked: true,
+    },
+  ];
 };

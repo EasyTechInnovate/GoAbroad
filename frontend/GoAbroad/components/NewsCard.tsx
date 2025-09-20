@@ -1,71 +1,46 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { News } from "@/models/News";
 
 interface NewsCardProps {
-  id: string;
-  imageUrl: string;
-  source: string;
-  category: string;
-  publishedAt: string;
-  title: string;
-  description: string;
-  onPress?: (id: string) => void; // for navigation
+  news: News;
+  onPress?: () => void;
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({
-  id,
-  imageUrl,
-  source,
-  category,
-  publishedAt,
-  title,
-  description,
-  onPress,
-}) => {
+export default function NewsCard({ news, onPress }: NewsCardProps) {
   return (
-    <View style={styles.card}>
-      {/* Image */}
-      <Image source={{ uri: imageUrl }} style={styles.image} />
-
-      {/* Meta Info */}
-      <View style={styles.metaRow}>
-        <Text style={styles.tag}>{source}</Text>
-        <Text style={styles.tag}>{category}</Text>
-        <Text style={styles.time}>{publishedAt}</Text>
-      </View>
-
-      {/* Title */}
-      <Text style={styles.title}>{title}</Text>
-
-      {/* Description */}
-      <Text style={styles.description} numberOfLines={3}>
-        {description}
-      </Text>
-
-      {/* Footer Actions */}
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.readMoreBtn}
-          onPress={() => onPress && onPress(id)}
-        >
-          <Text style={styles.readMoreText}>Read More</Text>
-        </TouchableOpacity>
-
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Ionicons name="heart-outline" size={20} color="#444" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Ionicons name="share-social-outline" size={20} color="#444" />
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Image source={{ uri: news.image }} style={styles.image} />
+      
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.category}>{news.category}</Text>
+          <TouchableOpacity style={styles.bookmarkButton}>
+            <Ionicons 
+              name={news.isBookmarked ? "bookmark" : "bookmark-outline"} 
+              size={20} 
+              color={news.isBookmarked ? "#f39c12" : "#bdc3c7"} 
+            />
           </TouchableOpacity>
         </View>
+        
+        <Text style={styles.title} numberOfLines={2}>{news.title}</Text>
+        <Text style={styles.excerpt} numberOfLines={3}>{news.excerpt}</Text>
+        
+        <View style={styles.footer}>
+          <View style={styles.authorInfo}>
+            <Text style={styles.author}>{news.author}</Text>
+            <Text style={styles.date}>{news.publishedAt}</Text>
+          </View>
+          <View style={styles.metaInfo}>
+            <Text style={styles.readTime}>{news.readTime}</Text>
+          </View>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
-};
-
-export default NewsCard;
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -74,65 +49,75 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     shadowColor: "#000",
     shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-    padding: 12,
+    shadowRadius: 8,
+    elevation: 4,
+    overflow: "hidden",
   },
   image: {
     width: "100%",
-    height: 180,
-    // borderRadius: 12,
-    borderTopRightRadius:12,
-    borderTopLeftRadius:12,
-    marginBottom: 10,
+    height: 200,
   },
-  metaRow: {
+  content: {
+    padding: 16,
+  },
+  header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 6,
+    marginBottom: 8,
   },
-  tag: {
+  category: {
     fontSize: 12,
-    color: "#6C63FF",
     fontWeight: "600",
-    marginRight: 8,
+    color: "#e74c3c",
+    backgroundColor: "#fdf2f2",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  time: {
-    fontSize: 12,
-    color: "gray",
-    marginLeft: "auto",
+  bookmarkButton: {
+    padding: 4,
   },
   title: {
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 6,
-    color: "#222",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#2c3e50",
+    marginBottom: 8,
+    lineHeight: 24,
   },
-  description: {
+  excerpt: {
     fontSize: 14,
-    color: "#555",
+    color: "#7f8c8d",
     marginBottom: 12,
+    lineHeight: 20,
   },
   footer: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
+    alignItems: "center",
   },
-  readMoreBtn: {
-    backgroundColor: "#F3EFFF",
-    borderRadius: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+  authorInfo: {
+    flex: 1,
   },
-  readMoreText: {
-    color: "#6C63FF",
+  author: {
+    fontSize: 12,
     fontWeight: "600",
-    fontSize: 14,
+    color: "#2c3e50",
   },
-  actions: {
-    flexDirection: "row",
+  date: {
+    fontSize: 11,
+    color: "#95a5a6",
+    marginTop: 2,
   },
-  iconBtn: {
-    marginLeft: 12,
+  metaInfo: {
+    alignItems: "flex-end",
+  },
+  readTime: {
+    fontSize: 11,
+    color: "#95a5a6",
+    backgroundColor: "#ecf0f1",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
   },
 });

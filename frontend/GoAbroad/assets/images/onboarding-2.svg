@@ -1,0 +1,40 @@
+<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background cloud shapes -->
+  <ellipse cx="100" cy="80" rx="40" ry="20" fill="#F3F4F6" opacity="0.5"/>
+  <ellipse cx="320" cy="100" rx="30" ry="15" fill="#F3F4F6" opacity="0.5"/>
+  
+  <!-- Books stack -->
+  <rect x="150" y="250" width="80" height="20" fill="#10B981"/>
+  <rect x="150" y="230" width="80" height="20" fill="#059669"/>
+  <rect x="150" y="210" width="80" height="20" fill="#047857"/>
+  
+  <!-- Person sitting on books -->
+  <circle cx="200" cy="180" r="25" fill="#FBBF24"/>
+  <!-- Body -->
+  <rect x="180" y="205" width="40" height="50" fill="#1F2937" rx="5"/>
+  <!-- Arms -->
+  <rect x="170" y="210" width="15" height="35" fill="#FBBF24" rx="7"/>
+  <rect x="215" y="210" width="15" height="35" fill="#FBBF24" rx="7"/>
+  <!-- Legs -->
+  <rect x="185" y="255" width="12" height="40" fill="#1F2937" rx="6"/>
+  <rect x="203" y="255" width="12" height="40" fill="#1F2937" rx="6"/>
+  
+  <!-- Glasses -->
+  <circle cx="190" cy="180" r="8" fill="none" stroke="#1F2937" stroke-width="2"/>
+  <circle cx="210" cy="180" r="8" fill="none" stroke="#1F2937" stroke-width="2"/>
+  <line x1="198" y1="180" x2="202" y2="180" stroke="#1F2937" stroke-width="2"/>
+  
+  <!-- Open book in hands -->
+  <rect x="190" y="200" width="20" height="15" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="200" y1="200" x2="200" y2="215" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <!-- Backpack -->
+  <rect x="250" y="200" width="30" height="40" fill="#1F2937" rx="3"/>
+  <rect x="255" y="205" width="20" height="30" fill="#374151" rx="2"/>
+  
+  <!-- Large pencil -->
+  <rect x="80" y="150" width="8" height="100" fill="#FBBF24" rx="4"/>
+  <rect x="82" y="140" width="4" height="20" fill="#EF4444" rx="2"/>
+  <rect x="83" y="135" width="2" height="10" fill="#F3F4F6" rx="1"/>
+</svg>
+

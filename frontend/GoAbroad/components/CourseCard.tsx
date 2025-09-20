@@ -1,232 +1,155 @@
-import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as Progress from "react-native-progress";
-
-interface Topic {
-  id: string;
-  title: string;
-  lessons: string[];
-}
+import { router } from "expo-router";
+import { Course } from "@/models/Course";
 
 interface CourseCardProps {
-  id: string;
-  imageUrl: string;
-  title: string;
-  professor: string;
-  duration: string;
-  weeks: string;
-  videos: number;
-  category: string;
-  description: string;
-  progress: number; // 0 - 1
-  topics: Topic[];
-  onContinue?: (id: string) => void;
-  onPreview?: (id: string) => void;
+  course: Course;
+  onPress?: () => void;
+  showWishlistButton?: boolean;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({
-  id,
-  imageUrl,
-  title,
-  professor,
-  duration,
-  weeks,
-  videos,
-  category,
-  description,
-  progress,
-  topics,
-  onContinue,
-  onPreview,
-}) => {
+export default function CourseCard({ course, onPress, showWishlistButton = true }: CourseCardProps) {
+  const [isBookmarked, setIsBookmarked] = useState(course.isBookmarked);
+
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      router.push("/course-detail");
+    }
+  };
+
+  const handleBookmarkPress = () => {
+    setIsBookmarked(!isBookmarked);
+    // Here you would typically make an API call to save/remove from wishlist
+    console.log(`${isBookmarked ? 'Removed from' : 'Added to'} wishlist:`, course.title);
+  };
+
   return (
-    <View style={styles.card}>
-      {/* Course Banner */}
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
+      <Image source={{ uri: course.image }} style={styles.image} />
 
-      {/* Title & Instructor */}
-      <Text style={styles.title}>{title}</Text>
-      <View style={styles.metaRow}>
-        <Ionicons name="person-outline" size={16} color="#555" />
-        <Text style={styles.meta}>{professor}</Text>
-        <Text style={styles.meta}> • {weeks}</Text>
-        <Text style={styles.meta}> • {videos} videos</Text>
-      </View>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.category}>{course.category}</Text>
+          {showWishlistButton && (
+            <TouchableOpacity style={styles.bookmarkButton} onPress={handleBookmarkPress}>
+              <Ionicons
+                name={isBookmarked ? "heart" : "heart-outline"}
+                size={20}
+                color={isBookmarked ? "#E74C3C" : "#bdc3c7"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
 
-      {/* Category */}
-      <Text style={styles.category}>{category}</Text>
+        <Text style={styles.title} numberOfLines={2}>{course.title}</Text>
+        <Text style={styles.instructor}>by {course.instructor}</Text>
 
-      {/* Description */}
-      <Text style={styles.description}>{description}</Text>
-
-      {/* Progress */}
-      <View style={styles.progressRow}>
-        <Text style={styles.progressLabel}>Progress</Text>
-        <Text style={styles.progressPercent}>{Math.round(progress * 100)}%</Text>
-      </View>
-      <Progress.Bar
-        progress={progress}
-        width={null}
-        height={6}
-        borderRadius={3}
-        color="#3b82f6"
-        unfilledColor="#e5e7eb"
-        borderWidth={0}
-      />
-
-      {/* Topics */}
-      <Text style={styles.sectionTitle}>Course Topics</Text>
-      <FlatList
-        data={topics}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.topicBox}>
-            <Text style={styles.topicTitle}>{item.title}</Text>
-            {item.lessons.map((lesson, idx) => (
-              <Text key={idx} style={styles.lesson}>
-                • {lesson}
-              </Text>
-            ))}
+        <View style={styles.stats}>
+          <View style={styles.statItem}>
+            <Ionicons name="people-outline" size={16} color="#7f8c8d" />
+            <Text style={styles.statText}>{course.students.toLocaleString()}</Text>
           </View>
-        )}
-      />
+          <View style={styles.statItem}>
+            <Ionicons name="star" size={16} color="#f39c12" />
+            <Text style={styles.statText}>{course.rating}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Ionicons name="time-outline" size={16} color="#7f8c8d" />
+            <Text style={styles.statText}>{course.duration}</Text>
+          </View>
+        </View>
 
-      {/* Buttons */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity
-          style={styles.primaryBtn}
-          onPress={() => onContinue && onContinue(id)}
-        >
-          <Text style={styles.primaryBtnText}>Continue Course</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.secondaryBtn}
-          onPress={() => onPreview && onPreview(id)}
-        >
-          <Text style={styles.secondaryBtnText}>Preview</Text>
-        </TouchableOpacity>
+        <View style={styles.footer}>
+          <Text style={styles.level}>{course.level}</Text>
+          <Text style={styles.price}>₹{course.price}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
-};
-
-export default CourseCard;
+}
 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     borderRadius: 12,
-    marginBottom: 20,
-    padding: 16,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    overflow: "hidden",
   },
   image: {
     width: "100%",
-    height: 160,
-    borderRadius: 10,
-    marginBottom: 12,
+    height: 200,
+  },
+  content: {
+    padding: 16,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  category: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#3498db",
+    backgroundColor: "#ebf3fd",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  bookmarkButton: {
+    padding: 4,
   },
   title: {
     fontSize: 18,
-    fontWeight: "700",
-    color: "#111",
+    fontWeight: "bold",
+    color: "#2c3e50",
     marginBottom: 4,
   },
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-  meta: {
-    fontSize: 13,
-    color: "#555",
-    marginLeft: 4,
-  },
-  category: {
-    color: "#2563eb",
-    fontWeight: "600",
-    marginBottom: 8,
-    fontSize: 13,
-  },
-  description: {
+  instructor: {
     fontSize: 14,
-    color: "#555",
+    color: "#7f8c8d",
     marginBottom: 12,
   },
-  progressRow: {
+  stats: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 4,
+    marginBottom: 12,
   },
-  progressLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  progressPercent: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#2563eb",
-  },
-  sectionTitle: {
-    marginTop: 16,
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  topicBox: {
-    backgroundColor: "#f9fafb",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
-  },
-  topicTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  lesson: {
-    fontSize: 13,
-    color: "#444",
-    marginLeft: 6,
-  },
-  buttonRow: {
+  statItem: {
     flexDirection: "row",
-    marginTop: 16,
-  },
-  primaryBtn: {
-    flex: 1,
-    backgroundColor: "#2563eb",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    marginRight: 8,
-  },
-  primaryBtnText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-  secondaryBtn: {
-    flex: 1,
-    backgroundColor: "#f3f4f6",
-    paddingVertical: 10,
-    borderRadius: 8,
     alignItems: "center",
   },
-  secondaryBtnText: {
-    color: "#2563eb",
+  statText: {
+    fontSize: 12,
+    color: "#7f8c8d",
+    marginLeft: 4,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  level: {
+    fontSize: 12,
     fontWeight: "600",
-    fontSize: 14,
+    color: "#27ae60",
+    backgroundColor: "#e8f5e8",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#e74c3c",
   },
 });

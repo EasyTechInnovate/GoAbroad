@@ -1,0 +1,41 @@
+<svg width="420" height="420" viewBox="0 0 420 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background elements -->
+  <circle cx="100" cy="80" r="30" fill="#8B5CF6" opacity="0.1"/>
+  <circle cx="320" cy="120" r="20" fill="#8B5CF6" opacity="0.1"/>
+  
+  <!-- Bar chart -->
+  <rect x="50" y="200" width="15" height="40" fill="#8B5CF6"/>
+  <rect x="70" y="180" width="15" height="60" fill="#8B5CF6"/>
+  <rect x="90" y="160" width="15" height="80" fill="#8B5CF6"/>
+  
+  <!-- Document with graph -->
+  <rect x="80" y="280" width="60" height="80" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="2"/>
+  <path d="M90 300 L100 290 L110 300 L120 280 L130 300 L140 290" stroke="#8B5CF6" stroke-width="2" fill="none"/>
+  
+  <!-- Sparkles -->
+  <g fill="#8B5CF6">
+    <path d="M150 100 L155 95 L150 90 L145 95 Z"/>
+    <path d="M280 200 L285 195 L280 190 L275 195 Z"/>
+    <path d="M200 350 L205 345 L200 340 L195 345 Z"/>
+  </g>
+  
+  <!-- START flag -->
+  <rect x="250" y="120" width="80" height="50" fill="#8B5CF6" rx="5"/>
+  <text x="290" y="150" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">START</text>
+  
+  <!-- Person -->
+  <circle cx="200" cy="200" r="25" fill="#FBBF24"/>
+  <!-- Body -->
+  <rect x="180" y="225" width="40" height="60" fill="#10B981" rx="5"/>
+  <!-- Arms -->
+  <rect x="170" y="230" width="15" height="40" fill="#FBBF24" rx="7"/>
+  <rect x="215" y="230" width="15" height="40" fill="#FBBF24" rx="7"/>
+  <!-- Legs -->
+  <rect x="185" y="285" width="12" height="50" fill="#1F2937" rx="6"/>
+  <rect x="203" y="285" width="12" height="50" fill="#1F2937" rx="6"/>
+  
+  <!-- Plants/foliage -->
+  <path d="M160 320 Q170 300 180 320 Q190 300 200 320" stroke="#10B981" stroke-width="4" fill="none"/>
+  <path d="M220 320 Q230 300 240 320 Q250 300 260 320" stroke="#10B981" stroke-width="4" fill="none"/>
+</svg>
+
