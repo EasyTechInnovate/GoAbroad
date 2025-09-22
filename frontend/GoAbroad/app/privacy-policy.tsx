@@ -1,139 +1,94 @@
 import React from "react";
-import { 
-  ScrollView, 
-  StyleSheet, 
-  View, 
-  Text 
-} from "react-native";
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 export default function PrivacyPolicyScreen() {
+  const handleBackPress = () => {
+    router.back();
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#2C3E50" />
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={handleBackPress}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="rgba(20, 80, 68, 1)" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Privacy Policy</Text>
-        <View style={styles.headerSpacer} />
+        <TouchableOpacity 
+          style={styles.menuButton} 
+          activeOpacity={0.7}
+        >
+          <Ionicons name="menu" size={20} color="rgba(20, 80, 68, 1)" />
+        </TouchableOpacity>
       </View>
 
       {/* Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.contentContainer}>
-          {/* Last Updated */}
-          <View style={styles.lastUpdated}>
-            <Ionicons name="calendar-outline" size={16} color="#7F8C8D" />
-            <Text style={styles.lastUpdatedText}>Last updated: September 14, 2025</Text>
-          </View>
-
-          {/* Introduction */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Introduction</Text>
-            <Text style={styles.sectionText}>
-              Welcome to GoAbroad. We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and related services.
-            </Text>
-          </View>
-
-          {/* Information We Collect */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Information We Collect</Text>
-            <Text style={styles.sectionText}>
-              We collect information you provide directly to us, such as when you create an account, enroll in courses, or contact us for support. This may include your name, email address, phone number, educational background, and payment information.
-            </Text>
-            <Text style={styles.sectionText}>
-              We also automatically collect certain information about your device and usage patterns, including your IP address, device type, operating system, and app usage data.
-            </Text>
-          </View>
-
-          {/* How We Use Your Information */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>How We Use Your Information</Text>
-            <Text style={styles.sectionText}>
-              We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, and communicate with you about products, services, and promotional offers.
-            </Text>
-          </View>
-
-          {/* Disclosures of Your Information */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Disclosures of Your Information</Text>
-            <Text style={styles.sectionText}>
-              We may share your information in the following circumstances:
-            </Text>
-            <Text style={styles.bulletPoint}>
-              • With service providers who assist us in operating our platform
-            </Text>
-            <Text style={styles.bulletPoint}>
-              • When required by law or to protect our rights and safety
-            </Text>
-            <Text style={styles.bulletPoint}>
-              • In connection with a business transfer or acquisition
-            </Text>
-            <Text style={styles.bulletPoint}>
-              • With your explicit consent for other purposes
-            </Text>
-          </View>
-
-          {/* Data Security */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Data Security</Text>
-            <Text style={styles.sectionText}>
-              We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure.
-            </Text>
-          </View>
-
-          {/* Your Rights */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Your Rights</Text>
-            <Text style={styles.sectionText}>
-              You have the right to access, update, or delete your personal information. You may also opt out of certain communications from us. To exercise these rights, please contact us using the information provided below.
-            </Text>
-          </View>
-
-          {/* Legal Disclaimer */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Legal Disclaimer</Text>
-            <Text style={styles.sectionText}>
-              GoAbroad envisions a world in which all students have access to quality education and study abroad opportunities. After years of analysis of the global education system, we know that making this vision a reality involves more than technical solutions—it requires comprehensive support and guidance.
-            </Text>
-            <Text style={styles.sectionText}>
-              That's why GoAbroad supports students, educational institutions, and partners working for educational excellence. Our work—including comprehensive course offerings, expert guidance, and personalized support—gives you the tools to understand global education opportunities, build your academic profile, and engage with the international education community.
-            </Text>
-          </View>
-
-          {/* Contact Information */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Contact Us</Text>
-            <Text style={styles.sectionText}>
-              If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
-            </Text>
-            <View style={styles.contactInfo}>
-              <View style={styles.contactItem}>
-                <Ionicons name="mail-outline" size={16} color="#0D5543" />
-                <Text style={styles.contactText}>privacy@goabroad.com</Text>
-              </View>
-              <View style={styles.contactItem}>
-                <Ionicons name="call-outline" size={16} color="#0D5543" />
-                <Text style={styles.contactText}>+1 (555) 123-4567</Text>
-              </View>
-              <View style={styles.contactItem}>
-                <Ionicons name="location-outline" size={16} color="#0D5543" />
-                <Text style={styles.contactText}>123 Education Street, Learning City, LC 12345</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Changes to Privacy Policy */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Changes to This Privacy Policy</Text>
-            <Text style={styles.sectionText}>
-              We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date. You are advised to review this Privacy Policy periodically for any changes.
-            </Text>
-          </View>
+        {/* Disclosures of Your Information Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Disclosures of Your Information</Text>
+          <Text style={styles.sectionContent}>
+            Food First envisions a world in which all people have access to healthy, ecologically produced, and culturally appropriate food. We believe that achieving this vision requires political transformation. We work to build a social movement for food sovereignty through research, education, and advocacy.
+          </Text>
+          <Text style={styles.sectionContent}>
+            Our mission is to end the injustices that cause hunger, poverty, and environmental degradation throughout the world. We believe that a world based on the right to food, environmental sustainability, and social justice is possible and necessary.
+          </Text>
+          <Text style={styles.sectionContent}>
+            We work with grassroots organizations, social movements, and policy makers to develop alternatives to the corporate food system. Our research and analysis help communities understand the root causes of hunger and develop strategies for change.
+          </Text>
         </View>
+
+        {/* Legal Disclaimer Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Legal Disclaimer</Text>
+          <Text style={styles.sectionContent}>
+            Food First envisions a world in which all people have access to healthy, ecologically produced, and culturally appropriate food. We believe that achieving this vision requires political transformation. We work to build a social movement for food sovereignty through research, education, and advocacy.
+          </Text>
+          <Text style={styles.sectionContent}>
+            The information provided in this application is for educational and informational purposes only. It is not intended to be a substitute for professional advice, diagnosis, or treatment. Always seek the advice of qualified professionals regarding any questions you may have.
+          </Text>
+          <Text style={styles.sectionContent}>
+            We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information contained in this application. Any reliance you place on such information is strictly at your own risk.
+          </Text>
+          <Text style={styles.sectionContent}>
+            In no event will we be liable for any loss or damage including without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this application.
+          </Text>
+        </View>
+
+        {/* Additional Content */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Data Collection and Usage</Text>
+          <Text style={styles.sectionContent}>
+            We collect information you provide directly to us, such as when you create an account, use our services, or contact us for support. This may include your name, email address, phone number, and other information you choose to provide.
+          </Text>
+          <Text style={styles.sectionContent}>
+            We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, and communicate with you about products, services, and events.
+          </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Information Sharing</Text>
+          <Text style={styles.sectionContent}>
+            We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this privacy policy. We may share your information in certain limited circumstances, such as to comply with legal obligations or protect our rights.
+          </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Contact Information</Text>
+          <Text style={styles.sectionContent}>
+            If you have any questions about this Privacy Policy, please contact us at privacy@goabroad.com or through our support channels within the application.
+          </Text>
+        </View>
+
+        {/* Bottom Spacing */}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -142,7 +97,7 @@ export default function PrivacyPolicyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
@@ -151,72 +106,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F2F7",
+  },
+  backButton: {
+    padding: 4,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#2C3E50",
+    fontWeight: "600",
+    color: "#000000",
   },
-  headerSpacer: {
-    width: 24,
+  menuButton: {
+    padding: 4,
   },
   content: {
     flex: 1,
-  },
-  contentContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
-  },
-  lastUpdated: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#EBF3FD",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 24,
-    gap: 8,
-  },
-  lastUpdatedText: {
-    fontSize: 14,
-    color: "#2C3E50",
-    fontWeight: "500",
+    backgroundColor: "#FFFFFF",
   },
   section: {
-    marginBottom: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F2F7",
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#2C3E50",
-    marginBottom: 12,
+    fontWeight: "700",
+    color: "#000000",
+    marginBottom: 16,
+    lineHeight: 28,
   },
-  sectionText: {
+  sectionContent: {
     fontSize: 16,
-    color: "#2C3E50",
+    color: "#333333",
     lineHeight: 24,
-    marginBottom: 12,
+    marginBottom: 16,
+    textAlign: "left",
   },
-  bulletPoint: {
-    fontSize: 16,
-    color: "#2C3E50",
-    lineHeight: 24,
-    marginBottom: 8,
-    marginLeft: 16,
-  },
-  contactInfo: {
-    backgroundColor: "#FFFFFF",
-    padding: 16,
-    borderRadius: 8,
-    marginTop: 12,
-    gap: 12,
-  },
-  contactItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  contactText: {
-    fontSize: 16,
-    color: "#2C3E50",
+  bottomSpacing: {
+    height: 40,
   },
 });

@@ -44,14 +44,24 @@ export default function NewsCard({ news, onPress }: NewsCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8.53,
+    width: 400,
+    height: 654.933349609375,
     shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4.27,
+    },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 6.4,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: "#E5E5E5",
     overflow: "hidden",
+    marginTop: 216.47,
+    marginLeft: 20,
+    marginBottom: 16,
   },
   image: {
     width: "100%",

@@ -6,9 +6,15 @@ import { router } from "expo-router";
 
 import { fetchHomeData } from "@/api/homeApi";
 import { HomeResponse } from "@/models/Home";
+import { fetchUserProfile } from "@/api/userApi";
+import { UserProfile } from "@/models/UserProfile";
+
+// Import intro5 image
+const intro5Image = require('../../assets/images/intro5.png.png');
 
 export default function HomeScreen() {
   const [homeData, setHomeData] = useState<HomeResponse | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [search, setSearch] = useState("");
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const bannerScrollRef = useRef<ScrollView>(null);
@@ -39,8 +45,16 @@ export default function HomeScreen() {
 
   useEffect(() => {
     (async () => {
-      const data = await fetchHomeData();
-      setHomeData(data);
+      try {
+        const [homeResponse, userResponse] = await Promise.all([
+          fetchHomeData(),
+          fetchUserProfile()
+        ]);
+        setHomeData(homeResponse);
+        setUserProfile(userResponse);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     })();
   }, []);
 
@@ -57,19 +71,17 @@ export default function HomeScreen() {
       >
         {/* Status Bar */}
         <View style={styles.statusBar}>
-          <Text style={styles.timeText}>9:41</Text>
-          <View style={styles.statusIcons}>
-            <Ionicons name="cellular" size={16} color="#000" />
-            <Ionicons name="wifi" size={16} color="#000" />
-            <Ionicons name="battery-full" size={16} color="#000" />
-          </View>
+          <Text style={styles.statusBarText}>GoAbroad</Text>
         </View>
 
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.userInfo}>
-            <Image source={{ uri: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face" }} style={styles.profileImage} />
-            <Text style={styles.greetingText}>Hello, Ibne Riead</Text>
+            <Image 
+              source={{ uri: userProfile?.avatar || "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face" }} 
+              style={styles.profileImage} 
+            />
+            <Text style={styles.greetingText}>Hello, {userProfile?.name || "User"}</Text>
           </View>
           <TouchableOpacity style={styles.notificationButton}>
             <Ionicons name="notifications" size={20} color="#000" />
@@ -85,108 +97,63 @@ export default function HomeScreen() {
           <Text style={styles.searchPlaceholder}>Search for 'Courses', 'MIT', 'Colleges', 'Friends'</Text>
         </TouchableOpacity>
 
-        {/* Scrollable Banner Carousel */}
-        <View style={styles.bannerCarouselContainer}>
-          <ScrollView
-            ref={bannerScrollRef}
-            horizontal
-            pagingEnabled
+        {/* Scrollable Image Carousel */}
+        <View style={styles.imageCarouselContainer}>
+          <ScrollView 
+            horizontal 
             showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={(event) => {
-              const index = Math.round(event.nativeEvent.contentOffset.x / (Dimensions.get('window').width - 40));
-              setCurrentBannerIndex(index);
-            }}
-            style={styles.bannerScrollView}
+            style={styles.imageCarouselScroll}
+            contentContainerStyle={styles.imageCarouselContent}
           >
-            {/* Banner 1 */}
-            <View style={styles.bannerSlide}>
-              <View style={styles.premiumBannerMain}>
-                <View style={styles.bannerHeader}>
-                  <View style={styles.crownIconContainer}>
-                    <Ionicons name="star" size={16} color="#FFD700" />
-                  </View>
-                  <TouchableOpacity style={styles.closeButton}>
-                    <Ionicons name="close" size={16} color="#FFFFFF" />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.bannerContent}>
-                  <Text style={styles.bannerMainText}>Fully personalised counselling now from the comfort of your home.</Text>
-                  <TouchableOpacity style={styles.premiumLink}>
-                    <Text style={styles.premiumLinkText}>Check Out Premium</Text>
-                    <Ionicons name="chevron-forward" size={14} color="#FFD700" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={intro5Image} 
+                style={styles.carouselImage} 
+              />
             </View>
 
-            {/* Banner 2 */}
-            <View style={styles.bannerSlide}>
-              <View style={styles.premiumBannerMain}>
-                <View style={styles.bannerHeader}>
-                  <View style={styles.crownIconContainer}>
-                    <Ionicons name="star" size={16} color="#FFD700" />
-                  </View>
-                  <TouchableOpacity style={styles.closeButton}>
-                    <Ionicons name="close" size={16} color="#FFFFFF" />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.bannerContent}>
-                  <Text style={styles.bannerMainText}>Get Cashback 30% Off on all premium courses.</Text>
-                  <TouchableOpacity style={styles.premiumLink}>
-                    <Text style={styles.premiumLinkText}>Shop Now</Text>
-                    <Ionicons name="chevron-forward" size={14} color="#FFD700" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={{ uri: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300&h=200&fit=crop" }} 
+                style={styles.carouselImage} 
+              />
             </View>
 
-            {/* Banner 3 */}
-            <View style={styles.bannerSlide}>
-              <View style={styles.premiumBannerMain}>
-                <View style={styles.bannerHeader}>
-                  <View style={styles.crownIconContainer}>
-                    <Ionicons name="star" size={16} color="#FFD700" />
-                  </View>
-                  <TouchableOpacity style={styles.closeButton}>
-                    <Ionicons name="close" size={16} color="#FFFFFF" />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.bannerContent}>
-                  <Text style={styles.bannerMainText}>International Day of Education - Special offers available.</Text>
-                  <TouchableOpacity style={styles.premiumLink}>
-                    <Text style={styles.premiumLinkText}>Learn More</Text>
-                    <Ionicons name="chevron-forward" size={14} color="#FFD700" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={{ uri: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&h=200&fit=crop" }} 
+                style={styles.carouselImage} 
+              />
+            </View>
+
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={{ uri: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=200&fit=crop" }} 
+                style={styles.carouselImage} 
+              />
+            </View>
+
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={{ uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop" }} 
+                style={styles.carouselImage} 
+              />
+            </View>
+
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={{ uri: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop" }} 
+                style={styles.carouselImage} 
+              />
+            </View>
+
+            <View style={styles.imageCarouselItem}>
+              <Image 
+                source={{ uri: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop" }} 
+                style={styles.carouselImage} 
+              />
             </View>
           </ScrollView>
-          
-          {/* Experience Card */}
-          <View style={styles.experienceCard}>
-            <View style={styles.experienceContent}>
-              <View style={styles.experienceIconContainer}>
-                <Ionicons name="star" size={20} color="#FFD700" />
-              </View>
-              <View style={styles.experienceTextContainer}>
-                <Text style={styles.experienceYears}>15+ Years</Text>
-                <Text style={styles.experienceLabel}>Counselling Experience</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Carousel Indicators */}
-          <View style={styles.carouselIndicators}>
-            {[0, 1, 2].map((index) => (
-              <View
-                key={index}
-                style={[
-                  styles.indicatorDot,
-                  index === currentBannerIndex && styles.activeIndicatorDot
-                ]}
-              />
-            ))}
-          </View>
         </View>
 
         {/* Experience Section */}
@@ -381,21 +348,16 @@ const styles = StyleSheet.create({
   },
   statusBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 5,
   },
-  timeText: {
+  statusBarText: {
     fontSize: 17,
     fontWeight: "600",
     color: "#000000",
-  },
-  statusIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
   },
   header: {
     flexDirection: "row",
@@ -444,23 +406,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#7F8C8D",
   },
-  bannerCarouselContainer: {
+  imageCarouselContainer: {
     marginBottom: 20,
   },
-  bannerScrollView: {
-    height: 200,
+  imageCarouselScroll: {
+    height: 333,
   },
-  bannerSlide: {
-    width: Dimensions.get('window').width - 40,
-    marginHorizontal: 20,
+  imageCarouselContent: {
+    paddingHorizontal: 0,
+    gap: 0,
   },
-  premiumBannerMain: {
-    backgroundColor: "#1E3A8A",
-    borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+  imageCarouselItem: {
+    width: 420,
+    height: 333,
+    borderRadius: 0,
+    overflow: "hidden",
     position: "relative",
-    height: 160,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  carouselImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   bannerHeader: {
     flexDirection: "row",
@@ -552,10 +522,28 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#FF6B6B",
   },
-  activeIndicatorDot: {
-    backgroundColor: "#1E3A8A",
-    width: 20,
-  },
+        activeIndicatorDot: {
+            backgroundColor: "#1E3A8A",
+            width: 20,
+        },
+        bannerImage: {
+            width: "100%",
+            height: "100%",
+            borderRadius: 16,
+            resizeMode: "cover",
+        },
+        bannerOverlay: {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            borderRadius: 16,
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+            justifyContent: "space-between",
+        },
   premiumBanner: {
     backgroundColor: "#1E3A8A",
     marginHorizontal: 20,
@@ -617,14 +605,14 @@ const styles = StyleSheet.create({
   },
   courseCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 20,
+    borderRadius: 0,
     flex: 1,
     shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-    borderWidth: 2,
-    borderColor: "#1E3A8A",
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 0,
+    borderColor: "transparent",
     overflow: "hidden",
   },
   courseCardImage: {

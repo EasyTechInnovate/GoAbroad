@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { fetchUserProfile } from "@/api/userApi";
 import { UserProfile } from "@/models/UserProfile";
-
-import ProfileHeader from "@/components/ProfileHeader";
-import ProfileStats from "@/components/ProfileStats";
-import ProfileMenuItem from "@/components/ProfileMenuItem";
 
 export default function ProfileScreen() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -27,6 +23,64 @@ export default function ProfileScreen() {
       }
     })();
   }, []);
+
+  const handleEditProfile = () => {
+    console.log("Edit Profile clicked");
+    // Navigate to edit profile screen
+    router.push("/edit-profile");
+  };
+
+  const handleNotification = () => {
+    console.log("Notification clicked");
+    // Navigate to notification screen
+    router.push("/notifications");
+  };
+
+  const handlePrivacyPolicy = () => {
+    console.log("Privacy Policy clicked");
+    // Navigate to privacy policy screen
+    router.push("/privacy-policy");
+  };
+
+  const handleAboutUs = () => {
+    console.log("About Us clicked");
+    // Navigate to about us screen
+    router.push("/about-us");
+  };
+
+  const handleLogout = () => {
+    console.log("Logout clicked");
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Logout", style: "destructive", onPress: () => {
+          // Handle logout logic here
+          console.log("User logged out");
+          // Navigate to login screen
+                  router.replace("/(tabs)/tab1");
+        }}
+      ]
+    );
+  };
+
+  const handleFollowers = () => {
+    console.log("Followers clicked");
+    // Navigate to followers screen
+    router.push("/followers");
+  };
+
+  const handleFollowing = () => {
+    console.log("Following clicked");
+    // Navigate to following screen
+    router.push("/following");
+  };
+
+  const handleCameraPress = () => {
+    console.log("Camera clicked");
+    Alert.alert("Camera", "Camera functionality will be implemented");
+  };
 
   if (loading) {
     return (
@@ -50,155 +104,132 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+        alwaysBounceVertical={false}
+      >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Profile</Text>
-          <TouchableOpacity style={styles.settingsButton}>
-            <Ionicons name="settings-outline" size={24} color="#2C3E50" />
+                  <TouchableOpacity 
+                    style={styles.backButton} 
+                    onPress={() => {
+                      console.log("Back button clicked");
+                      router.back();
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Ionicons name="arrow-back" size={24} color="rgba(20, 80, 68, 1)" />
+                  </TouchableOpacity>
+          <Text style={styles.headerTitle}>Profile</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+
+        {/* Profile Section */}
+        <View style={styles.profileSection}>
+          <View style={styles.avatarContainer}>
+            <Image source={{ uri: userProfile.avatar }} style={styles.avatar} />
+            <TouchableOpacity style={styles.cameraButton} onPress={handleCameraPress}>
+              <Ionicons name="camera" size={16} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.userName}>{userProfile.name}</Text>
+          <Text style={styles.userEmail}>{userProfile.email}</Text>
+        </View>
+
+        {/* Stats Section */}
+        <View style={styles.statsContainer}>
+          <TouchableOpacity 
+            style={styles.statButton} 
+            onPress={handleFollowers}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.statNumber}>6.3k</Text>
+            <Text style={styles.statLabel}>followers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.statButton} 
+            onPress={handleFollowing}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.statNumber}>2.5k</Text>
+            <Text style={styles.statLabel}>following</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Profile Header */}
-        <ProfileHeader user={userProfile} />
-        
-        {/* Profile Stats */}
-        <ProfileStats 
-          followers={userProfile.followers}
-          following={userProfile.following}
-          courses={12}
-          achievements={8}
-        />
-
-        {/* Quick Actions */}
-        <View style={styles.quickActionsContainer}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickActions}>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <View style={styles.quickActionIcon}>
-                <Ionicons name="bookmark-outline" size={24} color="#0D5543" />
-              </View>
-              <Text style={styles.quickActionText}>Saved</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <View style={styles.quickActionIcon}>
-                <Ionicons name="calendar-outline" size={24} color="#0D5543" />
-              </View>
-              <Text style={styles.quickActionText}>Schedule</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <View style={styles.quickActionIcon}>
-                <Ionicons name="document-text-outline" size={24} color="#0D5543" />
-              </View>
-              <Text style={styles.quickActionText}>Applications</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <View style={styles.quickActionIcon}>
-                <Ionicons name="help-circle-outline" size={24} color="#0D5543" />
-              </View>
-              <Text style={styles.quickActionText}>Help</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Account Section */}
+        {/* Menu Items */}
         <View style={styles.menuContainer}>
-          <Text style={styles.menuTitle}>Account</Text>
-          
-          <ProfileMenuItem
-            icon="person-outline"
-            title="Edit Profile"
-            subtitle="Update your personal information"
-            onPress={() => {}}
-          />
-          
-          <ProfileMenuItem
-            icon="heart-outline"
-            title="Wishlist"
-            subtitle="View your saved courses"
-            onPress={() => router.push("/wishlist")}
-          />
-          
-          <ProfileMenuItem
-            icon="document-text-outline"
-            title="My Applications"
-            subtitle="Track your university applications"
-            onPress={() => {}}
-          />
-          
-          <ProfileMenuItem
-            icon="calendar-outline"
-            title="Appointments"
-            subtitle="Schedule counseling sessions"
-            onPress={() => {}}
-          />
-        </View>
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={handleEditProfile}
+            activeOpacity={0.7}
+          >
+                    <View style={styles.menuItemLeft}>
+                      <View style={styles.menuIconContainer}>
+                        <Ionicons name="create-outline" size={18} color="rgba(20, 80, 68, 1)" />
+                      </View>
+                      <Text style={styles.menuItemText}>Edit Profile</Text>
+                    </View>
+            <Ionicons name="chevron-forward" size={14} color="#C7C7CC" />
+          </TouchableOpacity>
 
-        {/* Support Section */}
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuTitle}>Support</Text>
-          
-          <ProfileMenuItem
-            icon="help-circle-outline"
-            title="Help Center"
-            subtitle="Get answers to common questions"
-            onPress={() => {}}
-          />
-          
-          <ProfileMenuItem
-            icon="chatbubble-outline"
-            title="Contact Support"
-            subtitle="Reach out to our team"
-            onPress={() => {}}
-          />
-          
-          <ProfileMenuItem
-            icon="star-outline"
-            title="Rate App"
-            subtitle="Share your feedback"
-            onPress={() => {}}
-          />
-        </View>
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={handleNotification}
+            activeOpacity={0.7}
+          >
+                    <View style={styles.menuItemLeft}>
+                      <View style={styles.menuIconContainer}>
+                        <Ionicons name="notifications-outline" size={18} color="rgba(20, 80, 68, 1)" />
+                      </View>
+                      <Text style={styles.menuItemText}>Notification</Text>
+                    </View>
+            <Ionicons name="chevron-forward" size={14} color="#C7C7CC" />
+          </TouchableOpacity>
 
-        {/* Settings Section */}
-        <View style={styles.menuContainer}>
-          <Text style={styles.menuTitle}>Settings</Text>
-          
-          <ProfileMenuItem
-            icon="notifications-outline"
-            title="Notifications"
-            subtitle="View and manage your notifications"
-            onPress={() => router.push("/notifications")}
-          />
-          
-          <ProfileMenuItem
-            icon="language-outline"
-            title="Language"
-            subtitle="Change app language"
-            onPress={() => router.push("/language")}
-          />
-          
-          <ProfileMenuItem
-            icon="shield-outline"
-            title="Privacy Policy"
-            subtitle="Read our privacy policy"
-            onPress={() => router.push("/privacy-policy")}
-          />
-          
-          <ProfileMenuItem
-            icon="information-circle-outline"
-            title="About Us"
-            subtitle="Learn more about GoAbroad"
-            onPress={() => router.push("/about-us")}
-          />
-          
-          <ProfileMenuItem
-            icon="log-out-outline"
-            title="Sign Out"
-            subtitle="Sign out of your account"
-            onPress={() => {}}
-            isDestructive={true}
-          />
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={handlePrivacyPolicy}
+            activeOpacity={0.7}
+          >
+                    <View style={styles.menuItemLeft}>
+                      <View style={styles.menuIconContainer}>
+                        <Ionicons name="shield-outline" size={18} color="rgba(20, 80, 68, 1)" />
+                      </View>
+                      <Text style={styles.menuItemText}>Privacy Policy</Text>
+                    </View>
+            <Ionicons name="chevron-forward" size={14} color="#C7C7CC" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={handleAboutUs}
+            activeOpacity={0.7}
+          >
+                    <View style={styles.menuItemLeft}>
+                      <View style={styles.menuIconContainer}>
+                        <Ionicons name="information-circle-outline" size={18} color="rgba(20, 80, 68, 1)" />
+                      </View>
+                      <Text style={styles.menuItemText}>About Us</Text>
+                    </View>
+            <Ionicons name="chevron-forward" size={14} color="#C7C7CC" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={handleLogout}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={styles.menuIconContainer}>
+                <Ionicons name="log-out-outline" size={18} color="#FF3B30" />
+              </View>
+              <Text style={[styles.menuItemText, styles.logoutText]}>Logout</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={14} color="#C7C7CC" />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -208,7 +239,32 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#F8F9FA" 
+    backgroundColor: "#FFFFFF" 
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 16,
+    color: "#FF3B30",
   },
   header: {
     flexDirection: "row",
@@ -216,71 +272,117 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
+    backgroundColor: "#FFFFFF",
   },
-  title: {
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#000000",
+  },
+  headerSpacer: {
+    width: 32,
+  },
+  profileSection: {
+    alignItems: "center",
+    paddingVertical: 32,
+    backgroundColor: "#FFFFFF",
+  },
+  avatarContainer: {
+    position: "relative",
+    marginBottom: 16,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#F0F0F0",
+  },
+  cameraButton: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(20, 80, 68, 1)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+  },
+  userName: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#2C3E50",
+    fontWeight: "600",
+    color: "#000000",
+    marginBottom: 4,
   },
-  settingsButton: {
-    padding: 8,
+  userEmail: {
+    fontSize: 16,
+    color: "#8E8E93",
   },
-  quickActionsContainer: {
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 24,
+    backgroundColor: "#FFFFFF",
+    marginBottom: 8,
+  },
+  statButton: {
+    backgroundColor: "rgba(232, 250, 236, 1)",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    alignItems: "center",
+    minWidth: 120,
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000000",
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: "#666666",
+    fontWeight: "500",
+  },
+  menuContainer: {
     backgroundColor: "#FFFFFF",
     marginHorizontal: 20,
     marginBottom: 8,
     borderRadius: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingVertical: 8,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2C3E50",
-    marginBottom: 16,
-  },
-  quickActions: {
+  menuItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  quickActionButton: {
     alignItems: "center",
-    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F2F7",
   },
-  quickActionIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#EBF3FD",
+  menuItemLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  menuIconContainer: {
+    width: 24,
+    height: 24,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 8,
   },
-  quickActionText: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#2C3E50",
+  menuItemText: {
+    fontSize: 16,
+    color: "#000000",
+    marginLeft: 16,
+    fontWeight: "400",
   },
-  menuContainer: {
-    backgroundColor: "#fff",
-    marginHorizontal: 20,
-    marginVertical: 8,
-    borderRadius: 12,
-    paddingVertical: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  menuTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+  logoutText: {
+    color: "#FF3B30",
   },
 });

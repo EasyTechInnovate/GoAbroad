@@ -1,252 +1,225 @@
 import React, { useState } from "react";
-import { 
-  ScrollView, 
-  StyleSheet, 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  Alert 
-} from "react-native";
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Image, Alert, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 interface Notification {
   id: string;
+  type: 'course' | 'friend_request' | 'offer' | 'like' | 'general';
   title: string;
-  message: string;
-  time: string;
-  type: 'enrollment' | 'offer' | 'friend_request' | 'course_update' | 'general';
-  isRead: boolean;
+  description: string;
+  timestamp: string;
+  avatar?: string;
+  icon?: string;
+  iconColor?: string;
+  iconBgColor?: string;
+  showActions?: boolean;
 }
 
-export default function NotificationScreen() {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      title: "Course Successfully Enrolled",
-      message: "You have successfully enrolled in UI UX Design course",
-      time: "15 min ago",
-      type: "enrollment",
-      isRead: false
-    },
-    {
-      id: "2",
-      title: "Today's Special Offers",
-      message: "Get 50% off on IELTS Preparation courses",
-      time: "1 hour ago",
-      type: "offer",
-      isRead: false
-    },
-    {
-      id: "3",
-      title: "Cameron Williamson",
-      message: "Send you a friend request",
-      time: "2 hours ago",
-      type: "friend_request",
-      isRead: true
-    },
-    {
-      id: "4",
-      title: "Cameron Williamson",
-      message: "Send you a friend request",
-      time: "3 hours ago",
-      type: "friend_request",
-      isRead: true
-    },
-    {
-      id: "5",
-      title: "Course Update",
-      message: "New lesson added to IELTS Preparation course",
-      time: "5 hours ago",
-      type: "course_update",
-      isRead: true
-    },
-    {
-      id: "6",
-      title: "Cameron Williamson",
-      message: "Send you a friend request",
-      time: "1 day ago",
-      type: "friend_request",
-      isRead: true
-    }
-  ]);
+const mockNotifications: Notification[] = [
+  // Today's notifications
+  {
+    id: "1",
+    type: 'course',
+    title: "Course Successfully Enrolled",
+    description: "Lorem ipsum dolor sit amet consectetur. Ultricies tincidunt eleifend vitae",
+    timestamp: "15 min ago",
+    icon: "checkmark",
+    iconColor: "#FFFFFF",
+    iconBgColor: "#34C759",
+  },
+  {
+    id: "2",
+    type: 'friend_request',
+    title: "Cameron Williamson",
+    description: "Send you a friend request",
+    timestamp: "15 min ago",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face",
+    showActions: true,
+  },
+  {
+    id: "3",
+    type: 'offer',
+    title: "Today's Special Offers",
+    description: "Lorem ipsum dolor sit amet consectetur. Ultricies tincidunt eleifend vitae",
+    timestamp: "15 min ago",
+    icon: "star",
+    iconColor: "#FFFFFF",
+    iconBgColor: "#FFD60A",
+  },
+  // Yesterday's notifications
+  {
+    id: "4",
+    type: 'like',
+    title: "Bessie Cooper",
+    description: "Liked your post",
+    timestamp: "26 Jun 2023",
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face",
+  },
+  {
+    id: "5",
+    type: 'general',
+    title: "Cody Fisher",
+    description: "Lorem ipsum dolor sit amet consectetur.",
+    timestamp: "27 Jun 2023",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face",
+  },
+  {
+    id: "6",
+    type: 'general',
+    title: "Jacob Jones",
+    description: "Lorem ipsum dolor sit amet consectetur.",
+    timestamp: "28 Jun 2023",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face",
+  },
+];
 
-  const handleMarkAsRead = (notificationId: string) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === notificationId 
-          ? { ...notif, isRead: true }
-          : notif
-      )
-    );
+export default function NotificationScreen() {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const handleBackPress = () => {
+    router.back();
   };
 
-  const handleDeleteNotification = (notificationId: string) => {
-    Alert.alert(
-      "Delete Notification",
-      "Are you sure you want to delete this notification?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            setNotifications(prev => prev.filter(notif => notif.id !== notificationId));
-          }
-        }
-      ]
-    );
+  const handleMuteNotification = () => {
+    setShowMenu(false);
+    Alert.alert("Mute Notification", "Notifications have been muted");
   };
 
   const handleClearAll = () => {
-    Alert.alert(
-      "Clear All Notifications",
-      "Are you sure you want to clear all notifications?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Clear All",
-          style: "destructive",
-          onPress: () => setNotifications([])
-        }
-      ]
-    );
+    setShowMenu(false);
+    Alert.alert("Clear All", "All notifications have been cleared");
   };
 
-  const handleMuteNotifications = () => {
-    Alert.alert(
-      "Mute Notifications",
-      "You can manage notification settings in your device settings.",
-      [{ text: "OK" }]
-    );
+  const handleAcceptFriend = (notificationId: string) => {
+    Alert.alert("Friend Request", "Friend request accepted");
   };
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'enrollment':
-        return <Ionicons name="checkmark-circle" size={24} color="#27AE60" />;
-      case 'offer':
-        return <Ionicons name="gift" size={24} color="#F39C12" />;
-      case 'friend_request':
-        return <Ionicons name="person-add" size={24} color="#3498DB" />;
-      case 'course_update':
-        return <Ionicons name="book" size={24} color="#9B59B6" />;
-      default:
-        return <Ionicons name="notifications" size={24} color="#7F8C8D" />;
+  const handleRejectFriend = (notificationId: string) => {
+    Alert.alert("Friend Request", "Friend request rejected");
+  };
+
+  const renderNotificationIcon = (notification: Notification) => {
+    if (notification.avatar) {
+      return (
+        <Image source={{ uri: notification.avatar }} style={styles.notificationAvatar} />
+      );
     }
+
+    return (
+      <View style={[styles.notificationIcon, { backgroundColor: notification.iconBgColor }]}>
+        <Ionicons 
+          name={notification.icon as any} 
+          size={20} 
+          color={notification.iconColor} 
+        />
+      </View>
+    );
   };
 
-  const unreadCount = notifications.filter(notif => !notif.isRead).length;
+  const renderNotificationActions = (notification: Notification) => {
+    if (!notification.showActions) return null;
+
+    return (
+      <View style={styles.notificationActions}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => handleRejectFriend(notification.id)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="close" size={16} color="#FFFFFF" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#34C759" }]}
+          onPress={() => handleAcceptFriend(notification.id)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="checkmark" size={16} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const todayNotifications = mockNotifications.filter(n => n.timestamp.includes("min ago"));
+  const yesterdayNotifications = mockNotifications.filter(n => !n.timestamp.includes("min ago"));
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#2C3E50" />
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={handleBackPress}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notification</Text>
-        <View style={styles.headerActions}>
-          <TouchableOpacity onPress={handleMuteNotifications} style={styles.headerButton}>
-            <Text style={styles.headerButtonText}>Mute Notification</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleClearAll} style={styles.headerButton}>
-            <Text style={styles.headerButtonText}>Clear All</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity 
+          style={styles.menuButton} 
+          onPress={() => setShowMenu(!showMenu)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="ellipsis-vertical" size={20} color="#000" />
+        </TouchableOpacity>
       </View>
 
-      {/* Notifications List */}
+      {/* Three-dot Menu */}
+      {showMenu && (
+        <View style={styles.menuOverlay}>
+          <View style={styles.menuContainer}>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={handleMuteNotification}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.menuItemText}>Mute Notification</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={handleClearAll}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.menuItemText}>Clear All</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Notifications Content */}
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Today Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Today</Text>
-          
-          {notifications.filter(notif => !notif.isRead).map((notification) => (
-            <View key={notification.id} style={[styles.notificationItem, !notification.isRead && styles.unreadNotification]}>
-              <View style={styles.notificationIcon}>
-                {getNotificationIcon(notification.type)}
-              </View>
-              
+          {todayNotifications.map((notification) => (
+            <View key={notification.id} style={styles.notificationItem}>
+              {renderNotificationIcon(notification)}
               <View style={styles.notificationContent}>
-                <Text style={[styles.notificationTitle, !notification.isRead && styles.unreadTitle]}>
-                  {notification.title}
-                </Text>
-                <Text style={styles.notificationMessage}>
-                  {notification.message}
-                </Text>
-                <Text style={styles.notificationTime}>
-                  {notification.time}
-                </Text>
+                <Text style={styles.notificationTitle}>{notification.title}</Text>
+                <Text style={styles.notificationDescription}>{notification.description}</Text>
+                <Text style={styles.notificationTimestamp}>{notification.timestamp}</Text>
               </View>
-
-              <View style={styles.notificationActions}>
-                {!notification.isRead && (
-                  <TouchableOpacity 
-                    style={styles.actionButton}
-                    onPress={() => handleMarkAsRead(notification.id)}
-                  >
-                    <Ionicons name="checkmark" size={16} color="#27AE60" />
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity 
-                  style={styles.actionButton}
-                  onPress={() => handleDeleteNotification(notification.id)}
-                >
-                  <Ionicons name="close" size={16} color="#E74C3C" />
-                </TouchableOpacity>
-              </View>
+              {renderNotificationActions(notification)}
             </View>
           ))}
         </View>
 
-        {/* Earlier Section */}
-        {notifications.filter(notif => notif.isRead).length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Earlier</Text>
-            
-            {notifications.filter(notif => notif.isRead).map((notification) => (
-              <View key={notification.id} style={styles.notificationItem}>
-                <View style={styles.notificationIcon}>
-                  {getNotificationIcon(notification.type)}
-                </View>
-                
-                <View style={styles.notificationContent}>
-                  <Text style={styles.notificationTitle}>
-                    {notification.title}
-                  </Text>
-                  <Text style={styles.notificationMessage}>
-                    {notification.message}
-                  </Text>
-                  <Text style={styles.notificationTime}>
-                    {notification.time}
-                  </Text>
-                </View>
-
-                <View style={styles.notificationActions}>
-                  <TouchableOpacity 
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteNotification(notification.id)}
-                  >
-                    <Ionicons name="close" size={16} color="#E74C3C" />
-                  </TouchableOpacity>
-                </View>
+        {/* Yesterday Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Yesterday</Text>
+          {yesterdayNotifications.map((notification) => (
+            <View key={notification.id} style={styles.notificationItem}>
+              {renderNotificationIcon(notification)}
+              <View style={styles.notificationContent}>
+                <Text style={styles.notificationTitle}>{notification.title}</Text>
+                <Text style={styles.notificationDescription}>{notification.description}</Text>
+                <Text style={styles.notificationTimestamp}>{notification.timestamp}</Text>
               </View>
-            ))}
-          </View>
-        )}
-
-        {/* Empty State */}
-        {notifications.length === 0 && (
-          <View style={styles.emptyState}>
-            <Ionicons name="notifications-outline" size={64} color="#BDC3C7" />
-            <Text style={styles.emptyStateTitle}>No notifications</Text>
-            <Text style={styles.emptyStateSubtitle}>
-              You're all caught up! New notifications will appear here.
-            </Text>
-          </View>
-        )}
+              {renderNotificationActions(notification)}
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -255,7 +228,7 @@ export default function NotificationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     flexDirection: "row",
@@ -264,57 +237,83 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F2F7",
+  },
+  backButton: {
+    padding: 4,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#2C3E50",
-  },
-  headerActions: {
-    flexDirection: "row",
-    gap: 16,
-  },
-  headerButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  headerButtonText: {
-    fontSize: 14,
     fontWeight: "600",
-    color: "#0D5543",
+    color: "#000000",
+  },
+  menuButton: {
+    padding: 4,
+  },
+  menuOverlay: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    zIndex: 1000,
+  },
+  menuContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#E5E5E5",
+    minWidth: 160,
+  },
+  menuItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F2F7",
+  },
+  menuItemText: {
+    fontSize: 16,
+    color: "#000000",
+    fontWeight: "400",
   },
   content: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
   },
   section: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingTop: 24,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#2C3E50",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000000",
     marginBottom: 16,
   },
   notificationItem: {
     flexDirection: "row",
     alignItems: "flex-start",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F2F2F7",
   },
-  unreadNotification: {
-    borderLeftWidth: 4,
-    borderLeftColor: "#0D5543",
+  notificationAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F0F0F0",
+    marginRight: 12,
   },
   notificationIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
-    marginTop: 2,
   },
   notificationContent: {
     flex: 1,
@@ -322,52 +321,30 @@ const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2C3E50",
+    color: "#000000",
     marginBottom: 4,
   },
-  unreadTitle: {
-    fontWeight: "bold",
-  },
-  notificationMessage: {
+  notificationDescription: {
     fontSize: 14,
-    color: "#7F8C8D",
+    color: "#8E8E93",
     lineHeight: 20,
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  notificationTime: {
+  notificationTimestamp: {
     fontSize: 12,
-    color: "#BDC3C7",
+    color: "#C7C7CC",
   },
   notificationActions: {
     flexDirection: "row",
+    alignItems: "center",
     gap: 8,
-    marginLeft: 12,
   },
   actionButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FF3B30",
     justifyContent: "center",
     alignItems: "center",
-  },
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 60,
-    paddingHorizontal: 40,
-  },
-  emptyStateTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#2C3E50",
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptyStateSubtitle: {
-    fontSize: 14,
-    color: "#7F8C8D",
-    textAlign: "center",
-    lineHeight: 20,
   },
 });
