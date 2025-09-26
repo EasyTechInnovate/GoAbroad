@@ -166,7 +166,10 @@ export default {
             const { value, error } = validateJoiSchema(ValidateFilterDocuments, { ...req.query });
             if (error) return httpError(next, error, req, 422);
 
-            const { status, uploader, studentId, taskId, subtaskId, page, limit } = value;
+            const {
+                status, uploader, studentId, taskId, subtaskId, page, limit,
+                search, sortBy, sortOrder, fileType, dateFrom, dateTo
+            } = { ...req.query, ...value };
             const skip = (page - 1) * limit;
 
             // Build query
@@ -176,12 +179,57 @@ export default {
             if (studentId) query.studentId = studentId;
             if (taskId) query.taskId = taskId;
             if (subtaskId) query.subtaskId = subtaskId;
+            if (fileType) query.fileType = new RegExp(fileType, 'i');
+
+            // Advanced search functionality
+            if (search) {
+                query.$or = [
+                    { fileName: new RegExp(search, 'i') },
+                    { fileType: new RegExp(search, 'i') }
+                ];
+            }
+
+            // Date range filtering
+            if (dateFrom || dateTo) {
+                query.createdAt = {};
+                if (dateFrom) query.createdAt.$gte = new Date(dateFrom);
+                if (dateTo) query.createdAt.$lte = new Date(dateTo);
+            }
+
+            // Build sort object
+            let sortObj = { createdAt: -1 }; // default sort
+            if (sortBy) {
+                const order = sortOrder === 'asc' ? 1 : -1;
+                switch (sortBy) {
+                    case 'name':
+                        sortObj = { fileName: order };
+                        break;
+                    case 'created':
+                        sortObj = { createdAt: order };
+                        break;
+                    case 'uploaded':
+                        sortObj = { uploadedAt: order };
+                        break;
+                    case 'size':
+                        sortObj = { fileSize: order };
+                        break;
+                    case 'status':
+                        sortObj = { status: order };
+                        break;
+                    case 'type':
+                        sortObj = { fileType: order };
+                        break;
+                    default:
+                        sortObj = { createdAt: -1 };
+                }
+            }
 
             // Fetch total count for pagination
             const totalDocuments = await Document.countDocuments(query);
 
             // Fetch paginated documents
             const documents = await Document.find(query)
+                .sort(sortObj)
                 .skip(skip)
                 .limit(limit)
                 .populate('studentId', 'name email')
@@ -381,7 +429,10 @@ export default {
     getStudentAllDocumentsMembers: async (req, res, next) => {
         try {
             const { studentId } = req.params;
-            const { page, limit } = req.query;
+            const {
+                page, limit, search, sortBy, sortOrder,
+                fileType, dateFrom, dateTo, status
+            } = req.query;
 
             if (!page || +page <= 0 || !limit || +limit < 1) {
                 return httpError(next, new Error("All Field Are Required"), req, 400);
@@ -397,7 +448,57 @@ export default {
                 .populate('subtaskId', 'title')
                 .lean();
 
-            const documents = await Document.find({ studentId })
+            // Build document query with advanced search
+            const docQuery = { studentId };
+
+            // Advanced search functionality
+            if (search) {
+                docQuery.$or = [
+                    { fileName: new RegExp(search, 'i') },
+                    { fileType: new RegExp(search, 'i') }
+                ];
+            }
+
+            // Additional filters
+            if (status) docQuery.status = status;
+            if (fileType) docQuery.fileType = new RegExp(fileType, 'i');
+
+            if (dateFrom || dateTo) {
+                docQuery.createdAt = {};
+                if (dateFrom) docQuery.createdAt.$gte = new Date(dateFrom);
+                if (dateTo) docQuery.createdAt.$lte = new Date(dateTo);
+            }
+
+
+            let sortObj = { createdAt: -1 };
+            if (sortBy) {
+                const order = sortOrder === 'asc' ? 1 : -1;
+                switch (sortBy) {
+                    case 'name':
+                        sortObj = { fileName: order };
+                        break;
+                    case 'created':
+                        sortObj = { createdAt: order };
+                        break;
+                    case 'uploaded':
+                        sortObj = { uploadedAt: order };
+                        break;
+                    case 'size':
+                        sortObj = { fileSize: order };
+                        break;
+                    case 'status':
+                        sortObj = { status: order };
+                        break;
+                    case 'type':
+                        sortObj = { fileType: order };
+                        break;
+                    default:
+                        sortObj = { createdAt: -1 };
+                }
+            }
+
+            const documents = await Document.find(docQuery)
+                .sort(sortObj)
                 .populate('taskId', 'title')
                 .populate('subtaskId', 'title')
                 .populate('uploader', 'name email')
@@ -433,11 +534,12 @@ export default {
                             fileType: doc.fileType,
                             uploader: doc.uploader,
                             status: doc.status,
-                            createdAt: doc.createdAt
+                            createdAt: doc.createdAt,
+                            uploadedAt: doc.uploadedAt
                         }))
                     });
-                } else {
-                    // Include subtask even if no documents, to match response
+                } else if (!search && !status && !fileType && !dateFrom && !dateTo) {
+                    // Include subtask even if no documents, only when no filters are applied
                     acc[taskId].subtasks.push({
                         _id: subtask._id,
                         title: subtask.title,

@@ -564,6 +564,27 @@ export const ValidateFilterDocuments = Joi.object({
     limit: Joi.number().integer().min(1).optional().default(10).messages({
         'number.base': 'Limit must be a number',
         'number.min': 'Limit must be at least 1'
+    }),
+    // Advanced search parameters
+    search: Joi.string().optional().messages({
+        'string.base': 'Search must be a string'
+    }),
+    sortBy: Joi.string().valid('name', 'created', 'uploaded', 'size', 'status', 'type').optional().messages({
+        'string.base': 'Sort by must be a string',
+        'any.only': 'Sort by must be one of: name, created, uploaded, size, status, type'
+    }),
+    sortOrder: Joi.string().valid('asc', 'desc').optional().default('desc').messages({
+        'string.base': 'Sort order must be a string',
+        'any.only': 'Sort order must be either asc or desc'
+    }),
+    fileType: Joi.string().optional().messages({
+        'string.base': 'File type must be a string'
+    }),
+    dateFrom: Joi.date().optional().messages({
+        'date.base': 'Date from must be a valid date'
+    }),
+    dateTo: Joi.date().optional().messages({
+        'date.base': 'Date to must be a valid date'
     })
 });
 export const ValidateGetStudentDocuments = Joi.object({
