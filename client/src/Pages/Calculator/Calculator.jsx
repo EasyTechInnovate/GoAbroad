@@ -195,7 +195,7 @@ export default function Calculator() {
     if (x < 6) {
       A = 0.2; B = 0.5; C = 0.3;
     } else if (x < 7) {
-      A = 0.45; B = 0.35; C = 0.2;
+      A = 0.25; B = 0.30; C = 0.45;
     } else if (x < 8) {
       A = 0.70; B = 0.20; C = 0.10; // Calibrated to the user's case
     } else if (x < 9) {

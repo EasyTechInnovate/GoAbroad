@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { loginUser } from '@/services/api.services';
 import { setAuth, isAuthenticated, getUser, clearAuth } from '@/lib/auth';
-import logo from '../../assets/logo.svg'
+import logo from '../../assets/logo.svg';
+import { toast } from 'sonner'; // 1. Import the toast function
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -23,44 +23,55 @@ const SignIn = () => {
   const [apiError, setApiError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  useEffect(() => {  
-    clearAuth();
-
-    if (isAuthenticated()) {
-      const user = getUser();
-      if (!user.isFeePaid || !user.isVerified) {
-        navigate('/pricing', { state: { fromAuth: true, user: user } });
-      } else {
-        navigate('/dashboard');
-      }
-    }
-  }, [navigate]);
-
   useEffect(() => {
+    // Clear any previous session data on component mount
+    clearAuth();
+  }, []);
+
+  // This effect handles messages passed via state or URL parameters
+  useEffect(() => {
+    let urlWasCleaned = false;
+
+    // Handle success messages from navigation state
     if (location.state?.message) {
       setSuccessMessage(location.state.message);
+      // Clean the state from history
       window.history.replaceState({}, document.title);
     }
-    
+
+    // 2. Check for 'expired' or 'error' parameters in the URL
     const tokenExpired = searchParams.get('expired');
+    const authError = searchParams.get('error');
+
     if (tokenExpired === 'true') {
-      setApiError('Your session has expired. Please signin in again.');
+       setTimeout(() => {
+    toast.error('Your session has expired. Please sign in again.');
+  }, 0);
+      urlWasCleaned = true;
     }
-  }, [location.state, searchParams]);
+    
+    if (authError) {
+      // 3. Display the error from the URL as a toast
+       setTimeout(() => {
+    toast.error(decodeURIComponent(authError));
+  }, 0);
+      urlWasCleaned = true;
+    }
+    
+    // 4. If we showed a toast from a URL param, clean the URL
+    if (urlWasCleaned) {
+      navigate('/signin', { replace: true });
+    }
+    
+  }, [location.state, searchParams, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     setApiError('');
+    setIsLoading(true);
     
     try {
-      setIsLoading(true);
-      
-      const userData = {
-        email: email,
-        password: password
-      };
-      
+      const userData = { email, password };
       const response = await loginUser(userData);
       
       if (response.success) {
@@ -84,12 +95,8 @@ const SignIn = () => {
       }
     } catch (error) {
       console.error('Login failed:', error);
-      
-      if (error.response && error.response.data) {
-        setApiError(error.response.data.message || 'Invalid email or password. Please try again.');
-      } else {
-        setApiError('Network error. Please check your connection and try again.');
-      }
+      const errorMessage = error.response?.data?.message || 'Invalid email or password. Please try again.';
+      setApiError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -97,8 +104,8 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
+      
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center">
-
         {/* Left Side - Branding & Info */}
         <div className="hidden lg:flex flex-col justify-center space-y-8 px-8">
           <div className="space-y-6">
@@ -106,7 +113,6 @@ const SignIn = () => {
               <img src={logo} alt="goupbroadlogo" className='w-[50px] h-[50px] '/>
               <h1 className="text-3xl font-bold text-primary-700">Goupbroad</h1>
             </div>
-
             <div className="space-y-4">
               <h2 className="text-4xl font-bold text-gray-800 leading-tight">
                 Welcome Back to Your
@@ -117,8 +123,6 @@ const SignIn = () => {
               </p>
             </div>
           </div>
-
-          {/* Features */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="text-2xl font-bold text-primary-700">10,000+</div>
@@ -154,22 +158,18 @@ const SignIn = () => {
                 Enter your credentials to access your account
               </CardDescription>
             </CardHeader>
-
             <CardContent className="space-y-6">
               {successMessage && (
                 <div className="p-3 bg-green-50 border border-green-200 text-green-600 rounded-md text-sm">
                   {successMessage}
                 </div>
               )}
-
               {apiError && (
                 <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
                   {apiError}
                 </div>
               )}
-
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email Field */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                     Email Address
@@ -190,8 +190,6 @@ const SignIn = () => {
                     />
                   </div>
                 </div>
-
-                {/* Password Field */}
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                     Password
@@ -219,8 +217,6 @@ const SignIn = () => {
                     </button>
                   </div>
                 </div>
-
-                {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -236,8 +232,6 @@ const SignIn = () => {
                     Forgot password?
                   </Link>
                 </div>
-
-                {/* Sign In Button */}
                 <Button
                   type="submit"
                   className="w-full h-12 bg-primary-800 cursor-pointer text-white font-semibold"
@@ -246,8 +240,6 @@ const SignIn = () => {
                   {isLoading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
-
-              {/* Divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-gray-200" />
@@ -256,9 +248,7 @@ const SignIn = () => {
                   <span className="bg-white px-2 text-gray-500">Or continue with</span>
                 </div>
               </div>
-
-              {/* Social Sign In */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <Button 
                   variant="outline" 
                   className="h-12"
@@ -273,20 +263,7 @@ const SignIn = () => {
                   </svg>
                   Google
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-12"
-                  onClick={() => window.location.href = `${import.meta.env.VITE_SERVER_URL}/v1/auth/facebook`}
-                  type="button"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                  Facebook
-                </Button>
               </div>
-
-              {/* Sign Up Link */}
               <div className="text-center">
                 <span className="text-sm text-gray-600">
                   Don&apos;t have an account?{' '}
