@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
@@ -22,6 +23,9 @@ import { toast } from 'sonner'
 
 
 const Messages = () => {
+    const [searchParams] = useSearchParams()
+    const targetStudentId = searchParams.get('studentId')
+    
     const [loading, setLoading] = useState(false)
     const [chatLoading, setChatLoading] = useState(false)
     const [studentListPagination, setStudentListPagination] = useState({})
@@ -48,10 +52,28 @@ const Messages = () => {
     const [studentSearch, setStudentSearch] = useState('')
     const [roomsLoading ,setRoomsLoading] = useState(false)
 
-    
-
     const messagesEndRef = useRef(null)
     const fileInputRef = useRef(null)
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (targetStudentId && selectedRoom.studentId === targetStudentId) {
+            navigate('/admin/messages', { replace: true });
+        }
+    }, [selectedRoom.studentId, targetStudentId, navigate]);
+
+    useEffect(() => {
+        const handleTargetStudent = async () => {
+            if (targetStudentId && students.length > 0) {
+                const targetStudent = students.find(student => student.id === targetStudentId)
+                if (targetStudent) {
+                    await generateRoomToken(targetStudent)
+                }
+            }
+        }
+        handleTargetStudent()
+    }, [targetStudentId, students])
 
     useEffect(() => {
         let isMounted = true
@@ -142,7 +164,7 @@ const Messages = () => {
                     timestamp: doc.data().timestamp?.toDate()
                 }))
                 setMessages(newMessages)
-                console.log('fhalsd', newMessages)
+                // console.log('fhalsd', newMessages)
                 setChatLoading(false)
             },
             (error) => {

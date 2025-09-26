@@ -112,12 +112,12 @@ const SidebarHeader = ({isOpen,setIsOpen}) => {
                 <ChevronDown className="h-4 w-4" />
               </div> */}
 
-              <div className="relative cursor-pointer bg-gray-50">
+              {/* <div className="relative cursor-pointer bg-gray-50">
                 <Bell className="h-5 w-5 text-gray-700" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                   2
                 </span>
-              </div>
+              </div> */}
 
               <div className="relative">
                 <div 
