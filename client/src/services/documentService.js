@@ -5,14 +5,45 @@ import { apiService } from './api.services';
  * @param {Object} params Query parameters for pagination and filtering
  * @returns {Promise<Array>} Array of documents with studentId, taskId, and subtaskId
  */
-export const getDocuments = async ({ page = 1, limit = 10, status  , search} = {}) => {
+export const getDocuments = async ({
+  page = 1,
+  limit = 10,
+  status,
+  search,
+  fileType,
+  dateFrom,
+  dateTo,
+  sortBy,
+  sortOrder
+} = {}) => {
   let url = `/admin/documents?page=${page}&limit=${limit}`;
-  
-  if (status !== undefined && status !== '' && status !== 'all') {
+
+  if (status && status !== 'all') {
     url += `&status=${status}`;
   }
-  if(search !== undefined && search !== ''){
-     url += `&search=${search}`;
+
+  if (search) {
+    url += `&search=${encodeURIComponent(search)}`;
+  }
+
+  if (fileType && fileType !== 'all') {
+    url += `&fileType=${fileType}`;
+  }
+
+  if (dateFrom) {
+    url += `&dateFrom=${dateFrom}`;
+  }
+
+  if (dateTo) {
+    url += `&dateTo=${dateTo}`;
+  }
+
+  if (sortBy) {
+    url += `&sortBy=${sortBy}`;
+  }
+
+  if (sortOrder) {
+    url += `&sortOrder=${sortOrder}`;
   }
 
   const response = await apiService.get(url);

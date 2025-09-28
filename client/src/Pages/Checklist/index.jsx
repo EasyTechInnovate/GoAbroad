@@ -216,7 +216,7 @@ const Checklist = () => {
                             <span className="text-gray-600">Deadline: </span>
                             <span className="font-medium bg-white px-1 rounded-xs">{task.deadline}</span>
                           </div>
-
+{/* 
                           {task.status !== 'locked' && (
                             <button className="bg-orange-500 cursor-pointer hover:bg-orange-600 text-white text-xs font-medium py-2 px-3 rounded">
                               Send Message to AIFA
@@ -227,7 +227,7 @@ const Checklist = () => {
                             <button className="bg-orange-300 text-white text-xs font-medium py-2 px-3 rounded cursor-not-allowed">
                               Send Message to AIFA
                             </button>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     ))

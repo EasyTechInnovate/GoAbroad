@@ -67,6 +67,7 @@ import { getTaskSubtaskQuestionDetails } from '@/services/questionnaireService';
 import PropTypes from 'prop-types';
 import { AssignUniversityDialog } from './AssignUniversityDialog';
 import '@/index.css'; // For spinner styling
+import { useNavigate } from 'react-router-dom';
 
 export function StudentProfile({ id }) {
   // Initialize student state with default values for nested objects
@@ -126,6 +127,8 @@ export function StudentProfile({ id }) {
     // Return true if user is ADMIN or EDITOR, false for VIEWER
     return currentUser && currentUser.role !== 'VIEWER';
   };
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [assignments, setAssignments] = useState([]);
@@ -1001,7 +1004,7 @@ export function StudentProfile({ id }) {
             </div>
 
             <div className="flex justify-between gap-4 mt-6">
-              <Button className="flex-1" variant="outline">
+              <Button onClick={()=> navigate(`/admin/messages?studentId=${student._id}`)} className="flex-1" variant="outline">
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Message
               </Button>
@@ -1027,7 +1030,8 @@ export function StudentProfile({ id }) {
                 <TabsTrigger value="universities">Universities</TabsTrigger>
                 <TabsTrigger value="tasks">Tasks</TabsTrigger>
               </TabsList>
-              {student && hasEditPermission() && <AssignUniversityDialog  studentId={student._id} onAssign={handleAssign} />}
+              {/* university assigment button */}
+              {/* {student && hasEditPermission() && <AssignUniversityDialog  studentId={student._id} onAssign={handleAssign} />} */}
             </div>
 
             <TabsContent value="overview" className="space-y-4">
