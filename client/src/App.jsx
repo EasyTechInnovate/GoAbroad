@@ -57,6 +57,7 @@ import TermsCondition from './Pages/Static/TermsCondition';
 import PrivacyPolicy from './Pages/Static/PrivacyPolicy.';
 import Calculator from './Pages/Calculator/Calculator';
 import AuthCallback from './Pages/Auth/AuthCallback';
+import CGPAConverter from './Pages/Calculator/GPAConverter';
 
 const App = () => {
   return (
@@ -79,7 +80,8 @@ const App = () => {
       <Route path="/premium" element={<PremiumAccess />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsCondition />} />
-      <Route path='/calculator' element={<Calculator/>}/>
+      {/* <Route path='/calculator' element={<Calculator/>}/> */}
+      <Route path='/cgp-to-gpa-converter' element={<CGPAConverter/>}/>
 
       {/* Payment Routes */}
       <Route path="/checkout" element={<Checkout />} />
