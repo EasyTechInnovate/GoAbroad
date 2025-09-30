@@ -153,13 +153,13 @@ const CollegeFinderFixed = () => {
             </SelectTrigger>
             <SelectContent className="bg-background border-primary/20">
               <SelectItem value="united-states">United States</SelectItem>
-              <SelectItem value="india">India</SelectItem>
-              <SelectItem value="india">Japan</SelectItem>
+              {/* <SelectItem value="india">India</SelectItem>
+              <SelectItem value="japan">Japan</SelectItem>
               <SelectItem value="canada">Canada</SelectItem>
               <SelectItem value="uk">United Kingdom</SelectItem>
               <SelectItem value="australia">Australia</SelectItem>
               <SelectItem value="germany">Germany</SelectItem>
-              <SelectItem value="france">France</SelectItem>
+              <SelectItem value="france">France</SelectItem> */}
             </SelectContent>
           </Select>
         </div>

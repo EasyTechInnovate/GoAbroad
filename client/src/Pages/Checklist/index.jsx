@@ -4,11 +4,12 @@ import AppSidebar from '../../components/AppSidebar';
 import SidebarHeader from '../../components/SidebarHeader';
 import { Check, LockKeyhole, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getStudentTasks } from '@/services/taskService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const Checklist = () => {
   const navigate = useNavigate();
+  const { taskId } = useParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
@@ -52,6 +53,18 @@ const Checklist = () => {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  // Handle URL task ID and remove it from URL after selection
+  useEffect(() => {
+    if (taskId && tasks.length > 0) {
+      const taskExists = tasks.find(task => task._id === taskId);
+      if (taskExists) {
+        setSelectedTaskId(taskId);
+        // Remove task ID from URL
+        navigate('/dashboard/checklist', { replace: true });
+      }
+    }
+  }, [taskId, tasks, navigate]);
 
   const selectedTask = tasks.find(task => task._id === selectedTaskId);
   const subtasks = selectedTask?.subtasks || [];

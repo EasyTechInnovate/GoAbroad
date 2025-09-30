@@ -1,8 +1,10 @@
 import { AlignLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getStudentUpcomingTasks } from '@/services/dashboardService';
+import { useNavigate } from 'react-router-dom';
 
 const TasksList = () => {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -47,6 +49,10 @@ const TasksList = () => {
     fetchUpcomingTasks();
   }, [pagination.page, pagination.limit]);
 
+  const handleTaskClick = (taskId) => {
+    navigate(`/dashboard/checklist/${taskId}`);
+  };
+
   return (
     <div className="rounded-md bg-white p-4 md:p-8">
       <h3 className="text-xl font-semibold text-gray-800 mb-4">
@@ -67,7 +73,7 @@ const TasksList = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {tasks.map((task) => (
-                  <tr key={task.id} className="hover:bg-gray-50">
+                  <tr key={task.id} onClick={() => handleTaskClick(task.id)} className="hover:bg-gray-50 cursor-pointer">
                     <td className="px-6 py-4">
                       <span className="text-gray-800 font-medium">{task.name}</span>
                     </td>
@@ -90,7 +96,7 @@ const TasksList = () => {
           
           <div className="md:hidden space-y-4">
             {tasks.map((task) => (
-              <div key={task.id} className="bg-gray-50 p-4 rounded-md shadow-sm">
+              <div key={task.id} onClick={() => handleTaskClick(task.id)} className="bg-gray-50 p-4 rounded-md shadow-sm cursor-pointer">
                 <div className="mb-3">
                   <span className="text-gray-800 font-medium">{task.name}</span>
                 </div>

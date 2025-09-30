@@ -565,8 +565,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 type="number"
                 value={formData.greDetails.greScore.verbal}
                 onChange={(e) => handleInputChange('greDetails', 'greScore.verbal', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
@@ -576,8 +576,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 type="number"
                 value={formData.greDetails.greScore.quant}
                 onChange={(e) => handleInputChange('greDetails', 'greScore.quant', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
@@ -588,8 +588,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 step="0.5"
                 value={formData.greDetails.greScore.awa}
                 onChange={(e) => handleInputChange('greDetails', 'greScore.awa', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
@@ -641,8 +641,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 step="0.5"
                 value={formData.ieltsDetails.ieltsScore.reading}
                 onChange={(e) => handleInputChange('ieltsDetails', 'ieltsScore.reading', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
@@ -653,8 +653,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 step="0.5"
                 value={formData.ieltsDetails.ieltsScore.writing}
                 onChange={(e) => handleInputChange('ieltsDetails', 'ieltsScore.writing', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
@@ -665,8 +665,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 step="0.5"
                 value={formData.ieltsDetails.ieltsScore.speaking}
                 onChange={(e) => handleInputChange('ieltsDetails', 'ieltsScore.speaking', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
@@ -677,8 +677,8 @@ const ProfileEditForm = ({ userData, onClose, onSuccess }) => {
                 step="0.5"
                 value={formData.ieltsDetails.ieltsScore.listening}
                 onChange={(e) => handleInputChange('ieltsDetails', 'ieltsScore.listening', e.target.value)}
-                disabled
-                className="bg-gray-50"
+                // disabled
+                // className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">

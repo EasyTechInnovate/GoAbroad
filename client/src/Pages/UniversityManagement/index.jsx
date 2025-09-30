@@ -58,7 +58,7 @@ const UniversityManagement = () => {
       if (filters.searchQuery) params.append('search', filters.searchQuery);
 
       const response = await apiService.get(`/student/assigned-universities?${params}`);
-      
+
       if (response.data) {
         setAssignments(response.data.assignments);
         setPagination(prev => ({
@@ -67,24 +67,27 @@ const UniversityManagement = () => {
           hasNextPage: response.data.pagination.hasNextPage,
           hasPrevPage: response.data.pagination.hasPrevPage
         }));
-        
-        // Load the first university details by default if we have results and no university is selected
-        if (response.data.assignments.length > 0 && !universityData) {
+
+        // Load the first university details by default if we have results
+        if (response.data.assignments.length > 0) {
           fetchUniversityDetails(response.data.assignments[0].universityId._id);
+        } else {
+          setUniversityData(null);
         }
       }
     } catch (error) {
       console.error('Error fetching assignments:', error);
       toast.error('Failed to fetch universities');
+      setAssignments([]);
+      setUniversityData(null);
     } finally {
       setLoading(false);
     }
-  }, [filters, pagination.page, pagination.limit, universityData]);
+  }, [filters.admissionStatus, filters.universityStatus, filters.searchQuery, pagination.page, pagination.limit]);
 
   const handleFilterChange = useCallback((filterType, value) => {
     setFilters(prev => ({ ...prev, [filterType]: value }));
-    setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page when filter changes
-    fetchAssignments(); // Immediately fetch new results
+    setPagination(prev => ({ ...prev, page: 1 }));
   }, []);
 
   useEffect(() => {
@@ -160,7 +163,7 @@ const UniversityManagement = () => {
                   >
                     <div className="flex items-center gap-3 text-primary-1">
                       <FilterIcon fill='#145044'/>
-                      <span className="font-medium">Got Admit</span>
+                      <span className="font-medium">Filters</span>
                     </div>
                     <div className="ml-auto">
                       <ChevronDown className={`h-5 w-5 text-black transform transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />

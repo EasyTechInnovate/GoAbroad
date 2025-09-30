@@ -48,6 +48,7 @@ const Dashboard = () => {
       count: isLoading ? '...' : String(dashboardStats.totalPendingTasks),
       title: 'My Pending Tasks',
       bgColor: 'bg-[#FFE2E5]',
+      redirect: '/dashboard/checklist'
     },
     {
       id: 2,
@@ -56,6 +57,7 @@ const Dashboard = () => {
       count: isLoading ? '...' : String(dashboardStats.totalCompletedTasks),
       title: 'Completed Tasks',
       bgColor: 'bg-[#FFF4DE]',
+      redirect: '/dashboard/checklist'
     },
     {
       id: 3,
@@ -64,6 +66,7 @@ const Dashboard = () => {
       count: isLoading ? '...' : String(dashboardStats.totalNewMessages),
       title: 'New Messages',
       bgColor: 'bg-[#DCFCE7]',
+      redirect:'/dashboard/chat'
     },
     {
       id: 4,
@@ -72,6 +75,7 @@ const Dashboard = () => {
       count: isLoading ? '...' : String(dashboardStats.totalUniversityAssigned),
       title: 'Universities Shortlisted',
       bgColor: 'bg-[#F3E8FF]',
+      redirect:'/dashboard/universities'
     },
   ];
 
@@ -92,6 +96,7 @@ const Dashboard = () => {
                   count={stat.count}
                   title={stat.title}
                   bgColor={stat.bgColor}
+                  redirect={stat.redirect}
                 />
               ))}
             </div>
