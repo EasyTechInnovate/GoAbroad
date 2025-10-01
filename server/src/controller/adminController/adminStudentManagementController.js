@@ -9,28 +9,27 @@ export default {
         try {
             const query = req.query;
 
-            // Validate query parameters
             const { error, value } = validateJoiSchema(getStudentsSchema, query);
             if (error) {
-                return httpError(next, error, req, 400)
+                return httpError(next, error, req, 400);
             }
 
             const { page, limit, search, status, isVerified, sortBy, sortOrder } = value;
 
-            // Build the query object
             const queryObj = {};
             if (status) queryObj.status = status;
             if (isVerified !== undefined) queryObj.isVerified = isVerified;
             if (search) {
                 queryObj.$or = [
+                    { name: { $regex: search, $options: 'i' } },
                     { email: { $regex: search, $options: 'i' } },
+                    { phoneNumber: { $regex: search, $options: 'i' } },
                     { 'personalDetails.address': { $regex: search, $options: 'i' } },
                     { 'collegeDetails.branch': { $regex: search, $options: 'i' } },
                     { 'collegeDetails.university': { $regex: search, $options: 'i' } },
                 ];
             }
 
-            // Pagination and sorting
             const skip = (page - 1) * limit;
             const sortObj = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
 
@@ -41,11 +40,9 @@ export default {
                 .limit(limit)
                 .lean();
 
-            // Get total count for pagination metadata
             const totalStudents = await Student.countDocuments(queryObj);
             const totalPages = Math.ceil(totalStudents / limit);
 
-            // Prepare response data
             const data = {
                 students,
                 pagination: {
