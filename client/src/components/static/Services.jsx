@@ -18,7 +18,7 @@ const Services = () => {
       borderColor: 'border-blue-200',
       features: ['AI-powered matching', 'Detailed course insights', 'Admission requirements'],
       badge: 'Popular',
-      route:'/college-finder'
+      route:'/university-finder'
     },
     {
       icon: Users,

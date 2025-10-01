@@ -48,7 +48,11 @@ import CollegeFinderStep1 from './Pages/Static/CollegeFinder/CollegeFinderStep1'
 import CollegeFinderStep2 from './Pages/Static/CollegeFinder/CollegeFinderStep2';
 import CollegeFinderStep3 from './Pages/Static/CollegeFinder/CollegeFinderStep3';
 import CollegeFinderStep4 from './Pages/Static/CollegeFinder/CollegeFinderStep4';
-import CollegeFinderResults from './Pages/Static/CollegeFinder/CollegeFinderResults';
+
+// New CollegeFinder Components
+import NewCollegeFinder from './Pages/CollegeFinder/NewCollegeFinder';
+import EnterpriseCollegeFinder from './Pages/CollegeFinder/EnterpriseCollegeFinder';
+import NewCollegeFinderResults from './Pages/CollegeFinder/CollegeFinderResults';
 import OrderConfirmation from './Pages/Static/OrderConfirmation';
 import Checkout from './Pages/Static/Checkout';
 import TestOrderConfirmation from './Pages/Static/components/TestOrderConfirmation';
@@ -80,7 +84,7 @@ const App = () => {
       <Route path="/premium" element={<PremiumAccess />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-and-conditions" element={<TermsCondition />} />
-      {/* <Route path='/calculator' element={<Calculator/>}/> */}
+      <Route path='/calculator' element={<Calculator/>}/>
       <Route path='/cgp-to-gpa-converter' element={<CGPAConverter/>}/>
 
       {/* Payment Routes */}
@@ -91,13 +95,17 @@ const App = () => {
       <Route path="/test-checkout" element={<TestCheckout />} />
       <Route path="/test-order-confirmation" element={<TestOrderConfirmation />} />
 
-      {/* College Finder Routes */}
+      {/* College Finder Routes - Final Version */}
+      <Route path="/university-finder" element={<NewCollegeFinder />} />
+      <Route path="/college-finder/questionnaire" element={<EnterpriseCollegeFinder />} />
+      <Route path="/college-finder/results" element={<NewCollegeFinderResults />} />
+
+      {/* College Finder Routes - Legacy */}
       <Route path="/college-finder" element={<CollegeFinder />} />
       <Route path="/college-finder/step1" element={<CollegeFinderStep1 />} />
       <Route path="/college-finder/step2" element={<CollegeFinderStep2 />} />
       <Route path="/college-finder/step3" element={<CollegeFinderStep3 />} />
       <Route path="/college-finder/step4" element={<CollegeFinderStep4 />} />
-      <Route path="/college-finder/results" element={<CollegeFinderResults />} />
 
       {/* Dashboard Routes */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
