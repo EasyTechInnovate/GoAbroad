@@ -51,7 +51,7 @@ import CollegeFinderStep4 from './Pages/Static/CollegeFinder/CollegeFinderStep4'
 
 // New CollegeFinder Components
 import NewCollegeFinder from './Pages/CollegeFinder/NewCollegeFinder';
-import EnterpriseCollegeFinder from './Pages/CollegeFinder/EnterpriseCollegeFinder';
+import QuestionnaireForm from './Pages/CollegeFinder/QuestionnaireForm';
 import NewCollegeFinderResults from './Pages/CollegeFinder/CollegeFinderResults';
 import OrderConfirmation from './Pages/Static/OrderConfirmation';
 import Checkout from './Pages/Static/Checkout';
@@ -97,7 +97,7 @@ const App = () => {
 
       {/* College Finder Routes - Final Version */}
       <Route path="/university-finder" element={<NewCollegeFinder />} />
-      <Route path="/college-finder/questionnaire" element={<EnterpriseCollegeFinder />} />
+      <Route path="/college-finder/questionnaire" element={<QuestionnaireForm />} />
       <Route path="/college-finder/results" element={<NewCollegeFinderResults />} />
 
       {/* College Finder Routes - Legacy */}

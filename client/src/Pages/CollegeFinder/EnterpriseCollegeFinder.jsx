@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Navigation from '@/components/static/Navigation';
@@ -35,6 +35,109 @@ import {
   Check
 } from 'lucide-react';
 import collegeData from '@/data/collegeData';
+
+// Simple InputField component with key prop to prevent cursor jumping
+const InputField = ({ label, field, type = 'text', options = null, required = false, placeholder = '', description = '', formData, errors, onChange }) => {
+  const hasError = errors[field];
+  const hasValue = formData[field] && formData[field] !== '';
+
+  if (type === 'select') {
+    return (
+      <div className="space-y-2" key={field}>
+        <label className="block text-sm font-medium text-gray-900">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        {description && <p className="text-xs text-gray-500">{description}</p>}
+        <select
+          key={`${field}-select`}
+          value={formData[field] || ''}
+          onChange={(e) => onChange(field, e.target.value)}
+          className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-colors ${
+            hasError
+              ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+              : hasValue
+              ? 'border-[#145044] focus:border-[#145044] focus:ring-[#145044]/20'
+              : 'border-gray-300 focus:border-[#145044] focus:ring-[#145044]/20'
+          }`}
+        >
+          <option value="">Select {label}</option>
+          {options.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        {hasError && (
+          <p className="text-red-600 text-xs flex items-center">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            {hasError}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (type === 'radio') {
+    return (
+      <div className="space-y-2" key={field}>
+        <label className="block text-sm font-medium text-gray-900">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        {description && <p className="text-xs text-gray-500">{description}</p>}
+        <div className="grid grid-cols-2 gap-2">
+          {options.map(option => (
+            <button
+              key={`${field}-${option}`}
+              type="button"
+              onClick={() => onChange(field, option)}
+              className={`px-3 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                formData[field] === option
+                  ? 'border-[#145044] bg-[#145044] text-white'
+                  : 'border-gray-300 bg-white text-gray-700 hover:border-[#145044]'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        {hasError && (
+          <p className="text-red-600 text-xs flex items-center">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            {hasError}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2" key={field}>
+      <label className="block text-sm font-medium text-gray-900">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      {description && <p className="text-xs text-gray-500">{description}</p>}
+      <input
+        key={`${field}-input`}
+        type={type}
+        value={formData[field] || ''}
+        onChange={(e) => onChange(field, e.target.value)}
+        placeholder={placeholder}
+        autoComplete="off"
+        className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-colors ${
+          hasError
+            ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+            : hasValue
+            ? 'border-[#145044] focus:border-[#145044] focus:ring-[#145044]/20'
+            : 'border-gray-300 focus:border-[#145044] focus:ring-[#145044]/20'
+        }`}
+      />
+      {hasError && (
+        <p className="text-red-600 text-xs flex items-center">
+          <AlertCircle className="h-3 w-3 mr-1" />
+          {hasError}
+        </p>
+      )}
+    </div>
+  );
+};
 
 const EnterpriseCollegeFinder = () => {
   const navigate = useNavigate();
@@ -106,7 +209,7 @@ const EnterpriseCollegeFinder = () => {
     }
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = useCallback((field, value) => {
     console.log(`📝 Field updated: ${field} = ${value}`);
 
     // Batch state updates to prevent cursor jumping
@@ -123,7 +226,7 @@ const EnterpriseCollegeFinder = () => {
         return newErrors;
       });
     }
-  };
+  }, [errors]);
 
   const generateRecommendations = async () => {
     console.log('🚀 Starting recommendation generation...');
@@ -404,105 +507,6 @@ Please provide detailed insights on this student's admission prospects and unive
     }
   };
 
-  const InputField = ({ label, field, type = 'text', options = null, required = false, placeholder = '', description = '' }) => {
-    const hasError = errors[field];
-    const hasValue = formData[field] && formData[field] !== '';
-
-    if (type === 'select') {
-      return (
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-900">
-            {label} {required && <span className="text-red-500">*</span>}
-          </label>
-          {description && <p className="text-xs text-gray-500">{description}</p>}
-          <select
-            value={formData[field]}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-colors ${
-              hasError
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                : hasValue
-                ? 'border-[#145044] focus:border-[#145044] focus:ring-[#145044]/20'
-                : 'border-gray-300 focus:border-[#145044] focus:ring-[#145044]/20'
-            }`}
-          >
-            <option value="">Select {label}</option>
-            {options.map(option => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-          {hasError && (
-            <p className="text-red-600 text-xs flex items-center">
-              <AlertCircle className="h-3 w-3 mr-1" />
-              {hasError}
-            </p>
-          )}
-        </div>
-      );
-    }
-
-    if (type === 'radio') {
-      return (
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-900">
-            {label} {required && <span className="text-red-500">*</span>}
-          </label>
-          {description && <p className="text-xs text-gray-500">{description}</p>}
-          <div className="grid grid-cols-2 gap-2">
-            {options.map(option => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => handleInputChange(field, option)}
-                className={`px-3 py-2 border rounded-lg text-sm font-medium transition-colors ${
-                  formData[field] === option
-                    ? 'border-[#145044] bg-[#145044] text-white'
-                    : 'border-gray-300 bg-white text-gray-700 hover:border-[#145044]'
-                }`}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          {hasError && (
-            <p className="text-red-600 text-xs flex items-center">
-              <AlertCircle className="h-3 w-3 mr-1" />
-              {hasError}
-            </p>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-900">
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
-        {description && <p className="text-xs text-gray-500">{description}</p>}
-        <input
-          type={type}
-          value={formData[field]}
-          onChange={(e) => handleInputChange(field, e.target.value)}
-          placeholder={placeholder}
-          autoComplete="off"
-          className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 transition-colors ${
-            hasError
-              ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-              : hasValue
-              ? 'border-[#145044] focus:border-[#145044] focus:ring-[#145044]/20'
-              : 'border-gray-300 focus:border-[#145044] focus:ring-[#145044]/20'
-          }`}
-        />
-        {hasError && (
-          <p className="text-red-600 text-xs flex items-center">
-            <AlertCircle className="h-3 w-3 mr-1" />
-            {hasError}
-          </p>
-        )}
-      </div>
-    );
-  };
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -521,6 +525,9 @@ Please provide detailed insights on this student's admission prospects and unive
               options={['MSCS', 'MBA', 'MS Finance', 'MS Marketing', 'MS Data Science', 'Engineering', 'MS Business Analytics']}
               required
               description="Choose your target program for higher education"
+              formData={formData}
+              errors={errors}
+              onChange={handleInputChange}
             />
 
             <div className="grid md:grid-cols-2 gap-4">

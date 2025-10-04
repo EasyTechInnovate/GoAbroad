@@ -176,7 +176,7 @@ const CollegeFinderResults = () => {
               <Award className="h-5 w-5 text-gray-400 mr-3" />
               <div>
                 <p className="text-sm text-gray-600">Ranking</p>
-                <p className="font-semibold">#{college.ranking}</p>
+                <p className="font-semibold">#{college.ranking?.national || 'N/A'}</p>
               </div>
             </div>
             <div className="flex items-center">
@@ -235,11 +235,10 @@ const CollegeFinderResults = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          {/* <div className="flex gap-3">
             <Button
               className="flex-1 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white"
               onClick={() => {
-                // This would open university website
                 window.open(`https://www.${college.university.toLowerCase().replace(/\s+/g, '')}.edu`, '_blank');
               }}
             >
@@ -250,13 +249,12 @@ const CollegeFinderResults = () => {
               variant="outline"
               className="px-4 border-2 border-gray-300 hover:border-primary-300"
               onClick={() => {
-                // This would save for comparison
                 console.log('Save for comparison:', college.id);
               }}
             >
               <BookOpen className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     );
