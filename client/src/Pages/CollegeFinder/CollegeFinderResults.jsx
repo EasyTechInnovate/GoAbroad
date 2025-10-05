@@ -183,7 +183,7 @@ const CollegeFinderResults = () => {
               <Users className="h-5 w-5 text-gray-400 mr-3" />
               <div>
                 <p className="text-sm text-gray-600">Acceptance Rate</p>
-                <p className="font-semibold">{college.acceptanceRate}%</p>
+                <p className="font-semibold">{college.acceptanceRate}</p>
               </div>
             </div>
           </div>

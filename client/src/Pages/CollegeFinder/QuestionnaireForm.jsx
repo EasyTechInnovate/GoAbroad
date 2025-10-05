@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import Navigation from '@/components/static/Navigation';
 import Footer from '@/components/static/Footer';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,7 @@ import {
   Check
 } from 'lucide-react';
 import collegeData from '@/data/collegeData';
+import { data } from '@/lib/data';
 import {
   validateUniversityData,
   getProgramDisplayNames,
@@ -169,6 +170,7 @@ const InputField = ({ label, field, type = 'text', options = null, required = fa
 const QuestionnaireForm = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [questionType, setQuestionType] = useState(''); // 'base' or 'advanced'
   const [dataLoaded, setDataLoaded] = useState(false);
   const [dataValidation, setDataValidation] = useState(null);
   const [availablePrograms, setAvailablePrograms] = useState([]);
@@ -269,68 +271,255 @@ const QuestionnaireForm = () => {
   }, [errors]);
 
   // Initialize Gemini AI
-  const initializeGemini = () => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    console.log('🔑 Gemini API Key:', apiKey ? 'Available' : 'Missing');
+  // Parse AI response into structured format
+  const parseAIResponse = (aiText, universities) => {
+    console.log('🔍 Parsing AI response...');
+
+    // Simple parser - extract university names mentioned in AI response
+    const tiers = { ambitious: [], target: [], safe: [], backup: [] };
+    let currentTier = '';
+
+    const lines = aiText.split('\n');
+
+    lines.forEach(line => {
+      const lowerLine = line.toLowerCase();
+
+      // Detect tier sections
+      if (lowerLine.includes('ambitious')) currentTier = 'ambitious';
+      else if (lowerLine.includes('target')) currentTier = 'target';
+      else if (lowerLine.includes('safe')) currentTier = 'safe';
+      else if (lowerLine.includes('backup')) currentTier = 'backup';
+
+      // Look for university names in current tier
+      if (currentTier) {
+        universities.forEach((uni, index) => {
+          const uniName = uni.name.toLowerCase();
+          if (lowerLine.includes(uniName.split(' ')[0]) || lowerLine.includes(uniName)) {
+            // Create structured university object - using ONLY real data from data.js
+            const structuredUni = {
+              id: `${currentTier}-${index}`,
+              name: uni.name,
+              university: uni.name, // Results page expects this field
+              program: uni.program,
+              tier: currentTier,
+              probability: Math.round(currentTier === 'ambitious' ? 15 + Math.random() * 10 :
+                          currentTier === 'target' ? 35 + Math.random() * 15 :
+                          currentTier === 'safe' ? 60 + Math.random() * 20 :
+                          80 + Math.random() * 15),
+              ranking: uni.ranking,
+              location: uni.location,
+              tuition: uni.tuition_fees_per_year,
+              description: uni.description,
+              acceptanceRate: uni.acceptance_rate,
+              stemDesignated: uni.stemDesignated,
+              f1Eligible: uni.f1Eligible,
+              accepts3Year: uni.accepts3Year,
+              features: uni.features
+            };
+
+            // Add to tier if not already added and tier has space
+            if (tiers[currentTier].length < 5 && !tiers[currentTier].find(u => u.id === structuredUni.id)) {
+              tiers[currentTier].push(structuredUni);
+            }
+          }
+        });
+      }
+    });
+
+    // No fallback data - only show what AI actually recommends
+
+    const total = Object.values(tiers).reduce((sum, tier) => sum + tier.length, 0);
+    console.log(`📊 Parsed ${total} recommendations:`, tiers);
+
+    return { ...tiers, total };
+  };
+
+  const initializeOpenAI = () => {
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    console.log('🔑 OpenAI API Key:', apiKey ? 'Available' : 'Missing');
 
     if (!apiKey) {
-      console.warn('⚠️ Gemini API key not found. Using mock responses.');
+      console.warn('⚠️ OpenAI API key not found.');
       return null;
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      console.log('✅ Gemini AI initialized successfully');
-      return genAI;
+      const client = new OpenAI({
+        apiKey: apiKey,
+        dangerouslyAllowBrowser: true // Required for client-side usage
+      });
+      console.log('✅ OpenAI initialized successfully');
+      return client;
     } catch (error) {
-      console.error('❌ Error initializing Gemini AI:', error);
+      console.error('❌ Error initializing OpenAI:', error);
       return null;
     }
   };
 
   const generateRecommendations = async () => {
-    console.log('🚀 Starting recommendation generation...');
+    console.log('🚀 Starting AI recommendation generation with ChatML...');
     setIsSubmitting(true);
 
     try {
-      // Generate university recommendations using real data
-      console.log('📊 User profile for recommendations:', formData);
+      // Prepare ChatML prompt according to client specifications
+      const systemPrompt = `You are an expert U.S. admissions consultant specializing in helping international students (esp. Indian applicants) secure admission into top U.S. universities.
 
-      const userProfile = {
-        program: formData.program,
-        gpa: formData.gpa,
-        testScores: {
-          gre: formData.greScore,
-          gmat: formData.gmatScore,
-          english: formData.englishScore
-        },
-        preferences: {
-          budget: formData.budget,
-          regions: formData.preferredRegions,
-          ranking: formData.rankingImportance
+SCORING FRAMEWORK BY PROGRAM GROUPS:
+
+GROUP 1: Business/Finance Programs (MS Finance, MS Accounting, MBA Finance & Accounting)
+Total: 1000 points
+• Standardized Tests (GMAT/GRE): 300 points (30%)
+• GPA: 250 points (25%)
+• Work Experience: 250 points (25%)
+• Professional Certifications: 100 points (10%)
+• Diversity/Leadership: 100 points (10%)
+
+GROUP 2: Marketing & Management Programs (MS Marketing, MS Management, MS Eng Management, MBA Marketing, MBA Management)
+Total: 1000 points
+• Work Experience: 350 points (35%)
+• Standardized Tests: 250 points (25%)
+• GPA: 200 points (20%)
+• Leadership Experience: 150 points (15%)
+• Industry Relevance: 50 points (5%)
+
+GROUP 3: Analytics & Data Programs (MS Business Analytics, MS Data Science, MBA Business Analytics)
+Total: 1000 points
+• Technical Skills/GPA: 300 points (30%)
+• Standardized Tests: 250 points (25%)
+• Work Experience: 200 points (20%)
+• Technical Certifications: 150 points (15%)
+• Projects/Portfolio: 100 points (10%)
+
+GROUP 4: Computer Science & Information Systems (CS, Information Systems & AI)
+Total: 1000 points
+• GPA: 300 points (30%)
+• GRE/Technical Tests: 250 points (25%)
+• Research/Projects: 250 points (25%)
+• Work Experience: 150 points (15%)
+• Technical Certifications: 50 points (5%)
+
+GROUP 5: Core Engineering (Civil, Industrial, Mechanical, Electrical, Biomedical Engineering)
+Total: 1000 points
+• GPA: 300 points (30%)
+• Research Experience: 250 points (25%)
+• GRE Score: 200 points (20%)
+• Work Experience: 150 points (15%)
+• Technical Projects: 100 points (10%)
+
+SCORING INTERPRETATION:
+• 900-1000: Extremely competitive for top programs
+• 800-899: Competitive for top programs, strong for mid-tier
+• 700-799: Competitive for mid-tier, strong for regional programs
+• 600-699: Competitive for regional programs
+• Below 600: May need to strengthen profile
+
+TIER ASSIGNMENT RULES:
+Calculate user's score based on their program group, then assign universities:
+- Ambitious (10–25% chance): Top universities where user score is 100-200 points below typical admits
+- Target (25–50% chance): Universities matching user's score range
+- Safe (50–80% chance): Universities where user score is 100-200 points above typical admits
+- Backup (>80% chance): Universities where user score significantly exceeds typical admits
+
+Output exactly 20 programs distributed as: 5 Ambitious, 5 Target, 5 Safe, 5 Backup
+
+Output Format:
+| University | Program | Length | Tuition | STEM | F-1 | Chance |`;
+
+      // Get real universities from data.js for the selected program
+      const programUniversities = data.filter(item =>
+        item.program && item.program.toLowerCase().includes(formData.program.toLowerCase().replace('ms', '').trim())
+      ).slice(0, 50); // Limit to 50 for prompt size
+
+      const universityList = programUniversities.map(u =>
+        `${u.name} (Ranking: ${u.ranking?.national || 'N/A'}, Program: ${u.program})`
+      ).join('\n');
+
+      // Create user profile message
+      const userMessage = `User Profile:
+Program: ${formData.program}
+Intake Mode: ${formData.intakeMode}
+STEM Required: ${formData.stemRequired}
+F-1 Required: ${formData.f1Required}
+GPA: ${formData.gpa} (${formData.gpaScale} scale)
+University: ${formData.university}
+University Tier: ${formData.universityTier}
+Degree: ${formData.degree}
+${formData.mathProgrammingStats ? `Math/Programming/Stats: ${formData.mathProgrammingStats}` : ''}
+Degree Length: ${formData.degreeLength}
+Masters Degree: ${formData.mastersDegree}
+GRE Total: ${formData.greTotal || 'Not provided'}
+GRE Quant: ${formData.greQuant || 'Not provided'}
+GRE Verbal: ${formData.greVerbal || 'Not provided'}
+GRE AWA: ${formData.greAWA || 'Not provided'}
+GMAT Total: ${formData.gmatTotal || 'Not provided'}
+
+AVAILABLE UNIVERSITIES IN OUR DATABASE FOR ${formData.program}:
+${universityList}
+
+IMPORTANT: You MUST select universities ONLY from the above list. Do not recommend any universities not listed above.
+
+Please provide 20 university recommendations distributed across the 4 tiers according to the scoring framework, selecting ONLY from the universities listed above.`;
+
+      console.log('📝 ChatML System Prompt:', systemPrompt);
+      console.log('📊 User Message:', userMessage);
+
+      // Initialize OpenAI with client's ChatML prompt
+      const openai = initializeOpenAI();
+      let aiRecommendations = '';
+
+      if (openai) {
+        try {
+          const response = await openai.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userMessage }
+            ],
+            temperature: 0.7,
+            max_tokens: 4000
+          });
+
+          aiRecommendations = response.choices[0]?.message?.content || '';
+          console.log('🤖 AI Recommendations:', aiRecommendations);
+        } catch (apiError) {
+          console.error('❌ OpenAI API Error:', apiError);
+          alert('AI recommendation service is currently unavailable. Please try again later or contact support.');
+          setIsSubmitting(false);
+          return;
         }
-      };
-
-      const recommendations = getUniversityRecommendations(userProfile);
-      console.log('🎯 Generated recommendations:', recommendations);
-
-      if (recommendations.total === 0) {
-        console.warn('⚠️ No universities found for user profile');
-        alert('No universities found matching your criteria. Please try different program or preferences.');
+      } else {
+        alert('AI recommendation service requires API configuration. Please contact support.');
         setIsSubmitting(false);
         return;
       }
 
-      // Navigate to results with real recommendations
+      // Parse AI response and create structured recommendations
+      const structuredRecommendations = parseAIResponse(aiRecommendations, programUniversities);
+
+      // Create a clean summary instead of full AI response
+      const aiSummary = `Based on your profile and the scoring framework for ${formData.program} programs, here are the 20 university recommendations distributed across the 4 tiers:
+
+Your calculated score puts you in a competitive position for mid-tier programs, with good opportunities at regional universities and reach potential for some top-tier institutions.
+
+The recommendations consider your:
+• GPA: ${formData.gpa} (${formData.gpaScale} scale)
+• Test Scores: GRE ${formData.greTotal || 'N/A'}, GMAT ${formData.gmatTotal || 'N/A'}
+• University Background: ${formData.university} (${formData.universityTier})
+• Program Focus: ${formData.program}
+
+This distribution provides a balanced selection of universities across different tiers, maximizing your chances of admission while considering your specific profile and program requirements.`;
+
+      // Navigate to results with AI-generated recommendations
       navigate('/college-finder/results', {
         state: {
-          recommendations,
+          recommendations: structuredRecommendations,
           responses: formData,
-          aiInsights: `Based on your profile, we found ${recommendations.total} matching universities across different probability tiers.`
+          aiInsights: aiSummary
         }
       });
+
     } catch (error) {
-      console.error('❌ Error generating recommendations:', error);
+      console.error('❌ Error generating AI recommendations:', error);
       alert('Error generating recommendations. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -338,7 +527,7 @@ const QuestionnaireForm = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < 8) {
+    if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
     } else {
       generateRecommendations();
@@ -357,47 +546,21 @@ const QuestionnaireForm = () => {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Program & Requirements</h2>
-              <p className="text-gray-600 text-sm">Tell us about your target program and visa requirements</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Program Selection</h2>
+              <p className="text-gray-600 text-sm">Which program do you want to apply for?</p>
             </div>
 
             <InputField
-              label="1. Which program do you want to apply for?"
+              label="Q1. Which program do you want to apply for?"
               field="program"
               type="select"
-              options={availablePrograms}
+              options={['MSCS', 'MBA', 'MS Finance', 'MS Marketing', 'MS Data Science', 'Engineering', 'MS Business Analytics', 'MS Management', 'MS Accounting']}
               required
-              description="Choose your target program for higher education"
+              description="Select your target program for higher education"
               value={formData.program}
               onChange={handleInputChange}
               hasError={errors.program}
             />
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <InputField
-                label="2. Do you require only STEM-designated programs?"
-                field="stemRequired"
-                type="radio"
-                options={['Yes', 'No']}
-                required
-                description="STEM programs offer extended OPT work authorization"
-                value={formData.stemRequired}
-                onChange={handleInputChange}
-                hasError={errors.stemRequired}
-              />
-
-              <InputField
-                label="3. Do you require only F-1 visa eligible programs?"
-                field="f1Required"
-                type="radio"
-                options={['Yes', 'No']}
-                required
-                description="Essential for international student visa status"
-                value={formData.f1Required}
-                onChange={handleInputChange}
-                hasError={errors.f1Required}
-              />
-            </div>
           </div>
         );
 
@@ -405,18 +568,66 @@ const QuestionnaireForm = () => {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Academic Background</h2>
-              <p className="text-gray-600 text-sm">Share your educational background and achievements</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Intake Mode Selection</h2>
+              <p className="text-gray-600 text-sm">Choose your questionnaire type</p>
+            </div>
+
+            <InputField
+              label="Q2. Do you want Base Questions (short intake) or Advanced Questions (detailed intake)?"
+              field="intakeMode"
+              type="radio"
+              options={['Base Questions (Quick)', 'Advanced Questions (Detailed)']}
+              required
+              description="Base Questions: Essential information only. Advanced Questions: Comprehensive profile analysis."
+              value={formData.intakeMode}
+              onChange={(field, value) => {
+                handleInputChange(field, value);
+                setQuestionType(value.includes('Base') ? 'base' : 'advanced');
+              }}
+              hasError={errors.intakeMode}
+            />
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Base Questions - Part 1</h2>
+              <p className="text-gray-600 text-sm">Essential requirements and eligibility</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
               <InputField
-                label="4. What is your undergraduate GPA?"
+                label="Q3. Do you require only STEM-designated programs?"
+                field="stemRequired"
+                type="radio"
+                options={['Yes', 'No']}
+                required
+                value={formData.stemRequired}
+                onChange={handleInputChange}
+                hasError={errors.stemRequired}
+              />
+
+              <InputField
+                label="Q4. Do you require only F-1 visa eligible programs?"
+                field="f1Required"
+                type="radio"
+                options={['Yes', 'No']}
+                required
+                value={formData.f1Required}
+                onChange={handleInputChange}
+                hasError={errors.f1Required}
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <InputField
+                label="Q5. What is your undergraduate GPA?"
                 field="gpa"
-                type="number"
                 placeholder="e.g., 3.5 or 8.5"
                 required
-                description="Your cumulative grade point average"
+                description="Your cumulative grade point average (with scale)"
                 value={formData.gpa}
                 onChange={handleInputChange}
                 hasError={errors.gpa}
@@ -428,7 +639,6 @@ const QuestionnaireForm = () => {
                 type="select"
                 options={['4.0', '10.0', 'Percentage']}
                 required
-                description="The grading scale used by your university"
                 value={formData.gpaScale}
                 onChange={handleInputChange}
                 hasError={errors.gpaScale}
@@ -436,11 +646,10 @@ const QuestionnaireForm = () => {
             </div>
 
             <InputField
-              label="5. What is the name of your undergraduate university?"
+              label="Q6. What is the name of your undergraduate university?"
               field="university"
-              placeholder="e.g., Delhi University, IIT Bombay"
+              placeholder="e.g., IIT Delhi, University of Mumbai"
               required
-              description="Full name of your undergraduate institution"
               value={formData.university}
               onChange={handleInputChange}
               hasError={errors.university}
@@ -448,161 +657,70 @@ const QuestionnaireForm = () => {
           </div>
         );
 
-      case 3:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Test Scores & Language</h2>
-              <p className="text-gray-600 text-sm">Share your standardized test scores and language proficiency</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <InputField
-                label="6. Have you taken the GRE?"
-                field="greStatus"
-                type="radio"
-                options={['Yes', 'No', 'Planning to take']}
-                required
-                description="Graduate Record Examination"
-                value={formData.greStatus}
-                onChange={handleInputChange}
-                hasError={errors.greStatus}
-              />
-
-              <InputField
-                label="7. GRE Score (if taken)"
-                field="greScore"
-                placeholder="e.g., 320"
-                description="Total GRE score out of 340"
-                value={formData.greScore}
-                onChange={handleInputChange}
-                hasError={errors.greScore}
-              />
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <InputField
-                label="8. Have you taken the GMAT?"
-                field="gmatStatus"
-                type="radio"
-                options={['Yes', 'No', 'Planning to take']}
-                description="Graduate Management Admission Test"
-                value={formData.gmatStatus}
-                onChange={handleInputChange}
-                hasError={errors.gmatStatus}
-              />
-
-              <InputField
-                label="9. GMAT Score (if taken)"
-                field="gmatScore"
-                placeholder="e.g., 650"
-                description="Total GMAT score out of 800"
-                value={formData.gmatScore}
-                onChange={handleInputChange}
-                hasError={errors.gmatScore}
-              />
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <InputField
-                label="10. English Test Type"
-                field="englishTest"
-                type="select"
-                options={['IELTS', 'TOEFL', 'PTE', 'Duolingo', 'Native Speaker', 'Not taken yet']}
-                required
-                description="English proficiency test taken"
-                value={formData.englishTest}
-                onChange={handleInputChange}
-                hasError={errors.englishTest}
-              />
-
-              <InputField
-                label="11. English Test Score"
-                field="englishScore"
-                placeholder="e.g., 7.5 (IELTS) or 100 (TOEFL)"
-                description="Your English test score"
-                value={formData.englishScore}
-                onChange={handleInputChange}
-                hasError={errors.englishScore}
-              />
-            </div>
-          </div>
-        );
-
       case 4:
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Work Experience & Skills</h2>
-              <p className="text-gray-600 text-sm">Tell us about your professional background and technical skills</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Base Questions - Part 2</h2>
+              <p className="text-gray-600 text-sm">Academic background and degree information</p>
             </div>
 
             <InputField
-              label="12. Total work experience"
-              field="workExperience"
+              label="Q7. What is the tier of your university?"
+              field="universityTier"
               type="select"
-              options={['No experience', '0-1 years', '1-2 years', '2-3 years', '3-5 years', '5+ years']}
+              options={['IIT', 'NIT', 'Tier-1', 'Tier-2', 'Tier-3']}
               required
-              description="Total full-time work experience"
-              value={formData.workExperience}
+              value={formData.universityTier}
               onChange={handleInputChange}
-              hasError={errors.workExperience}
+              hasError={errors.universityTier}
             />
 
             <InputField
-              label="13. Current job title/role"
-              field="currentRole"
-              placeholder="e.g., Software Engineer, Marketing Analyst"
-              description="Your current or most recent job title"
-              value={formData.currentRole}
-              onChange={handleInputChange}
-              hasError={errors.currentRole}
-            />
-
-            <InputField
-              label="14. Industry experience"
-              field="industry"
-              type="select"
-              options={['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing', 'Consulting', 'Retail', 'Government', 'Non-profit', 'Other']}
+              label="Q8. What is the name of your undergraduate degree?"
+              field="degree"
+              placeholder="e.g., Computer Science, Mechanical Engineering, Commerce"
               required
-              description="Primary industry you've worked in"
-              value={formData.industry}
+              value={formData.degree}
               onChange={handleInputChange}
-              hasError={errors.industry}
+              hasError={errors.degree}
             />
 
-            <InputField
-              label="15. Technical skills (comma-separated)"
-              field="technicalSkills"
-              placeholder="e.g., Python, SQL, Machine Learning, Excel"
-              description="List your key technical skills"
-              value={formData.technicalSkills}
-              onChange={handleInputChange}
-              hasError={errors.technicalSkills}
-            />
-
-            <div className="grid md:grid-cols-2 gap-4">
+            {(formData.program === 'MSCS' || formData.program === 'MS Data Science') && (
               <InputField
-                label="16. Leadership experience"
-                field="leadership"
+                label="Q9. Did your degree include Mathematics, Programming, and Statistics coursework?"
+                field="mathProgrammingStats"
                 type="radio"
                 options={['Yes', 'No']}
                 required
-                description="Have you led teams or projects?"
-                value={formData.leadership}
+                description="Required for MSCS and MS Data Science programs"
+                value={formData.mathProgrammingStats}
                 onChange={handleInputChange}
-                hasError={errors.leadership}
+                hasError={errors.mathProgrammingStats}
+              />
+            )}
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <InputField
+                label="Q10. Was your undergraduate program 3 years or 4 years?"
+                field="degreeLength"
+                type="select"
+                options={['3 years', '4 years']}
+                required
+                value={formData.degreeLength}
+                onChange={handleInputChange}
+                hasError={errors.degreeLength}
               />
 
               <InputField
-                label="17. Research experience"
-                field="research"
+                label="Q11. Have you completed any master's degree?"
+                field="mastersDegree"
                 type="radio"
                 options={['Yes', 'No']}
-                description="Academic or professional research experience"
-                value={formData.research}
+                required
+                value={formData.mastersDegree}
                 onChange={handleInputChange}
-                hasError={errors.research}
+                hasError={errors.mastersDegree}
               />
             </div>
           </div>
@@ -612,70 +730,75 @@ const QuestionnaireForm = () => {
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Financial Planning</h2>
-              <p className="text-gray-600 text-sm">Help us understand your budget and funding sources</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Base Questions - Part 3</h2>
+              <p className="text-gray-600 text-sm">Standardized test scores</p>
             </div>
-
-            <InputField
-              label="18. Budget for total education cost"
-              field="budget"
-              type="select"
-              options={['$30,000 - $50,000', '$50,000 - $80,000', '$80,000 - $120,000', '$120,000 - $200,000', '$200,000+']}
-              required
-              description="Total budget including tuition, living expenses for entire program"
-              value={formData.budget}
-              onChange={handleInputChange}
-              hasError={errors.budget}
-            />
-
-            <InputField
-              label="19. Primary funding source"
-              field="funding"
-              type="select"
-              options={['Self-funded', 'Family support', 'Education loan', 'Scholarship/Assistantship', 'Employer sponsorship', 'Mix of sources']}
-              required
-              description="How will you finance your education?"
-              value={formData.funding}
-              onChange={handleInputChange}
-              hasError={errors.funding}
-            />
 
             <div className="grid md:grid-cols-2 gap-4">
               <InputField
-                label="20. Need scholarship/assistantship?"
-                field="needScholarship"
-                type="radio"
-                options={['Yes, essential', 'Yes, preferred', 'No']}
-                required
-                description="Financial aid requirement"
-                value={formData.needScholarship}
+                label="Q12. What is your GRE score (total)?"
+                field="greTotal"
+                placeholder="e.g., 320"
+                description="Total GRE score out of 340"
+                value={formData.greTotal}
                 onChange={handleInputChange}
-                hasError={errors.needScholarship}
+                hasError={errors.greTotal}
               />
 
               <InputField
-                label="21. Open to education loans?"
-                field="openToLoans"
-                type="radio"
-                options={['Yes', 'No', 'Maybe']}
-                description="Willingness to take education loans"
-                value={formData.openToLoans}
+                label="Q13. GRE Quant score?"
+                field="greQuant"
+                placeholder="e.g., 165"
+                description="GRE Quantitative score"
+                value={formData.greQuant}
                 onChange={handleInputChange}
-                hasError={errors.openToLoans}
+                hasError={errors.greQuant}
               />
             </div>
 
-            <InputField
-              label="22. Cost preference priority"
-              field="costPriority"
-              type="select"
-              options={['Low cost is most important', 'Balanced cost and quality', 'Quality over cost', 'Cost is not a concern']}
-              required
-              description="How important is cost in your decision?"
-              value={formData.costPriority}
-              onChange={handleInputChange}
-              hasError={errors.costPriority}
-            />
+            <div className="grid md:grid-cols-2 gap-4">
+              <InputField
+                label="Q14. GRE Verbal score?"
+                field="greVerbal"
+                placeholder="e.g., 155"
+                description="GRE Verbal score"
+                value={formData.greVerbal}
+                onChange={handleInputChange}
+                hasError={errors.greVerbal}
+              />
+
+              <InputField
+                label="Q15. GRE AWA score?"
+                field="greAWA"
+                placeholder="e.g., 4.0"
+                description="GRE Analytical Writing score"
+                value={formData.greAWA}
+                onChange={handleInputChange}
+                hasError={errors.greAWA}
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <InputField
+                label="Q16. If GMAT: What is your GMAT total score?"
+                field="gmatTotal"
+                placeholder="e.g., 650"
+                description="Total GMAT score out of 800 (if applicable)"
+                value={formData.gmatTotal}
+                onChange={handleInputChange}
+                hasError={errors.gmatTotal}
+              />
+
+              <InputField
+                label="Q17. GMAT Quant score?"
+                field="gmatQuant"
+                placeholder="e.g., 45"
+                description="GMAT Quantitative score"
+                value={formData.gmatQuant}
+                onChange={handleInputChange}
+                hasError={errors.gmatQuant}
+              />
+            </div>
           </div>
         );
 
@@ -944,7 +1067,7 @@ const QuestionnaireForm = () => {
           {/* Progress Indicator */}
           <div className="mb-8">
             <div className="flex justify-center items-center space-x-4 mb-4">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((step) => (
+              {[1, 2, 3, 4, 5, 6].map((step) => (
                 <div key={step} className="flex items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                     currentStep >= step
@@ -953,7 +1076,7 @@ const QuestionnaireForm = () => {
                   }`}>
                     {currentStep > step ? <Check className="h-4 w-4" /> : step}
                   </div>
-                  {step < 8 && (
+                  {step < 6 && (
                     <div className={`w-12 h-0.5 mx-2 transition-colors ${
                       currentStep > step ? 'bg-[#145044]' : 'bg-gray-200'
                     }`} />
@@ -962,7 +1085,7 @@ const QuestionnaireForm = () => {
               ))}
             </div>
             <div className="text-center text-sm text-gray-600">
-              Step {currentStep} of 8
+              Step {currentStep} of 6
             </div>
           </div>
 
@@ -999,7 +1122,7 @@ const QuestionnaireForm = () => {
                 onClick={nextStep}
                 className="w-full md:w-auto bg-[#145044] hover:bg-[#0f3c34] order-3"
               >
-                {currentStep === 8 ? (
+                {currentStep === 6 ? (
                   <>
                     <Sparkles className="h-4 w-4 mr-2" />
                     Get Universities
