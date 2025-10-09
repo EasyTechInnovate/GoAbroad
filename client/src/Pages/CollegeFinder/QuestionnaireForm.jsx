@@ -35,13 +35,9 @@ import {
   Check
 } from 'lucide-react';
 import collegeData from '@/data/collegeData';
-import { data } from '@/lib/data';
 import {
   validateUniversityData,
-  getProgramDisplayNames,
-  getInternalProgramName,
-  getUniversityRecommendations,
-  getProgramStats
+  getProgramDisplayNames
 } from '@/lib/universityDataLoader';
 
 // Custom hook to handle form inputs without cursor jumping
@@ -215,7 +211,8 @@ const QuestionnaireForm = () => {
     demographicGroup: '',
     budgetConstraints: '',
     maxBudget: '',
-    scholarships: ''
+    scholarships: '',
+    universityType: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -271,17 +268,16 @@ const QuestionnaireForm = () => {
   }, [errors]);
 
   // Initialize Gemini AI
-  // Parse AI response into structured format
-  const parseAIResponse = (aiText, universities) => {
-    console.log('🔍 Parsing AI response...');
+  // Parse AI response from web search into structured format
+  const parseAIResponseFromWebSearch = (aiText) => {
+    console.log('🔍 Parsing AI web search response...');
 
-    // Simple parser - extract university names mentioned in AI response
     const tiers = { ambitious: [], target: [], safe: [], backup: [] };
     let currentTier = '';
 
     const lines = aiText.split('\n');
 
-    lines.forEach(line => {
+    lines.forEach((line, index) => {
       const lowerLine = line.toLowerCase();
 
       // Detect tier sections
@@ -290,46 +286,42 @@ const QuestionnaireForm = () => {
       else if (lowerLine.includes('safe')) currentTier = 'safe';
       else if (lowerLine.includes('backup')) currentTier = 'backup';
 
-      // Look for university names in current tier
-      if (currentTier) {
-        universities.forEach((uni, index) => {
-          const uniName = uni.name.toLowerCase();
-          if (lowerLine.includes(uniName.split(' ')[0]) || lowerLine.includes(uniName)) {
-            // Create structured university object - using ONLY real data from data.js
-            const structuredUni = {
-              id: `${currentTier}-${index}`,
-              name: uni.name,
-              university: uni.name, // Results page expects this field
-              program: uni.program,
-              tier: currentTier,
-              probability: Math.round(currentTier === 'ambitious' ? 15 + Math.random() * 10 :
-                          currentTier === 'target' ? 35 + Math.random() * 15 :
-                          currentTier === 'safe' ? 60 + Math.random() * 20 :
-                          80 + Math.random() * 15),
-              ranking: uni.ranking,
-              location: uni.location,
-              tuition: uni.tuition_fees_per_year,
-              description: uni.description,
-              acceptanceRate: uni.acceptance_rate,
-              stemDesignated: uni.stemDesignated,
-              f1Eligible: uni.f1Eligible,
-              accepts3Year: uni.accepts3Year,
-              features: uni.features
-            };
+      // Look for university entries in table format or structured text
+      if (currentTier && (line.includes('|') || line.includes('University') || line.includes('$'))) {
+        // Extract university info from table row or structured format
+        const parts = line.split('|').map(p => p.trim());
 
-            // Add to tier if not already added and tier has space
-            if (tiers[currentTier].length < 5 && !tiers[currentTier].find(u => u.id === structuredUni.id)) {
-              tiers[currentTier].push(structuredUni);
-            }
+        if (parts.length >= 4) {
+          const university = {
+            id: `${currentTier}-${tiers[currentTier].length}`,
+            name: parts[1] || `University ${index}`,
+            university: parts[1] || `University ${index}`,
+            program: parts[2] || formData.program,
+            tier: currentTier,
+            probability: Math.round(currentTier === 'ambitious' ? 15 + Math.random() * 10 :
+                        currentTier === 'target' ? 35 + Math.random() * 15 :
+                        currentTier === 'safe' ? 60 + Math.random() * 20 :
+                        80 + Math.random() * 15),
+            ranking: { national: null },
+            location: parts[6] || 'United States',
+            tuition: parts[4] || 'Contact University',
+            description: `${parts[2] || formData.program} program at ${parts[1]}`,
+            acceptanceRate: null,
+            stemDesignated: parts[5]?.toLowerCase().includes('yes'),
+            f1Eligible: parts[6]?.toLowerCase().includes('yes'),
+            accepts3Year: true,
+            features: ['Research Opportunities', 'Career Services']
+          };
+
+          if (tiers[currentTier].length < 5 && parts[1] && parts[1].trim() !== 'University') {
+            tiers[currentTier].push(university);
           }
-        });
+        }
       }
     });
 
-    // No fallback data - only show what AI actually recommends
-
     const total = Object.values(tiers).reduce((sum, tier) => sum + tier.length, 0);
-    console.log(`📊 Parsed ${total} recommendations:`, tiers);
+    console.log(`📊 Parsed ${total} web search recommendations:`, tiers);
 
     return { ...tiers, total };
   };
@@ -361,8 +353,15 @@ const QuestionnaireForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare ChatML prompt according to client specifications
+      // Prepare ChatML prompt according to client specifications with web search
       const systemPrompt = `You are an expert U.S. admissions consultant specializing in helping international students (esp. Indian applicants) secure admission into top U.S. universities.
+
+CRITICAL INSTRUCTIONS:
+- Use ONLY your most current knowledge from 2024-2025 to provide accurate, real-time information
+- Research current tuition fees, university rankings, and program details for 2024-2025 academic year
+- DO NOT use any pre-stored database or outdated information
+- Provide actual universities with real current data including exact tuition costs, admission requirements, and program details
+- Focus on universities that actually offer the requested program with current STEM designation and F-1 visa support status
 
 SCORING FRAMEWORK BY PROGRAM GROUPS:
 
@@ -425,16 +424,7 @@ Output exactly 20 programs distributed as: 5 Ambitious, 5 Target, 5 Safe, 5 Back
 Output Format:
 | University | Program | Length | Tuition | STEM | F-1 | Chance |`;
 
-      // Get real universities from data.js for the selected program
-      const programUniversities = data.filter(item =>
-        item.program && item.program.toLowerCase().includes(formData.program.toLowerCase().replace('ms', '').trim())
-      ).slice(0, 50); // Limit to 50 for prompt size
-
-      const universityList = programUniversities.map(u =>
-        `${u.name} (Ranking: ${u.ranking?.national || 'N/A'}, Program: ${u.program})`
-      ).join('\n');
-
-      // Create user profile message
+      // Create user profile message - let GPT search for real universities
       const userMessage = `User Profile:
 Program: ${formData.program}
 Intake Mode: ${formData.intakeMode}
@@ -453,12 +443,23 @@ GRE Verbal: ${formData.greVerbal || 'Not provided'}
 GRE AWA: ${formData.greAWA || 'Not provided'}
 GMAT Total: ${formData.gmatTotal || 'Not provided'}
 
-AVAILABLE UNIVERSITIES IN OUR DATABASE FOR ${formData.program}:
-${universityList}
+CRITICAL TASK:
+Research and provide REAL, CURRENT information about US universities offering ${formData.program} programs for 2024-2025 academic year.
 
-IMPORTANT: You MUST select universities ONLY from the above list. Do not recommend any universities not listed above.
+Requirements:
+- Find 20 actual universities with exact current tuition fees (no estimates or "TBD")
+- Use real 2024-2025 program data with actual rankings
+- Verify STEM designation and F-1 visa support for each program
+- Distribute exactly as: 5 Ambitious, 5 Target, 5 Safe, 5 Backup universities
+- Calculate admission chances based on user's actual profile score
 
-Please provide 20 university recommendations distributed across the 4 tiers according to the scoring framework, selecting ONLY from the universities listed above.`;
+For each university, provide:
+- Current national ranking (if available)
+- Current tuition fees for international students
+- Program length (typically 1-2 years)
+- STEM designation status
+- F-1 visa eligibility
+- Location (city, state)`;
 
       console.log('📝 ChatML System Prompt:', systemPrompt);
       console.log('📊 User Message:', userMessage);
@@ -494,7 +495,7 @@ Please provide 20 university recommendations distributed across the 4 tiers acco
       }
 
       // Parse AI response and create structured recommendations
-      const structuredRecommendations = parseAIResponse(aiRecommendations, programUniversities);
+      const structuredRecommendations = parseAIResponseFromWebSearch(aiRecommendations);
 
       // Create a clean summary instead of full AI response
       const aiSummary = `Based on your profile and the scoring framework for ${formData.program} programs, here are the 20 university recommendations distributed across the 4 tiers:
