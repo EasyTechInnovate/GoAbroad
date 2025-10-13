@@ -274,11 +274,13 @@ const QuestionnaireForm = () => {
 
     const tiers = { ambitious: [], target: [], safe: [], backup: [] };
     let currentTier = '';
+    let currentUniversity = null;
 
     const lines = aiText.split('\n');
 
     lines.forEach((line, index) => {
-      const lowerLine = line.toLowerCase();
+      const cleanLine = line.trim();
+      const lowerLine = cleanLine.toLowerCase();
 
       // Detect tier sections
       if (lowerLine.includes('ambitious')) currentTier = 'ambitious';
@@ -286,39 +288,65 @@ const QuestionnaireForm = () => {
       else if (lowerLine.includes('safe')) currentTier = 'safe';
       else if (lowerLine.includes('backup')) currentTier = 'backup';
 
-      // Look for university entries in table format or structured text
-      if (currentTier && (line.includes('|') || line.includes('University') || line.includes('$'))) {
-        // Extract university info from table row or structured format
-        const parts = line.split('|').map(p => p.trim());
+      // Detect university names (lines ending with business school names or containing "University")
+      if (currentTier && (cleanLine.includes('University') || cleanLine.includes('Business School') ||
+          cleanLine.includes('School') || cleanLine.includes('(') && cleanLine.includes(')'))) {
 
-        if (parts.length >= 4) {
-          const university = {
-            id: `${currentTier}-${tiers[currentTier].length}`,
-            name: parts[1] || `University ${index}`,
-            university: parts[1] || `University ${index}`,
-            program: parts[2] || formData.program,
-            tier: currentTier,
-            probability: Math.round(currentTier === 'ambitious' ? 15 + Math.random() * 10 :
-                        currentTier === 'target' ? 35 + Math.random() * 15 :
-                        currentTier === 'safe' ? 60 + Math.random() * 20 :
-                        80 + Math.random() * 15),
-            ranking: { national: null },
-            location: parts[6] || 'United States',
-            tuition: parts[4] || 'Contact University',
-            description: `${parts[2] || formData.program} program at ${parts[1]}`,
-            acceptanceRate: null,
-            stemDesignated: parts[5]?.toLowerCase().includes('yes'),
-            f1Eligible: parts[6]?.toLowerCase().includes('yes'),
-            accepts3Year: true,
-            features: ['Research Opportunities', 'Career Services']
-          };
+        // If we have a previous university, add it
+        if (currentUniversity && tiers[currentTier].length < 5) {
+          tiers[currentTier].push(currentUniversity);
+        }
 
-          if (tiers[currentTier].length < 5 && parts[1] && parts[1].trim() !== 'University') {
-            tiers[currentTier].push(university);
-          }
+        // Start new university
+        currentUniversity = {
+          id: `${currentTier}-${tiers[currentTier].length}`,
+          name: cleanLine.replace(/^(.*?)(MBA|Full-Time MBA|Daytime MBA|One-Year MBA).*$/, '$1').trim(),
+          university: cleanLine.replace(/^(.*?)(MBA|Full-Time MBA|Daytime MBA|One-Year MBA).*$/, '$1').trim(),
+          program: formData.program || 'MBA',
+          tier: currentTier,
+          probability: Math.round(currentTier === 'ambitious' ? 15 + Math.random() * 10 :
+                      currentTier === 'target' ? 35 + Math.random() * 15 :
+                      currentTier === 'safe' ? 60 + Math.random() * 20 :
+                      80 + Math.random() * 15),
+          ranking: { national: null },
+          location: 'United States',
+          tuition: 'Contact University',
+          description: `${formData.program || 'MBA'} program`,
+          acceptanceRate: null,
+          stemDesignated: true,
+          f1Eligible: true,
+          accepts3Year: true,
+          features: ['Research Opportunities', 'Career Services']
+        };
+      }
+
+      // Extract tuition info
+      if (currentUniversity && cleanLine.includes('$')) {
+        // Look for various tuition formats
+        const tuitionMatch = cleanLine.match(/\$[\d,]+(?:\/yr|\/semester|total)?/) ||
+                            cleanLine.match(/Tuition[:\s]*\$[\d,]+/) ||
+                            cleanLine.match(/\$[\d,]+(?:\s*\/yr|\s*total|\s*per year)?/);
+        if (tuitionMatch) {
+          let tuition = tuitionMatch[0];
+          // Clean up the tuition format
+          tuition = tuition.replace(/^Tuition[:\s]*/, '');
+          currentUniversity.tuition = tuition;
+        }
+      }
+
+      // Extract probability
+      if (currentUniversity && cleanLine.includes('%') && cleanLine.includes('Admission Probability')) {
+        const probMatch = cleanLine.match(/(\d+)%/);
+        if (probMatch) {
+          currentUniversity.probability = parseInt(probMatch[1]);
         }
       }
     });
+
+    // Add the last university if exists
+    if (currentUniversity && currentTier && tiers[currentTier].length < 5) {
+      tiers[currentTier].push(currentUniversity);
+    }
 
     const total = Object.values(tiers).reduce((sum, tier) => sum + tier.length, 0);
     console.log(`📊 Parsed ${total} web search recommendations:`, tiers);
@@ -338,7 +366,7 @@ const QuestionnaireForm = () => {
     try {
       const client = new OpenAI({
         apiKey: apiKey,
-        dangerouslyAllowBrowser: true // Required for client-side usage
+        dangerouslyAllowBrowser: true
       });
       console.log('✅ OpenAI initialized successfully');
       return client;
@@ -362,6 +390,8 @@ CRITICAL INSTRUCTIONS:
 - DO NOT use any pre-stored database or outdated information
 - Provide actual universities with real current data including exact tuition costs, admission requirements, and program details
 - Focus on universities that actually offer the requested program with current STEM designation and F-1 visa support status
+- IMPORTANT: Do NOT ask for additional information. Use the provided profile data to immediately generate recommendations
+- MUST respond with exactly 20 universities in the specified table format - no questions, no additional requests
 
 SCORING FRAMEWORK BY PROGRAM GROUPS:
 
@@ -422,7 +452,7 @@ Calculate user's score based on their program group, then assign universities:
 Output exactly 20 programs distributed as: 5 Ambitious, 5 Target, 5 Safe, 5 Backup
 
 Output Format:
-| University | Program | Length | Tuition | STEM | F-1 | Chance |`;
+| University | Program | Length | Tuition | Location | STEM | F-1 | Chance |`;
 
       // Create user profile message - let GPT search for real universities
       const userMessage = `User Profile:
@@ -444,43 +474,37 @@ GRE AWA: ${formData.greAWA || 'Not provided'}
 GMAT Total: ${formData.gmatTotal || 'Not provided'}
 
 CRITICAL TASK:
-Research and provide REAL, CURRENT information about US universities offering ${formData.program} programs for 2024-2025 academic year.
+Immediately provide 20 real universities with ${formData.program} programs for 2024-2025. Do NOT ask questions.
 
-Requirements:
-- Find 20 actual universities with exact current tuition fees (no estimates or "TBD")
-- Use real 2024-2025 program data with actual rankings
-- Verify STEM designation and F-1 visa support for each program
-- Distribute exactly as: 5 Ambitious, 5 Target, 5 Safe, 5 Backup universities
-- Calculate admission chances based on user's actual profile score
+IMMEDIATE REQUIREMENTS:
+- Provide exactly 20 universities with current tuition fees (no estimates)
+- Use real 2024-2025 rankings and program data
+- Include only STEM-designated programs with F-1 eligibility
+- Distribute as: 5 Ambitious, 5 Target, 5 Safe, 5 Backup
+- Base scoring on provided profile data
 
-For each university, provide:
-- Current national ranking (if available)
-- Current tuition fees for international students
-- Program length (typically 1-2 years)
-- STEM designation status
-- F-1 visa eligibility
-- Location (city, state)`;
+RESPOND ONLY with the table format:
+| University | Program | Length | Tuition | Location | STEM | F-1 | Chance |
+
+NO questions, NO additional requests - just the 20 universities table.`;
 
       console.log('📝 ChatML System Prompt:', systemPrompt);
       console.log('📊 User Message:', userMessage);
 
-      // Initialize OpenAI with client's ChatML prompt
-      const openai = initializeOpenAI();
+      const client = initializeOpenAI();
       let aiRecommendations = '';
 
-      if (openai) {
+      if (client) {
         try {
-          const response = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userMessage }
+          const response = await client.responses.create({
+            model: "gpt-5",
+            tools: [
+              { type: "web_search" }
             ],
-            temperature: 0.7,
-            max_tokens: 4000
+            input: `${systemPrompt}\n\n${userMessage}`
           });
 
-          aiRecommendations = response.choices[0]?.message?.content || '';
+          aiRecommendations = response.output_text || '';
           console.log('🤖 AI Recommendations:', aiRecommendations);
         } catch (apiError) {
           console.error('❌ OpenAI API Error:', apiError);
