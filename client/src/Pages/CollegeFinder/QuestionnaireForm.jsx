@@ -498,6 +498,7 @@ NO questions, NO additional requests - just the 20 universities table.`;
         try {
           const response = await client.responses.create({
             model: "gpt-5",
+            reasoning: { effort: "low" },
             tools: [
               { type: "web_search" }
             ],

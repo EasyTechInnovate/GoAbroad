@@ -218,6 +218,7 @@ async function findColleges() {
     console.log('🚀 Starting OpenAI API call for college recommendations...');
     const response = await client.responses.create({
       model: "gpt-5",
+      reasoning: { effort: "low" },
       tools: [
         { type: "web_search" }
       ],
