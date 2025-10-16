@@ -298,10 +298,27 @@ const QuestionnaireForm = () => {
         }
 
         // Start new university
+        let universityName = cleanLine;
+
+        // Extract clean university name
+        if (cleanLine.includes('|')) {
+          universityName = cleanLine.split('|')[0].trim();
+        } else if (cleanLine.includes(' ] ')) {
+          universityName = cleanLine.split(' ] ')[0].replace('[', '').trim();
+        } else {
+          // Remove program details and keep only university name
+          universityName = cleanLine
+            .replace(/\s*\|\s*(MS|MBA|Full-Time MBA|Daytime MBA|One-Year MBA).*$/, '')
+            .replace(/\s*(MS|MBA|Full-Time MBA|Daytime MBA|One-Year MBA).*$/, '')
+            .replace(/\s*\(\[.*?\]\).*$/, '')
+            .replace(/\s*\(https?:\/\/.*?\).*$/, '')
+            .trim();
+        }
+
         currentUniversity = {
           id: `${currentTier}-${tiers[currentTier].length}`,
-          name: cleanLine.replace(/^(.*?)(MBA|Full-Time MBA|Daytime MBA|One-Year MBA).*$/, '$1').trim(),
-          university: cleanLine.replace(/^(.*?)(MBA|Full-Time MBA|Daytime MBA|One-Year MBA).*$/, '$1').trim(),
+          name: universityName,
+          university: universityName,
           program: formData.program || 'MBA',
           tier: currentTier,
           probability: Math.round(currentTier === 'ambitious' ? 15 + Math.random() * 10 :
