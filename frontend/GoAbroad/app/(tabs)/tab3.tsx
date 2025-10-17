@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View, TouchableOpacity, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 import { fetchNewsData } from "@/api/newsApi";
 import { News } from "@/models/News";
@@ -9,6 +10,7 @@ import { News } from "@/models/News";
 import NewsCard from "@/components/NewsCard";
 
 export default function NewsScreen() {
+  const router = useRouter();
   const [news, setNews] = useState<News[]>([]);
   const [search, setSearch] = useState("");
   const [filteredNews, setFilteredNews] = useState<News[]>([]);
@@ -35,55 +37,37 @@ export default function NewsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Latest News</Text>
+      </View>
+
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <Ionicons name="search-outline" size={20} color="#7F8C8D" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search news..."
+          value={search}
+          onChangeText={setSearch}
+          placeholderTextColor="#7F8C8D"
+        />
+      </View>
+
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Latest News</Text>
-          <TouchableOpacity style={styles.filterButton}>
-            <Ionicons name="filter-outline" size={24} color="#2C3E50" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <Ionicons name="search-outline" size={20} color="#7F8C8D" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search news..."
-            value={search}
-            onChangeText={setSearch}
-            placeholderTextColor="#7F8C8D"
-          />
-        </View>
-
-        {/* Category Filter */}
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoryContainer}
-          contentContainerStyle={styles.categoryContent}
-        >
-          <TouchableOpacity style={styles.categoryButton}>
-            <Text style={styles.categoryText}>All News</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Text style={styles.categoryText}>Visa Updates</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Text style={styles.categoryText}>University News</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Text style={styles.categoryText}>Scholarships</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.categoryButton}>
-            <Text style={styles.categoryText}>Requirements</Text>
-          </TouchableOpacity>
-        </ScrollView>
-
         {/* News List */}
         <View style={styles.newsContainer}>
           {filteredNews.map((item) => (
-            <NewsCard key={item.id} news={item} />
+            <NewsCard 
+              key={item.id} 
+              news={item} 
+              onPress={() => {
+                router.push({
+                  pathname: "/news-detail",
+                  params: { newsId: item.id }
+                });
+              }}
+            />
           ))}
         </View>
 
@@ -109,62 +93,53 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
+    position: "relative",
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#2C3E50",
-  },
-  filterButton: {
-    padding: 8,
+    fontSize: 18,
+    fontWeight: "600",
+    color: "rgba(0, 33, 77, 1)",
+    textAlign: "center",
+    lineHeight: 24,
+    letterSpacing: 0,
+    width: 101,
+    height: 24,
+    opacity: 1,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
     marginHorizontal: 20,
-    marginBottom: 20,
-    borderRadius: 12,
+    marginBottom: 16,
+    marginTop: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
     elevation: 2,
   },
   searchIcon: {
     marginRight: 12,
+    color: "#9CA3AF",
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#2C3E50",
-  },
-  categoryContainer: {
-    marginBottom: 20,
-  },
-  categoryContent: {
-    paddingHorizontal: 20,
-  },
-  categoryButton: {
-    backgroundColor: "#FFFFFF",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#2C3E50",
+    color: "#1F2937",
+    paddingVertical: 4,
   },
   newsContainer: {
     paddingHorizontal: 20,

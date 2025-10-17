@@ -4,7 +4,7 @@
 export interface Blog {
   id: string;
   title: string;
-  excerpt: string;
+  description: string;
   content: string;
   category: string;
   subcategory?: string;
@@ -25,8 +25,6 @@ export interface Blog {
   isPublished: boolean;
   featured: boolean;
   trending: boolean;
-  seoTitle?: string;
-  seoDescription?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -35,7 +33,6 @@ export interface BlogDetail extends Blog {
   relatedBlogs: Blog[];
   comments: BlogComment[];
   author: BlogAuthor;
-  tableOfContents: BlogTOC[];
 }
 
 export interface BlogAuthor {
@@ -44,14 +41,10 @@ export interface BlogAuthor {
   bio: string;
   image: string;
   title: string;
-  expertise: string[];
-  blogsCount: number;
-  followersCount: number;
   socialLinks?: {
     twitter?: string;
     linkedin?: string;
     website?: string;
-    medium?: string;
   };
 }
 
@@ -68,13 +61,6 @@ export interface BlogComment {
   updatedAt: string;
 }
 
-export interface BlogTOC {
-  id: string;
-  title: string;
-  level: number;
-  anchor: string;
-}
-
 export interface BlogCategory {
   id: string;
   name: string;
@@ -82,15 +68,7 @@ export interface BlogCategory {
   description?: string;
   color?: string;
   icon?: string;
-  blogsCount: number;
-}
-
-export interface BlogTag {
-  id: string;
-  name: string;
-  slug: string;
-  blogsCount: number;
-  color?: string;
+  blogCount: number;
 }
 
 // API Request/Response Types
@@ -105,7 +83,7 @@ export interface BlogSearchRequest {
   };
   featured?: boolean;
   trending?: boolean;
-  sortBy?: 'relevance' | 'date' | 'views' | 'likes' | 'read_time';
+  sortBy?: 'relevance' | 'date' | 'views' | 'likes';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
@@ -118,8 +96,7 @@ export interface BlogSearchResponse {
   limit: number;
   hasMore: boolean;
   categories: BlogCategory[];
-  trendingTags: BlogTag[];
-  popularAuthors: BlogAuthor[];
+  trendingTags: string[];
 }
 
 export interface BookmarkBlogRequest {
@@ -160,7 +137,7 @@ export interface BlogAnalytics {
   totalLikes: number;
   totalShares: number;
   totalComments: number;
-  averageReadTime: number;
+  readTime: number;
   bounceRate: number;
   sourceTraffic: {
     direct: number;
@@ -168,8 +145,4 @@ export interface BlogAnalytics {
     search: number;
     referral: number;
   };
-  popularSections: {
-    section: string;
-    views: number;
-  }[];
 }

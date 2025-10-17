@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Blog } from "@/models/Blog";
 
@@ -10,137 +10,170 @@ interface BlogCardProps {
 
 export default function BlogCard({ blog, onPress }: BlogCardProps) {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={{ uri: blog.image }} style={styles.image} />
+    <View style={styles.card}>
+      {/* Hero Image */}
+      <Image source={{ uri: blog.image }} style={styles.heroImage} />
       
+      {/* Tags Section */}
+      <View style={styles.tagsContainer}>
+        <View style={styles.primaryTag}>
+          <Text style={styles.primaryTagText}>{blog.category}</Text>
+        </View>
+        <Text style={styles.readTime}>{blog.readTime}</Text>
+        <Text style={styles.publishDate}>{blog.publishedAt}</Text>
+      </View>
+      
+      {/* Content */}
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.category}>{blog.category}</Text>
-          <TouchableOpacity style={styles.bookmarkButton}>
-            <Ionicons 
-              name={blog.isBookmarked ? "bookmark" : "bookmark-outline"} 
-              size={20} 
-              color={blog.isBookmarked ? "#f39c12" : "#bdc3c7"} 
-            />
-          </TouchableOpacity>
+        <Text style={styles.title} numberOfLines={2}>{blog.title}</Text>
+        <Text style={styles.description} numberOfLines={3}>{blog.description}</Text>
+        
+        {/* Author Info */}
+        <View style={styles.authorSection}>
+          <Ionicons name="person-outline" size={16} color="#6B7280" />
+          <Text style={styles.authorText}>By {blog.author}</Text>
         </View>
         
-        <Text style={styles.title} numberOfLines={2}>{blog.title}</Text>
-        <Text style={styles.excerpt} numberOfLines={3}>{blog.excerpt}</Text>
-        
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagsContainer}>
-          {blog.tags.map((tag, index) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
-          ))}
-        </ScrollView>
-        
-        <View style={styles.footer}>
-          <View style={styles.authorInfo}>
-            <Text style={styles.author}>{blog.author}</Text>
-            <Text style={styles.date}>{blog.publishedAt}</Text>
-          </View>
-          <View style={styles.metaInfo}>
-            <Text style={styles.readTime}>{blog.readTime}</Text>
+        {/* Action Buttons */}
+        <View style={styles.actionContainer}>
+          <TouchableOpacity style={styles.readButton} onPress={onPress}>
+            <Text style={styles.readButtonText}>Read Full Post</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.iconContainer}>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons 
+                name={blog.isLiked ? "heart" : "heart-outline"} 
+                size={20} 
+                color={blog.isLiked ? "#e74c3c" : "#95a5a6"} 
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons 
+                name="share-outline" 
+                size={20} 
+                color="#95a5a6" 
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-    overflow: "hidden",
-  },
-  image: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8.53,
     width: "100%",
-    height: 200,
+    minHeight: 500,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10.67,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    elevation: 12,
+    borderWidth: 1,
+    borderColor: "#E5E5E5",
+    overflow: "hidden",
+    marginBottom: 16,
   },
-  content: {
-    padding: 16,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  category: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#9b59b6",
-    backgroundColor: "#f4ecf7",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  bookmarkButton: {
-    padding: 4,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    marginBottom: 8,
-    lineHeight: 24,
-  },
-  excerpt: {
-    fontSize: 14,
-    color: "#7f8c8d",
-    marginBottom: 12,
-    lineHeight: 20,
+  heroImage: {
+    width: "100%",
+    height: 180,
+    resizeMode: "cover",
   },
   tagsContainer: {
-    marginBottom: 12,
-  },
-  tag: {
-    backgroundColor: "#ecf0f1",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginRight: 6,
-  },
-  tagText: {
-    fontSize: 11,
-    color: "#7f8c8d",
-    fontWeight: "500",
-  },
-  footer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    flexWrap: "wrap",
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 8,
+    gap: 12,
     alignItems: "center",
   },
-  authorInfo: {
-    flex: 1,
+  primaryTag: {
+    backgroundColor: "rgba(187, 247, 208, 1)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1.07,
+    borderColor: "rgba(187, 247, 208, 1)",
+    marginTop: 8,
+    marginLeft: 8,
+    marginRight: 8,
+    marginBottom: 8,
   },
-  author: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#2c3e50",
-  },
-  date: {
+  primaryTagText: {
     fontSize: 11,
-    color: "#95a5a6",
-    marginTop: 2,
-  },
-  metaInfo: {
-    alignItems: "flex-end",
+    color: "rgba(21, 128, 61, 1)",
+    fontWeight: "600",
   },
   readTime: {
     fontSize: 11,
-    color: "#95a5a6",
-    backgroundColor: "#ecf0f1",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    color: "#6B7280",
+    marginLeft: 12,
+  },
+  publishDate: {
+    fontSize: 11,
+    color: "#6B7280",
+    marginLeft: 12,
+  },
+  content: {
+    padding: 12,
+    paddingTop: 8,
+    flex: 1,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1F2937",
+    marginBottom: 10,
+    lineHeight: 22,
+  },
+  description: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginBottom: 14,
+    lineHeight: 18,
+  },
+  authorSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  authorText: {
+    fontSize: 11,
+    color: "#6B7280",
+    marginLeft: 6,
+  },
+  actionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: "auto",
+  },
+  readButton: {
+    backgroundColor: "rgba(187, 247, 208, 1)",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+    borderWidth: 1.07,
+    borderColor: "rgba(187, 247, 208, 1)",
+  },
+  readButtonText: {
+    color: "rgba(21, 128, 61, 1)",
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  iconButton: {
+    padding: 4,
   },
 });
