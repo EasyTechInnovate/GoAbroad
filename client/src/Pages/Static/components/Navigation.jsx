@@ -29,8 +29,8 @@ const Navigation = () => {
           }}>
             <div className='flex items-center justify-center gap-2'>
 
-            <img src={logo} alt="Goupbroad logo" className='w-[50px] h-[50px]' />
-            <h1 className="text-3xl font-bold text-[#145044] ">GroupBroad</h1>
+            <img src={logo} alt="GoupBroad logo" className='w-[50px] h-[50px]' />
+            <h1 className="text-3xl font-bold text-[#145044] ">GoupBroad</h1>
             </div>
           </div>
 

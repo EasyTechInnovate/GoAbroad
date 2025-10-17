@@ -109,7 +109,7 @@ const Login = () => {
         <div className="max-w-md mx-auto w-full">
 
           <div className="mb-10">
-            <img src="/logo.svg" alt="GoAbroad Logo" className="h-10 w-10" />
+            <img src="/logo.svg" alt="GoupBroad Logo" className="h-10 w-10" />
           </div>
 
           <h1 className="text-2xl font-semibold mb-2">Login</h1>
@@ -189,7 +189,7 @@ const Login = () => {
 
           <div className="mt-8 pt-4 border-t border-gray-200">
             <p className="text-xs text-center text-gray-500">
-              By continuing, you agree to GoAbroad&apos;s <a href="#" className="text-primary-1 hover:underline">Terms of Service</a> and <a href="#" className="text-primary-1 hover:underline">Privacy Policy</a>.
+              By continuing, you agree to GoupBroad&apos;s <a href="#" className="text-primary-1 hover:underline">Terms of Service</a> and <a href="#" className="text-primary-1 hover:underline">Privacy Policy</a>.
             </p>
           </div>
         </div>

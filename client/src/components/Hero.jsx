@@ -54,7 +54,7 @@ export const Hero = () => {
                         className="inline-flex items-center px-3 py-1 rounded-full bg-primary-1/10 dark:bg-primary-1/20 border border-primary-1/20 mb-6"
                     >
                         <span className="text-xs font-semibold text-primary-1">
-                            Introducing Goupbroad  -  Your Journey to Study Abroad Starts Here
+                            Introducing GoupBroad  -  Your Journey to Study Abroad Starts Here
                         </span>
                     </motion.div>
 

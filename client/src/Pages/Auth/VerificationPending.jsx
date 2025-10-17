@@ -28,7 +28,7 @@ const VerificationPending = () => {
 
           <div className="space-y-4">
             <Button
-              onClick={() => window.location.href = 'mailto:support@goabroad.com'}
+              onClick={() => window.location.href = 'mailto:support@goupbroad.com'}
               className="w-full bg-primary-1/95 cursor-pointer hover:bg-primary-1 text-white"
             >
               Contact Support

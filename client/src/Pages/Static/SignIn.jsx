@@ -111,7 +111,7 @@ const SignIn = () => {
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
               <img src={logo} alt="goupbroadlogo" className='w-[50px] h-[50px] '/>
-              <h1 className="text-3xl font-bold text-primary-700">Goupbroad</h1>
+              <h1 className="text-3xl font-bold text-primary-700">GoupBroad</h1>
             </div>
             <div className="space-y-4">
               <h2 className="text-4xl font-bold text-gray-800 leading-tight">

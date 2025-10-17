@@ -62,7 +62,7 @@ const AppSidebar = ({ isSidebarOpen }) => {
         <div className="md:py-6 flex md:items-center md:space-x-3 px-1">
             <>
               <img src="/logo.svg" height={40} width={40} />
-              <span className="text-2xl font-bold text-gray-900">Goupbroad</span>
+              <span className="text-2xl font-bold text-gray-900">GoupBroad</span>
             </>
         </div>
           {/* )} */}

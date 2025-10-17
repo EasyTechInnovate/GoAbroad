@@ -10,7 +10,7 @@ const Testimonials = () => {
       university: 'University of Toronto, Canada',
       course: 'Computer Science',
       image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop&crop=face',
-      text: 'GroupBroad made my dream of studying in Canada a reality. Their personalized university matching helped me find the perfect program, and I secured a $15,000 scholarship through their platform!',
+      text: 'GoupBroad made my dream of studying in Canada a reality. Their personalized university matching helped me find the perfect program, and I secured a $15,000 scholarship through their platform!',
       rating: 5,
       achievement: 'Secured $15K Scholarship'
     },
@@ -46,7 +46,7 @@ const Testimonials = () => {
       university: 'University of Edinburgh, UK',
       course: 'International Relations',
       image: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face',
-      text: 'GroupBroad\'s scholarship finder helped me discover funding opportunities I never knew existed. I\'m now studying in the UK with 70% of my tuition covered!',
+      text: 'GoupBroad\'s scholarship finder helped me discover funding opportunities I never knew existed. I\'m now studying in the UK with 70% of my tuition covered!',
       rating: 5,
       achievement: '70% Tuition Covered'
     },
@@ -55,7 +55,7 @@ const Testimonials = () => {
       university: 'University of British Columbia, Canada',
       course: 'Environmental Engineering',
       image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-      text: 'From university selection to visa guidance, GroupBroad supported me at every step. Their comprehensive approach made what seemed impossible, possible!',
+      text: 'From university selection to visa guidance, GoupBroad supported me at every step. Their comprehensive approach made what seemed impossible, possible!',
       rating: 5,
       achievement: 'End-to-End Support'
     }
@@ -69,7 +69,7 @@ const Testimonials = () => {
             Success Stories from Our Students
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Join thousands of students who have successfully transformed their international education dreams into reality with GroupBroad.
+            Join thousands of students who have successfully transformed their international education dreams into reality with GoupBroad.
           </p>
         </div>
 

@@ -66,7 +66,7 @@ const Footer = () => {
         <div className="flex justify-between items-top max-md:flex-col gap-8 max-md:gap-14 mb-12">
           {/* Brand Section */}
           <div className="lg:col-span-2 w-[400px] max-md:w-full">
-            <h3 className="text-2xl font-bold text-white mb-4">GroupBroad</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">GoupBroad</h3>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Empowering students worldwide to achieve their international education dreams 
               through personalized guidance, comprehensive resources, and a supportive community.
@@ -131,7 +131,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © {currentYear} GroupBroad. All rights reserved.
+              © {currentYear} GoupBroad. All rights reserved.
             </div>
             {/* <div className="flex space-x-6 text-sm text-gray-400">
               <a href="#" className="hover:text-white transition-colors duration-200">Privacy Policy</a>

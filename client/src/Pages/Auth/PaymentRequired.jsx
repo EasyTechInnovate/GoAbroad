@@ -63,7 +63,7 @@ const PaymentRequired = () => {
                 key: response.data.key,
                 amount: response.data.amount,
                 currency: response.data.currency || 'INR',
-                name: 'GoAbroad',
+                name: 'GoupBroad',
                 description: `${planCategory.charAt(0).toUpperCase() + planCategory.slice(1)} ${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan`,
                 order_id: response.data.orderId,
                 prefill: {
@@ -201,7 +201,7 @@ const PaymentRequired = () => {
                         </p>
                     </div>
                     <p className="text-slate-500 text-sm mb-6">
-                        For any queries, contact us at <span className="font-medium text-primary-1">support@goabroad.com</span>
+                        For any queries, contact us at <span className="font-medium text-primary-1">support@goupbroad.com</span>
                     </p>
                     <Button asChild variant="outline" className="w-full">
                         <Link to="/auth/sigin" className="flex items-center justify-center gap-2">
@@ -228,7 +228,7 @@ const PaymentRequired = () => {
                         <div className="w-10 h-10 bg-primary-1 rounded-lg flex items-center justify-center">
                             <Globe className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-2xl font-bold text-slate-800">GoAbroad</span>
+                        <span className="text-2xl font-bold text-slate-800">GoupBroad</span>
                     </div>
                     <h1 className="text-3xl font-bold text-slate-800 mb-2">Complete Your Registration</h1>
                     <p className="text-slate-600">Secure your spot and unlock access to premium university guidance</p>
@@ -371,7 +371,7 @@ const PaymentRequired = () => {
                     transition={{ delay: 0.6 }}
                     className="text-center mt-8 text-slate-500 text-sm"
                 >
-                    <p>Need help? Contact us at <span className="text-primary-1 font-medium">support@goabroad.com</span></p>
+                    <p>Need help? Contact us at <span className="text-primary-1 font-medium">support@goupbroad.com</span></p>
                 </motion.div>
             </div>
         </div>

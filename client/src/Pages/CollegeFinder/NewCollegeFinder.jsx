@@ -90,7 +90,7 @@ const NewCollegeFinder = () => {
                 <Sparkles className="h-12 w-12 text-primary-600 mr-4 animate-pulse" />
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold">
                   <span className="text-gray-900">Let </span>
-                  <span className="text-primary-600">GoAbroad</span>
+                  <span className="text-primary-600">GoupBroad</span>
                   <span className="text-gray-900"> Guide You</span>
                 </h1>
               </div>

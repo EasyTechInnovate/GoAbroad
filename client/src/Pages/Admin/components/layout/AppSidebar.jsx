@@ -106,7 +106,7 @@ export function AppSidebar() {
           <div className="md:py-6 flex items-center space-x-3 px-1">
               <>
                 <img src="/logo.svg" height={40} width={40} />
-                <span className={cn("text-2xl font-bold text-gray-900" )}>Goupbroad</span>
+                <span className={cn("text-2xl font-bold text-gray-900" )}>GoupBroad</span>
               </>
           </div>
             )}
